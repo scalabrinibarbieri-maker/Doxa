@@ -13,45 +13,110 @@ concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  DOXA_KEYSTORE_PASSWORD: ${{ secrets.DOXA_KEYSTORE_PASSWORD }}
+  DOXA_KEY_ALIAS: ${{ secrets.DOXA_KEY_ALIAS }}
+  DOXA_KEY_PASSWORD: ${{ secrets.DOXA_KEY_PASSWORD }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - uses: android-actions/setup-android@v3
         with:
           packages: 'platform-tools'
+
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
+
       - name: Check importer and native file adapter
         run: bash tools/check.sh
+
       - name: Install SDK
         run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-      - name: Compile and lint
+
+      - name: Prepare production signing
+        if: github.event_name != 'pull_request'
+        env:
+          DOXA_KEYSTORE_B64: ${{ secrets.DOXA_KEYSTORE_B64 }}
+        run: |
+          test -n "$DOXA_KEYSTORE_B64"
+          test -n "$DOXA_KEYSTORE_PASSWORD"
+          test -n "$DOXA_KEY_ALIAS"
+          test -n "$DOXA_KEY_PASSWORD"
+
+          DOXA_KEYSTORE_PATH="$RUNNER_TEMP/Doxa-Release.jks"
+
+          printf '%s' "$DOXA_KEYSTORE_B64" | base64 --decode > "$DOXA_KEYSTORE_PATH"
+          chmod 600 "$DOXA_KEYSTORE_PATH"
+
+          echo "DOXA_KEYSTORE_PATH=$DOXA_KEYSTORE_PATH" >> "$GITHUB_ENV"
+
+      - name: Compile and lint test APK
         run: gradle --no-daemon -PdoxaLocalTest=true :app:assembleDebug :app:lintDebug
-      - name: Verify APK signature
-        run: $ANDROID_HOME/build-tools/35.0.0/apksigner verify --verbose app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Verify test APK signature
+        run: |
+          $ANDROID_HOME/build-tools/35.0.0/apksigner verify \
+            --verbose \
+            app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Compile official Doxa
+        if: github.event_name != 'pull_request'
+        run: gradle --no-daemon -PdoxaLocalTest=true :app:assembleRelease
+
+      - name: Verify official Doxa signature
+        if: github.event_name != 'pull_request'
+        run: |
+          $ANDROID_HOME/build-tools/35.0.0/apksigner verify \
+            --verbose \
+            --print-certs \
+            app/build/outputs/apk/release/app-release.apk
+
       - name: Package test APK
         run: |
-          mkdir -p dist
-          cp app/build/outputs/apk/debug/app-debug.apk dist/Doxa-Teste.apk
-          cd dist
+          mkdir -p dist/test
+          cp app/build/outputs/apk/debug/app-debug.apk dist/test/Doxa-Teste.apk
+          cd dist/test
           sha256sum Doxa-Teste.apk > SHA256SUMS.txt
+
+      - name: Package official Doxa
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p dist/release
+          cp app/build/outputs/apk/release/app-release.apk dist/release/Doxa-30.1.apk
+          cd dist/release
+          sha256sum Doxa-30.1.apk > SHA256SUMS.txt
+
       - uses: actions/upload-artifact@v4
         with:
           name: Doxa-Teste-${{ github.run_number }}
-          path: dist/
+          path: dist/test/
           if-no-files-found: error
           retention-days: 30
+
+      - uses: actions/upload-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          name: Doxa-30.1-Oficial-${{ github.run_number }}
+          path: dist/release/
+          if-no-files-found: error
+          retention-days: 90
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
