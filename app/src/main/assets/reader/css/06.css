@@ -1,0 +1,6 @@
+
+.version-group-label{padding:12px 4px 5px;font:850 9px/1 var(--ui);letter-spacing:.115em;text-transform:uppercase;color:var(--ink-faint)}
+.version-group-label:first-child{padding-top:2px}.version-card[data-module-state="waiting"]{opacity:.72}.version-card[data-module-state="waiting"] .version-card-end{font-size:15px;color:var(--ink-faint)}
+.module-category{padding:10px 14px 6px;font:850 9px/1 var(--ui);letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint);background:color-mix(in srgb,var(--paper-2) 52%,var(--paper));border-bottom:1px solid color-mix(in srgb,var(--rule) 68%,transparent)}
+.open-bible-row.waiting .open-bible-action{color:var(--ink-faint);font-size:9.5px;line-height:1.2;white-space:normal;min-width:82px}.open-bible-row.view .open-bible-action{color:var(--verdigris)}
+.module-source-note{display:block;margin-top:4px;font-size:9.8px;color:var(--ink-faint);line-height:1.35}

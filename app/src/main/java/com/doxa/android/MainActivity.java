@@ -39,7 +39,7 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
-        if (new File(getFilesDir(), "reader/.ready").isFile()) showReader();
+        if (new File(getFilesDir(), "reader/.ready").isFile()) prepareReader();
         else showImport();
     }
 
@@ -96,7 +96,7 @@ public final class MainActivity extends Activity {
                 try (OutputStream marker = new FileOutputStream(new File(stage, ".ready"))) { marker.write(29); }
                 File destination = new File(getFilesDir(), "reader");
                 if (destination.exists() || !stage.renameTo(destination)) throw new IOException("Não foi possível ativar o leitor.");
-                runOnUiThread(() -> { importing = false; if (!destroyed) showReader(); });
+                runOnUiThread(() -> { importing = false; if (!destroyed) prepareReader(); });
             } catch (Exception error) {
                 try { LegacyImporter.deleteTree(stage); } catch (IOException ignored) { }
                 runOnUiThread(() -> {
@@ -110,8 +110,33 @@ public final class MainActivity extends Activity {
         });
     }
 
+    private void prepareReader() {
+        showImport();
+        importing = true;
+        importButton.setVisibility(View.GONE);
+        progress.setVisibility(View.VISIBLE);
+        progress.setIndeterminate(true);
+        status.setText("Preparando seu leitor…\n\nNa primeira abertura, esta atualização organiza os textos já importados. Mantenha o Doxa aberto.");
+        io.execute(() -> {
+            try {
+                ReaderMigration.prepare(getFilesDir(), getAssets().open("reader-data.tsv"));
+                runOnUiThread(() -> { importing = false; if (!destroyed) showReader(true); });
+            } catch (Exception error) {
+                runOnUiThread(() -> {
+                    importing = false;
+                    if (!destroyed) new AlertDialog.Builder(this)
+                            .setTitle("Não foi possível preparar a atualização")
+                            .setMessage("Sua V29 foi preservada.\n\n" + error.getMessage())
+                            .setCancelable(false)
+                            .setPositiveButton("Tentar novamente", (d,w) -> prepareReader())
+                            .setNegativeButton("Abrir V29 preservada", (d,w) -> showReader(false)).show();
+                });
+            }
+        });
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
-    private void showReader() {
+    private void showReader(boolean modular) {
         web = new WebView(this);
         web.setBackgroundColor(Color.rgb(246, 242, 234));
         WebSettings settings = web.getSettings();
@@ -123,9 +148,16 @@ public final class MainActivity extends Activity {
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
         settings.setSupportMultipleWindows(false);
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
-        WebViewAssetLoader loader = new WebViewAssetLoader.Builder()
-                .addPathHandler("/assets/", new WebViewAssetLoader.InternalStoragePathHandler(this, new File(getFilesDir(), "reader")))
-                .build();
+        WebViewAssetLoader.Builder builder = new WebViewAssetLoader.Builder();
+        if (modular) {
+            WebViewAssetLoader.AssetsPathHandler bundled = new WebViewAssetLoader.AssetsPathHandler(this);
+            builder.addPathHandler("/assets/data/", new WebViewAssetLoader.InternalStoragePathHandler(this, new File(getFilesDir(), "reader-data-v1")))
+                    .addPathHandler("/assets/interlinear/", new WebViewAssetLoader.InternalStoragePathHandler(this, new File(getFilesDir(), "reader/interlinear")))
+                    .addPathHandler("/assets/", path -> bundled.handle("reader/" + path));
+        } else {
+            builder.addPathHandler("/assets/", new WebViewAssetLoader.InternalStoragePathHandler(this, new File(getFilesDir(), "reader")));
+        }
+        WebViewAssetLoader loader = builder.build();
         boolean bridgeAvailable = WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER);
         if (bridgeAvailable) {
             WebViewCompat.addWebMessageListener(web, "DoxaFiles", Collections.singleton(ORIGIN),

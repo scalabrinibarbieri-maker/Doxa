@@ -1,0 +1,21 @@
+
+/* V29 — interlinear morfológico de Gênesis 1–50 + Êxodo 1–40, visual de página */
+.interlinear-section{margin-top:18px}
+.il27-head{margin:2px 0 19px;padding:14px 15px;border:1px solid var(--rule);border-radius:16px;background:color-mix(in srgb,var(--paper-2) 35%,var(--paper))}
+.il27-head strong{display:block;font:800 13px/1.25 var(--ui);color:var(--ink)}
+.il27-head small{display:block;margin-top:5px;font:10.5px/1.5 var(--ui);color:var(--ink-faint)}
+.il27-example{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:11px;padding-top:10px;border-top:1px solid var(--rule)}
+.il27-example .h{font:700 22px/1.15 var(--hebrew);direction:rtl}.il27-example .p{font:800 11px/1.2 var(--ui);color:var(--rubric);white-space:nowrap}
+.il27-chapter{padding:1px 0 14px}
+.il27-verse{position:relative;margin:0 0 17px;padding:8px 3px 11px 29px;border-bottom:1px solid color-mix(in srgb,var(--rule) 55%,transparent);scroll-margin-top:86px}
+.il27-verse.current{background:linear-gradient(90deg,color-mix(in srgb,var(--rubric) 4%,transparent),transparent 72%);border-radius:11px}
+.il27-vnum{position:absolute;left:4px;top:13px;color:var(--rubric);font:850 9px/1 var(--ui);font-variant-numeric:tabular-nums}
+.il27-flow{display:flex;flex-wrap:wrap;direction:rtl;justify-content:flex-start;align-items:flex-start;column-gap:13px;row-gap:12px;min-width:0}
+.il27-word{appearance:none;-webkit-appearance:none;border:0;background:none;color:var(--ink);padding:0 1px 2px;min-width:0;max-width:100%;display:inline-flex;flex-direction:column;align-items:center;text-align:center;-webkit-tap-highlight-color:transparent;border-radius:7px}
+.il27-word:active{background:color-mix(in srgb,var(--rubric) 8%,transparent);transform:translateY(1px)}
+.il27-hebrew{display:block;direction:rtl;unicode-bidi:isolate;white-space:nowrap;font:650 25px/1.12 var(--hebrew);letter-spacing:0;color:var(--ink)}
+.il27-gloss{display:block;direction:ltr;unicode-bidi:isolate;margin-top:4px;max-width:110px;white-space:normal;color:var(--ink-soft);font:720 10.5px/1.18 var(--ui)}
+.il27-punct{display:inline-flex;align-items:flex-start;direction:rtl;font:600 22px/1.1 var(--hebrew);color:var(--ink-faint);padding-top:1px;margin-inline:-8px -5px}
+.il27-note{margin:17px 2px 3px;padding:11px 13px;border-left:3px solid color-mix(in srgb,var(--rubric) 65%,var(--rule));border-radius:0 10px 10px 0;background:color-mix(in srgb,var(--paper-2) 32%,var(--paper));color:var(--ink-faint);font:10.5px/1.55 var(--ui)}
+.il27-unavailable{padding:28px 18px;text-align:center;border:1px solid var(--rule);border-radius:16px;background:color-mix(in srgb,var(--paper-2) 32%,var(--paper))}.il27-unavailable b{display:block;color:var(--ink);font:800 14px/1.25 var(--ui)}.il27-unavailable span{display:block;margin-top:7px;color:var(--ink-faint);font:11px/1.5 var(--ui)}
+@media(max-width:420px){.il27-flow{column-gap:11px;row-gap:11px}.il27-hebrew{font-size:23px}.il27-gloss{font-size:10px;max-width:96px}.il27-verse{padding-left:27px}}

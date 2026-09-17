@@ -1,0 +1,10 @@
+
+/* O pager é ação primária no fim do capítulo e nunca pode ficar atrás do botão flutuante. */
+#singleReader .pager{position:relative;z-index:70}
+body.doxa-pager-visible:not(.parallel-mode) #parallelToggle{
+  opacity:0!important;
+  transform:translate3d(0,18px,0) scale(.97)!important;
+  pointer-events:none!important;
+}
+/* O antigo botão de cópia permanece apenas como alvo de compatibilidade do JS legado. */
+#copyPassage[hidden]{display:none!important}

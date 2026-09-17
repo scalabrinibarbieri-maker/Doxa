@@ -1,0 +1,7 @@
+
+.version-picker{max-height:min(86dvh,760px)!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;top:auto!important}
+.version-picker-grab,.version-picker-head{flex:0 0 auto}
+.version-picker-list{min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;padding-bottom:calc(20px + env(safe-area-inset-bottom,0))!important}
+.version-group-label{position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.xref-trigger{display:none!important}
+@media(max-width:540px){.version-picker{max-height:90dvh!important;left:6px!important;right:6px!important;bottom:6px!important}}

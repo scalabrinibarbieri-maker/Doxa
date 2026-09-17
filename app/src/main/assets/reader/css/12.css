@@ -1,0 +1,11 @@
+
+.offline-pack-card{border:1px solid color-mix(in srgb,var(--rule) 86%,transparent);border-radius:20px;background:color-mix(in srgb,var(--paper-2) 42%,var(--paper));padding:16px;box-shadow:0 10px 30px rgba(20,18,14,.035)}
+.offline-pack-head{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:center}.offline-pack-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--verdigris) 12%,var(--paper));color:var(--verdigris);font:800 22px/1 var(--ui)}
+.offline-pack-head strong{display:block;font:800 15px/1.25 var(--ui);color:var(--ink)}.offline-pack-head small{display:block;margin-top:4px;color:var(--ink-faint);font:11px/1.45 var(--ui)}
+.offline-pack-list{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0 10px}.offline-pack-list span{padding:6px 8px;border:1px solid var(--rule);border-radius:999px;background:color-mix(in srgb,var(--paper) 80%,transparent);font:700 10px/1.2 var(--ui);color:var(--ink-soft)}
+.offline-pack-note{margin:0 0 13px;color:var(--ink-soft);font:11px/1.55 var(--ui)}
+.offline-progress{height:7px;border-radius:999px;background:color-mix(in srgb,var(--rule) 55%,transparent);overflow:hidden}.offline-progress i{display:block;height:100%;width:0;background:var(--verdigris);border-radius:inherit;transition:width .18s ease}
+.offline-status{display:flex;flex-direction:column;gap:3px;margin:10px 0}.offline-status strong{font:800 11px/1.3 var(--ui);color:var(--ink)}.offline-status span,.offline-storage,.offline-backup-help{font:10px/1.45 var(--ui);color:var(--ink-faint)}
+.offline-storage{margin-bottom:10px}.offline-actions,.offline-backup-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.offline-primary{border-color:color-mix(in srgb,var(--verdigris) 40%,var(--rule))!important;background:color-mix(in srgb,var(--verdigris) 8%,var(--paper))!important;color:var(--verdigris)!important;font-weight:800!important}.offline-backup-help{display:block;margin-top:8px}
+.offline-pack-card.busy .offline-primary{opacity:.65;pointer-events:none}.offline-pack-card.done .offline-progress i{width:100%!important}.offline-pack-card.done .offline-status strong{color:var(--verdigris)}
+@media(max-width:430px){.offline-actions,.offline-backup-actions{grid-template-columns:1fr}.offline-pack-card{padding:14px}}

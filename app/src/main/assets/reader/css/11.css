@@ -1,0 +1,9 @@
+
+/* V22 — o HUD não participa da animação horizontal de troca de capítulo. */
+body.chapter-animating>header,
+body.chapter-animating>.progress,
+body.chapter-animating nav.bar,
+body.chapter-animating #parallelToggle,
+body.chapter-animating #p-ler>.modebar{
+  transition:none!important;
+}

@@ -10,7 +10,7 @@ android {
         // Preserve V29 behavior; raising targetSdk requires a separate device test cycle.
         targetSdk 29
         versionCode (1000 + Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1'))
-        versionName '30.0-foundation'
+        versionName '30.1-modular'
     }
     signingConfigs {
         debug {

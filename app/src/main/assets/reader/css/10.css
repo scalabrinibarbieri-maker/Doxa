@@ -1,0 +1,13 @@
+
+/* V21 — seletor de Bíblia padronizado no HUD */
+#versionTrigger{display:none!important}
+body:not(.parallel-mode) #p-ler>.modebar{padding-top:14px!important}
+body:not(.parallel-mode) #hdrPage{
+  cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+  width:40px;height:40px;padding:0;margin:-7px -6px -7px 0;display:grid;place-items:center;
+  border:1px solid color-mix(in srgb,var(--rule) 82%,transparent);border-radius:13px;
+  background:color-mix(in srgb,var(--paper-2) 52%,var(--paper));box-shadow:0 3px 12px rgba(20,18,14,.045);color:var(--rubric)
+}
+body:not(.parallel-mode) #hdrPage::after{content:none!important}
+body:not(.parallel-mode) #hdrPage:active{transform:scale(.95);background:color-mix(in srgb,var(--paper-2) 82%,var(--paper))}
+.global-bible-switch{width:25px;height:25px;display:block}.global-bible-switch path,.global-bible-switch line{vector-effect:non-scaling-stroke}

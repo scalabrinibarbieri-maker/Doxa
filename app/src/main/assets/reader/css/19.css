@@ -1,0 +1,56 @@
+
+/* V18 — leitura contínua exclusiva da Tradução Hiperliteral Doxa */
+body.doxa-hyper-continuous #opening{display:none!important}
+body.doxa-hyper-continuous #versionTrigger{display:none!important}
+body.doxa-hyper-continuous #singleReader .pager{display:none!important}
+body.doxa-hyper-continuous #textBody{
+  text-align:justify;
+  text-justify:inter-word;
+  hyphens:auto;
+  -webkit-hyphens:auto;
+  padding-top:24px;
+}
+body.doxa-hyper-continuous #textBody p{
+  text-align:justify;
+  text-justify:inter-word;
+  margin:0 0 1.05em;
+}
+body.doxa-hyper-continuous #textBody p.speech{margin-bottom:.5em}
+body.doxa-hyper-continuous #textBody p.lead{margin-bottom:.35em}
+.hyper-chapter-marker{
+  display:block;
+  width:0;
+  height:0;
+  overflow:hidden;
+  visibility:hidden;
+  scroll-margin-top:92px;
+  pointer-events:none;
+}
+.hyper-block-marker{
+  display:inline;
+  width:0;
+  height:0;
+  overflow:hidden;
+  visibility:hidden;
+  pointer-events:none;
+}
+body.doxa-hyper-continuous #hdrPage{
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  width:40px;
+  height:40px;
+  padding:0;
+  margin:-7px -6px -7px 0;
+  display:grid;
+  place-items:center;
+  border:1px solid color-mix(in srgb,var(--rule) 82%,transparent);
+  border-radius:13px;
+  background:color-mix(in srgb,var(--paper-2) 52%,var(--paper));
+  box-shadow:0 3px 12px rgba(20,18,14,.045);
+  color:var(--rubric);
+}
+body.doxa-hyper-continuous #hdrPage::after{content:none!important}
+body.doxa-hyper-continuous #hdrPage:active{transform:scale(.95);background:color-mix(in srgb,var(--paper-2) 82%,var(--paper))}
+.hyper-bible-switch{width:25px;height:25px;display:block}
+.hyper-bible-switch path,.hyper-bible-switch line{vector-effect:non-scaling-stroke}

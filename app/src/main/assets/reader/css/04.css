@@ -1,0 +1,51 @@
+
+:root{--reader-family:"Iowan Old Style","Charter","Noto Serif",Georgia,serif}
+
+/* ---------- Leitura imersiva ---------- */
+body:not(.parallel-mode)>header,
+body:not(.parallel-mode)>.progress,
+body:not(.parallel-mode) nav.bar,
+body:not(.parallel-mode) #parallelToggle{
+  transition:transform .24s cubic-bezier(.22,.72,.18,1),opacity .18s ease,box-shadow .18s ease!important;
+  will-change:transform,opacity;
+}
+body.hud-hidden:not(.parallel-mode)>header{
+  transform:translate3d(0,calc(-100% - 16px),0)!important;
+  opacity:0!important;pointer-events:none!important;box-shadow:none!important;
+}
+body.hud-hidden:not(.parallel-mode)>.progress{transform:translate3d(0,-12px,0)!important;opacity:0!important}
+body.hud-hidden:not(.parallel-mode) nav.bar{
+  transform:translate3d(0,calc(130% + env(safe-area-inset-bottom,0)),0)!important;
+  opacity:0!important;pointer-events:none!important;
+}
+body.hud-hidden:not(.parallel-mode) #parallelToggle{
+  opacity:0!important;transform:translate3d(0,18px,0) scale(.97)!important;pointer-events:none!important;
+}
+body:not(.hud-hidden):not(.parallel-mode) #parallelToggle{
+  opacity:1!important;transform:translate3d(0,0,0) scale(1)!important;pointer-events:auto!important;
+}
+body.hud-hidden:not(.parallel-mode){padding-bottom:12px!important}
+/* O seletor de Bíblia, quando ainda estiver visível no começo da página, some junto com o HUD sem alterar o fluxo do texto. */
+body.hud-hidden:not(.parallel-mode) #p-ler>.modebar{opacity:0;transform:translate3d(0,-8px,0);pointer-events:none}
+#p-ler>.modebar{transition:opacity .18s ease,transform .22s cubic-bezier(.22,.72,.18,1)}
+
+/* ---------- Slide de capítulo ---------- */
+#singleReader{transform:translate3d(0,0,0);opacity:1;will-change:transform,opacity}
+body.chapter-animating #singleReader{pointer-events:none}
+
+
+/* ---------- Fontes reais do Doxa (Fontsource/jsDelivr) ---------- */
+/* V9: tipografias nativas do Android/WebView; funcionam 100% offline. */
+
+/* ---------- Fonte de leitura ---------- */
+ .text:not(.hebrew),.opening p,.parallel-text:not(.hebrew){font-family:var(--reader-family,var(--serif))!important;font-optical-sizing:auto;font-synthesis:none}
+body[data-reader-font="editorial"] .text:not(.hebrew),body[data-reader-font="editorial"] .opening p,body[data-reader-font="editorial"] .parallel-text:not(.hebrew){letter-spacing:.002em}
+body[data-reader-font="literaria"] .text:not(.hebrew),body[data-reader-font="literaria"] .opening p,body[data-reader-font="literaria"] .parallel-text:not(.hebrew){letter-spacing:.004em}
+body[data-reader-font="classica"] .text:not(.hebrew),body[data-reader-font="classica"] .opening p,body[data-reader-font="classica"] .parallel-text:not(.hebrew){letter-spacing:.001em}
+body[data-reader-font="humanista"] .text:not(.hebrew),body[data-reader-font="humanista"] .opening p,body[data-reader-font="humanista"] .parallel-text:not(.hebrew){letter-spacing:.003em}
+body[data-reader-font="limpa"] .text:not(.hebrew),body[data-reader-font="limpa"] .opening p,body[data-reader-font="limpa"] .parallel-text:not(.hebrew){letter-spacing:.006em}
+.font-style-card{border:1px solid color-mix(in srgb,var(--rule) 80%,transparent);border-radius:17px;background:color-mix(in srgb,var(--paper-2) 42%,var(--paper));box-shadow:0 6px 20px rgba(20,18,14,.035);padding:15px;margin-top:8px}
+.font-style-copy{font-family:var(--ui);margin-bottom:12px}.font-style-copy strong{display:block;font-size:14px;font-weight:760}.font-style-copy small{display:block;margin-top:4px;color:var(--ink-faint);font-size:11px;line-height:1.48}
+.font-style-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.font-style-option{min-width:0;border:1px solid color-mix(in srgb,var(--rule) 76%,transparent);border-radius:14px;background:color-mix(in srgb,var(--paper) 72%,var(--paper-2));color:var(--ink);padding:10px 11px;text-align:left;cursor:pointer;transition:transform .12s ease,border-color .15s ease,background .15s ease,box-shadow .15s ease}.font-style-option:active{transform:scale(.985)}.font-style-option.on{border-color:color-mix(in srgb,var(--rubric) 55%,var(--rule));background:color-mix(in srgb,var(--rubric) 6%,var(--paper));box-shadow:0 6px 18px color-mix(in srgb,var(--rubric) 7%,transparent)}.font-style-name{display:block;font:800 10px/1 var(--ui);letter-spacing:.075em;text-transform:uppercase;color:var(--ink-soft)}.font-style-option.on .font-style-name{color:var(--rubric)}.font-style-preview{display:block;margin-top:8px;font-family:var(--font-preview);font-size:16px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:430px){.font-style-grid{grid-template-columns:1fr}.font-style-preview{font-size:17px}}
+@media(prefers-reduced-motion:reduce){body:not(.parallel-mode)>header,body:not(.parallel-mode)>.progress,body:not(.parallel-mode) nav.bar,body:not(.parallel-mode) #parallelToggle,#p-ler>.modebar,#singleReader{transition:none!important}}
