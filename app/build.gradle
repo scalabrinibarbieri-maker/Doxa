@@ -1,17 +1,23 @@
 plugins { id 'com.android.application' }
 
+def releaseKeystorePath = System.getenv('DOXA_KEYSTORE_PATH')
+
 android {
     namespace 'com.doxa.android'
     compileSdk 35
     buildFeatures { buildConfig true }
+
     defaultConfig {
         applicationId 'com.doxa.android'
         minSdk 23
+
         // Preserve V29 behavior; raising targetSdk requires a separate device test cycle.
         targetSdk 29
+
         versionCode (1000 + Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1'))
-        versionName '30.1-modular'
+        versionName '30.1'
     }
+
     signingConfigs {
         debug {
             // PUBLIC TEST KEY. Never use this identity for production.
@@ -20,25 +26,43 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+
+        release {
+            if (releaseKeystorePath) {
+                storeFile file(releaseKeystorePath)
+                storePassword System.getenv('DOXA_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('DOXA_KEY_ALIAS')
+                keyPassword System.getenv('DOXA_KEY_PASSWORD')
+            }
+        }
     }
+
     buildTypes {
         debug {
             applicationIdSuffix '.dev'
             versionNameSuffix '-test'
             resValue 'string', 'app_name', 'Doxa Teste'
         }
+
         release {
             resValue 'string', 'app_name', 'Doxa'
-            // No fallback signing. Production key must be configured separately.
+
+            if (releaseKeystorePath) {
+                signingConfig signingConfigs.release
+            }
+
             minifyEnabled false
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
     lint {
         abortOnError true
+
         // Compatibilidade temporaria com V29, somente no teste local.
         if (project.findProperty('doxaLocalTest') == 'true') {
             warning 'ExpiredTargetSdkVersion'
