@@ -136,7 +136,10 @@
 </section>
 <section class="panel" id="p-marcar">
   <div class="tools-head"><span class="tools-kicker">ESTUDO</span><h2>Ferramentas</h2><p>Recursos para estudar e organizar a leitura.</p></div>
-  <button class="tool-card" id="toolsNotesBtn" type="button"><span class="tool-card-icon">▤</span><span class="tool-card-copy"><strong>Notas</strong><small>Veja todas as anotações feitas nos grifos.</small></span><span class="tool-card-count" id="toolsNotesCount">0</span><span class="tool-card-arrow">›</span></button>
+  <button class="tool-card tool-highlight-start" id="toolsHighlightStart" type="button"><span class="tool-card-icon">▰</span><span class="tool-card-copy"><strong>Grifar</strong><small>Volte à Bíblia e pinte o texto diretamente com o dedo.</small></span><span class="tool-card-arrow">›</span></button>
+  <button class="tool-card" id="toolsHighlightsBtn" type="button"><span class="tool-card-icon">▤</span><span class="tool-card-copy"><strong>Meus grifos</strong><small>Organize grifos em pastas e volte à passagem com um toque.</small></span><span class="tool-card-count" id="toolsHighlightsCount">0</span><span class="tool-card-arrow">›</span></button>
+  <button class="tool-card" id="toolsNotesBtn" type="button"><span class="tool-card-icon">✎</span><span class="tool-card-copy"><strong>Notas</strong><small>Veja todas as anotações feitas nos grifos.</small></span><span class="tool-card-count" id="toolsNotesCount">0</span><span class="tool-card-arrow">›</span></button>
+  <div class="tools-highlights" id="toolsHighlightsView" hidden><div class="tools-library-head"><button id="toolsHighlightsBack" type="button">‹</button><div><strong>Meus grifos</strong><small>Pastas e passagens marcadas</small></div><button class="tools-library-add" id="toolsNewFolder" type="button">＋</button></div><div class="tools-folder-tabs" id="toolsFolderTabs"></div><div class="tools-library-actions"><button id="toolsDeleteFolder" type="button" hidden>Excluir pasta</button></div><div class="tools-highlight-list" id="toolsHighlightList"></div></div>
   <div class="tools-notes" id="toolsNotesView" hidden><div class="tools-notes-head"><button id="toolsNotesBack" type="button">‹</button><div><strong>Notas</strong><small>Suas anotações no texto bíblico</small></div></div><ul class="notes-list" id="toolsNotesList"></ul></div>
   <div class="v20-tools-pack"><div class="v20-tools-title"><strong>Estudo avançado</strong><small>Recursos integrados ao texto, sem tirar você da referência.</small></div><div class="v20-tools-grid"><div><b>אΩ</b><strong>Raio-X 2.0</strong><small>Léxico, morfologia, formas, frequência e distribuição.</small></div><div><b>⌁</b><strong>Referências 2.0</strong><small>Força OpenBible, prévia, abrir e leitura paralela.</small></div><div><b>≠</b><strong>Crítica textual</strong><small>TR 1550 × Robinson–Pierpont 2018 × SBLGNT.</small></div><div><b>¶</b><strong>Comentários</strong><small>Henry, JFB, Clarke e Gill, em inglês original.</small></div><div><b>⌖</b><strong>Pessoas e lugares</strong><small>Entidades, relações, eventos e coordenadas quando disponíveis.</small></div></div><p>Segure um versículo para abrir as ferramentas contextuais. Toque numa palavra hebraica; no NT, abra o Guia Exegético e toque numa palavra grega.</p></div>
   <div hidden aria-hidden="true"><div id="noteRef"></div><div id="tags"></div><textarea id="note"></textarea><div id="saved"></div><ul id="marked"></ul></div>
@@ -316,13 +319,15 @@
 <link rel="stylesheet" id="doxa-v9-tools-highlights" href="css/15.css">
 
 <div class="hl-backdrop" id="hlBackdrop"></div>
-<aside class="hl-sheet" id="hlSheet" aria-hidden="true" aria-label="Grifo e nota">
+<aside class="hl-sheet" id="hlSheet" aria-hidden="true" aria-label="Grifo">
   <div class="hl-grab"></div>
   <div class="hl-sheet-head"><div><strong>Grifar texto</strong><small id="hlSheetRef">Passagem</small></div><button class="hl-sheet-close" id="hlSheetClose" type="button" aria-label="Fechar">×</button></div>
-  <div class="hl-colors" id="hlColors"><button class="hl-color" data-color="yellow" aria-label="Amarelo"></button><button class="hl-color" data-color="green" aria-label="Verde"></button><button class="hl-color" data-color="red" aria-label="Vermelho"></button><button class="hl-color" data-color="blue" aria-label="Azul"></button><button class="hl-color" data-color="purple" aria-label="Roxo"></button></div>
-  <div class="hl-actions"><button class="hl-note-btn" id="hlNoteBtn" type="button">▤ &nbsp;Adicionar nota</button><button class="hl-remove" id="hlRemove" type="button" aria-label="Remover grifo">⌫</button></div>
+  <div class="hl-colors" id="hlColors"><button class="hl-color" data-color="yellow" aria-label="Amarelo"></button><button class="hl-color" data-color="blue" aria-label="Azul"></button><button class="hl-color" data-color="red" aria-label="Vermelho"></button><button class="hl-color" data-color="purple" aria-label="Roxo"></button><button class="hl-color" data-color="green" aria-label="Verde"></button><button class="hl-color" data-color="black" aria-label="Preto"></button></div>
+  <div class="hl-primary-actions"><button class="hl-complete" id="hlComplete" type="button">Concluir</button><button class="hl-delete" id="hlRemove" type="button">Apagar</button></div>
+  <div class="hl-actions"><button class="hl-note-btn" id="hlNoteBtn" type="button">✎ &nbsp;Adicionar nota</button></div>
   <div class="hl-note-editor" id="hlNoteEditor" hidden><textarea id="hlNoteText" placeholder="Escreva sua anotação…"></textarea><button class="hl-note-save" id="hlNoteSave" type="button">Salvar nota</button></div>
 </aside>
+<div class="hl-mode-bar" id="hlModeBar" hidden><span class="hl-mode-icon">▰</span><span><strong>Modo Grifar</strong><small>Passe o dedo sobre o texto</small></span><button id="hlModeExit" type="button">Concluir</button></div>
 
 <script id="doxa-v9-highlights-tools" src="js/06.js"></script>
 
