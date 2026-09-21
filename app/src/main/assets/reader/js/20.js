@@ -500,12 +500,127 @@
     }
   }
 
+
+  /* =========================================================
+     Interação robusta do leitor
+     - long press no verso: leitor normal e paralela
+     - toque em palavra hebraica: Strong / Raio-X
+     ========================================================= */
+  function installUniversalReaderInput(){
+    if(document.documentElement.dataset.doxa31ReaderInput==='1')return;
+    document.documentElement.dataset.doxa31ReaderInput='1';
+
+    let timer=0;
+    let pointerId=null;
+    let startX=0,startY=0;
+    let verse=null,word=null,side=null;
+    let moved=false,fired=false;
+    let suppressWordClickUntil=0;
+
+    const reset=()=>{
+      clearTimeout(timer);
+      timer=0;pointerId=null;verse=null;word=null;side=null;moved=false;fired=false;
+    };
+
+    const readerTarget=e=>{
+      const host=e.target.closest?.('#textBody,#pTextA,#pTextB');
+      if(!host)return null;
+      const v=e.target.closest?.('.verse[data-v],.verse[id^="v"]');
+      if(!v)return null;
+      return {host,verse:v,side:host.id==='pTextA'?'A':(host.id==='pTextB'?'B':null)};
+    };
+
+    document.addEventListener('pointerdown',e=>{
+      if(e.isPrimary===false)return;
+      if(e.pointerType==='mouse'&&e.button!==0)return;
+
+      const hit=readerTarget(e);
+      if(!hit)return;
+
+      reset();
+      pointerId=e.pointerId;
+      startX=e.clientX;startY=e.clientY;
+      verse=hit.verse;
+      side=hit.side;
+      word=e.target.closest?.('.oshb-word')||null;
+
+      timer=setTimeout(()=>{
+        if(!verse||moved)return;
+
+        if(side){
+          const v=Number(verse.dataset.v||String(verse.id||'').replace(/^v/,''));
+          if(!enterParallelVerseContext(side,v))return;
+        }
+
+        fired=true;
+        window.__doxaLongPressActive=true;
+        suppressWordClickUntil=Date.now()+950;
+
+        try{navigator.vibrate?.(18)}catch(_){}
+
+        /* Abre durante o gesto, sem esperar o touchend.
+           Isso garante a animação + recursos imediatamente. */
+        window.DoxaVerseActions?.open(verse);
+
+        setTimeout(()=>{window.__doxaLongPressActive=false},850);
+      },560);
+    },true);
+
+    document.addEventListener('pointermove',e=>{
+      if(pointerId==null||e.pointerId!==pointerId||!verse)return;
+      if(Math.hypot(e.clientX-startX,e.clientY-startY)>12){
+        moved=true;
+        clearTimeout(timer);
+        timer=0;
+      }
+    },true);
+
+    document.addEventListener('pointerup',e=>{
+      if(pointerId==null||e.pointerId!==pointerId)return;
+
+      clearTimeout(timer);
+      timer=0;
+
+      /* Toque curto em palavra hebraica:
+         chama o Strong diretamente, sem depender do click sintético do WebView. */
+      if(!moved&&!fired&&word){
+        e.preventDefault();
+        e.stopPropagation();
+        suppressWordClickUntil=Date.now()+500;
+
+        try{
+          if(typeof window.openStrong==='function'){
+            window.openStrong(word);
+          }else{
+            word.dispatchEvent(new MouseEvent('click',{
+              bubbles:true,cancelable:true,view:window
+            }));
+          }
+        }catch(_){
+          try{word.click()}catch(__){}
+        }
+      }
+
+      reset();
+    },true);
+
+    document.addEventListener('pointercancel',reset,true);
+
+    /* Evita que o click nativo posterior abra/feche algo pela segunda vez. */
+    document.addEventListener('click',e=>{
+      if(Date.now()>=suppressWordClickUntil)return;
+      if(!e.target.closest?.('.oshb-word'))return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    },true);
+  }
+
   function init(){
     installTools();
     installHelp();
     installVerseMenu();
     installParallelV4();
-    installParallelLongPress();
+    installUniversalReaderInput();
 
     /* Reaplica caso algum módulo posterior reconstrua Ferramentas. */
     setTimeout(installTools,350);
