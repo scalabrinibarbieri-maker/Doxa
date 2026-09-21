@@ -66,7 +66,7 @@
   <div class="text" id="textBody"></div>
   <div class="strong-hint" id="strongHint">Toque em qualquer palavra hebraica para abrir lema, raiz, Strong, morfologia e léxico.</div>
   <button id="copyPassage" type="button" hidden aria-hidden="true" tabindex="-1"></button>
-  <div class="pager"><button class="btn" id="prev">Anterior</button><button class="btn" id="next">Próximo</button></div>
+  <div class="pager doxa-chapter-arrows" aria-label="Navegação entre capítulos"><button class="btn" id="prev" type="button" aria-label="Capítulo anterior" title="Capítulo anterior">‹</button><button class="btn" id="next" type="button" aria-label="Próximo capítulo" title="Próximo capítulo">›</button></div>
   </div>
 
   <div class="parallel-reader" id="parallelReader" hidden>
@@ -143,7 +143,10 @@
 </section>
 <section class="panel" id="p-ajustes">
   <span id="rowSup" hidden></span><span id="rowRub" hidden></span><input type="checkbox" id="swSup" hidden checked><input type="checkbox" id="swRub" hidden checked>
-  <label class="switchrow"><span>Corpo do texto<small>Tamanho da fonte de leitura.</small></span><input type="range" id="swSize" min="16" max="24" step="0.5" value="18.5"></label>
+  <label class="switchrow"><span>Corpo do texto<small>Tamanho da fonte de leitura. Vale também para a leitura paralela.</small></span><input type="range" id="swSize" min="16" max="24" step="0.5" value="18.5"></label>
+
+  <h2>Tela</h2>
+  <label class="switchrow doxa-screen-mode-row"><span>Usar tela toda<small>Desative para manter o espaço seguro da câmera. Ative para aproximar a interface do topo da tela.</small></span><input type="checkbox" id="swFullScreenContent"></label>
 
   <h2>Tipografia de leitura</h2>
   <div class="font-style-card">
