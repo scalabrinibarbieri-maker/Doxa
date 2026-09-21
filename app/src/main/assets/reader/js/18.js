@@ -91,20 +91,30 @@
 
   function mirrorHud(){
     const oldRef=$('#hdrRef'),oldVersionTitle=$('#versionTriggerTitle'),ref=$('#doxa30Ref'),version=$('#doxa30VersionText');
+    const currentVersionRaw=()=>{
+      try{
+        const m=(typeof mode!=='undefined')?mode:null;
+        const meta=(m&&typeof VERSION_META!=='undefined')?VERSION_META[m]:null;
+        if(meta)return meta.label||meta.short||m;
+      }catch(e){}
+      return (oldVersionTitle?.textContent||'').trim();
+    };
     const sync=()=>{
       if(ref&&oldRef){
         let t=(oldRef.textContent||'').trim().replace(/\s+∥.+$/,'');
         t=t.replace(/^(Gn)\s+/,'Gênesis ').replace(/^(Êx)\s+/,'Êxodo ');
         ref.textContent=t||'Gênesis 1';
       }
-      if(version&&oldVersionTitle){
-        const t=(oldVersionTitle.textContent||'').trim();
-        version.textContent=shortVersionLabel(t)||'1819';
+      if(version){
+        version.textContent=shortVersionLabel(currentVersionRaw())||'1819';
       }
     };
+    window.Doxa30SyncHud=sync;
     sync();
     if(oldRef)new MutationObserver(sync).observe(oldRef,{childList:true,subtree:true,characterData:true});
     if(oldVersionTitle)new MutationObserver(sync).observe(oldVersionTitle,{childList:true,subtree:true,characterData:true});
+    try{new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']})}catch(e){}
+    document.getElementById('versionSelect')?.addEventListener('change',()=>setTimeout(sync,0));
     setInterval(sync,1300);
   }
 

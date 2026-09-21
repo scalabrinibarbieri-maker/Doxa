@@ -13,7 +13,7 @@ const VERSION_META={
 let mode='almeida',hIdx=0,focusVerse=null,store={},storageMode='memory';
 let positions={almeida:{b:0,c:1},wlc:{b:0,c:1},tr:{b:0,c:1}};
 let prefs={mode:'almeida',hIdx:0,positions:null,showSup:true,rubric:true,size:18.5,readerFont:'editorial'};
-const KEY_MARKS='bereshit:marks:v3',KEY_PREFS='bereshit:prefs:v4',KEY_PARALLEL='bereshit:parallel:v1',KEY_APPEARANCE='bereshit:appearance:v1';
+const KEY_MARKS='bereshit:marks:v3',KEY_PREFS='bereshit:prefs:v4',KEY_PARALLEL='bereshit:parallel:v1',KEY_PARALLEL_LAYOUT='bereshit:parallel-layout:v2',KEY_APPEARANCE='bereshit:appearance:v1';
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function norm(s){return String(s).normalize('NFD').replace(/\p{M}+/gu,'').toLowerCase()}
 function stripSup(s){return String(s).replace(/\[|\]/g,'')}
@@ -160,12 +160,12 @@ function setStrongTab(name){document.querySelectorAll('.strong-tab').forEach(x=>
 
 
 /* ---------- Leitura paralela ---------- */
-let parallelOn=false,parallelSync=true,parallelLayout='vertical',parallelScrollLock=false,parallelScrollTimer=null;
+let parallelOn=false,parallelSync=true,parallelLayout='horizontal',parallelScrollLock=false,parallelScrollTimer=null;
 let parallelState={A:{mode:'almeida',book:'Gen',chapter:1,hIdx:0},B:{mode:'wlc',book:'Gen',chapter:1,hIdx:0}};
 const PARALLEL_VERSION_OPTIONS=[['almeida','Almeida 1819'],['wlc','WLC + Strong'],['tr','TR 1550'],['hyper','Hiperliteral']];
 function cloneParallelState(x){return JSON.parse(JSON.stringify(x))}
-async function loadParallel(){try{const raw=await getStored(KEY_PARALLEL);if(raw){const x=JSON.parse(raw);parallelOn=!!x.on;parallelSync=x.sync!==false;parallelLayout=x.layout==='horizontal'?'horizontal':'vertical';if(x.state?.A&&x.state?.B)parallelState=x.state}}catch(e){}sanitizeParallelState('A');sanitizeParallelState('B')}
-async function saveParallel(){return setStored(KEY_PARALLEL,JSON.stringify({on:parallelOn,sync:parallelSync,layout:parallelLayout,state:parallelState}))}
+async function loadParallel(){try{const raw=await getStored(KEY_PARALLEL),savedLayout=await getStored(KEY_PARALLEL_LAYOUT);if(raw){const x=JSON.parse(raw);parallelOn=!!x.on;parallelSync=x.sync!==false;if(x.state?.A&&x.state?.B)parallelState=x.state}parallelLayout=savedLayout==='vertical'?'vertical':'horizontal'}catch(e){parallelLayout='horizontal'}sanitizeParallelState('A');sanitizeParallelState('B')}
+async function saveParallel(){await setStored(KEY_PARALLEL,JSON.stringify({on:parallelOn,sync:parallelSync,layout:parallelLayout,state:parallelState}));return setStored(KEY_PARALLEL_LAYOUT,parallelLayout)}
 function hyperRange(i){const ref=HYPER_BLOCKS[Math.max(0,Math.min(HYPER_BLOCKS.length-1,i))]?.ref||'Gn 1.1';const m=ref.match(/Gn\s+(\d+)\.(\d+)(?:[–-](?:(\d+)\.)?(\d+))?/);if(!m)return{sc:1,sv:1,ec:1,ev:1};const sc=+m[1],sv=+m[2],ec=m[3]?+m[3]:sc,ev=m[4]?+m[4]:sv;return{sc,sv,ec,ev}}
 function hyperBlockForChapter(ch){ch=+ch;let exact=HYPER_BLOCKS.findIndex((_,i)=>{const r=hyperRange(i);return ch>=r.sc&&ch<=r.ec});return exact>=0?exact:0}
 function parallelCorpus(st){return st.mode==='hyper'?null:CORPORA[st.mode]}
