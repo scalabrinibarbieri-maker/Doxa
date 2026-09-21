@@ -379,3 +379,94 @@ body.normal-paper-texture .parallel-text{background-image:radial-gradient(circle
     animation:none!important;
   }
 }
+
+
+/* ===== DOXA PICKER MOTION PASS 2026 ===== */
+.passage-picker-v4 .picker-book-grid{
+  gap:5px!important;
+  overflow:visible!important;
+  border:0!important;
+  background:transparent!important;
+}
+.passage-picker-v4 .picker-book-v4{
+  min-height:62px!important;
+  border-radius:11px!important;
+  border:1px solid rgba(255,255,255,.045)!important;
+  transform-origin:50% 58%;
+  will-change:transform,opacity,filter;
+}
+.passage-picker-v4 .picker-book-v4::before{
+  opacity:.52!important;
+  animation:doxaPickerSmokeA 5.8s ease-in-out infinite alternate!important;
+}
+.passage-picker-v4 .picker-book-v4.on{
+  border-color:color-mix(in srgb,var(--d30-gold2,#f1c989) 66%,transparent)!important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb,var(--d30-gold2,#f1c989) 22%,transparent),
+    0 0 15px color-mix(in srgb,var(--d30-gold,#d9a25e) 28%,transparent)!important;
+}
+.passage-picker-v4 .picker-num-v4{
+  position:relative;
+  overflow:hidden;
+  will-change:transform,opacity,filter;
+}
+.passage-picker-v4 .picker-num-v4::after{
+  content:'';
+  position:absolute;inset:-35%;
+  border-radius:50%;
+  opacity:0;
+  background:radial-gradient(circle,color-mix(in srgb,var(--d30-gold2,#f1c989) 45%,transparent),transparent 62%);
+  transform:scale(.5);
+  pointer-events:none;
+}
+.picker-stage-enter .picker-book-v4,
+.picker-stage-enter .picker-num-v4{
+  animation:doxaPickerCardIn .40s cubic-bezier(.18,.78,.18,1) both;
+  animation-delay:calc(var(--picker-i,0) * 16ms);
+}
+@keyframes doxaPickerCardIn{
+  0%{opacity:0;transform:translate3d(0,10px,0) scale(.93);filter:brightness(.78)}
+  58%{opacity:1;transform:translate3d(0,-1px,0) scale(1.018);filter:brightness(1.08)}
+  100%{opacity:1;transform:none;filter:none}
+}
+.picker-choice-pop{
+  z-index:6!important;
+  animation:doxaPickerChoicePop .16s cubic-bezier(.2,.82,.2,1) forwards!important;
+}
+@keyframes doxaPickerChoicePop{
+  0%{transform:scale(1);filter:brightness(1)}
+  60%{transform:scale(.92);filter:brightness(1.42)}
+  100%{transform:scale(1.035);filter:brightness(1.25)}
+}
+.picker-verse-pulse{
+  animation:doxaPickerVersePulse .48s cubic-bezier(.18,.82,.2,1)!important;
+}
+.picker-verse-pulse::after{
+  animation:doxaPickerRipple .48s ease-out!important;
+}
+@keyframes doxaPickerVersePulse{
+  0%{transform:scale(.92)}
+  38%{transform:scale(1.08);box-shadow:0 0 24px color-mix(in srgb,var(--d30-gold2,#f1c989) 45%,transparent)}
+  100%{transform:scale(1)}
+}
+@keyframes doxaPickerRipple{
+  0%{opacity:.9;transform:scale(.35)}
+  100%{opacity:0;transform:scale(1.18)}
+}
+.passage-picker-v4 .picker-v4-tabs button.on{
+  text-shadow:0 0 13px color-mix(in srgb,var(--d30-gold2,#f1c989) 25%,transparent)!important;
+}
+.passage-picker-v4 .picker-v4-action:not([hidden]){
+  animation:doxaPickerActionIn .28s cubic-bezier(.18,.78,.2,1) both;
+}
+@keyframes doxaPickerActionIn{
+  from{opacity:0;transform:translateY(13px)}
+  to{opacity:1;transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .picker-stage-enter .picker-book-v4,
+  .picker-stage-enter .picker-num-v4,
+  .picker-choice-pop,.picker-verse-pulse,
+  .picker-verse-pulse::after,
+  .passage-picker-v4 .picker-v4-action:not([hidden]){animation:none!important}
+}

@@ -534,3 +534,264 @@ body.doxa-screen-full.parallel-mode .parallel-appbar{
 
 /* Durante a animação de capítulo, o HUD não troca de aba nem recebe toque acidental. */
 body.chapter-animating .doxa30-bottom{pointer-events:none!important}
+
+
+/* ===== DOXA PARALLELA 32 + TEXT PERSONALIZATION ===== */
+:root{
+  --reader-side-padding:26px;
+  --parallel-side-padding:14px;
+  --doxa-main-pad:20px;
+}
+@media(max-width:480px){:root{--doxa-main-pad:17px}}
+
+/* Personalização: a leitura usa toda a largura disponível e a margem é controlada
+   apenas pelo usuário, sem alterar Busca/Ajustes/Ferramentas. */
+body:not(.parallel-mode) #singleReader{
+  width:calc(100% + (var(--doxa-main-pad) * 2))!important;
+  max-width:none!important;
+  margin-left:calc(var(--doxa-main-pad) * -1)!important;
+  margin-right:calc(var(--doxa-main-pad) * -1)!important;
+  padding-left:var(--reader-side-padding)!important;
+  padding-right:var(--reader-side-padding)!important;
+}
+
+/* Alinhamento e números: nunca interferem na Hiperliteral. */
+body:not(.reader-hyper-active)[data-reader-align="justify"] #textBody{
+  text-align:justify!important;
+  text-justify:inter-word!important;
+  hyphens:auto;
+  -webkit-hyphens:auto;
+}
+body:not(.reader-hyper-active)[data-reader-align="left"] #textBody{text-align:left!important}
+body:not(.reader-hyper-active)[data-reader-align="center"] #textBody{text-align:center!important}
+body.reader-hide-verse-numbers:not(.reader-hyper-active) #textBody .vnum,
+body.reader-hide-verse-numbers:not(.reader-hyper-active) #textBody sup.vnum{display:none!important}
+
+body.parallel-mode[data-reader-align="justify"] .parallel-text:not(.parallel-hyper){
+  text-align:justify!important;text-justify:inter-word!important;hyphens:auto;-webkit-hyphens:auto
+}
+body.parallel-mode[data-reader-align="left"] .parallel-text:not(.parallel-hyper){text-align:left!important}
+body.parallel-mode[data-reader-align="center"] .parallel-text:not(.parallel-hyper){text-align:center!important}
+body.parallel-mode.reader-hide-verse-numbers .parallel-text:not(.parallel-hyper) .vnum{display:none!important}
+
+/* Cartão de personalização no Ajustes. */
+.reader-text-settings{
+  margin:18px 0 8px;
+  padding:16px;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 14%,transparent);
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 100% 0,color-mix(in srgb,var(--d30-gold) 8%,transparent),transparent 34%),
+    color-mix(in srgb,var(--d30-panel) 76%,var(--d30-bg));
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+}
+.reader-text-settings-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding-bottom:13px;border-bottom:1px solid color-mix(in srgb,var(--d30-gold) 9%,transparent)
+}
+.reader-text-settings-head strong,.reader-setting-copy strong,.reader-range-row strong,.reader-toggle-row strong{
+  display:block;color:var(--d30-text);font-size:14px;font-weight:700
+}
+.reader-text-settings-head small,.reader-setting-copy small,.reader-range-row small,.reader-toggle-row small{
+  display:block;color:var(--d30-muted);font-size:11px;line-height:1.45;margin-top:4px;font-weight:450
+}
+.reader-text-settings-mark{
+  width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;
+  border-radius:14px;border:1px solid color-mix(in srgb,var(--d30-gold) 18%,transparent);
+  color:var(--d30-gold2);background:color-mix(in srgb,var(--d30-gold) 8%,transparent);
+  font:600 18px/1 Georgia,'Times New Roman',serif
+}
+.reader-range-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 12px;
+  padding:15px 0;border-bottom:1px solid color-mix(in srgb,var(--d30-gold) 8%,transparent)
+}
+.reader-range-row>span{min-width:0}
+.reader-range-row output{
+  align-self:center;color:var(--d30-gold2);font:700 12px/1 system-ui,-apple-system,'Segoe UI',sans-serif
+}
+.reader-range-row input[type="range"]{
+  grid-column:1/-1;width:100%;accent-color:var(--d30-gold)
+}
+.reader-align-setting{
+  padding:15px 0;border-bottom:1px solid color-mix(in srgb,var(--d30-gold) 8%,transparent)
+}
+.reader-align-choices{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:11px;
+  padding:4px;border:1px solid color-mix(in srgb,var(--d30-gold) 10%,transparent);
+  border-radius:14px;background:color-mix(in srgb,var(--d30-bg) 74%,black)
+}
+.reader-align-choices button{
+  min-height:40px;border:0;border-radius:10px;background:transparent;color:var(--d30-muted);
+  font:650 11px/1 system-ui,-apple-system,'Segoe UI',sans-serif
+}
+.reader-align-choices button.on{
+  color:#251405;
+  background:linear-gradient(180deg,var(--d30-gold2),var(--d30-gold));
+  box-shadow:0 0 13px color-mix(in srgb,var(--d30-gold) 24%,transparent)
+}
+.reader-align-choices button:disabled{opacity:.34}
+.reader-toggle-row{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0 4px
+}
+.reader-toggle-row>span{min-width:0}
+.reader-toggle-row input{flex:0 0 auto;accent-color:var(--d30-gold);width:20px;height:20px}
+.reader-toggle-row input:disabled{opacity:.35}
+.reader-text-hint{
+  margin-top:11px;padding:10px 11px;border-radius:12px;
+  color:var(--d30-muted);background:color-mix(in srgb,var(--d30-gold) 5%,transparent);
+  font-size:10.5px;line-height:1.45
+}
+
+/* ===== Paralela: interface nova, sem o chrome antigo ===== */
+body.parallel-mode .parallel-reader{
+  background:
+    radial-gradient(circle at 50% -12%,color-mix(in srgb,var(--d30-gold) 10%,transparent),transparent 34%),
+    var(--d30-bg)!important;
+}
+body.parallel-mode .parallel-grid{
+  padding:6px!important;
+  gap:6px!important;
+  background:var(--d30-bg)!important;
+}
+body.parallel-mode .parallel-pane{
+  min-width:0!important;min-height:0!important;
+  overflow:hidden!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 11%,transparent)!important;
+  border-radius:18px!important;
+  background:var(--d30-bg)!important;
+  box-shadow:0 9px 26px rgba(0,0,0,.18)!important;
+}
+body.parallel-mode .parallel-pane-head{
+  min-height:98px!important;
+  max-height:110px!important;
+  height:auto!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-rows:42px 42px!important;
+  gap:6px!important;
+  padding:7px!important;
+  background:
+    radial-gradient(circle at 0 0,color-mix(in srgb,var(--d30-gold) 7%,transparent),transparent 36%),
+    linear-gradient(180deg,color-mix(in srgb,var(--d30-panel) 90%,var(--d30-bg)),var(--d30-bg))!important;
+  border-bottom:1px solid color-mix(in srgb,var(--d30-gold) 10%,transparent)!important;
+}
+body.parallel-mode .parallel-version-row{
+  grid-column:1/-1!important;grid-row:1!important;
+  display:block!important;
+  width:100%!important;height:42px!important;
+  border-radius:12px!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 13%,transparent)!important;
+  background:color-mix(in srgb,var(--d30-panel) 74%,var(--d30-bg))!important;
+}
+body.parallel-mode .parallel-version-trigger{
+  width:100%!important;height:42px!important;
+  display:grid!important;
+  grid-template-columns:30px minmax(0,1fr) 22px!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:0 8px!important;
+  text-align:left!important;
+}
+body.parallel-mode .parallel-version-mark{
+  width:28px!important;height:28px!important;
+  display:grid!important;place-items:center!important;
+  border-radius:9px!important;
+  font-size:10px!important;font-weight:800!important;
+}
+body.parallel-mode .parallel-version-name{
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+  font:650 11px/1.1 system-ui,-apple-system,'Segoe UI',sans-serif!important
+}
+body.parallel-mode .parallel-nav{
+  grid-column:1!important;grid-row:2!important;
+  min-width:0!important;height:42px!important;
+  border-radius:12px!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 13%,transparent)!important;
+  background:color-mix(in srgb,var(--d30-panel) 70%,var(--d30-bg))!important;
+  overflow:hidden!important;
+}
+body.parallel-mode .parallel-passage-trigger{
+  width:100%!important;height:42px!important;
+  justify-content:flex-start!important;
+  padding:0 10px!important;
+  font:650 11px/1 system-ui,-apple-system,'Segoe UI',sans-serif!important;
+}
+body.parallel-mode .parallel-pane-actions{
+  grid-column:2!important;grid-row:2!important;
+  height:42px!important;min-width:76px!important;
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:2px!important;
+}
+body.parallel-mode .parallel-close-clone,
+body.parallel-mode .parallel-sync-clone,
+body.parallel-mode .parallel-swap-clone{display:none!important}
+body.parallel-mode .parallel-pane-actions .picon{
+  display:grid!important;place-items:center!important;
+  width:37px!important;height:42px!important;flex:0 0 37px!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 11%,transparent)!important;
+  border-radius:11px!important;
+  color:var(--d30-gold2)!important;
+  background:color-mix(in srgb,var(--d30-panel) 68%,var(--d30-bg))!important;
+  font:500 25px/1 Georgia,'Times New Roman',serif!important;
+  opacity:1!important;
+  visibility:visible!important;
+  transition:transform .14s ease,background .14s ease,opacity .14s ease!important;
+}
+body.parallel-mode .parallel-pane-actions .picon:active{
+  transform:scale(.91)!important;
+  background:color-mix(in srgb,var(--d30-gold) 12%,var(--d30-bg))!important
+}
+body.parallel-mode .parallel-pane-actions .picon:disabled,
+body.parallel-mode .parallel-pane-actions .picon.parallel-edge-disabled{
+  opacity:.28!important;
+  visibility:visible!important;
+}
+body.parallel-mode .parallel-text{
+  padding:16px var(--parallel-side-padding) 32px!important;
+}
+body.parallel-mode.parallel-layout-horizontal .parallel-grid{
+  gap:6px!important;
+  padding:6px!important;
+}
+body.parallel-mode.parallel-layout-vertical .parallel-grid{
+  gap:6px!important;
+  padding:6px!important;
+}
+
+/* Navegação de capítulo na paralela: feedback sem sumir com controles. */
+.parallel-pane.parallel-page-forward .parallel-text{
+  animation:doxaParallelForward .34s cubic-bezier(.18,.78,.2,1)
+}
+.parallel-pane.parallel-page-back .parallel-text{
+  animation:doxaParallelBack .34s cubic-bezier(.18,.78,.2,1)
+}
+@keyframes doxaParallelForward{
+  0%{opacity:.35;transform:translateX(10px)}
+  100%{opacity:1;transform:none}
+}
+@keyframes doxaParallelBack{
+  0%{opacity:.35;transform:translateX(-10px)}
+  100%{opacity:1;transform:none}
+}
+
+/* HUD paralelo permanece no mesmo sistema imersivo já usado pelo leitor. */
+body.parallel-mode.hud-hidden .parallel-pane-head{
+  min-height:0!important;
+  max-height:0!important;
+  grid-template-rows:0 0!important;
+  gap:0!important;
+  padding-top:0!important;padding-bottom:0!important;
+  opacity:0!important;
+}
+body.parallel-mode:not(.hud-hidden) .parallel-pane-head{
+  opacity:1!important;
+}
+
+@media(max-width:390px){
+  body.parallel-mode .parallel-grid{padding:4px!important;gap:4px!important}
+  body.parallel-mode .parallel-pane{border-radius:15px!important}
+  body.parallel-mode .parallel-pane-head{padding:5px!important;gap:5px!important}
+  body.parallel-mode .parallel-pane-actions{min-width:70px!important}
+  body.parallel-mode .parallel-pane-actions .picon{width:34px!important;flex-basis:34px!important}
+  body.parallel-mode .parallel-version-name,
+  body.parallel-mode .parallel-passage-trigger{font-size:10.2px!important}
+}
