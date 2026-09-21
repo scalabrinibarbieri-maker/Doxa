@@ -3,7 +3,10 @@ package com.doxa.android;
 import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.*;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.*;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -55,46 +58,168 @@ public final class MainActivity extends Activity {
     }
 
     private void showImport() {
+        final float density = getResources().getDisplayMetrics().density;
+        final int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        final int pad = (int) (26 * density);
+        final int progressWidth = Math.min((int) (356 * density), (int) (screenWidth * .77f));
+        final int iconSize = Math.min((int) (254 * density), (int) (screenWidth * .56f));
+        final int glowSize = Math.min((int) (372 * density), (int) (screenWidth * .80f));
+
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(Color.rgb(1, 1, 1));
+        root.setClipChildren(false);
+
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setGravity(Gravity.CENTER);
-        int pad = (int) (28 * getResources().getDisplayMetrics().density);
+        layout.setGravity(Gravity.CENTER_HORIZONTAL);
         layout.setPadding(pad, pad, pad, pad);
-        layout.setBackgroundColor(Color.rgb(246, 242, 234));
+        layout.setClipChildren(false);
+
+        FrameLayout.LayoutParams contentParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+        root.addView(layout, contentParams);
+
+        FrameLayout iconStage = new FrameLayout(this);
+        iconStage.setClipChildren(false);
+        LinearLayout.LayoutParams stageParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, iconSize);
+        layout.addView(iconStage, stageParams);
+
+        View glowView = new View(this);
+        GradientDrawable glow = new GradientDrawable();
+        glow.setShape(GradientDrawable.OVAL);
+        glow.setGradientType(GradientDrawable.RADIAL_GRADIENT);
+        glow.setGradientCenter(.5f, .5f);
+        glow.setGradientRadius(glowSize / 2f);
+        glow.setColors(new int[]{
+                Color.argb(92, 220, 146, 62),
+                Color.argb(38, 116, 67, 24),
+                Color.TRANSPARENT
+        });
+        glowView.setBackground(glow);
+        FrameLayout.LayoutParams glowParams = new FrameLayout.LayoutParams(glowSize, glowSize, Gravity.CENTER);
+        iconStage.addView(glowView, glowParams);
+
         ImageView icon = new ImageView(this);
-        icon.setImageResource(R.drawable.doxa_icon);
-        layout.addView(icon, new LinearLayout.LayoutParams(pad * 4, pad * 4));
+        icon.setAdjustViewBounds(true);
+        icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        try (InputStream in = getAssets().open("reader/doxa_splash_icon.png")) {
+            icon.setImageBitmap(BitmapFactory.decodeStream(in));
+        } catch (IOException error) {
+            icon.setImageResource(R.drawable.doxa_icon);
+        }
+        FrameLayout.LayoutParams iconParams = new FrameLayout.LayoutParams(iconSize, iconSize, Gravity.CENTER);
+        iconStage.addView(icon, iconParams);
+        icon.setAlpha(0f);
+        icon.setScaleX(.94f);
+        icon.setScaleY(.94f);
+        icon.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(900).start();
+
         TextView title = new TextView(this);
-        title.setText("Doxa"); title.setTextSize(36); title.setGravity(Gravity.CENTER);
-        title.setTextColor(Color.rgb(42, 38, 32));
-        layout.addView(title);
+        title.setText("DOXA");
+        title.setTextSize(50);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.rgb(243, 210, 161));
+        title.setTypeface(Typeface.create(Typeface.SERIF, Typeface.BOLD));
+        title.setLetterSpacing(.17f);
+        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        titleParams.topMargin = (int) (30 * density);
+        layout.addView(title, titleParams);
+
         status = new TextView(this);
-        status.setText("Prepare o Doxa uma vez e depois leia offline.\n\nBaixe o pacote oficial para trazer os textos e o interlinear para este aparelho. A importação da V29 continua disponível como recuperação.\n\nGrifos, notas e recursos já baixados em outra instalação não são transferidos automaticamente.");
-        status.setTextSize(16); status.setGravity(Gravity.CENTER);
-        status.setPadding(0, pad, 0, pad);
-        layout.addView(status);
+        status.setText("Preparando o Doxa…");
+        status.setTextSize(15);
+        status.setGravity(Gravity.CENTER);
+        status.setTextColor(Color.argb(240, 244, 234, 219));
+        status.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+        LinearLayout.LayoutParams statusParams = new LinearLayout.LayoutParams(
+                progressWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        statusParams.topMargin = (int) (28 * density);
+        layout.addView(status, statusParams);
+
         progress = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         progress.setVisibility(View.GONE);
-        layout.addView(progress, new LinearLayout.LayoutParams(-1, pad));
+        progress.setMax(1000);
+        progress.setProgress(0);
+
+        GradientDrawable track = new GradientDrawable();
+        track.setColor(Color.rgb(12, 10, 8));
+        track.setCornerRadius(999 * density);
+        track.setStroke(Math.max(1, (int) density), Color.argb(46, 214, 161, 100));
+
+        GradientDrawable fill = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{Color.rgb(156, 97, 43), Color.rgb(217, 154, 82),
+                        Color.rgb(241, 201, 143), Color.rgb(255, 240, 209)});
+        fill.setCornerRadius(999 * density);
+        ClipDrawable clippedFill = new ClipDrawable(fill, Gravity.LEFT, ClipDrawable.HORIZONTAL);
+        LayerDrawable progressDrawable = new LayerDrawable(new Drawable[]{track, clippedFill});
+        progressDrawable.setId(0, android.R.id.background);
+        progressDrawable.setId(1, android.R.id.progress);
+        progress.setProgressDrawable(progressDrawable);
+
+        LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(
+                progressWidth, Math.max((int) (8 * density), 8));
+        progressParams.topMargin = (int) (15 * density);
+        layout.addView(progress, progressParams);
 
         downloadButton = new Button(this);
         downloadButton.setText("Baixar Doxa");
+        downloadButton.setAllCaps(false);
+        downloadButton.setTextColor(Color.rgb(243, 210, 161));
+        downloadButton.setTextSize(15);
+        GradientDrawable downloadBackground = new GradientDrawable();
+        downloadBackground.setColor(Color.rgb(18, 15, 12));
+        downloadBackground.setCornerRadius(18 * density);
+        downloadBackground.setStroke(Math.max(1, (int) density), Color.argb(105, 214, 161, 100));
+        downloadButton.setBackground(downloadBackground);
         downloadButton.setOnClickListener(v -> installRemote());
-        layout.addView(downloadButton);
+        LinearLayout.LayoutParams downloadParams = new LinearLayout.LayoutParams(
+                progressWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        downloadParams.topMargin = (int) (20 * density);
+        layout.addView(downloadButton, downloadParams);
 
         importButton = new Button(this);
         importButton.setText("Selecionar minha V29");
+        importButton.setAllCaps(false);
+        importButton.setTextColor(Color.argb(215, 244, 234, 219));
+        importButton.setTextSize(14);
+        GradientDrawable importBackground = new GradientDrawable();
+        importBackground.setColor(Color.rgb(10, 9, 8));
+        importBackground.setCornerRadius(18 * density);
+        importBackground.setStroke(Math.max(1, (int) density), Color.argb(55, 214, 161, 100));
+        importButton.setBackground(importBackground);
         importButton.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("*/*")
                     .addCategory(Intent.CATEGORY_OPENABLE);
             try { startActivityForResult(intent, IMPORT); }
             catch (ActivityNotFoundException e) { message("Não foi possível abrir o seletor de arquivos."); }
         });
-        layout.addView(importButton);
-        ScrollView scroll = new ScrollView(this); scroll.setFillViewport(true); scroll.addView(layout);
-        setContentView(scroll);
-    }
+        LinearLayout.LayoutParams importParams = new LinearLayout.LayoutParams(
+                progressWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        importParams.topMargin = (int) (10 * density);
+        layout.addView(importButton, importParams);
 
+        TextView tagline = new TextView(this);
+        tagline.setText("A PALAVRA TRANSFORMA");
+        tagline.setTextSize(11);
+        tagline.setGravity(Gravity.CENTER);
+        tagline.setTextColor(Color.argb(220, 204, 164, 118));
+        tagline.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+        tagline.setLetterSpacing(.34f);
+        FrameLayout.LayoutParams taglineParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+        taglineParams.leftMargin = pad;
+        taglineParams.rightMargin = pad;
+        taglineParams.bottomMargin = (int) (44 * density);
+        root.addView(tagline, taglineParams);
+
+        setContentView(root);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    }
     private void installRemote() {
         if (importing) return;
         importing = true;
@@ -204,7 +329,7 @@ public final class MainActivity extends Activity {
     @SuppressLint("SetJavaScriptEnabled")
     private void showReader(boolean modular) {
         web = new WebView(this);
-        web.setBackgroundColor(Color.rgb(246, 242, 234));
+        web.setBackgroundColor(Color.rgb(1, 1, 1));
         WebSettings settings = web.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
