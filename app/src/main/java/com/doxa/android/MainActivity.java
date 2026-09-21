@@ -34,6 +34,7 @@ public final class MainActivity extends Activity {
     private ValueCallback<Uri[]> fileCallback;
     private volatile boolean destroyed;
     private boolean importing, updateCheckStarted;
+    private long lastBackPressAt;
     // All export state below is confined to the single IO executor.
     private File exportFile;
     private OutputStream exportStream;
@@ -604,9 +605,58 @@ public final class MainActivity extends Activity {
     @Override public void onBackPressed() {
         if (importing) { message("Aguarde a preparação terminar."); return; }
         if (web == null) { super.onBackPressed(); return; }
-        web.evaluateJavascript("(()=>{const s=document.querySelector('#studyScreen.on,#v20Advanced.on,#verseActions.on');if(s){document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));return true}return false})()", value -> {
-            if (!destroyed && !"true".equals(value)) new AlertDialog.Builder(this).setMessage("Fechar o Doxa?")
-                    .setNegativeButton("Continuar lendo", null).setPositiveButton("Fechar", (d,w) -> finish()).show();
+
+        final String backScript =
+                "(()=>{" +
+                "const on=id=>document.getElementById(id)?.classList.contains('on');" +
+                "const click=id=>{const e=document.getElementById(id);if(!e)return false;e.click();return true};" +
+
+                "if(on('verseActions')||on('studyScreen')||on('v20Advanced')){" +
+                "document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));return true}" +
+
+                "if(on('doxa31HelpSheet')){click('doxa31HelpClose');return true}" +
+                "if(on('doxa30ThemeOverlay')){document.getElementById('doxa30ThemeOverlay').classList.remove('on');return true}" +
+                "if(on('doxa30MoreOverlay')){document.getElementById('doxa30MoreOverlay').classList.remove('on');return true}" +
+
+                "if(on('strongSheet')){click('strongClose');return true}" +
+                "if(on('xrefSheet')){click('xrefClose');return true}" +
+                "if(on('versionPicker')){click('versionPickerClose');return true}" +
+
+                "if(on('premiumPicker')){" +
+                "const stage=document.querySelector('[data-picker-stage].on')?.dataset.pickerStage;" +
+                "if(stage&&stage!=='book'){click('pickerBack')}else{click('pickerClose')}return true}" +
+
+                "const notes=document.getElementById('toolsNotesView');" +
+                "if(notes&&!notes.hidden){click('toolsNotesBack');return true}" +
+
+                "if(document.body.classList.contains('parallel-mode')){click('parallelExit');return true}" +
+
+                "const active=document.querySelector('.panel.on');" +
+                "if(active&&active.id!=='p-ler'){try{openPanel('ler');return true}catch(e){}}" +
+
+                "return false" +
+                "})()";
+
+        web.evaluateJavascript(backScript, value -> {
+            if (destroyed) return;
+
+            if ("true".equals(value)) {
+                lastBackPressAt = 0L;
+                return;
+            }
+
+            long now = android.os.SystemClock.elapsedRealtime();
+            if (now - lastBackPressAt <= 1800L) {
+                lastBackPressAt = 0L;
+                new AlertDialog.Builder(this)
+                        .setMessage("Fechar o Doxa?")
+                        .setNegativeButton("Continuar lendo", null)
+                        .setPositiveButton("Fechar", (d,w) -> finish())
+                        .show();
+            } else {
+                lastBackPressAt = now;
+                Toast.makeText(this, "Pressione Voltar novamente para sair", Toast.LENGTH_SHORT).show();
+            }
         });
     }
     @Override protected void onPause() { if (web != null) web.onPause(); super.onPause(); }
