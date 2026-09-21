@@ -26,7 +26,7 @@ public final class MainActivity extends Activity {
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private WebView web;
     private TextView status;
-    private Button importButton;
+    private Button downloadButton, importButton;
     private ProgressBar progress;
     private ValueCallback<Uri[]> fileCallback;
     private volatile boolean destroyed;
@@ -39,7 +39,8 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
-        if (new File(getFilesDir(), "reader/.ready").isFile()) prepareReader();
+        if (RemotePackageInstaller.isReady(getFilesDir())) showReader(true);
+        else if (new File(getFilesDir(), "reader/.ready").isFile()) prepareReader();
         else showImport();
     }
 
@@ -58,13 +59,19 @@ public final class MainActivity extends Activity {
         title.setTextColor(Color.rgb(42, 38, 32));
         layout.addView(title);
         status = new TextView(this);
-        status.setText("Seu leitor, preservado.\n\nSelecione Doxa_Premium_V29.apk para trazer os textos e as ferramentas para esta instalação. O arquivo fica somente no seu celular.\n\nGrifos, notas e recursos já baixados na instalação antiga não são transferidos pelo APK.");
+        status.setText("Prepare o Doxa uma vez e depois leia offline.\n\nBaixe o pacote oficial para trazer os textos e o interlinear para este aparelho. A importação da V29 continua disponível como recuperação.\n\nGrifos, notas e recursos já baixados em outra instalação não são transferidos automaticamente.");
         status.setTextSize(16); status.setGravity(Gravity.CENTER);
         status.setPadding(0, pad, 0, pad);
         layout.addView(status);
         progress = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         progress.setVisibility(View.GONE);
         layout.addView(progress, new LinearLayout.LayoutParams(-1, pad));
+
+        downloadButton = new Button(this);
+        downloadButton.setText("Baixar Doxa");
+        downloadButton.setOnClickListener(v -> installRemote());
+        layout.addView(downloadButton);
+
         importButton = new Button(this);
         importButton.setText("Selecionar minha V29");
         importButton.setOnClickListener(v -> {
@@ -78,9 +85,52 @@ public final class MainActivity extends Activity {
         setContentView(scroll);
     }
 
+    private void installRemote() {
+        if (importing) return;
+        importing = true;
+        downloadButton.setEnabled(false);
+        importButton.setEnabled(false);
+        progress.setVisibility(View.VISIBLE);
+        progress.setIndeterminate(false);
+        progress.setMax(1000);
+        progress.setProgress(0);
+        status.setText("Conectando ao servidor do Doxa…");
+        io.execute(() -> {
+            try {
+                RemotePackageInstaller.install(this, new RemotePackageInstaller.Progress() {
+                    @Override public void onStatus(String text) {
+                        runOnUiThread(() -> { if (!destroyed && status != null) status.setText(text); });
+                    }
+                    @Override public void onBytes(long done, long total) {
+                        if (total <= 0) return;
+                        int value = (int) Math.min(1000, (done * 1000L) / total);
+                        runOnUiThread(() -> { if (!destroyed && progress != null) progress.setProgress(value); });
+                    }
+                });
+                runOnUiThread(() -> {
+                    importing = false;
+                    if (!destroyed) showReader(true);
+                });
+            } catch (Exception error) {
+                runOnUiThread(() -> {
+                    importing = false;
+                    if (!destroyed) {
+                        status.setText("Não foi possível baixar o pacote.\n\n" + error.getMessage() + "\n\nVocê pode tentar novamente ou usar sua V29.");
+                        downloadButton.setEnabled(true);
+                        importButton.setEnabled(true);
+                        progress.setVisibility(View.GONE);
+                    }
+                });
+            }
+        });
+    }
+
     private void importV29(Uri uri) {
         if (importing) return;
-        importing = true; importButton.setEnabled(false); progress.setVisibility(View.VISIBLE);
+        importing = true;
+        downloadButton.setEnabled(false);
+        importButton.setEnabled(false);
+        progress.setVisibility(View.VISIBLE);
         status.setText("Conferindo e importando a V29… Mantenha o aplicativo aberto.");
         io.execute(() -> {
             File stage = new File(getFilesDir(), "reader-staging");
@@ -103,7 +153,9 @@ public final class MainActivity extends Activity {
                     importing = false;
                     if (!destroyed) {
                         status.setText("Não foi possível importar.\n\n" + error.getMessage());
-                        importButton.setEnabled(true); progress.setVisibility(View.GONE);
+                        downloadButton.setEnabled(true);
+                        importButton.setEnabled(true);
+                        progress.setVisibility(View.GONE);
                     }
                 });
             }
@@ -113,6 +165,7 @@ public final class MainActivity extends Activity {
     private void prepareReader() {
         showImport();
         importing = true;
+        downloadButton.setVisibility(View.GONE);
         importButton.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         progress.setIndeterminate(true);
@@ -151,8 +204,12 @@ public final class MainActivity extends Activity {
         WebViewAssetLoader.Builder builder = new WebViewAssetLoader.Builder();
         if (modular) {
             WebViewAssetLoader.AssetsPathHandler bundled = new WebViewAssetLoader.AssetsPathHandler(this);
-            builder.addPathHandler("/assets/data/", new WebViewAssetLoader.InternalStoragePathHandler(this, new File(getFilesDir(), "reader-data-v1")))
-                    .addPathHandler("/assets/interlinear/", new WebViewAssetLoader.InternalStoragePathHandler(this, new File(getFilesDir(), "reader/interlinear")))
+            boolean remote = RemotePackageInstaller.isReady(getFilesDir());
+            File remoteRoot = RemotePackageInstaller.root(getFilesDir());
+            File dataRoot = remote ? new File(remoteRoot, "data") : new File(getFilesDir(), "reader-data-v1");
+            File interlinearRoot = remote ? new File(remoteRoot, "interlinear") : new File(getFilesDir(), "reader/interlinear");
+            builder.addPathHandler("/assets/data/", new WebViewAssetLoader.InternalStoragePathHandler(this, dataRoot))
+                    .addPathHandler("/assets/interlinear/", new WebViewAssetLoader.InternalStoragePathHandler(this, interlinearRoot))
                     .addPathHandler("/assets/", path -> bundled.handle("reader/" + path));
         } else {
             builder.addPathHandler("/assets/", new WebViewAssetLoader.InternalStoragePathHandler(this, new File(getFilesDir(), "reader")));
@@ -319,7 +376,7 @@ public final class MainActivity extends Activity {
     }
     private void message(String text) { if (!destroyed) Toast.makeText(this, text, Toast.LENGTH_LONG).show(); }
     @Override public void onBackPressed() {
-        if (importing) { message("Aguarde a importação terminar."); return; }
+        if (importing) { message("Aguarde a preparação terminar."); return; }
         if (web == null) { super.onBackPressed(); return; }
         web.evaluateJavascript("(()=>{const s=document.querySelector('#studyScreen.on,#v20Advanced.on,#verseActions.on');if(s){document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));return true}return false})()", value -> {
             if (!destroyed && !"true".equals(value)) new AlertDialog.Builder(this).setMessage("Fechar o Doxa?")
