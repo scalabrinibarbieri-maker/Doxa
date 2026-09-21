@@ -15,7 +15,10 @@ android {
         targetSdk 29
 
         versionCode (1000 + Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1'))
-        versionName '30.2'
+        versionName '30.3'
+
+        buildConfigField 'String', 'DOXA_SUPABASE_URL', '"https://fxruwzaaiecqsxkuxmsp.supabase.co"'
+        buildConfigField 'String', 'DOXA_SUPABASE_PUBLISHABLE_KEY', '"sb_publishable_aDmA8htcNCaC0IfGLpT5Hg_lx7IOceG"'
     }
 
     signingConfigs {
