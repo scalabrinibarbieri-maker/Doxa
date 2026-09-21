@@ -12,7 +12,7 @@ const VERSION_META={
 };
 let mode='almeida',hIdx=0,focusVerse=null,store={},storageMode='memory';
 let positions={almeida:{b:0,c:1},wlc:{b:0,c:1},tr:{b:0,c:1}};
-let prefs={mode:'almeida',hIdx:0,positions:null,showSup:true,rubric:true,size:18.5,readerFont:'editorial'};
+let prefs={mode:'almeida',hIdx:0,positions:null,showSup:true,rubric:true,size:18.5,textMargin:26,textAlign:'justify',showVerseNumbers:true,readerFont:'editorial'};
 const KEY_MARKS='bereshit:marks:v3',KEY_PREFS='bereshit:prefs:v4',KEY_PARALLEL='bereshit:parallel:v1',KEY_PARALLEL_LAYOUT='bereshit:parallel-layout:v2',KEY_APPEARANCE='bereshit:appearance:v1';
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function norm(s){return String(s).normalize('NFD').replace(/\p{M}+/gu,'').toLowerCase()}
@@ -29,6 +29,44 @@ async function setStored(key,value){try{if(window.storage&&typeof window.storage
 async function load(){const m=await getStored(KEY_MARKS),p=await getStored(KEY_PREFS);try{store=m?JSON.parse(m):{}}catch(e){store={}}try{prefs=Object.assign(prefs,p?JSON.parse(p):{})}catch(e){}if(prefs.mode==='almeida-1911-atual')prefs.mode='almeida';if(prefs.mode==='hyper'||CORPORA[prefs.mode])mode=prefs.mode;else mode='almeida';hIdx=Math.max(0,Math.min(HYPER_BLOCKS.length-1,Number(prefs.hIdx)||0));if(prefs.positions)positions=Object.assign(positions,prefs.positions);for(const k of Object.keys(CORPORA)){const cp=CORPORA[k],pp=positions[k]||{b:0,c:1};pp.b=Math.max(0,Math.min(cp.books.length-1,Number(pp.b)||0));const chapters=cp.books[pp.b].chapters,nums=chapters.map(x=>Number(x.chapter));pp.c=nums.includes(Number(pp.c))?Number(pp.c):nums[0];positions[k]=pp}}
 async function saveMarks(){return setStored(KEY_MARKS,JSON.stringify(store))}
 async function savePrefs(){prefs.mode=mode;prefs.hIdx=hIdx;prefs.positions=positions;return setStored(KEY_PREFS,JSON.stringify(prefs))}
+function applyTextPrefs(save=false){
+  const size=Math.max(14,Math.min(28,Number(prefs.size)||18.5));
+  const margin=Math.max(8,Math.min(42,Number(prefs.textMargin)||26));
+  const align=['left','justify','center'].includes(prefs.textAlign)?prefs.textAlign:'justify';
+  const showNumbers=prefs.showVerseNumbers!==false;
+  prefs.size=size;prefs.textMargin=margin;prefs.textAlign=align;prefs.showVerseNumbers=showNumbers;
+
+  document.documentElement.style.setProperty('--reader-font-size',size+'px');
+  document.documentElement.style.setProperty('--parallel-font-size',size+'px');
+  document.documentElement.style.setProperty('--reader-side-padding',margin+'px');
+  document.documentElement.style.setProperty('--parallel-side-padding',Math.max(7,Math.round(margin*.55))+'px');
+
+  document.body.dataset.readerAlign=align;
+  document.body.classList.toggle('reader-hide-verse-numbers',!showNumbers);
+  document.body.classList.toggle('reader-hyper-active',mode==='hyper');
+
+  const sizeEl=document.getElementById('swSize');
+  const sizeOut=document.getElementById('swSizeValue');
+  const marginEl=document.getElementById('swTextMargin');
+  const marginOut=document.getElementById('swTextMarginValue');
+  const verseEl=document.getElementById('swVerseNumbers');
+  if(sizeEl&&Number(sizeEl.value)!==size)sizeEl.value=size;
+  if(sizeOut)sizeOut.textContent=String(size).replace('.',',');
+  if(marginEl&&Number(marginEl.value)!==margin)marginEl.value=margin;
+  if(marginOut)marginOut.textContent=margin+' px';
+  if(verseEl){verseEl.checked=showNumbers;verseEl.disabled=mode==='hyper'}
+
+  document.querySelectorAll('[data-reader-align]').forEach(b=>{
+    b.classList.toggle('on',b.dataset.readerAlign===align);
+    b.disabled=mode==='hyper';
+  });
+  const hint=document.getElementById('readerTextHint');
+  if(hint)hint.textContent=mode==='hyper'
+    ?'A Hiperliteral está ativa: alinhamento e números permanecem na formatação editorial própria.'
+    :'Alinhamento e números também acompanham a leitura paralela.';
+  if(save)savePrefs();
+}
+
 function updateStorageNote(){const el=document.getElementById('storageNote');el.textContent=storageMode==='memory'?'O navegador bloqueou o armazenamento permanente. As alterações desta abertura ficam apenas na memória.':'Marcações, posição de leitura e ajustes ficam salvos neste aparelho/navegador. Use Exportar marcações para backup.'}
 
 
@@ -215,6 +253,65 @@ function applyParallelLayout(){
     b.title=horizontal?'Mudar para vertical':'Mudar para horizontal';
   }
 }
+
+function parallelStepTarget(side,delta){
+  const st=sanitizeParallelState(side),step=Number(delta)>0?1:-1;
+  if(st.mode==='hyper'){
+    const n=st.hIdx+step;
+    if(n<0||n>=HYPER_BLOCKS.length)return null;
+    const r=hyperRange(n);
+    return{book:'Gen',chapter:Number(r.sc)||1,hIdx:n,hyper:true};
+  }
+  const src=parallelCanonical(side);
+  let navCorpus=CORPORA.almeida;
+  let bi=navCorpus?.books?.findIndex(b=>b.book===src.book)??-1;
+  if(bi<0){
+    navCorpus=CORPORA[st.mode];
+    bi=navCorpus?.books?.findIndex(b=>b.book===src.book)??-1;
+  }
+  if(!navCorpus||bi<0)return null;
+  const b=navCorpus.books[bi];
+  let ci=b.chapters.findIndex(c=>Number(c.chapter)===Number(src.chapter));
+  if(ci<0)ci=0;
+  if(step>0){
+    if(ci<b.chapters.length-1)return{book:b.book,chapter:Number(b.chapters[ci+1].chapter)};
+    if(bi<navCorpus.books.length-1){
+      const nb=navCorpus.books[bi+1];
+      return{book:nb.book,chapter:Number(nb.chapters[0].chapter)};
+    }
+  }else{
+    if(ci>0)return{book:b.book,chapter:Number(b.chapters[ci-1].chapter)};
+    if(bi>0){
+      const pb=navCorpus.books[bi-1];
+      return{book:pb.book,chapter:Number(pb.chapters.at(-1).chapter)};
+    }
+  }
+  return null;
+}
+function refreshParallelNavButtons(){
+  if(!parallelOn)return;
+  for(const side of ['A','B']){
+    const prev=document.getElementById('pPrev'+side),next=document.getElementById('pNext'+side);
+    if(!prev||!next)continue;
+    if(parallelSync){
+      prev.disabled=!parallelStepTarget(side,-1);
+      next.disabled=!parallelStepTarget(side,1);
+    }
+    prev.classList.toggle('parallel-edge-disabled',prev.disabled);
+    next.classList.toggle('parallel-edge-disabled',next.disabled);
+  }
+}
+function animateParallelPage(side,delta){
+  const sides=parallelSync?['A','B']:[side];
+  for(const s of sides){
+    const pane=document.querySelector('.parallel-pane[data-side="'+s+'"]');
+    if(!pane)continue;
+    pane.classList.remove('parallel-page-forward','parallel-page-back');
+    void pane.offsetWidth;
+    pane.classList.add(Number(delta)>0?'parallel-page-forward':'parallel-page-back');
+    setTimeout(()=>pane.classList.remove('parallel-page-forward','parallel-page-back'),360);
+  }
+}
 function renderParallel(){
   if(!parallelOn)return;
   applyParallelLayout();
@@ -234,6 +331,7 @@ function renderParallel(){
   document.getElementById('hdrVersion').textContent=parallelSync?'Leitura paralela · sincronizada':'Leitura paralela · independente';
   document.getElementById('hdrPage').textContent=parallelSync?'↔':'∥';
   document.getElementById('progressFill').style.width='100%';
+  refreshParallelNavButtons();
   saveParallel();
 }
 function singleVisibleVerse(){if(mode==='hyper')return hyperRange(hIdx).sv;const body=document.getElementById('textBody'),verses=[...body.querySelectorAll('.verse[id^="v"]')];if(!verses.length)return focusVerse||1;const header=document.querySelector('body>header'),targetY=(header?header.getBoundingClientRect().bottom:0)+8;let best=null,dist=Infinity;for(const el of verses){const r=el.getBoundingClientRect();if(r.bottom<targetY)continue;if(r.top>window.innerHeight&&best)break;const d=Math.abs(r.top-targetY);if(d<dist){best=el;dist=d}}if(!best)best=verses.find(el=>el.getBoundingClientRect().bottom>0)||verses[0];const m=(best.id||'').match(/^v(\d+)$/);return m?Number(m[1]):(focusVerse||1)}
@@ -244,18 +342,68 @@ function setParallelStateAt(side,targetMode,anchor){const st=parallelState[side]
 function alignParallelToSingle(anchor){setParallelStateAt('A',anchor.mode,anchor);const preferred=parallelState.B?.mode||'wlc',second=companionModeFor(anchor,anchor.mode,preferred);setParallelStateAt('B',second,anchor);if(parallelSync)syncParallelFrom('A',{render:false})}
 function scrollParallelToVerse(verse){verse=Number(verse)||1;parallelScrollLock=true;for(const side of ['A','B']){const box=document.getElementById('pText'+side),el=box?.querySelector('.verse[data-v="'+verse+'"]');if(!box||!el)continue;const br=box.getBoundingClientRect(),er=el.getBoundingClientRect();box.scrollTop+=er.top-br.top-6}clearTimeout(parallelScrollTimer);parallelScrollTimer=setTimeout(()=>{parallelScrollLock=false},120)}
 function setParallelMode(on){const entering=!!on&&!parallelOn,anchor=entering?currentSingleAnchor():null;parallelOn=!!on;document.body.classList.toggle('parallel-mode',parallelOn);document.getElementById('singleReader').hidden=parallelOn;document.getElementById('parallelReader').hidden=!parallelOn;document.getElementById('parallelToggle').setAttribute('aria-pressed',String(parallelOn));document.getElementById('parallelToggleText').textContent=parallelOn?'Uma Bíblia':'Leitura paralela';if(parallelOn){if(entering&&anchor)alignParallelToSingle(anchor);else if(parallelSync)syncParallelFrom('A',{render:false});renderParallel();if(entering&&anchor)setTimeout(()=>scrollParallelToVerse(anchor.verse),30)}else{renderReader()}saveParallel()}
-function parallelMove(side,delta){const st=sanitizeParallelState(side);if(st.mode==='hyper'){const n=st.hIdx+delta;if(n<0||n>=HYPER_BLOCKS.length)return;st.hIdx=n;const r=hyperRange(n);st.book='Gen';st.chapter=r.sc}else{const cp=CORPORA[st.mode],bi=cp.books.findIndex(b=>b.book===st.book),b=cp.books[bi],ci=b.chapters.findIndex(c=>Number(c.chapter)===Number(st.chapter));if(delta>0){if(ci<b.chapters.length-1)st.chapter=Number(b.chapters[ci+1].chapter);else if(bi<cp.books.length-1){st.book=cp.books[bi+1].book;st.chapter=Number(cp.books[bi+1].chapters[0].chapter)}}else{if(ci>0)st.chapter=Number(b.chapters[ci-1].chapter);else if(bi>0){st.book=cp.books[bi-1].book;st.chapter=Number(cp.books[bi-1].chapters.at(-1).chapter)}}}if(parallelSync)syncParallelFrom(side,{render:false});renderParallel();document.getElementById('pText'+side).scrollTop=0;if(parallelSync){const other=side==='A'?'B':'A';document.getElementById('pText'+other).scrollTop=0}}
+function parallelMove(side,delta){
+  delta=Number(delta)>0?1:-1;
+  const st=sanitizeParallelState(side);
+
+  /* Sincronizado: a navegação usa uma linha bíblica completa.
+     Assim WLC em Malaquias avança para Mateus e o painel original troca
+     automaticamente para TR; voltando ao AT, TR volta para WLC. */
+  if(parallelSync){
+    const target=parallelStepTarget(side,delta);
+    if(!target)return;
+    if(target.hyper&&st.mode==='hyper'){
+      st.hIdx=target.hIdx;st.book='Gen';st.chapter=target.chapter;
+      syncParallelFrom(side,{render:false});
+    }else{
+      adaptParallelTargetToPassage('A',target.book,target.chapter);
+      adaptParallelTargetToPassage('B',target.book,target.chapter);
+      setParallelStatus('Sincronizado · '+(delta>0?'próximo':'anterior')+' capítulo.');
+    }
+    renderParallel();
+    requestAnimationFrame(()=>{
+      document.getElementById('pTextA').scrollTop=0;
+      document.getElementById('pTextB').scrollTop=0;
+      animateParallelPage(side,delta);
+    });
+    return;
+  }
+
+  if(st.mode==='hyper'){
+    const n=st.hIdx+delta;
+    if(n<0||n>=HYPER_BLOCKS.length)return;
+    st.hIdx=n;const r=hyperRange(n);st.book='Gen';st.chapter=r.sc;
+  }else{
+    const cp=CORPORA[st.mode],bi=cp.books.findIndex(b=>b.book===st.book);
+    if(bi<0)return;
+    const b=cp.books[bi],ci=b.chapters.findIndex(c=>Number(c.chapter)===Number(st.chapter));
+    if(delta>0){
+      if(ci>=0&&ci<b.chapters.length-1)st.chapter=Number(b.chapters[ci+1].chapter);
+      else if(bi<cp.books.length-1){st.book=cp.books[bi+1].book;st.chapter=Number(cp.books[bi+1].chapters[0].chapter)}
+      else return;
+    }else{
+      if(ci>0)st.chapter=Number(b.chapters[ci-1].chapter);
+      else if(bi>0){st.book=cp.books[bi-1].book;st.chapter=Number(cp.books[bi-1].chapters.at(-1).chapter)}
+      else return;
+    }
+  }
+  renderParallel();
+  requestAnimationFrame(()=>{
+    document.getElementById('pText'+side).scrollTop=0;
+    animateParallelPage(side,delta);
+  });
+}
 function parallelVisibleVerse(side){const box=document.getElementById('pText'+side),verses=[...box.querySelectorAll('.verse[data-v]')];if(!verses.length)return null;const br=box.getBoundingClientRect();let best=verses[0],dist=Infinity;for(const v of verses){const r=v.getBoundingClientRect(),d=Math.abs(r.top-(br.top+6));if(d<dist){best=v;dist=d}if(r.top>br.bottom)break}return Number(best.dataset.v)}
 function syncParallelScroll(sourceSide){if(!parallelOn||!parallelSync||parallelScrollLock)return;const targetSide=sourceSide==='A'?'B':'A',a=parallelCanonical(sourceSide),b=parallelCanonical(targetSide);if(a.book!==b.book||Number(a.chapter)!==Number(b.chapter))return;const verse=parallelVisibleVerse(sourceSide);if(!verse)return;const target=document.getElementById('pText'+targetSide),el=target.querySelector('.verse[data-v="'+verse+'"]');if(!el)return;parallelScrollLock=true;const tr=target.getBoundingClientRect(),er=el.getBoundingClientRect();target.scrollTop+=er.top-tr.top-6;clearTimeout(parallelScrollTimer);parallelScrollTimer=setTimeout(()=>parallelScrollLock=false,80)}
 function flashParallelPane(side){const p=document.querySelector('.parallel-pane[data-side="'+side+'"]');if(!p)return;p.classList.remove('parallel-sync-flash');void p.offsetWidth;p.classList.add('parallel-sync-flash')}
-function bindParallel(){document.getElementById('parallelToggle').onclick=()=>setParallelMode(!parallelOn);document.getElementById('parallelExit').onclick=()=>setParallelMode(false);document.getElementById('parallelOrientation').onclick=()=>{parallelLayout=parallelLayout==='horizontal'?'vertical':'horizontal';applyParallelLayout();saveParallel()};document.getElementById('parallelGlobalSync').onclick=()=>{const cb=document.getElementById('parallelSync');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change',{bubbles:true}))};document.getElementById('parallelSync').onchange=e=>{parallelSync=e.target.checked;if(parallelSync){syncParallelFrom('A',{render:false});setParallelStatus('Sincronizado · livro, capítulo e rolagem por versículo.')}else setParallelStatus('Independente · cada Bíblia navega e rola separadamente.');renderParallel()};document.getElementById('parallelSwap').onclick=()=>{const a=cloneParallelState(parallelState.A);parallelState.A=cloneParallelState(parallelState.B);parallelState.B=a;renderParallel()};for(const side of ['A','B']){document.getElementById('pVersion'+side).onchange=e=>{const st=parallelState[side],old=parallelCanonical(side);st.mode=e.target.value;if(st.mode==='hyper'){if(old.book==='Gen'&&old.chapter<=9)st.hIdx=hyperBlockForChapter(old.chapter);else st.hIdx=0}else{const cp=CORPORA[st.mode],bi=cp.books.findIndex(b=>b.book===old.book);if(bi>=0){st.book=old.book;const nums=cp.books[bi].chapters.map(c=>Number(c.chapter));st.chapter=nums.includes(old.chapter)?old.chapter:nums[0]}else{st.book=cp.books[0].book;st.chapter=Number(cp.books[0].chapters[0].chapter)}}if(parallelSync)syncParallelFrom(side,{render:false});renderParallel()};document.getElementById('pBook'+side).onchange=e=>{const st=parallelState[side];if(st.mode==='hyper'){st.hIdx=+e.target.value;const r=hyperRange(st.hIdx);st.book='Gen';st.chapter=r.sc}else{st.book=e.target.value;const cp=CORPORA[st.mode],b=cp.books.find(x=>x.book===st.book);st.chapter=Number(b.chapters[0].chapter)}if(parallelSync)syncParallelFrom(side,{render:false});renderParallel()};document.getElementById('pChapter'+side).onchange=e=>{parallelState[side].chapter=+e.target.value;if(parallelSync)syncParallelFrom(side,{render:false});renderParallel()};document.getElementById('pPrev'+side).onclick=()=>parallelMove(side,-1);document.getElementById('pNext'+side).onclick=()=>parallelMove(side,1);const txt=document.getElementById('pText'+side);txt.addEventListener('scroll',()=>requestAnimationFrame(()=>syncParallelScroll(side)),{passive:true});txt.addEventListener('click',e=>{const w=e.target.closest('.oshb-word');if(w)openStrong(w)});txt.addEventListener('keydown',e=>{const w=e.target.closest('.oshb-word');if(w&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openStrong(w)}})}document.querySelectorAll('.parallel-close-clone').forEach(b=>b.onclick=()=>setParallelMode(false));document.querySelectorAll('.parallel-sync-clone').forEach(b=>b.onclick=()=>{const cb=document.getElementById('parallelSync');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change',{bubbles:true}))});document.querySelectorAll('.parallel-swap-clone').forEach(b=>b.onclick=()=>document.getElementById('parallelSwap').click())}
+function bindParallel(){document.getElementById('parallelToggle').onclick=()=>setParallelMode(!parallelOn);document.getElementById('parallelExit').onclick=()=>setParallelMode(false);document.getElementById('parallelOrientation').onclick=()=>{parallelLayout=parallelLayout==='horizontal'?'vertical':'horizontal';applyParallelLayout();saveParallel()};document.getElementById('parallelGlobalSync').onclick=()=>{const cb=document.getElementById('parallelSync');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change',{bubbles:true}))};document.getElementById('parallelSync').onchange=e=>{parallelSync=e.target.checked;if(parallelSync){syncParallelFrom('A',{render:false});setParallelStatus('Sincronizado · livro, capítulo e rolagem por versículo.')}else setParallelStatus('Independente · cada Bíblia navega e rola separadamente.');renderParallel()};document.getElementById('parallelSwap').onclick=()=>{const a=cloneParallelState(parallelState.A);parallelState.A=cloneParallelState(parallelState.B);parallelState.B=a;renderParallel()};for(const side of ['A','B']){document.getElementById('pVersion'+side).onchange=e=>{const st=parallelState[side],old=parallelCanonical(side);st.mode=e.target.value;if(st.mode==='hyper'){if(old.book==='Gen'&&old.chapter<=9)st.hIdx=hyperBlockForChapter(old.chapter);else st.hIdx=0}else{const cp=CORPORA[st.mode],bi=cp.books.findIndex(b=>b.book===old.book);if(bi>=0){st.book=old.book;const nums=cp.books[bi].chapters.map(c=>Number(c.chapter));st.chapter=nums.includes(old.chapter)?old.chapter:nums[0]}else{st.book=cp.books[0].book;st.chapter=Number(cp.books[0].chapters[0].chapter)}}if(parallelSync)syncParallelFrom(side,{render:false});renderParallel()};document.getElementById('pBook'+side).onchange=e=>{const st=parallelState[side];if(st.mode==='hyper'){st.hIdx=+e.target.value;const r=hyperRange(st.hIdx);st.book='Gen';st.chapter=r.sc}else{st.book=e.target.value;const cp=CORPORA[st.mode],b=cp.books.find(x=>x.book===st.book);st.chapter=Number(b.chapters[0].chapter)}if(parallelSync)syncParallelFrom(side,{render:false});renderParallel()};document.getElementById('pChapter'+side).onchange=e=>{parallelState[side].chapter=+e.target.value;if(parallelSync)syncParallelFrom(side,{render:false});renderParallel()};document.getElementById('pPrev'+side).onclick=e=>{e.preventDefault();e.stopPropagation();parallelMove(side,-1)};document.getElementById('pNext'+side).onclick=e=>{e.preventDefault();e.stopPropagation();parallelMove(side,1)};const txt=document.getElementById('pText'+side);txt.addEventListener('scroll',()=>requestAnimationFrame(()=>syncParallelScroll(side)),{passive:true});txt.addEventListener('click',e=>{const w=e.target.closest('.oshb-word');if(w)openStrong(w)});txt.addEventListener('keydown',e=>{const w=e.target.closest('.oshb-word');if(w&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openStrong(w)}})}document.querySelectorAll('.parallel-close-clone').forEach(b=>b.onclick=()=>setParallelMode(false));document.querySelectorAll('.parallel-sync-clone').forEach(b=>b.onclick=()=>{const cb=document.getElementById('parallelSync');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change',{bubbles:true}))});document.querySelectorAll('.parallel-swap-clone').forEach(b=>b.onclick=()=>document.getElementById('parallelSwap').click())}
 
 function buildBookOptions(){const cp=corpus(),p=pos();document.getElementById('bookSelect').innerHTML=cp.books.map((b,i)=>'<option value="'+i+'">'+esc(bookName(b))+'</option>').join('');document.getElementById('bookSelect').value=String(p.b)}
 function buildChapterOptions(){const cp=corpus(),p=pos(),b=cp.books[p.b];document.getElementById('chapterSelect').innerHTML=b.chapters.map(c=>'<option value="'+c.chapter+'">Capítulo '+c.chapter+'</option>').join('');document.getElementById('chapterSelect').value=String(p.c)}
-function renderReader(){const body=document.getElementById('textBody'),opening=document.getElementById('opening'),nav=document.getElementById('navgrid'),book=document.getElementById('bookSelect'),chap=document.getElementById('chapterSelect');document.getElementById('versionSelect').value=mode;body.classList.toggle('hebrew',mode==='wlc');body.setAttribute('dir',mode==='wlc'?'rtl':'ltr');document.body.classList.toggle('wlc-mode',mode==='wlc');
+function renderReader(){const body=document.getElementById('textBody'),opening=document.getElementById('opening'),nav=document.getElementById('navgrid'),book=document.getElementById('bookSelect'),chap=document.getElementById('chapterSelect');document.body.classList.toggle('reader-hyper-active',mode==='hyper');document.getElementById('versionSelect').value=mode;body.classList.toggle('hebrew',mode==='wlc');body.setAttribute('dir',mode==='wlc'?'rtl':'ltr');document.body.classList.toggle('wlc-mode',mode==='wlc');
 if(mode==='hyper'){const b=HYPER_BLOCKS[hIdx];document.getElementById('hdrRef').textContent=b.ref;document.getElementById('hdrVersion').textContent='Tradução hiperliteral';document.getElementById('hdrPage').textContent=(hIdx+1)+' / '+HYPER_BLOCKS.length;document.getElementById('progressFill').style.width=((hIdx+1)/HYPER_BLOCKS.length*100)+'%';opening.style.display=hIdx===0?'block':'none';nav.className='navgrid hyper';book.style.display='block';chap.style.display='none';book.innerHTML=HYPER_BLOCKS.map((x,i)=>'<option value="'+i+'">'+(i+1)+'. '+esc(x.ref)+'</option>').join('');book.value=String(hIdx);body.innerHTML=b.t.split(/\n\n+/).map(par=>{const lines=par.split('\n');return lines.map((ln,i)=>{const cls=ln.trim().startsWith('—')?'speech':(lines.length>1&&i===0?'lead':'');return'<p'+(cls?' class="'+cls+'"':'')+'>'+decorate(ln)+'</p>'}).join('')}).join('');document.getElementById('copyPassage').textContent='Copiar bloco';document.getElementById('prev').disabled=hIdx===0;document.getElementById('next').disabled=hIdx===HYPER_BLOCKS.length-1}
 else{const cp=corpus(),p=pos(),b=cp.books[p.b],c=chapterObj();p.c=Number(c.chapter);document.getElementById('hdrRef').textContent=bookName(b)+' '+p.c;document.getElementById('hdrVersion').textContent=VERSION_META[mode].label;document.getElementById('hdrPage').textContent=(p.b+1)+' / '+cp.books.length;const done=cp.books.slice(0,p.b).reduce((s,x)=>s+x.chapters.length,0)+b.chapters.findIndex(x=>Number(x.chapter)===Number(p.c))+1,total=cp.books.reduce((s,x)=>s+x.chapters.length,0);document.getElementById('progressFill').style.width=(done/total*100)+'%';opening.style.display='none';nav.className='navgrid';book.style.display='block';chap.style.display='block';buildBookOptions();buildChapterOptions();body.innerHTML=mode==='wlc'?c.verses.map(v=>renderOshbVerse(b.book,p.c,v)).join(''):c.verses.map(v=>'<span class="verse'+(focusVerse===v.number?' focus':'')+'" id="v'+v.number+'"><sup class="vnum">'+v.number+'</sup>'+esc(v.text)+'</span>').join('');document.getElementById('copyPassage').textContent='Copiar capítulo';document.getElementById('prev').disabled=p.b===0&&Number(p.c)===Number(cp.books[0].chapters[0].chapter);const lb=cp.books.length-1,lastC=cp.books[lb].chapters.at(-1).chapter;document.getElementById('next').disabled=p.b===lb&&Number(p.c)===Number(lastC)}
-const scope=mode==='hyper'?'Busca na tradução hiperliteral':'Busca em '+(VERSION_META[mode]?.label||mode)+(CORPORA[mode]?' · corpus completo':'');document.getElementById('searchScopeLabel').textContent=scope;document.getElementById('rowSup').style.opacity=mode==='hyper'?'1':'.45';document.getElementById('rowRub').style.opacity=mode==='hyper'?'1':'.45';document.getElementById('textBody').style.fontSize=(Number(prefs.size)||18.5)+'px';savePrefs();renderMark();if(focusVerse&&mode!=='hyper'){setTimeout(()=>{const el=document.getElementById('v'+focusVerse);if(el)el.scrollIntoView({block:'center'})},10)}else window.scrollTo(0,0)}
+const scope=mode==='hyper'?'Busca na tradução hiperliteral':'Busca em '+(VERSION_META[mode]?.label||mode)+(CORPORA[mode]?' · corpus completo':'');document.getElementById('searchScopeLabel').textContent=scope;document.getElementById('rowSup').style.opacity=mode==='hyper'?'1':'.45';document.getElementById('rowRub').style.opacity=mode==='hyper'?'1':'.45';document.getElementById('textBody').style.fontSize=(Number(prefs.size)||18.5)+'px';applyTextPrefs(false);savePrefs();renderMark();if(focusVerse&&mode!=='hyper'){setTimeout(()=>{const el=document.getElementById('v'+focusVerse);if(el)el.scrollIntoView({block:'center'})},10)}else window.scrollTo(0,0)}
 function move(delta){focusVerse=null;if(mode==='hyper'){const n=hIdx+delta;if(n>=0&&n<HYPER_BLOCKS.length){hIdx=n;renderReader()}return}const cp=corpus(),p=pos(),b=cp.books[p.b],i=b.chapters.findIndex(x=>Number(x.chapter)===Number(p.c));if(delta>0){if(i<b.chapters.length-1)p.c=Number(b.chapters[i+1].chapter);else if(p.b<cp.books.length-1){p.b++;p.c=Number(cp.books[p.b].chapters[0].chapter)}}else{if(i>0)p.c=Number(b.chapters[i-1].chapter);else if(p.b>0){p.b--;p.c=Number(cp.books[p.b].chapters.at(-1).chapter)}}renderReader()}
 function hyperFreq(){const m=new Map();HYPER_BLOCKS.forEach(b=>stripSup(b.t).split(/[^\p{L}א-ת'-]+/u).forEach(w=>{if(!w)return;const k=norm(w);if(k.length<3&&w!=='את')return;if(STOP.has(k))return;m.set(w,(m.get(w)||0)+1)}));return[...m.entries()].sort((a,b)=>b[1]-a[1])}
 function renderChips(){const el=document.getElementById('chips');el.innerHTML=mode==='hyper'?hyperFreq().slice(0,24).map(([w,n])=>'<button class="chip" data-w="'+esc(w)+'">'+esc(w)+' <b>'+n+'</b></button>').join(''):''}
@@ -277,7 +425,10 @@ document.getElementById('hits').onclick=e=>{const li=e.target.closest('li[data-h
 document.getElementById('marked').onclick=e=>{const li=e.target.closest('li[data-key]');if(!li)return;const k=li.dataset.key,p=k.split(':');if(k.startsWith('h:')){mode='hyper';hIdx=+p[1];focusVerse=null}else{const reverse={a:'almeida',w:'wlc',t:'tr'};mode=reverse[p[0]]||'almeida';const cp=CORPORA[mode],bi=Math.max(0,cp.books.findIndex(b=>b.book===p[1]));positions[mode]={b:bi,c:+p[2]};focusVerse=null}renderReader();openPanel('ler')};
 document.getElementById('tags').onclick=async e=>{const b=e.target.closest('.tag');if(!b)return;const k=currentKey(),rec=store[k]||(store[k]={tags:[],note:''}),t=b.dataset.t,on=b.dataset.on==='1';rec.tags=rec.tags||[];rec.tags=on?rec.tags.filter(x=>x!==t):[...rec.tags,t];const ok=await saveMarks();renderMark();flash(ok?'Marcação salva.':'Salvo apenas nesta sessão.')};
 let noteTimer;document.getElementById('note').oninput=e=>{const k=currentKey(),rec=store[k]||(store[k]={tags:[],note:''});rec.note=e.target.value;clearTimeout(noteTimer);noteTimer=setTimeout(async()=>{const ok=await saveMarks();flash(ok?'Nota salva.':'Salvo apenas nesta sessão.')},600)};
-document.getElementById('swSup').onchange=e=>{prefs.showSup=e.target.checked;document.body.classList.toggle('hide-sup',!prefs.showSup);savePrefs()};document.getElementById('swRub').onchange=e=>{prefs.rubric=e.target.checked;document.body.classList.toggle('plain',!prefs.rubric);savePrefs()};document.getElementById('swSize').oninput=e=>{prefs.size=Number(e.target.value);document.documentElement.style.setProperty('--reader-font-size',prefs.size+'px');document.documentElement.style.setProperty('--parallel-font-size',prefs.size+'px');document.getElementById('textBody').style.fontSize=prefs.size+'px';savePrefs()};
+document.getElementById('swSup').onchange=e=>{prefs.showSup=e.target.checked;document.body.classList.toggle('hide-sup',!prefs.showSup);savePrefs()};document.getElementById('swRub').onchange=e=>{prefs.rubric=e.target.checked;document.body.classList.toggle('plain',!prefs.rubric);savePrefs()};document.getElementById('swSize').oninput=e=>{prefs.size=Number(e.target.value);applyTextPrefs(true)};
+document.getElementById('swTextMargin')?.addEventListener('input',e=>{prefs.textMargin=Number(e.target.value);applyTextPrefs(true)});
+document.getElementById('swVerseNumbers')?.addEventListener('change',e=>{if(mode==='hyper'){e.target.checked=prefs.showVerseNumbers!==false;return}prefs.showVerseNumbers=e.target.checked;applyTextPrefs(true)});
+document.querySelectorAll('[data-reader-align]').forEach(b=>b.addEventListener('click',()=>{if(mode==='hyper')return;prefs.textAlign=b.dataset.readerAlign;applyTextPrefs(true)}));
 let touchX=0,touchY=0;document.getElementById('p-ler').addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY},{passive:true});document.getElementById('p-ler').addEventListener('touchend',e=>{if(parallelOn)return;const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25)move(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(parallelOn)return;if(!document.getElementById('p-ler').classList.contains('on'))return;if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1)});
 document.getElementById('exportMarks').onclick=()=>{const data={format:'bereshit-marks',version:4,exportedAt:new Date().toISOString(),marks:store};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bereshit-marcacoes.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
 document.getElementById('importMarks').onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text()),incoming=data&&data.format==='bereshit-marks'?data.marks:data;if(!incoming||typeof incoming!=='object'||Array.isArray(incoming))throw new Error('formato');store=incoming;await saveMarks();renderMark();flash('Marcações importadas.')}catch(err){alert('Não foi possível importar este arquivo de marcações.')}e.target.value=''};
@@ -359,4 +510,4 @@ async function installAllOpenBibles(){for(const slug of OPEN_BIBLE_ORDER){const 
 window.DoxaOpenBibles={specs:OPEN_BIBLE_SPECS,install:installOpenBible,installAll:installAllOpenBibles,isInstalled:slug=>!!CORPORA[slug],render:renderOpenBibleManager};
 document.getElementById('openBibleDownloadAll')?.addEventListener('click',installAllOpenBibles);
 
-(async function(){await loadOpenBibleModules();await load();await loadAppearance();await loadParallel();bindAppearance();bindParallel();document.getElementById('swSup').checked=prefs.showSup!==false;document.getElementById('swRub').checked=prefs.rubric!==false;document.getElementById('swSize').value=Number(prefs.size)||18.5;document.documentElement.style.setProperty('--reader-font-size',(Number(prefs.size)||18.5)+'px');document.documentElement.style.setProperty('--parallel-font-size',(Number(prefs.size)||18.5)+'px');document.body.classList.toggle('hide-sup',prefs.showSup===false);document.body.classList.toggle('plain',prefs.rubric===false);renderReader();if(parallelOn)setParallelMode(true);renderChips();renderSearch();updateStorageNote();const stat=(x)=>({books:x.books.length,chapters:x.books.reduce((s,b)=>s+b.chapters.length,0),verses:x.books.reduce((s,b)=>s+b.chapters.reduce((z,c)=>z+c.verses.length,0),0)}),a=stat(ALMEIDA),w=stat(WLC),t=stat(TR);document.getElementById('stats').innerHTML='Tradução hiperliteral: '+HYPER_BLOCKS.length+' blocos, Gênesis 1.1 a 9.17.<br>Almeida 1819 / Bíblia Livre incorporada: '+a.books+' livros, '+a.chapters.toLocaleString('pt-BR')+' capítulos, '+a.verses.toLocaleString('pt-BR')+' versículos.<br>WLC corrigido (OSHB v2.2): '+w.books+' livros, '+w.chapters.toLocaleString('pt-BR')+' capítulos, '+w.verses.toLocaleString('pt-BR')+' versículos.<br>TR Stephanus 1550: '+t.books+' livros, '+t.chapters.toLocaleString('pt-BR')+' capítulos, '+t.verses.toLocaleString('pt-BR')+' versículos.<br><br>O Doxa mantém Almeida 1819, Bíblia Livre, WLC/OSHB, Textus Receptus 1550 e a Tradução Hiperliteral. O WLC mantém Strong+, lema e morfologia do Open Scriptures Hebrew Bible v2.2 (CC BY 4.0).<br><br>Referências cruzadas: dados OpenBible.info (CC BY), carregados sob demanda e armazenados localmente após o primeiro uso.'})();
+(async function(){await loadOpenBibleModules();await load();await loadAppearance();await loadParallel();bindAppearance();bindParallel();document.getElementById('swSup').checked=prefs.showSup!==false;document.getElementById('swRub').checked=prefs.rubric!==false;document.getElementById('swSize').value=Number(prefs.size)||18.5;applyTextPrefs(false);document.body.classList.toggle('hide-sup',prefs.showSup===false);document.body.classList.toggle('plain',prefs.rubric===false);renderReader();if(parallelOn)setParallelMode(true);renderChips();renderSearch();updateStorageNote();const stat=(x)=>({books:x.books.length,chapters:x.books.reduce((s,b)=>s+b.chapters.length,0),verses:x.books.reduce((s,b)=>s+b.chapters.reduce((z,c)=>z+c.verses.length,0),0)}),a=stat(ALMEIDA),w=stat(WLC),t=stat(TR);document.getElementById('stats').innerHTML='Tradução hiperliteral: '+HYPER_BLOCKS.length+' blocos, Gênesis 1.1 a 9.17.<br>Almeida 1819 / Bíblia Livre incorporada: '+a.books+' livros, '+a.chapters.toLocaleString('pt-BR')+' capítulos, '+a.verses.toLocaleString('pt-BR')+' versículos.<br>WLC corrigido (OSHB v2.2): '+w.books+' livros, '+w.chapters.toLocaleString('pt-BR')+' capítulos, '+w.verses.toLocaleString('pt-BR')+' versículos.<br>TR Stephanus 1550: '+t.books+' livros, '+t.chapters.toLocaleString('pt-BR')+' capítulos, '+t.verses.toLocaleString('pt-BR')+' versículos.<br><br>O Doxa mantém Almeida 1819, Bíblia Livre, WLC/OSHB, Textus Receptus 1550 e a Tradução Hiperliteral. O WLC mantém Strong+, lema e morfologia do Open Scriptures Hebrew Bible v2.2 (CC BY 4.0).<br><br>Referências cruzadas: dados OpenBible.info (CC BY), carregados sob demanda e armazenados localmente após o primeiro uso.'})();

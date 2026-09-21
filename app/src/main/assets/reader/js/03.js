@@ -39,12 +39,23 @@
   }
   function updatePickerAction(){if(!pickerAction||!pickerGoLabel)return;pickerAction.hidden=pickerStage!=='verse';if(pickerStage!=='verse')return;const cp=pickerCorpus(),b=cp.books[pickerBook],abbr=PT_ABBR[b?.book]||b?.book||'';pickerGoLabel.textContent='Ir para '+abbr+' '+pickerChapter+':'+pickerVerse}
   function closePicker(){picker?.classList.remove('on');backdrop?.classList.remove('on');picker?.setAttribute('aria-hidden','true');pickerContext='single';}
-  function setPickerStage(stage,rerender=true){pickerStage=stage;pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===stage));pickerBack.disabled=stage==='book';if(rerender)renderPicker();else updatePickerAction();}
+  function animatePickerStage(){
+    if(!body)return;
+    body.querySelectorAll('.picker-book-v4,.picker-num-v4').forEach((el,i)=>el.style.setProperty('--picker-i',String(Math.min(i,14))));
+    body.classList.remove('picker-stage-enter');void body.offsetWidth;body.classList.add('picker-stage-enter');
+    setTimeout(()=>body.classList.remove('picker-stage-enter'),520);
+  }
+  function pickerChoiceTransition(el,fn){
+    if(!el){fn();return}
+    el.classList.remove('picker-choice-pop');void el.offsetWidth;el.classList.add('picker-choice-pop');
+    setTimeout(fn,145);
+  }
+  function setPickerStage(stage,rerender=true){pickerStage=stage;pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===stage));pickerBack.disabled=stage==='book';if(rerender){renderPicker();animatePickerStage()}else updatePickerAction();}
   function openPicker(context='single'){
     if(!picker)return;
     pickerContext=(context==='A'||context==='B')?context:'single';
     if(pickerContext==='single'&&parallelOn)return;
-    const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';setPickerStage('book',false);renderPicker();pickerSearch?.blur();picker.classList.add('on');backdrop.classList.add('on');picker.setAttribute('aria-hidden','false')
+    const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';setPickerStage('book',false);renderPicker();animatePickerStage();pickerSearch?.blur();picker.classList.add('on');backdrop.classList.add('on');picker.setAttribute('aria-hidden','false')
   }
   function stageHeading(book){const m=pickerMode(),label=VERSION_META[m]?.label||m;if(pickerStage==='book')return['Escolher livro',label];if(pickerStage==='chapter')return[bookName(book),'Escolha o capítulo'];return[bookName(book)+' '+pickerChapter,'Escolha o versículo']}
   function renderPicker(filter=''){
@@ -53,14 +64,14 @@
       const q=String(filter||'').trim().toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
       const books=cp.books.map((x,i)=>({x,i,name:bookName(x),abbr:PT_ABBR[x.book]||x.book})).filter(o=>!q||((o.name+' '+o.abbr+' '+o.x.book).toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q)));
       body.innerHTML='<div class="picker-stage-title"><strong>Livros</strong><span>'+cp.books.length+' disponíveis</span></div><div class="picker-book-grid">'+books.map(o=>'<button type="button" class="picker-book-v4 '+(BOOK_GENRE[o.x.book]||'')+' '+(o.i===pickerBook?'on':'')+'" data-pb="'+o.i+'" title="'+esc(o.name)+'">'+esc(o.abbr)+'</button>').join('')+'</div>'+(books.length?'':'<div class="picker-empty">Nenhum livro encontrado.</div>');
-      body.querySelectorAll('[data-pb]').forEach(el=>el.onclick=()=>{pickerBook=+el.dataset.pb;const nb=cp.books[pickerBook];pickerChapter=Number(nb.chapters[0].chapter);pickerVerse=1;setPickerStage('chapter')});updatePickerAction();return;
+      body.querySelectorAll('[data-pb]').forEach(el=>el.onclick=()=>pickerChoiceTransition(el,()=>{pickerBook=+el.dataset.pb;const nb=cp.books[pickerBook];pickerChapter=Number(nb.chapters[0].chapter);pickerVerse=1;setPickerStage('chapter')}));updatePickerAction();animatePickerStage();return;
     }
     if(pickerStage==='chapter'){
       const current=pickerCurrent();body.innerHTML='<div class="picker-stage-title"><strong>'+esc(bookName(b))+'</strong><span>'+b.chapters.length+' capítulos</span></div><div class="picker-number-grid">'+b.chapters.map(c=>'<button type="button" class="picker-num-v4 '+(pickerBook===current.b&&Number(c.chapter)===Number(current.c)?'on':'')+'" data-pc="'+c.chapter+'">'+c.chapter+'</button>').join('')+'</div>';
-      body.querySelectorAll('[data-pc]').forEach(el=>el.onclick=()=>{pickerChapter=+el.dataset.pc;pickerVerse=1;setPickerStage('verse')});updatePickerAction();return;
+      body.querySelectorAll('[data-pc]').forEach(el=>el.onclick=()=>pickerChoiceTransition(el,()=>{pickerChapter=+el.dataset.pc;pickerVerse=1;setPickerStage('verse')}));updatePickerAction();animatePickerStage();return;
     }
     const ch=b.chapters.find(c=>Number(c.chapter)===Number(pickerChapter))||b.chapters[0];pickerChapter=Number(ch.chapter);const current=pickerCurrent();body.innerHTML='<div class="picker-stage-title"><strong>'+esc(bookName(b))+' '+pickerChapter+'</strong><span>'+ch.verses.length+' versículos</span></div><div class="picker-number-grid">'+ch.verses.map(v=>'<button type="button" class="picker-num-v4 '+(Number(v.number)===Number(pickerVerse)?'on':'')+'" data-pv="'+v.number+'">'+v.number+'</button>').join('')+'</div>';
-    body.querySelectorAll('[data-pv]').forEach(el=>el.onclick=()=>{pickerVerse=+el.dataset.pv;body.querySelectorAll('[data-pv]').forEach(x=>x.classList.toggle('on',x===el));updatePickerAction()});updatePickerAction();
+    body.querySelectorAll('[data-pv]').forEach(el=>el.onclick=()=>{pickerVerse=+el.dataset.pv;body.querySelectorAll('[data-pv]').forEach(x=>x.classList.toggle('on',x===el));el.classList.remove('picker-verse-pulse');void el.offsetWidth;el.classList.add('picker-verse-pulse');setTimeout(()=>el.classList.remove('picker-verse-pulse'),520);updatePickerAction()});updatePickerAction();animatePickerStage();
   }
   function chooseVerse(v){
     const cp=pickerCorpus(),b=cp.books[pickerBook];
