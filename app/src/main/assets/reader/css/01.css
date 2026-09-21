@@ -55,3 +55,327 @@ body.normal-paper-texture .parallel-text{background-image:radial-gradient(circle
 
 /* Referências cruzadas — visual Doxa atual no componente original. */
 .xref-backdrop{background:rgba(0,0,0,.22)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.xref-sheet{left:0!important;right:0!important;bottom:0!important;max-height:min(84vh,780px)!important;background:linear-gradient(180deg,var(--d30-panel),var(--d30-bg))!important;color:var(--d30-text)!important;border:0!important;border-top:1px solid color-mix(in srgb,var(--d30-gold) 18%,transparent)!important;border-radius:29px 29px 0 0!important;box-shadow:0 -24px 68px rgba(0,0,0,.42)!important}.xref-grab{width:46px!important;height:4px!important;background:rgba(255,255,255,.13)!important;margin-top:12px!important}.xref-head{border-bottom-color:color-mix(in srgb,var(--d30-gold) 10%,transparent)!important}.xref-kicker,.xref-ref{color:var(--d30-gold)!important}.xref-head strong{color:var(--d30-text)!important}.xref-head small,.xref-text,.xref-credit{color:var(--d30-muted)!important}.xref-close{background:color-mix(in srgb,var(--d30-panel) 72%,var(--d30-bg))!important;color:var(--d30-muted)!important}.xref-current-preview,.xref-item,.xref-item-v20,.xref-v20-note{background:color-mix(in srgb,var(--d30-panel) 72%,var(--d30-bg))!important;border-color:color-mix(in srgb,var(--d30-gold) 12%,transparent)!important;color:var(--d30-text)!important}.xref-v20-tabs button,.xref-v20-actions button{background:var(--d30-panel)!important;border-color:color-mix(in srgb,var(--d30-gold) 12%,transparent)!important;color:var(--d30-muted)!important}.xref-v20-tabs button.on{background:var(--d30-gold)!important;color:var(--d30-bg)!important}.xref-meter{background:color-mix(in srgb,var(--d30-muted) 22%,transparent)!important}.xref-meter i{background:var(--d30-gold)!important}
+
+
+/* ===== DOXA PICKER PREMIUM COMPACT 2026 ===== */
+
+/* O seletor vira um painel realmente imersivo no mobile.
+   Cabeçalho, abas, busca e CTA NÃO participam da rolagem. */
+.passage-picker-v4{
+  background:linear-gradient(180deg,var(--d30-bg,#050403),color-mix(in srgb,var(--d30-bg,#050403) 94%,black))!important;
+  color:var(--d30-text,#f4efe9)!important;
+  border-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.52)!important;
+}
+.passage-picker-v4 .picker-v4-top,
+.passage-picker-v4 .picker-v4-tabs,
+.passage-picker-v4 .picker-v4-search,
+.passage-picker-v4 .picker-v4-action{
+  flex:0 0 auto!important;
+}
+.passage-picker-v4 .picker-body{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch;
+  padding:14px 14px 26px!important;
+}
+
+/* Cabeçalho */
+.picker-v4-top{
+  position:relative!important;
+  z-index:7!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel,#0d0a07) 96%,transparent),var(--d30-bg,#050403))!important;
+  border-bottom-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 10%,transparent)!important;
+}
+.picker-v4-heading strong{
+  font-family:Georgia,'Times New Roman',serif!important;
+  font-size:24px!important;
+  font-weight:600!important;
+  letter-spacing:-.02em!important;
+  color:var(--d30-text,#f4efe9)!important;
+}
+.picker-v4-heading small{
+  color:var(--d30-muted,#9e9286)!important;
+  font-size:10px!important;
+  letter-spacing:.14em!important;
+}
+.picker-back,.picker-close{
+  background:color-mix(in srgb,var(--d30-panel,#0d0a07) 86%,var(--d30-bg,#050403))!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 10%,transparent)!important;
+  color:var(--d30-gold2,#f1c989)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+
+/* Livro / Capítulo / Versículo fica fixo. */
+.picker-v4-tabs{
+  position:relative!important;
+  z-index:6!important;
+  background:color-mix(in srgb,var(--d30-bg,#050403) 98%,transparent)!important;
+  border-bottom-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 10%,transparent)!important;
+  padding:0 14px!important;
+}
+.picker-v4-tabs button{
+  color:color-mix(in srgb,var(--d30-muted,#9e9286) 62%,transparent)!important;
+  font-size:11px!important;
+  letter-spacing:.07em!important;
+  padding:15px 3px 14px!important;
+}
+.picker-v4-tabs button.on{color:var(--d30-text,#f4efe9)!important}
+.picker-v4-tabs button.on::after{
+  left:18%!important;
+  right:18%!important;
+  height:3px!important;
+  background:linear-gradient(90deg,transparent,var(--d30-gold,#d9a25e),var(--d30-gold2,#f1c989),var(--d30-gold,#d9a25e),transparent)!important;
+  filter:drop-shadow(0 0 8px color-mix(in srgb,var(--d30-gold2,#f1c989) 55%,transparent));
+}
+
+/* Busca */
+.picker-v4-search{
+  position:relative!important;
+  z-index:5!important;
+  height:56px!important;
+  margin:15px 14px 7px!important;
+  border-radius:24px!important;
+  border-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 15%,transparent)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel,#0d0a07) 92%,transparent),color-mix(in srgb,var(--d30-bg,#050403) 96%,black))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 8px 22px rgba(0,0,0,.16)!important;
+}
+.picker-v4-search:focus-within{
+  border-color:color-mix(in srgb,var(--d30-gold2,#f1c989) 40%,transparent)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--d30-gold,#d9a25e) 7%,transparent),0 8px 22px rgba(0,0,0,.18)!important;
+}
+.picker-search-icon{color:var(--d30-gold,#d9a25e)!important;opacity:.72!important}
+.picker-v4-search input{
+  color:var(--d30-text,#f4efe9)!important;
+  font-size:15px!important;
+  font-weight:600!important;
+}
+.picker-v4-search input::placeholder{
+  color:color-mix(in srgb,var(--d30-muted,#9e9286) 58%,transparent)!important;
+}
+
+.picker-stage-title{margin:4px 2px 12px!important}
+.picker-stage-title strong{
+  font-family:Georgia,'Times New Roman',serif!important;
+  color:var(--d30-text,#f4efe9)!important;
+  font-size:20px!important;
+  font-weight:500!important;
+}
+.picker-stage-title span{color:var(--d30-muted,#9e9286)!important}
+
+/* 5 cards pequenos por linha — mantém o esquema aprovado. */
+.picker-book-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:3px!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+  background:color-mix(in srgb,var(--d30-gold,#d9a25e) 8%,var(--d30-bg,#050403))!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 10%,transparent)!important;
+}
+.picker-book-v4{
+  --book-a:#1a1510;
+  --book-b:#0f0b08;
+  --book-glow:rgba(217,145,63,.18);
+  --book-accent:#d7a15f;
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  min-height:66px!important;
+  padding:5px 2px!important;
+  border:0!important;
+  background:linear-gradient(180deg,var(--book-a),var(--book-b))!important;
+  color:#f5efe8!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+  font-size:16px!important;
+  font-weight:700!important;
+  text-shadow:0 1px 8px rgba(0,0,0,.45)!important;
+  transition:transform .14s ease,filter .18s ease,box-shadow .18s ease!important;
+}
+.picker-book-v4::before{
+  content:'';
+  position:absolute;
+  inset:-28%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 20% 48%,var(--book-glow),transparent 31%),
+    radial-gradient(circle at 70% 32%,color-mix(in srgb,var(--book-glow) 80%,transparent),transparent 37%),
+    radial-gradient(circle at 86% 72%,color-mix(in srgb,var(--book-glow) 60%,transparent),transparent 30%);
+  filter:blur(14px);
+  opacity:.38;
+  animation:doxaPickerSmokeA 7s ease-in-out infinite alternate;
+}
+.picker-book-v4::after{
+  content:'';
+  position:absolute;
+  left:12px;
+  right:12px;
+  top:0;
+  height:2px;
+  z-index:1;
+  background:linear-gradient(90deg,transparent,var(--book-accent),transparent);
+  opacity:.18;
+  filter:drop-shadow(0 0 5px var(--book-accent));
+}
+.picker-book-v4:active{
+  transform:scale(.965)!important;
+  filter:brightness(1.12)!important;
+}
+.picker-book-v4.on{
+  z-index:2!important;
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb,var(--d30-gold2,#f1c989) 72%,transparent),
+    0 0 17px color-mix(in srgb,var(--d30-gold,#d9a25e) 32%,transparent)!important;
+  color:#fff7ed!important;
+}
+.picker-book-v4.on::before{opacity:.66!important;animation-duration:4.4s!important}
+.picker-book-v4.on::after{opacity:.9!important}
+
+/* As cores continuam SEMÂNTICAS, não decorativas. */
+.picker-book-v4.g-law,
+.picker-book-v4.g-gospel{
+  --book-a:#514818;--book-b:#28230d;
+  --book-glow:rgba(202,169,67,.24);--book-accent:#d6b65d;
+}
+.picker-book-v4.g-history,
+.picker-book-v4.g-acts{
+  --book-a:#12363c;--book-b:#0a2024;
+  --book-glow:rgba(54,142,151,.22);--book-accent:#64a9b0;
+}
+.picker-book-v4.g-wisdom,
+.picker-book-v4.g-paul{
+  --book-a:#462718;--book-b:#24140d;
+  --book-glow:rgba(172,86,53,.22);--book-accent:#bf8060;
+}
+.picker-book-v4.g-major,
+.picker-book-v4.g-general{
+  --book-a:#173617;--book-b:#0b1e0d;
+  --book-glow:rgba(73,139,72,.21);--book-accent:#73a468;
+}
+.picker-book-v4.g-minor,
+.picker-book-v4.g-rev{
+  --book-a:#3b151d;--book-b:#210b10;
+  --book-glow:rgba(148,55,73,.22);--book-accent:#a75465;
+}
+@keyframes doxaPickerSmokeA{
+  0%{transform:translate3d(-8%,3%,0) scale(.92) rotate(-1deg)}
+  38%{transform:translate3d(3%,-5%,0) scale(1.05) rotate(.5deg)}
+  72%{transform:translate3d(7%,2%,0) scale(.98) rotate(1deg)}
+  100%{transform:translate3d(-1%,-2%,0) scale(1.06) rotate(-.4deg)}
+}
+
+/* Capítulos e versículos seguem o mesmo conceito. */
+.picker-number-grid{
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+.picker-num-v4{
+  background:color-mix(in srgb,var(--d30-panel,#0d0a07) 78%,var(--d30-bg,#050403))!important;
+  border-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 11%,transparent)!important;
+  color:var(--d30-text,#f4efe9)!important;
+  border-radius:12px!important;
+}
+.picker-num-v4.on{
+  color:#241305!important;
+  background:linear-gradient(180deg,var(--d30-gold2,#f1c989),var(--d30-gold,#d9a25e))!important;
+  border-color:color-mix(in srgb,var(--d30-gold2,#f1c989) 82%,white)!important;
+  box-shadow:0 0 15px color-mix(in srgb,var(--d30-gold,#d9a25e) 30%,transparent)!important;
+}
+
+/* CTA dourado fixo. */
+.picker-v4-action{
+  padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--d30-bg,#050403) 96%,transparent) 24%,var(--d30-bg,#050403) 55%);
+}
+.picker-v4-action button{
+  width:100%;
+  min-height:58px;
+  display:grid;
+  grid-template-columns:1fr 40px;
+  align-items:center;
+  padding:0 12px 0 20px;
+  border:1px solid #ffe0aa;
+  border-radius:20px;
+  color:#241305;
+  background:linear-gradient(180deg,#f7d18f,#dda14f);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.62),
+    0 0 18px rgba(232,157,65,.35),
+    0 10px 26px rgba(0,0,0,.24);
+  font:700 16px/1 Georgia,'Times New Roman',serif;
+  animation:doxaPickerGo 3s ease-in-out infinite;
+}
+.picker-go-arrow{font-size:28px}
+@keyframes doxaPickerGo{
+  0%,100%{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.62),
+      0 0 13px rgba(232,157,65,.25),
+      0 10px 26px rgba(0,0,0,.24);
+  }
+  50%{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.72),
+      0 0 27px rgba(246,180,85,.56),
+      0 10px 26px rgba(0,0,0,.24);
+  }
+}
+
+/* O verso de chegada destaca e desaparece sozinho. */
+.verse.picker-arrival{
+  position:relative;
+  isolation:isolate;
+  border-radius:7px;
+  animation:doxaPickerArrival 2.15s ease forwards;
+}
+.verse.picker-arrival::before{
+  content:'';
+  position:absolute;
+  inset:-5px -8px;
+  z-index:-1;
+  border-radius:14px;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 50%,rgba(224,145,64,.20),transparent 33%),
+    radial-gradient(circle at 66% 42%,rgba(112,62,29,.22),transparent 42%),
+    radial-gradient(circle at 88% 68%,rgba(232,169,91,.13),transparent 30%);
+  filter:blur(13px);
+  animation:doxaPickerArrivalSmoke 2.15s ease forwards;
+}
+@keyframes doxaPickerArrival{
+  0%,34%{
+    background:color-mix(in srgb,var(--d30-gold,#d9a25e) 13%,transparent);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent);
+  }
+  100%{background:transparent;box-shadow:none}
+}
+@keyframes doxaPickerArrivalSmoke{
+  0%{opacity:.78;transform:translateX(-3%) scale(.96)}
+  45%{opacity:.45;transform:translateX(4%) scale(1.04)}
+  100%{opacity:0;transform:translateX(8%) scale(1.01)}
+}
+
+@media(max-width:540px){
+  .passage-picker-v4{
+    background:var(--d30-bg,#050403)!important;
+  }
+  .picker-v4-top{padding-top:14px!important}
+  .picker-book-v4{min-height:64px!important;font-size:15px!important}
+  .picker-book-grid{border-radius:10px!important}
+  .picker-number-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+}
+@media(max-width:360px){
+  .picker-book-v4{min-height:58px!important;font-size:14px!important}
+  .picker-number-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .picker-book-v4::before,
+  .picker-v4-action button,
+  .verse.picker-arrival,
+  .verse.picker-arrival::before{
+    animation:none!important;
+  }
+}
