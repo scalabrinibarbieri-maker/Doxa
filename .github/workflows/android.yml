@@ -25,20 +25,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
       - uses: android-actions/setup-android@v3
         with:
           packages: 'platform-tools'
-
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
@@ -58,12 +54,9 @@ jobs:
           test -n "$DOXA_KEYSTORE_PASSWORD"
           test -n "$DOXA_KEY_ALIAS"
           test -n "$DOXA_KEY_PASSWORD"
-
           DOXA_KEYSTORE_PATH="$RUNNER_TEMP/Doxa-Release.jks"
-
           printf '%s' "$DOXA_KEYSTORE_B64" | base64 --decode > "$DOXA_KEYSTORE_PATH"
           chmod 600 "$DOXA_KEYSTORE_PATH"
-
           echo "DOXA_KEYSTORE_PATH=$DOXA_KEYSTORE_PATH" >> "$GITHUB_ENV"
 
       - name: Compile and lint test APK
@@ -98,9 +91,9 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           mkdir -p dist/release
-          cp app/build/outputs/apk/release/app-release.apk dist/release/Doxa-31.1.apk
+          cp app/build/outputs/apk/release/app-release.apk dist/release/Doxa-32.0.apk
           cd dist/release
-          sha256sum Doxa-31.1.apk > SHA256SUMS.txt
+          sha256sum Doxa-32.0.apk > SHA256SUMS.txt
 
       - uses: actions/upload-artifact@v4
         with:
@@ -112,7 +105,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: github.event_name != 'pull_request'
         with:
-          name: Doxa-31.1-Oficial-${{ github.run_number }}
+          name: Doxa-32.0-Oficial-${{ github.run_number }}
           path: dist/release/
           retention-days: 90
 
