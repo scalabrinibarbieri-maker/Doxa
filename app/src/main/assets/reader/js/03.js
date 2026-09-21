@@ -13,7 +13,7 @@
   };
   document.querySelectorAll('nav.bar .tab').forEach(t=>{const key=t.dataset.p;const label=t.textContent.trim();if(icons[key])t.innerHTML=icons[key]+'<span>'+label+'</span>';});
 
-  const picker=document.getElementById('premiumPicker'), backdrop=document.getElementById('premiumPickerBackdrop'), body=document.getElementById('pickerBody'), title=document.getElementById('pickerTitle'), subtitle=document.getElementById('pickerSubtitle'), pickerSearch=document.getElementById('pickerSearch'), pickerBack=document.getElementById('pickerBack');
+  const picker=document.getElementById('premiumPicker'), backdrop=document.getElementById('premiumPickerBackdrop'), body=document.getElementById('pickerBody'), title=document.getElementById('pickerTitle'), subtitle=document.getElementById('pickerSubtitle'), pickerSearch=document.getElementById('pickerSearch'), pickerBack=document.getElementById('pickerBack'), pickerAction=document.getElementById('pickerAction'), pickerGo=document.getElementById('pickerGo'), pickerGoLabel=document.getElementById('pickerGoLabel');
   const pickerTabs=[...document.querySelectorAll('[data-picker-stage]')];
   const PT_ABBR={Gen:'Gn',Exod:'Êx',Lev:'Lv',Num:'Nm',Deut:'Dt',Josh:'Js',Judg:'Jz',Ruth:'Rt','1Sam':'1Sm','2Sam':'2Sm','1Kgs':'1Rs','2Kgs':'2Rs','1Chr':'1Cr','2Chr':'2Cr',Ezra:'Ed',Neh:'Ne',Esth:'Et',Job:'Jó',Ps:'Sl',Prov:'Pv',Eccl:'Ec',Song:'Ct',Isa:'Is',Jer:'Jr',Lam:'Lm',Ezek:'Ez',Dan:'Dn',Hos:'Os',Joel:'Jl',Amos:'Am',Obad:'Ob',Jonah:'Jn',Mic:'Mq',Nah:'Na',Hab:'Hc',Zeph:'Sf',Hag:'Ag',Zech:'Zc',Mal:'Ml',Matt:'Mt',Mark:'Mc',Luke:'Lc',John:'Jo',Acts:'At',Rom:'Rm','1Cor':'1Co','2Cor':'2Co',Gal:'Gl',Eph:'Ef',Phil:'Fp',Col:'Cl','1Thess':'1Ts','2Thess':'2Ts','1Tim':'1Tm','2Tim':'2Tm',Titus:'Tt',Phlm:'Fm',Heb:'Hb',Jas:'Tg','1Pet':'1Pe','2Pet':'2Pe','1John':'1Jo','2John':'2Jo','3John':'3Jo',Jude:'Jd',Rev:'Ap'};
   const BOOK_GENRE={};
@@ -25,7 +25,7 @@
   ['Matt','Mark','Luke','John'].forEach(x=>BOOK_GENRE[x]='g-gospel'); BOOK_GENRE.Acts='g-acts';
   ['Rom','1Cor','2Cor','Gal','Eph','Phil','Col','1Thess','2Thess','1Tim','2Tim','Titus','Phlm'].forEach(x=>BOOK_GENRE[x]='g-paul');
   ['Heb','Jas','1Pet','2Pet','1John','2John','3John','Jude'].forEach(x=>BOOK_GENRE[x]='g-general'); BOOK_GENRE.Rev='g-rev';
-  let pickerStage='book',pickerBook=0,pickerChapter=1,pickerContext='single';
+  let pickerStage='book',pickerBook=0,pickerChapter=1,pickerVerse=1,pickerContext='single';
   function pickerMode(){return pickerContext==='single'?mode:sanitizeParallelState(pickerContext).mode}
   function pickerCorpus(){const m=pickerMode();if(m!=='hyper')return CORPORA[m];const g=ALMEIDA.books[0];return{books:[{...g,chapters:g.chapters.filter(c=>Number(c.chapter)<=9)}]}}
   function pickerCurrent(){
@@ -37,13 +37,14 @@
     if(mode==='hyper'){const r=hyperRange(hIdx);return{b:0,c:Number(r.sc)||1,v:Number(singleVisibleVerse())||Number(r.sv)||1}}
     const p=pos();return{b:p.b,c:Number(p.c)||1,v:Number(singleVisibleVerse())||1}
   }
+  function updatePickerAction(){if(!pickerAction||!pickerGoLabel)return;pickerAction.hidden=pickerStage!=='verse';if(pickerStage!=='verse')return;const cp=pickerCorpus(),b=cp.books[pickerBook],abbr=PT_ABBR[b?.book]||b?.book||'';pickerGoLabel.textContent='Ir para '+abbr+' '+pickerChapter+':'+pickerVerse}
   function closePicker(){picker?.classList.remove('on');backdrop?.classList.remove('on');picker?.setAttribute('aria-hidden','true');pickerContext='single';}
-  function setPickerStage(stage,rerender=true){pickerStage=stage;pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===stage));pickerBack.disabled=stage==='book';if(rerender)renderPicker();}
+  function setPickerStage(stage,rerender=true){pickerStage=stage;pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===stage));pickerBack.disabled=stage==='book';if(rerender)renderPicker();else updatePickerAction();}
   function openPicker(context='single'){
     if(!picker)return;
     pickerContext=(context==='A'||context==='B')?context:'single';
     if(pickerContext==='single'&&parallelOn)return;
-    const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerSearch.value='';setPickerStage('book',false);renderPicker();pickerSearch?.blur();picker.classList.add('on');backdrop.classList.add('on');picker.setAttribute('aria-hidden','false')
+    const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';setPickerStage('book',false);renderPicker();pickerSearch?.blur();picker.classList.add('on');backdrop.classList.add('on');picker.setAttribute('aria-hidden','false')
   }
   function stageHeading(book){const m=pickerMode(),label=VERSION_META[m]?.label||m;if(pickerStage==='book')return['Escolher livro',label];if(pickerStage==='chapter')return[bookName(book),'Escolha o capítulo'];return[bookName(book)+' '+pickerChapter,'Escolha o versículo']}
   function renderPicker(filter=''){
@@ -52,14 +53,14 @@
       const q=String(filter||'').trim().toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
       const books=cp.books.map((x,i)=>({x,i,name:bookName(x),abbr:PT_ABBR[x.book]||x.book})).filter(o=>!q||((o.name+' '+o.abbr+' '+o.x.book).toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q)));
       body.innerHTML='<div class="picker-stage-title"><strong>Livros</strong><span>'+cp.books.length+' disponíveis</span></div><div class="picker-book-grid">'+books.map(o=>'<button type="button" class="picker-book-v4 '+(BOOK_GENRE[o.x.book]||'')+' '+(o.i===pickerBook?'on':'')+'" data-pb="'+o.i+'" title="'+esc(o.name)+'">'+esc(o.abbr)+'</button>').join('')+'</div>'+(books.length?'':'<div class="picker-empty">Nenhum livro encontrado.</div>');
-      body.querySelectorAll('[data-pb]').forEach(el=>el.onclick=()=>{pickerBook=+el.dataset.pb;const nb=cp.books[pickerBook];pickerChapter=Number(nb.chapters[0].chapter);setPickerStage('chapter')});return;
+      body.querySelectorAll('[data-pb]').forEach(el=>el.onclick=()=>{pickerBook=+el.dataset.pb;const nb=cp.books[pickerBook];pickerChapter=Number(nb.chapters[0].chapter);pickerVerse=1;setPickerStage('chapter')});updatePickerAction();return;
     }
     if(pickerStage==='chapter'){
       const current=pickerCurrent();body.innerHTML='<div class="picker-stage-title"><strong>'+esc(bookName(b))+'</strong><span>'+b.chapters.length+' capítulos</span></div><div class="picker-number-grid">'+b.chapters.map(c=>'<button type="button" class="picker-num-v4 '+(pickerBook===current.b&&Number(c.chapter)===Number(current.c)?'on':'')+'" data-pc="'+c.chapter+'">'+c.chapter+'</button>').join('')+'</div>';
-      body.querySelectorAll('[data-pc]').forEach(el=>el.onclick=()=>{pickerChapter=+el.dataset.pc;setPickerStage('verse')});return;
+      body.querySelectorAll('[data-pc]').forEach(el=>el.onclick=()=>{pickerChapter=+el.dataset.pc;pickerVerse=1;setPickerStage('verse')});updatePickerAction();return;
     }
-    const ch=b.chapters.find(c=>Number(c.chapter)===Number(pickerChapter))||b.chapters[0];pickerChapter=Number(ch.chapter);const current=pickerCurrent();body.innerHTML='<div class="picker-stage-title"><strong>'+esc(bookName(b))+' '+pickerChapter+'</strong><span>'+ch.verses.length+' versículos</span></div><div class="picker-number-grid">'+ch.verses.map(v=>'<button type="button" class="picker-num-v4 '+(pickerBook===current.b&&pickerChapter===current.c&&Number(v.number)===Number(current.v)?'on':'')+'" data-pv="'+v.number+'">'+v.number+'</button>').join('')+'</div>';
-    body.querySelectorAll('[data-pv]').forEach(el=>el.onclick=()=>chooseVerse(+el.dataset.pv));
+    const ch=b.chapters.find(c=>Number(c.chapter)===Number(pickerChapter))||b.chapters[0];pickerChapter=Number(ch.chapter);const current=pickerCurrent();body.innerHTML='<div class="picker-stage-title"><strong>'+esc(bookName(b))+' '+pickerChapter+'</strong><span>'+ch.verses.length+' versículos</span></div><div class="picker-number-grid">'+ch.verses.map(v=>'<button type="button" class="picker-num-v4 '+(Number(v.number)===Number(pickerVerse)?'on':'')+'" data-pv="'+v.number+'">'+v.number+'</button>').join('')+'</div>';
+    body.querySelectorAll('[data-pv]').forEach(el=>el.onclick=()=>{pickerVerse=+el.dataset.pv;body.querySelectorAll('[data-pv]').forEach(x=>x.classList.toggle('on',x===el));updatePickerAction()});updatePickerAction();
   }
   function chooseVerse(v){
     const cp=pickerCorpus(),b=cp.books[pickerBook];
@@ -77,17 +78,18 @@
     if(mode==='hyper'){
       let found=0;for(let i=0;i<HYPER_BLOCKS.length;i++){const r=hyperRange(i),c=Number(pickerChapter),sv=Number(r.sv),ev=Number(r.ev),sc=Number(r.sc),ec=Number(r.ec);const inside=(c>sc&&c<ec)||(sc===ec&&c===sc&&v>=sv&&v<=ev)||(c===sc&&c<ec&&v>=sv)||(c===ec&&c>sc&&v<=ev);if(inside){found=i;break}}hIdx=found;focusVerse=null
     }else{positions[mode]={b:pickerBook,c:pickerChapter};focusVerse=v}
-    renderReader();closePicker();setTimeout(()=>{const el=document.getElementById('v'+v);if(el)el.scrollIntoView({block:'center',behavior:'smooth'})},70)
+    renderReader();closePicker();setTimeout(()=>{const el=document.getElementById('v'+v);if(!el)return;el.scrollIntoView({block:'center',behavior:'smooth'});el.classList.remove('focus');focusVerse=null;el.classList.add('picker-arrival');setTimeout(()=>el.classList.remove('picker-arrival'),2250)},70)
   }
   function normalizeAlias(x){return String(x||'').toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
   function parsePickerRef(q){const cp=pickerCorpus(),raw=String(q||'').trim();if(!raw)return null;const m=raw.match(/^(.+?)\s+(\d+)(?:\s*[:.,]\s*(\d+))?$/);if(!m)return null;const bn=normalizeAlias(m[1]),ch=+m[2],v=m[3]?+m[3]:null;let bi=-1;for(let i=0;i<cp.books.length;i++){const b=cp.books[i],aliases=[b.book,bookName(b),PT_ABBR[b.book]||''];if(aliases.some(a=>normalizeAlias(a)===bn)){bi=i;break}}if(bi<0)return null;const book=cp.books[bi],co=book.chapters.find(c=>Number(c.chapter)===ch);if(!co)return null;if(v!=null&&!co.verses.some(x=>Number(x.number)===v))return null;return{bi,ch,v}}
-  function applyParsedRef(r){pickerBook=r.bi;pickerChapter=r.ch;if(r.v!=null){chooseVerse(r.v)}else setPickerStage('verse')}
+  function applyParsedRef(r){pickerBook=r.bi;pickerChapter=r.ch;pickerVerse=r.v!=null?Number(r.v):1;setPickerStage('verse')}
   document.querySelector('header .headmain')?.addEventListener('click',()=>openPicker('single'));
   document.getElementById('pPassageA')?.addEventListener('click',()=>openPicker('A'));
   document.getElementById('pPassageB')?.addEventListener('click',()=>openPicker('B'));
   document.getElementById('pickerClose')?.addEventListener('click',closePicker);backdrop?.addEventListener('click',closePicker);
   pickerBack?.addEventListener('click',()=>{if(pickerStage==='verse')setPickerStage('chapter');else if(pickerStage==='chapter')setPickerStage('book')});
   pickerTabs.forEach(t=>t.addEventListener('click',()=>{const st=t.dataset.pickerStage;if(st==='book')setPickerStage('book');else if(st==='chapter')setPickerStage('chapter');else setPickerStage('verse')}));
+  pickerGo?.addEventListener('click',()=>chooseVerse(pickerVerse));
   pickerSearch?.addEventListener('input',e=>{if(pickerStage==='book')renderPicker(e.target.value)});
   pickerSearch?.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const r=parsePickerRef(e.currentTarget.value);if(r){e.preventDefault();applyParsedRef(r)}});
 
