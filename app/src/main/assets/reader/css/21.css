@@ -1,0 +1,241 @@
+/* Doxa 30.5 — novo shell Night aprovado em HTML.
+   Cirúrgico: preserva o leitor, painéis, HUD imersivo e lógica existente. */
+
+:root{
+  --d30-bg:#050403;
+  --d30-bg2:#0a0705;
+  --d30-panel:#0d0a07;
+  --d30-gold:#d9a25e;
+  --d30-gold2:#f1c989;
+  --d30-text:#f4efe9;
+  --d30-muted:#a99b8b;
+}
+
+html,body{background:var(--d30-bg)!important}
+body{min-height:100dvh}
+
+/* O cabeçalho antigo continua no DOM para que o leitor possa atualizá-lo,
+   mas fica visualmente substituído pelo shell novo. */
+body:not(.parallel-mode)>header{
+  min-height:74px!important;
+  height:auto!important;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) 15px 10px!important;
+  display:block!important;
+  background:linear-gradient(180deg,rgba(5,4,3,.99),rgba(5,4,3,.94) 76%,rgba(5,4,3,.02))!important;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:0!important;
+  box-shadow:none!important;
+}
+body:not(.parallel-mode)>header>.headmain,
+body:not(.parallel-mode)>header>#hdrPage{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  overflow:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+body:not(.parallel-mode)>.progress{display:none!important}
+
+.doxa30-top{
+  width:100%;
+  display:grid;
+  grid-template-columns:44px minmax(0,1fr) auto 44px 44px;
+  align-items:center;
+  gap:8px;
+}
+.doxa30-btn,.doxa30-selector{
+  border:0;
+  background:transparent;
+  color:#e5bd84;
+  min-height:44px;
+  font:inherit;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.doxa30-btn{
+  width:44px;height:44px;
+  display:grid;place-items:center;
+  border-radius:14px;
+}
+.doxa30-btn:active{background:rgba(218,161,92,.09)}
+.doxa30-selector{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:20px;
+  color:#f0dfca;
+  white-space:nowrap;
+}
+.doxa30-selector.version{
+  justify-content:center;
+  color:#e2b77a;
+  padding:0 4px;
+}
+.doxa30-selector .txt{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.doxa30-chevron{
+  width:8px;height:8px;
+  border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;
+  transform:rotate(45deg) translateY(-2px);
+  opacity:.82;
+  flex:0 0 auto;
+}
+.doxa30-hamb{width:23px;height:18px;position:relative}
+.doxa30-hamb::before,.doxa30-hamb::after,.doxa30-hamb span{
+  content:'';position:absolute;left:0;right:0;height:2px;border-radius:9px;background:currentColor
+}
+.doxa30-hamb::before{top:0}.doxa30-hamb span{top:8px}.doxa30-hamb::after{bottom:0}
+.doxa30-top svg{width:25px;height:25px;display:block;stroke-width:1.8}
+
+/* Pão Diário */
+.doxa30-bread-btn{overflow:visible!important}
+.doxa30-bread-stage{
+  width:38px;height:38px;
+  display:grid;place-items:center;
+  position:relative;
+  overflow:visible;
+}
+.doxa30-bread-state{
+  position:absolute;
+  width:36px;height:36px;
+  object-fit:contain;
+  display:block;
+  transition:opacity .36s ease,transform .36s cubic-bezier(.2,.9,.25,1),filter .36s ease;
+  pointer-events:none;
+}
+.doxa30-bread-inactive{opacity:.82;transform:scale(.88);filter:drop-shadow(0 1px 1px rgba(0,0,0,.45))}
+.doxa30-bread-active{opacity:0;transform:scale(.68) translateY(3px);filter:drop-shadow(0 0 0 rgba(243,177,79,0))}
+.doxa30-bread-ring{
+  position:absolute;width:34px;height:34px;border-radius:50%;opacity:0;transform:scale(.5);
+  background:radial-gradient(circle,rgba(255,196,103,.34),rgba(220,132,35,.12) 46%,transparent 72%);
+  filter:blur(2px);pointer-events:none
+}
+.doxa30-bread-stage.earned .doxa30-bread-inactive,
+.doxa30-bread-stage.earned-static .doxa30-bread-inactive{opacity:0;transform:scale(.72)}
+.doxa30-bread-stage.earned .doxa30-bread-active{
+  opacity:1;transform:scale(1);
+  filter:drop-shadow(0 0 6px rgba(255,205,118,.65)) drop-shadow(0 0 13px rgba(218,134,37,.36));
+  animation:doxa30BreadHop .68s cubic-bezier(.2,.9,.25,1) both,doxa30BreadBreathe 2.4s ease-in-out .8s 2;
+}
+.doxa30-bread-stage.earned .doxa30-bread-ring{animation:doxa30BreadFlash .9s ease-out both}
+.doxa30-bread-stage.earned-static .doxa30-bread-active{
+  opacity:1;transform:scale(1);animation:none;
+  filter:drop-shadow(0 0 6px rgba(255,205,118,.55)) drop-shadow(0 0 12px rgba(218,134,37,.30));
+}
+.doxa30-bread-stage.earned-static .doxa30-bread-ring{opacity:0;animation:none}
+@keyframes doxa30BreadHop{
+  0%{transform:translateY(0) scale(.68) rotate(0)}
+  32%{transform:translateY(-9px) scale(1.16) rotate(-5deg)}
+  55%{transform:translateY(1px) scale(.95) rotate(3deg)}
+  76%{transform:translateY(-3px) scale(1.04) rotate(-1deg)}
+  100%{transform:translateY(0) scale(1) rotate(0)}
+}
+@keyframes doxa30BreadFlash{
+  0%{opacity:0;transform:scale(.45)}
+  34%{opacity:1;transform:scale(1.35)}
+  100%{opacity:0;transform:scale(1.75)}
+}
+@keyframes doxa30BreadBreathe{
+  0%,100%{filter:drop-shadow(0 0 6px rgba(255,205,118,.55)) drop-shadow(0 0 12px rgba(218,134,37,.30))}
+  50%{filter:drop-shadow(0 0 9px rgba(255,220,145,.88)) drop-shadow(0 0 19px rgba(226,139,38,.52))}
+}
+
+/* Barra inferior nova. A antiga continua funcional por baixo, mas fica oculta. */
+nav.bar{visibility:hidden!important;pointer-events:none!important}
+.doxa30-bottom-wrap{
+  position:fixed;z-index:35;left:0;right:0;bottom:0;
+  padding:0 12px calc(env(safe-area-inset-bottom,0px) + 10px);
+  pointer-events:none;
+  transition:transform .24s cubic-bezier(.22,.72,.18,1),opacity .18s ease;
+  will-change:transform,opacity;
+}
+.doxa30-bottom{
+  max-width:720px;margin:0 auto;min-height:90px;
+  display:grid;grid-template-columns:repeat(4,1fr);align-items:center;
+  padding:7px 4px 9px;position:relative;overflow:hidden;
+  border:1px solid rgba(219,165,96,.20);border-radius:29px;
+  background:linear-gradient(180deg,rgba(20,15,11,.97),rgba(8,6,4,.99));
+  box-shadow:0 18px 42px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.025),0 0 36px rgba(133,77,26,.08);
+  backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);
+  pointer-events:auto;
+}
+.doxa30-bottom::before{
+  content:'';position:absolute;top:0;left:25%;width:25%;height:2px;
+  background:linear-gradient(90deg,transparent,#c9792e 12%,#f3b75e 50%,#fff0c8 70%,transparent);
+  filter:drop-shadow(0 0 9px rgba(255,175,77,.8));
+  transition:left .22s cubic-bezier(.2,.8,.2,1);
+}
+.doxa30-bottom[data-active='tools']::before{left:50%}
+.doxa30-nav-item{
+  height:72px;border:0;background:transparent;border-radius:21px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  color:#aa9b8c;position:relative;font:600 13px/1 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+}
+.doxa30-nav-item svg{width:26px;height:26px;stroke-width:1.8}
+.doxa30-nav-item.active{color:#f4c77e;text-shadow:0 0 12px rgba(255,184,79,.28)}
+.doxa30-nav-item.active::after{
+  content:'';position:absolute;width:70px;height:64px;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle,rgba(224,142,43,.25),rgba(224,142,43,.07) 48%,transparent 72%);filter:blur(3px)
+}
+body.hud-hidden:not(.parallel-mode) .doxa30-bottom-wrap{
+  transform:translate3d(0,calc(130% + env(safe-area-inset-bottom,0px)),0)!important;
+  opacity:0!important;pointer-events:none!important
+}
+body:not(.parallel-mode){padding-bottom:112px!important}
+body.hud-hidden:not(.parallel-mode){padding-bottom:12px!important}
+
+/* Leitura aprovada: preta, editorial, números dourados. */
+body:not(.parallel-mode) #p-ler>.modebar{display:none!important}
+body:not(.parallel-mode) #parallelToggle{display:none!important}
+body:not(.parallel-mode) #p-ler .pager{display:none!important}
+body:not(.parallel-mode) #singleReader{max-width:760px;margin:0 auto;padding:20px 26px 30px}
+body:not(.parallel-mode) #singleReader .opening{margin-top:0}
+body:not(.parallel-mode) #textBody:not(.hebrew){font-family:Georgia,'Times New Roman',serif!important}
+body:not(.parallel-mode) #textBody .verse{
+  color:var(--d30-text)!important;
+  font-size:clamp(24px,6.25vw,31px)!important;
+  line-height:1.58!important;
+  letter-spacing:.002em!important;
+  margin-bottom:27px!important;
+}
+body:not(.parallel-mode) #textBody .vnum,
+body:not(.parallel-mode) #textBody sup.vnum{
+  color:#e2a35c!important;
+  font-weight:700!important;
+  text-shadow:0 0 12px rgba(232,161,75,.15)!important;
+}
+body:not(.parallel-mode) #p-ler,
+body:not(.parallel-mode) main{background:transparent!important}
+
+/* Ajustes, busca e ferramentas continuam usando os painéis existentes,
+   só recebem a paleta para não quebrar a identidade visual. */
+body:not(.parallel-mode) #p-buscar,
+body:not(.parallel-mode) #p-marcar,
+body:not(.parallel-mode) #p-ajustes{
+  background:var(--d30-bg)!important;
+  color:var(--d30-text)!important;
+}
+
+.doxa30-streak-toast{
+  position:fixed;z-index:80;left:50%;bottom:124px;transform:translate(-50%,14px);
+  opacity:0;pointer-events:none;padding:10px 14px;border-radius:13px;
+  color:#edd8bb;background:#17110d;border:1px solid rgba(218,163,92,.2);
+  box-shadow:0 12px 32px rgba(0,0,0,.42);font:600 13px/1.2 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+  white-space:nowrap;transition:.18s ease
+}
+.doxa30-streak-toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:360px){
+  .doxa30-top{grid-template-columns:40px minmax(0,1fr) auto 40px 40px;gap:4px}
+  .doxa30-btn{width:40px}.doxa30-selector{font-size:18px}
+  .doxa30-bread-state{width:33px;height:33px}
+}
+@media(prefers-reduced-motion:reduce){
+  .doxa30-bread-stage.earned .doxa30-bread-active,
+  .doxa30-bread-stage.earned .doxa30-bread-ring{animation:none!important}
+  .doxa30-bottom-wrap{transition:none!important}
+}
