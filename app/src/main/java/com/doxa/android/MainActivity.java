@@ -30,7 +30,7 @@ public final class MainActivity extends Activity {
     private ProgressBar progress;
     private ValueCallback<Uri[]> fileCallback;
     private volatile boolean destroyed;
-    private boolean importing;
+    private boolean importing, updateCheckStarted;
     // All export state below is confined to the single IO executor.
     private File exportFile;
     private OutputStream exportStream;
@@ -39,6 +39,8 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        try { RemotePackageInstaller.recover(getFilesDir()); }
+        catch (IOException error) { message("O Doxa não conseguiu concluir uma recuperação de recursos."); }
         if (RemotePackageInstaller.isReady(getFilesDir())) showReader(true);
         else if (new File(getFilesDir(), "reader/.ready").isFile()) prepareReader();
         else showImport();
@@ -244,6 +246,7 @@ public final class MainActivity extends Activity {
                     try { view.evaluateJavascript(readAsset("native-files.js"), null); }
                     catch (IOException error) { message("Não foi possível preparar a exportação de arquivos."); }
                 }
+                maybeCheckResourceUpdates();
             }
             @Override public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError error) {
                 if (req.isForMainFrame()) new AlertDialog.Builder(MainActivity.this)
@@ -282,6 +285,93 @@ public final class MainActivity extends Activity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
                 View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         web.loadUrl(START);
+    }
+
+    private void maybeCheckResourceUpdates() {
+        if (updateCheckStarted || importing || !RemotePackageInstaller.isReady(getFilesDir())) return;
+        updateCheckStarted = true;
+        io.execute(() -> {
+            try {
+                RemotePackageInstaller.UpdateInfo info = RemotePackageInstaller.checkForUpdates(this);
+                if (info.hasUpdate()) runOnUiThread(() -> {
+                    if (destroyed || importing) return;
+                    StringBuilder text = new StringBuilder();
+                    text.append(info.packageCount == 1 ? "Há 1 pacote de recursos novo." : "Há " + info.packageCount + " pacotes de recursos novos.");
+                    if (info.downloadBytes > 0) text.append("\n\nDownload: ").append(formatSize(info.downloadBytes)).append('.');
+                    text.append("\n\nO Doxa baixa somente o que mudou, confere a integridade e mantém a versão anterior até a atualização terminar.");
+                    new AlertDialog.Builder(this)
+                            .setTitle("Atualização de recursos")
+                            .setMessage(text.toString())
+                            .setNegativeButton("Depois", null)
+                            .setPositiveButton("Atualizar agora", (d,w) -> startResourceUpdate())
+                            .show();
+                });
+                else if (info.appUpdateRequired) runOnUiThread(() -> {
+                    if (!destroyed) message("Há recursos novos que exigem uma versão mais recente do Doxa.");
+                });
+            } catch (IOException ignored) {
+                // Offline or server unavailable: reading remains fully usable with local resources.
+            }
+        });
+    }
+
+    private void startResourceUpdate() {
+        if (importing) return;
+        importing = true;
+        if (web != null) {
+            web.stopLoading();
+            web.onPause();
+            web.destroy();
+            web = null;
+        }
+        showImport();
+        downloadButton.setVisibility(View.GONE);
+        importButton.setVisibility(View.GONE);
+        progress.setVisibility(View.VISIBLE);
+        progress.setIndeterminate(false);
+        progress.setMax(1000);
+        progress.setProgress(0);
+        status.setText("Preparando atualização dos recursos…");
+
+        io.execute(() -> {
+            try {
+                RemotePackageInstaller.update(this, new RemotePackageInstaller.Progress() {
+                    @Override public void onStatus(String text) {
+                        runOnUiThread(() -> { if (!destroyed && status != null) status.setText(text); });
+                    }
+                    @Override public void onBytes(long done, long total) {
+                        if (total <= 0) return;
+                        int value = (int) Math.min(1000, (done * 1000L) / total);
+                        runOnUiThread(() -> { if (!destroyed && progress != null) progress.setProgress(value); });
+                    }
+                });
+                runOnUiThread(() -> {
+                    importing = false;
+                    if (!destroyed) {
+                        showReader(true);
+                        message("Recursos do Doxa atualizados.");
+                    }
+                });
+            } catch (Exception error) {
+                runOnUiThread(() -> {
+                    importing = false;
+                    if (!destroyed) {
+                        showReader(true);
+                        new AlertDialog.Builder(this)
+                                .setTitle("Atualização não aplicada")
+                                .setMessage("Os recursos anteriores foram preservados.\n\n" + error.getMessage())
+                                .setPositiveButton("OK", null)
+                                .show();
+                    }
+                });
+            }
+        });
+    }
+
+    private static String formatSize(long bytes) {
+        if (bytes < 1024L * 1024L) return Math.max(1, bytes / 1024L) + " KB";
+        double mb = bytes / (1024.0 * 1024.0);
+        return String.format(java.util.Locale.ROOT, "%.1f MB", mb);
     }
 
     private void receiveExport(String data, JavaScriptReplyProxy reply) {
