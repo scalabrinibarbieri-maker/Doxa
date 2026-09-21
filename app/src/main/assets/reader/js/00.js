@@ -2,8 +2,6 @@
   window.__doxaBootStarted=Date.now();
   document.documentElement.setAttribute('data-doxa-boot','1');
 
-  // Splash visual aprovada: troca somente o asset e o texto,
-  // mantendo intacta a lógica de boot/fechamento existente.
   try{
     const splash=document.getElementById('doxaBootSplash');
     if(splash){
@@ -14,34 +12,34 @@
     }
   }catch(e){}
 
-  // Shell aprovado + extensão "Papel".
   try{
-    const css=document.createElement('link');
-    css.rel='stylesheet';css.id='doxa-v30-shell-css';css.href='css/21.css';
-    document.head.appendChild(css);
+    const addCss=(id,href)=>{
+      if(document.getElementById(id))return;
+      const el=document.createElement('link');
+      el.rel='stylesheet';el.id=id;el.href=href;
+      document.head.appendChild(el);
+    };
+    const addScript=(id,src,done)=>{
+      if(document.getElementById(id)){done?.();return}
+      const el=document.createElement('script');
+      el.id=id;el.src=src;el.async=false;
+      el.onload=()=>done?.();
+      el.onerror=()=>done?.();
+      document.body.appendChild(el);
+    };
+
+    addCss('doxa-v30-shell-css','css/21.css');
+    addCss('doxa-v31-tools-css','css/22.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
-      if(document.getElementById('doxa-v30-shell-js'))return;
-
-      const js=document.createElement('script');
-      js.id='doxa-v30-shell-js';
-      js.src='js/18.js';
-      js.async=false;
-
-      js.onload=()=>{
-        if(document.getElementById('doxa-v30-paper-js'))return;
-        const paper=document.createElement('script');
-        paper.id='doxa-v30-paper-js';
-        paper.src='js/19.js';
-        paper.async=false;
-        document.body.appendChild(paper);
-      };
-
-      document.body.appendChild(js);
+      addScript('doxa-v30-shell-js','js/18.js',()=>{
+        addScript('doxa-v30-paper-js','js/19.js',()=>{
+          addScript('doxa-v31-tools-js','js/20.js');
+        });
+      });
     },{once:true});
   }catch(e){}
 
-  // Fusível de segurança: a tela de abertura jamais pode prender o usuário.
   window.__doxaBootFailsafe=setTimeout(()=>{
     const splash=document.getElementById('doxaBootSplash');
     if(!splash)return;
