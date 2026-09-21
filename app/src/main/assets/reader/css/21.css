@@ -198,7 +198,7 @@ body:not(.parallel-mode) #singleReader .opening{margin-top:0}
 body:not(.parallel-mode) #textBody:not(.hebrew){font-family:Georgia,'Times New Roman',serif!important}
 body:not(.parallel-mode) #textBody .verse{
   color:var(--d30-text)!important;
-  font-size:clamp(24px,6.25vw,31px)!important;
+  font-size:calc(var(--reader-font-size,18.5px) * 1.55)!important;
   line-height:1.58!important;
   letter-spacing:.002em!important;
   margin-bottom:27px!important;
@@ -285,3 +285,252 @@ html,body{background:radial-gradient(circle at 50% -12%,color-mix(in srgb,var(--
 .doxa30-swatch.night{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.08),transparent 32%),linear-gradient(180deg,#20201f,#0e0d0d)}
 .doxa30-swatch.olive{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.26),transparent 32%),linear-gradient(180deg,#7f815d,#5f6143)}
 @media(max-width:560px){.doxa30-theme-grid{gap:10px}.doxa30-swatch{width:52px;height:52px}}
+
+
+/* ===== DOXA — HUD NOVO NA LEITURA PARALELA ===== */
+body.parallel-mode{
+  background:var(--d30-bg)!important;
+  color:var(--d30-text)!important;
+  padding-bottom:0!important;
+}
+body.parallel-mode #p-ler,
+body.parallel-mode main,
+body.parallel-mode .parallel-reader{
+  background:var(--d30-bg)!important;
+}
+
+/* Barra superior: mesmo vocabulário visual do leitor novo. */
+body.parallel-mode .parallel-appbar{
+  flex:0 0 auto!important;
+  height:auto!important;
+  min-height:64px!important;
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr) 44px 44px!important;
+  align-items:center!important;
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 12px 8px!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel) 98%,transparent),color-mix(in srgb,var(--d30-bg) 96%,transparent))!important;
+  border-bottom:1px solid color-mix(in srgb,var(--d30-gold) 12%,transparent)!important;
+  box-shadow:none!important;
+  color:var(--d30-text)!important;
+  transition:max-height .24s cubic-bezier(.22,.72,.18,1),padding .24s cubic-bezier(.22,.72,.18,1),opacity .18s ease,transform .24s cubic-bezier(.22,.72,.18,1)!important;
+  max-height:100px;
+  overflow:hidden;
+}
+body.parallel-mode .parallel-appbar-title strong{
+  color:var(--d30-text)!important;
+  font:600 19px/1.1 Georgia,'Times New Roman',serif!important;
+  letter-spacing:.01em!important;
+}
+body.parallel-mode .parallel-appbar-title small{
+  margin-top:4px!important;
+  color:var(--d30-muted)!important;
+  font:650 10px/1.15 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif!important;
+  letter-spacing:.035em!important;
+}
+body.parallel-mode .parallel-appbar-back,
+body.parallel-mode .parallel-appbar-layout,
+body.parallel-mode .parallel-appbar-sync{
+  width:42px!important;height:42px!important;
+  color:var(--d30-gold)!important;
+  border-radius:14px!important;
+  background:transparent!important;
+}
+body.parallel-mode .parallel-appbar-back{font-size:32px!important}
+body.parallel-mode .parallel-appbar-layout:active,
+body.parallel-mode .parallel-appbar-sync:active,
+body.parallel-mode .parallel-appbar-back:active{
+  background:color-mix(in srgb,var(--d30-gold) 10%,transparent)!important;
+}
+body.parallel-mode .parallel-appbar-sync.on,
+body.parallel-mode .parallel-appbar-layout[aria-pressed="true"]{
+  color:var(--d30-gold2)!important;
+  background:color-mix(in srgb,var(--d30-gold) 10%,transparent)!important;
+}
+
+/* Os seletores de cada Bíblia deixam de parecer o HUD antigo. */
+body.parallel-mode .parallel-grid{
+  background:color-mix(in srgb,var(--d30-gold) 14%,var(--d30-bg))!important;
+  gap:1px!important;
+}
+body.parallel-mode .parallel-pane{
+  background:var(--d30-bg)!important;
+  border:0!important;
+  border-radius:0!important;
+}
+body.parallel-mode .parallel-pane-head{
+  flex:0 0 auto!important;
+  height:auto!important;
+  min-height:54px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.06fr) auto!important;
+  gap:7px!important;
+  align-items:center!important;
+  padding:7px 8px!important;
+  background:var(--d30-bg)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--d30-gold) 10%,transparent)!important;
+  box-shadow:none!important;
+  transition:max-height .22s cubic-bezier(.22,.72,.18,1),padding .22s ease,opacity .17s ease!important;
+  max-height:76px;
+  overflow:hidden;
+}
+body.parallel-mode .parallel-version-row,
+body.parallel-mode .parallel-nav{
+  min-width:0!important;
+  height:42px!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 16%,transparent)!important;
+  border-radius:13px!important;
+  overflow:hidden!important;
+  background:color-mix(in srgb,var(--d30-panel) 82%,var(--d30-bg))!important;
+}
+body.parallel-mode .parallel-version-row{display:block!important}
+body.parallel-mode .parallel-version-trigger,
+body.parallel-mode .parallel-passage-trigger{
+  height:42px!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--d30-text)!important;
+}
+body.parallel-mode .parallel-version-mark{
+  color:var(--d30-gold)!important;
+  border-color:color-mix(in srgb,var(--d30-gold) 18%,transparent)!important;
+  background:color-mix(in srgb,var(--d30-gold) 9%,transparent)!important;
+}
+body.parallel-mode .parallel-version-name,
+body.parallel-mode .parallel-passage-trigger{
+  color:var(--d30-text)!important;
+}
+body.parallel-mode .parallel-version-chevron,
+body.parallel-mode .parallel-passage-chevron{color:var(--d30-muted)!important}
+body.parallel-mode .parallel-pane-actions{
+  height:42px!important;
+  display:flex!important;
+  gap:4px!important;
+}
+body.parallel-mode .parallel-pane-actions .picon{
+  width:34px!important;height:42px!important;flex:0 0 34px!important;
+  border:0!important;border-radius:11px!important;
+  color:var(--d30-gold)!important;
+  background:transparent!important;
+}
+body.parallel-mode .parallel-pane-actions .picon:active{
+  background:color-mix(in srgb,var(--d30-gold) 9%,transparent)!important;
+}
+
+/* Texto paralelo no mesmo conceito editorial do leitor principal. */
+body.parallel-mode .parallel-text{
+  background:var(--d30-bg)!important;
+  color:var(--d30-text)!important;
+  background-image:none!important;
+  font-family:var(--reader-family,Georgia,'Times New Roman',serif)!important;
+  font-size:calc(var(--reader-font-size,18.5px) * 1.05)!important;
+  line-height:1.58!important;
+  padding:18px 14px 30px!important;
+}
+body.parallel-mode .parallel-text.hebrew{
+  font-family:"SBL Hebrew","Taamey Frank CLM","Ezra SIL","Noto Serif Hebrew","Times New Roman",serif!important;
+  font-size:calc(var(--reader-font-size,18.5px) * 1.38)!important;
+  line-height:1.72!important;
+  color:var(--d30-text)!important;
+}
+body.parallel-mode .parallel-text .vnum,
+body.parallel-mode .parallel-text.hebrew .vnum{
+  color:var(--d30-gold)!important;
+  opacity:.82!important;
+  text-shadow:0 0 10px color-mix(in srgb,var(--d30-gold) 13%,transparent)!important;
+}
+body.parallel-mode .parallel-text.hebrew .oshb-punct{color:var(--d30-text)!important}
+body.parallel-mode .parallel-text.hebrew .oshb-word:active,
+body.parallel-mode .parallel-text.hebrew .oshb-word.sel{
+  background:color-mix(in srgb,var(--d30-gold) 14%,transparent)!important;
+}
+
+/* Horizontal = lado a lado (referência aprovada); Vertical = um sobre o outro. */
+body.parallel-mode.parallel-layout-horizontal .parallel-grid{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  gap:1px!important;
+}
+body.parallel-mode.parallel-layout-vertical .parallel-grid{
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:1px!important;
+}
+body.parallel-mode.parallel-layout-vertical .parallel-text{
+  font-size:calc(var(--reader-font-size,18.5px) * 1.33)!important;
+}
+body.parallel-mode.parallel-layout-vertical .parallel-text.hebrew{
+  font-size:calc(var(--reader-font-size,18.5px) * 1.62)!important;
+}
+
+/* A barra inferior nova também é o HUD da paralela. */
+body.parallel-mode .doxa30-bottom-wrap{display:block!important}
+body.parallel-mode:not(.hud-hidden) .parallel-text{padding-bottom:118px!important}
+body.parallel-mode.parallel-layout-vertical:not(.hud-hidden) .parallel-pane:first-child .parallel-text{padding-bottom:30px!important}
+
+/* Imersivo: topo, controles dos painéis e barra inferior somem juntos. */
+body.hud-hidden .doxa30-bottom-wrap{
+  transform:translate3d(0,calc(130% + env(safe-area-inset-bottom,0px)),0)!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+body.parallel-mode.hud-hidden .parallel-appbar{
+  min-height:0!important;
+  max-height:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  border:0!important;
+  opacity:0!important;
+  transform:translate3d(0,-14px,0)!important;
+  pointer-events:none!important;
+}
+body.parallel-mode.hud-hidden .parallel-pane-head{
+  min-height:0!important;
+  max-height:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  border:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+/* ===== SETAS AO FINAL DO CAPÍTULO ===== */
+body:not(.parallel-mode) #singleReader .pager.doxa-chapter-arrows{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:18px!important;
+  margin:18px 0 96px!important;
+  padding:12px 2px 4px!important;
+}
+body:not(.parallel-mode) #singleReader .pager.doxa-chapter-arrows .btn{
+  width:58px!important;height:52px!important;
+  display:grid!important;place-items:center!important;
+  padding:0!important;
+  border-radius:18px!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 18%,transparent)!important;
+  background:color-mix(in srgb,var(--d30-panel) 84%,var(--d30-bg))!important;
+  color:var(--d30-gold2)!important;
+  font:400 34px/1 Georgia,'Times New Roman',serif!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.16)!important;
+}
+body:not(.parallel-mode) #singleReader .pager.doxa-chapter-arrows .btn:disabled{
+  opacity:.22!important;
+}
+
+/* ===== TAMANHO DO TEXTO ===== */
+body:not(.parallel-mode) #textBody.hebrew .verse{
+  font-size:calc(var(--reader-font-size,18.5px) * 1.72)!important;
+}
+
+/* ===== ÁREA DA CÂMERA =====
+   padrão: respeita safe-area; opção Tela toda: interface sobe para a área disponível. */
+body.doxa-screen-full:not(.parallel-mode)>header{
+  padding-top:10px!important;
+}
+body.doxa-screen-full.parallel-mode .parallel-appbar{
+  padding-top:8px!important;
+}
+.doxa-screen-mode-row input[type="checkbox"]{accent-color:var(--d30-gold)}
+
+/* Durante a animação de capítulo, o HUD não troca de aba nem recebe toque acidental. */
+body.chapter-animating .doxa30-bottom{pointer-events:none!important}
