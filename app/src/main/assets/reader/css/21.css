@@ -27,6 +27,7 @@ body:not(.parallel-mode)>header{
   border:0!important;
   box-shadow:none!important;
 }
+body:not(.parallel-mode)>header>.brand-seal{display:none!important}
 body:not(.parallel-mode)>header>.headmain,
 body:not(.parallel-mode)>header>#hdrPage{
   position:absolute!important;
@@ -239,3 +240,48 @@ body:not(.parallel-mode) #p-ajustes{
   .doxa30-bread-stage.earned .doxa30-bread-ring{animation:none!important}
   .doxa30-bottom-wrap{transition:none!important}
 }
+
+
+/* ===== DOXA 30.5 — TEMAS EM MAIS ===== */
+body:not(.parallel-mode)>header{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel) 98%,transparent),color-mix(in srgb,var(--d30-panel) 92%,transparent) 76%,transparent)!important;
+}
+.doxa30-btn{color:var(--d30-gold)!important}
+.doxa30-selector{color:var(--d30-text)!important}
+.doxa30-selector.version{color:var(--d30-gold)!important}
+.doxa30-btn:active{background:color-mix(in srgb,var(--d30-gold) 10%,transparent)!important}
+.doxa30-bottom{border-color:color-mix(in srgb,var(--d30-gold) 20%,transparent)!important;background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel) 97%,transparent),color-mix(in srgb,var(--d30-bg) 99%,transparent))!important;box-shadow:0 18px 42px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06),0 0 36px color-mix(in srgb,var(--d30-gold) 8%,transparent)!important}
+.doxa30-bottom::before{background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--d30-gold) 88%,#9b632f) 12%,var(--d30-gold2) 50%,color-mix(in srgb,var(--d30-gold2) 62%,white) 70%,transparent)!important;filter:drop-shadow(0 0 9px color-mix(in srgb,var(--d30-gold2) 70%,transparent))!important}
+.doxa30-bottom[data-active='more']::before{left:75%}
+.doxa30-nav-item{color:var(--d30-muted)!important}
+.doxa30-nav-item.active{color:var(--d30-gold2)!important;text-shadow:0 0 12px color-mix(in srgb,var(--d30-gold2) 28%,transparent)!important}
+.doxa30-nav-item.active::after{background:radial-gradient(circle,color-mix(in srgb,var(--d30-gold) 22%,transparent),color-mix(in srgb,var(--d30-gold) 7%,transparent) 48%,transparent 72%)!important}
+body:not(.parallel-mode) #textBody .vnum,body:not(.parallel-mode) #textBody sup.vnum{color:var(--d30-gold)!important}
+html,body{background:radial-gradient(circle at 50% -12%,color-mix(in srgb,var(--d30-gold) 12%,transparent),transparent 34%),linear-gradient(180deg,var(--d30-bg) 0%,var(--d30-bg2) 100%)!important;background-attachment:fixed!important}
+#p-ajustes #normalAppearanceCard{display:none!important}
+
+.doxa30-overlay{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .20s ease}
+.doxa30-overlay.on{opacity:1;pointer-events:auto}
+.doxa30-sheet{position:absolute;left:0;right:0;bottom:0;padding:16px 18px calc(env(safe-area-inset-bottom,0px) + 24px);border-radius:28px 28px 0 0;color:var(--d30-text);background:linear-gradient(180deg,var(--d30-panel),color-mix(in srgb,var(--d30-panel) 76%,var(--d30-bg)));border-top:1px solid color-mix(in srgb,var(--d30-gold) 22%,transparent);box-shadow:0 -24px 68px rgba(0,0,0,.34);transform:translateY(104%);transition:transform .24s cubic-bezier(.2,.8,.2,1)}
+.doxa30-overlay.on .doxa30-sheet{transform:translateY(0)}
+.doxa30-grab{width:44px;height:4px;border-radius:50px;background:color-mix(in srgb,var(--d30-muted) 32%,transparent);margin:0 auto 18px}
+.doxa30-sheet h2{margin:0 0 18px;font:500 29px/1.1 Georgia,'Times New Roman',serif;color:var(--d30-text)}
+.doxa30-more-list{display:grid;gap:10px}
+.doxa30-more-row{width:100%;min-height:72px;display:grid;grid-template-columns:44px 1fr 24px;align-items:center;gap:12px;padding:0 14px;border-radius:18px;text-align:left;color:var(--d30-text);background:color-mix(in srgb,var(--d30-panel) 82%,var(--d30-bg));border:1px solid color-mix(in srgb,var(--d30-gold) 13%,transparent)}
+.doxa30-more-row:active{transform:scale(.988)}
+.doxa30-more-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;color:var(--d30-gold);font-size:23px;background:color-mix(in srgb,var(--d30-gold) 10%,transparent)}
+.doxa30-more-copy strong{display:block;font-size:16px}.doxa30-more-copy small{display:block;margin-top:3px;color:var(--d30-muted);font-size:12px}.doxa30-more-arrow{color:var(--d30-muted);font-size:26px}
+.doxa30-theme-overlay{background:rgba(0,0,0,.16);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.doxa30-theme-tray{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);padding:22px 14px 18px;border-radius:30px;background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel) 96%,transparent),color-mix(in srgb,var(--d30-panel) 84%,var(--d30-bg)));border:1px solid color-mix(in srgb,var(--d30-gold) 16%,transparent);box-shadow:0 18px 50px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.10);transform:translateY(130%);transition:transform .24s cubic-bezier(.2,.8,.2,1)}
+.doxa30-theme-overlay.on .doxa30-theme-tray{transform:translateY(0)}
+.doxa30-theme-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.doxa30-theme-option{border:0;background:transparent;padding:0;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--d30-muted);font:700 13px/1 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif}
+.doxa30-theme-option.on{color:var(--d30-text)}
+.doxa30-swatch{width:58px;height:58px;border-radius:50%;position:relative;border:1px solid rgba(0,0,0,.06);box-shadow:inset 0 1px 2px rgba(255,255,255,.28),0 5px 14px rgba(0,0,0,.08)}
+.doxa30-theme-option.on .doxa30-swatch{outline:3px solid color-mix(in srgb,var(--d30-gold) 82%,transparent);outline-offset:3px}
+.doxa30-swatch.paper{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),transparent 32%),linear-gradient(180deg,#f5ede0,#eadcc7)}
+.doxa30-swatch.sepia{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.35),transparent 32%),linear-gradient(180deg,#e8cfab,#d5b587)}
+.doxa30-swatch.white{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.9),transparent 34%),linear-gradient(180deg,#fff,#efede7)}
+.doxa30-swatch.night{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.08),transparent 32%),linear-gradient(180deg,#20201f,#0e0d0d)}
+.doxa30-swatch.olive{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.26),transparent 32%),linear-gradient(180deg,#7f815d,#5f6143)}
+@media(max-width:560px){.doxa30-theme-grid{gap:10px}.doxa30-swatch{width:52px;height:52px}}
