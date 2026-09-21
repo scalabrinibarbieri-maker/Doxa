@@ -12,9 +12,30 @@
   function svgTools(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M14.8 5.3a5 5 0 0 0-6.1 6.2L3.5 16.7a2.5 2.5 0 1 0 3.6 3.6l5.2-5.2a5 5 0 0 0 6.2-6.1l-3.1 3.1-3.4-.8-.8-3.4Z"></path></svg>'}
   function svgMore(){return '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="5" cy="12" r="1.7"></circle><circle cx="12" cy="12" r="1.7"></circle><circle cx="19" cy="12" r="1.7"></circle></svg>'}
 
+  function shortVersionLabel(raw){
+    const t=String(raw||'').trim();
+    if(/Almeida\s*1819/i.test(t))return '1819';
+    if(/WLC|Hebraico/i.test(t))return 'Hebraico';
+    if(/Textus\s+Receptus|TR\s*1550/i.test(t))return 'Grego';
+    if(/Tradução Brasileira/i.test(t))return 'TB';
+    if(/Nova Versão Internacional/i.test(t))return 'NVI';
+    if(/Nova Tradução na Linguagem de Hoje/i.test(t))return 'NTLH';
+    if(/Nova Almeida Atualizada/i.test(t))return 'NAA';
+    if(/King James Atualizada/i.test(t))return 'KJA';
+    if(/King James Fiel/i.test(t))return 'KJF';
+    if(/João Ferreira de Almeida Atualizada/i.test(t))return 'JFAA';
+    if(/Almeida Século 21/i.test(t))return 'AS21';
+    if(/Almeida Revista e Atualizada/i.test(t))return 'ARA';
+    if(/Almeida Revista e Corrigida/i.test(t))return 'ARC';
+    if(/Bíblia Livre/i.test(t))return 'BLIVRE';
+    if(/hiperliteral/i.test(t))return 'Hiperliteral';
+    return t.length>11?t.slice(0,11):t;
+  }
+
   function installTop(){
     const header=document.querySelector('body>header');
     if(!header||header.querySelector('.doxa30-top'))return;
+    header.querySelector('.brand-seal')?.remove();
     const top=document.createElement('div');
     top.className='doxa30-top';
     top.innerHTML='\
@@ -56,7 +77,7 @@
     $('#doxa30Home')?.addEventListener('click',()=>{}); // reservado para a futura tela Início
     $('#doxa30Bible')?.addEventListener('click',()=>window.openPanel?.('ler'));
     $('#doxa30Tools')?.addEventListener('click',()=>window.openPanel?.('marcar'));
-    $('#doxa30More')?.addEventListener('click',()=>{}); // reservado para a futura tela Mais
+    $('#doxa30More')?.addEventListener('click',()=>openMore());
   }
 
   function setActive(panel){
@@ -78,7 +99,7 @@
       }
       if(version&&oldVersionTitle){
         const t=(oldVersionTitle.textContent||'').trim();
-        version.textContent=/Almeida\s*1819/i.test(t)?'1819':(t||'1819');
+        version.textContent=shortVersionLabel(t)||'1819';
       }
     };
     sync();
@@ -95,6 +116,42 @@
     }
     setActive(document.getElementById('p-marcar')?.classList.contains('on')?'marcar':'ler');
   }
+
+  const THEME_KEY='doxa:30.5:theme';
+  const THEMES={
+    paper:{bg:'#EFE5D7',bg2:'#E1D2BC',panel:'#F8F0E5',text:'#2E2018',muted:'#6D5A49',gold:'#BF8333',gold2:'#D8A35B',texture:true},
+    sepia:{bg:'#D8B98D',bg2:'#CDA977',panel:'#E2C59A',text:'#332317',muted:'#6E5138',gold:'#A96D36',gold2:'#C98B52',texture:true},
+    white:{bg:'#FCFBF8',bg2:'#F4F2ED',panel:'#FFFFFF',text:'#1F1E1B',muted:'#69655F',gold:'#AA7B43',gold2:'#C79B67',texture:false},
+    night:{bg:'#050403',bg2:'#0A0705',panel:'#0D0A07',text:'#F4EFE9',muted:'#A99B8B',gold:'#D9A25E',gold2:'#F1C989',texture:false},
+    olive:{bg:'#B9B79A',bg2:'#A8A687',panel:'#C5C3A7',text:'#25261C',muted:'#575947',gold:'#656746',gold2:'#85865C',texture:true}
+  };
+  let currentTheme='night';
+  function themeStored(){try{return localStorage.getItem(THEME_KEY)||'night'}catch(e){return'night'}}
+  function setRootThemeVars(t){const root=document.documentElement.style;root.setProperty('--d30-bg',t.bg);root.setProperty('--d30-bg2',t.bg2);root.setProperty('--d30-panel',t.panel);root.setProperty('--d30-text',t.text);root.setProperty('--d30-muted',t.muted);root.setProperty('--d30-gold',t.gold);root.setProperty('--d30-gold2',t.gold2)}
+  function applyTheme(name,save=true){
+    if(!THEMES[name])name='night';currentTheme=name;const t=THEMES[name];document.body.dataset.doxa30Theme=name;setRootThemeVars(t);
+    const vals={normalPageColor:t.bg,normalTextColor:t.text,normalAccentColor:t.gold,normalChromeColor:t.panel};
+    for(const [id,value] of Object.entries(vals)){const el=document.getElementById(id);if(!el)continue;el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}))}
+    const texture=document.getElementById('normalTexture');if(texture){texture.checked=!!t.texture;texture.dispatchEvent(new Event('change',{bubbles:true}))}
+    document.querySelectorAll('.doxa30-theme-option').forEach(b=>b.classList.toggle('on',b.dataset.theme===name));
+    const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=t.bg;if(save){try{localStorage.setItem(THEME_KEY,name)}catch(e){}}
+  }
+  function hideAppearanceFromSettings(){const card=document.getElementById('normalAppearanceCard');if(!card)return;const h=card.previousElementSibling;if(h&&h.tagName==='H2')h.hidden=true;card.hidden=true}
+  function closeOverlay(el){el?.classList.remove('on');setActive(document.getElementById('p-marcar')?.classList.contains('on')?'marcar':'ler')}
+  function ensureMoreUi(){
+    if(document.getElementById('doxa30MoreOverlay'))return;
+    const more=document.createElement('div');more.id='doxa30MoreOverlay';more.className='doxa30-overlay';
+    more.innerHTML='<div class="doxa30-sheet"><div class="doxa30-grab"></div><h2>Mais</h2><div class="doxa30-more-list"><button class="doxa30-more-row" id="doxa30OpenThemes" type="button"><span class="doxa30-more-icon">◐</span><span class="doxa30-more-copy"><strong>Temas</strong><small>Paper, Sepia, White, Night e Olive</small></span><span class="doxa30-more-arrow">›</span></button></div></div>';
+    const themes=document.createElement('div');themes.id='doxa30ThemeOverlay';themes.className='doxa30-overlay doxa30-theme-overlay';
+    const labels={paper:'Paper',sepia:'Sepia',white:'White',night:'Night',olive:'Olive'};
+    themes.innerHTML='<div class="doxa30-theme-tray"><div class="doxa30-theme-grid">'+['paper','sepia','white','night','olive'].map(k=>'<button class="doxa30-theme-option" type="button" data-theme="'+k+'"><span class="doxa30-swatch '+k+'"></span><span>'+labels[k]+'</span></button>').join('')+'</div></div>';
+    document.body.append(more,themes);
+    more.addEventListener('click',e=>{if(e.target===more)closeOverlay(more)});themes.addEventListener('click',e=>{if(e.target===themes)closeOverlay(themes)});
+    document.getElementById('doxa30OpenThemes')?.addEventListener('click',e=>{e.stopPropagation();more.classList.remove('on');setTimeout(()=>themes.classList.add('on'),70)});
+    themes.querySelectorAll('.doxa30-theme-option').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();applyTheme(b.dataset.theme,true)}));
+  }
+  function openMore(){ensureMoreUi();hideAppearanceFromSettings();const bottom=$('#doxa30Bottom');if(bottom){bottom.querySelectorAll('.doxa30-nav-item').forEach(x=>x.classList.remove('active'));$('#doxa30More')?.classList.add('active');bottom.dataset.active='more'}document.getElementById('doxa30MoreOverlay')?.classList.add('on')}
+  function installThemes(){ensureMoreUi();hideAppearanceFromSettings();applyTheme(themeStored(),false);setTimeout(()=>{hideAppearanceFromSettings();applyTheme(currentTheme,false)},500);setTimeout(()=>{hideAppearanceFromSettings();applyTheme(currentTheme,false)},1300)}
 
   function applyDefaultNightOnce(){
     const key='doxa:30.5:new-shell-default-night';
@@ -163,9 +220,7 @@
   }
 
   function init(){
-    installTop();installBottom();mirrorHud();installPanelTracking();installStreak();
-    setTimeout(applyDefaultNightOnce,450);
-    setTimeout(applyDefaultNightOnce,1200);
+    installTop();installBottom();mirrorHud();installPanelTracking();installStreak();installThemes();
     // O leitor já nasce em Almeida 1819 na 30.5; não sobrescrevemos uma escolha posterior do usuário.
   }
 
