@@ -266,7 +266,6 @@
         document.body.classList.add('doxa31-verse-menu-open');
         document.getElementById('doxa31VerseBackdrop')?.classList.add('on');
         injectSelection(verse);
-        keepVerseVisible(verse);
       }else{
         clearSelectionFx();
       }
@@ -615,12 +614,117 @@
     },true);
   }
 
+
+  /* =========================================================
+     LONG PRESS DEFINITIVO DO VERSO
+     Abre enquanto o dedo ainda está pressionando.
+     Não intercepta tap curto nas palavras do WLC.
+     ========================================================= */
+  function installReliableVerseHold(){
+    if(document.documentElement.dataset.doxa31ReliableHold==='1')return;
+    document.documentElement.dataset.doxa31ReliableHold='1';
+
+    let holdTimer=0;
+    let startX=0,startY=0;
+    let heldVerse=null;
+    let heldSide=null;
+    let fired=false;
+
+    const clearHold=()=>{
+      clearTimeout(holdTimer);
+      holdTimer=0;
+      heldVerse=null;
+      heldSide=null;
+      fired=false;
+    };
+
+    document.addEventListener('touchstart',e=>{
+      if(e.touches.length!==1)return;
+
+      const host=e.target.closest?.('#textBody,#pTextA,#pTextB');
+      if(!host)return;
+
+      const verse=e.target.closest?.('.verse');
+      if(!verse)return;
+
+      const t=e.touches[0];
+      clearTimeout(holdTimer);
+
+      startX=t.clientX;
+      startY=t.clientY;
+      heldVerse=verse;
+      heldSide=host.id==='pTextA'?'A':(host.id==='pTextB'?'B':null);
+      fired=false;
+
+      holdTimer=setTimeout(()=>{
+        if(!heldVerse)return;
+
+        if(heldSide){
+          const v=Number(
+            heldVerse.dataset.v ||
+            String(heldVerse.id||'').replace(/^v/,'')
+          );
+          if(!enterParallelVerseContext(heldSide,v))return;
+        }
+
+        fired=true;
+        window.__doxaLongPressActive=true;
+
+        try{navigator.vibrate?.(18)}catch(_){}
+
+        /* A diferença decisiva: abre AGORA, sem esperar touchend. */
+        window.DoxaVerseActions?.open(heldVerse);
+
+        setTimeout(()=>{
+          window.__doxaLongPressActive=false;
+        },900);
+      },430);
+    },{capture:true,passive:true});
+
+    document.addEventListener('touchmove',e=>{
+      if(!heldVerse||e.touches.length!==1)return;
+      const t=e.touches[0];
+      const dist=Math.hypot(t.clientX-startX,t.clientY-startY);
+
+      if(dist<=12)return;
+
+      clearTimeout(holdTimer);
+      holdTimer=0;
+
+      /* Se o usuário começa a arrastar depois do hold,
+         devolve o gesto para o sistema de grifo existente. */
+      if(fired){
+        window.DoxaVerseActions?.close();
+      }
+
+      heldVerse=null;
+      heldSide=null;
+      fired=false;
+    },{capture:true,passive:true});
+
+    document.addEventListener('touchend',()=>{
+      clearTimeout(holdTimer);
+      holdTimer=0;
+
+      /* Se já abriu, mantém aberto.
+         Principalmente: NÃO cancela o clique curto das palavras hebraicas. */
+      heldVerse=null;
+      heldSide=null;
+      fired=false;
+    },{capture:true,passive:true});
+
+    document.addEventListener('touchcancel',clearHold,{
+      capture:true,
+      passive:true
+    });
+  }
+
   function init(){
     installTools();
     installHelp();
     installVerseMenu();
     installParallelV4();
-    installUniversalReaderInput();
+    installReliableVerseHold();
 
     /* Reaplica caso algum módulo posterior reconstrua Ferramentas. */
     setTimeout(installTools,350);
