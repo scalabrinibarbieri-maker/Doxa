@@ -1,0 +1,380 @@
+/* Doxa 30.5 — Ferramentas limpas, leitura paralela e menu contextual v4 */
+
+/* ============================================================
+   Ferramentas
+   ============================================================ */
+#p-marcar>.tools-head,
+#p-marcar>.v20-tools-pack{
+  display:none!important;
+}
+#p-marcar{
+  padding-top:18px!important;
+}
+#p-marcar>.tool-card,
+#p-marcar>.doxa31-parallel-tool{
+  margin-left:0!important;
+  margin-right:0!important;
+}
+.doxa31-parallel-tool{
+  width:100%;
+  min-height:76px;
+  margin-top:12px;
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  padding:0 15px;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 16%,transparent);
+  border-radius:20px;
+  color:var(--d30-text);
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--d30-panel) 94%,transparent),
+    color-mix(in srgb,var(--d30-bg) 98%,transparent));
+  box-shadow:0 8px 24px rgba(0,0,0,.14);
+  text-align:left;
+}
+.doxa31-parallel-tool:active{transform:scale(.992)}
+.doxa31-tool-icon{
+  width:40px;height:40px;
+  display:grid;place-items:center;
+  border-radius:13px;
+  color:var(--d30-gold2);
+  background:color-mix(in srgb,var(--d30-gold) 9%,transparent);
+}
+.doxa31-tool-icon svg{
+  width:23px;height:23px;
+  stroke:currentColor;fill:none;stroke-width:1.65;
+  stroke-linecap:round;stroke-linejoin:round
+}
+.doxa31-tool-copy{min-width:0}
+.doxa31-tool-copy strong{
+  display:block;font:700 15.5px/1.15 var(--ui)
+}
+.doxa31-tool-copy small{
+  display:block;margin-top:4px;
+  color:var(--d30-muted);
+  font:500 11.5px/1.35 var(--ui)
+}
+.doxa31-tool-arrow{
+  color:var(--d30-muted);
+  font:300 26px/1 var(--ui)
+}
+
+/* ============================================================
+   Ajuda dentro de Ajustes
+   ============================================================ */
+.doxa31-help-card{
+  width:100%;
+  min-height:68px;
+  margin:18px 0 5px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) 24px;
+  align-items:center;gap:12px;
+  padding:0 14px;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 13%,transparent);
+  border-radius:18px;
+  color:var(--d30-text);
+  background:color-mix(in srgb,var(--d30-panel) 84%,var(--d30-bg));
+  text-align:left;
+}
+.doxa31-help-card-icon{
+  width:36px;height:36px;border-radius:50%;
+  display:grid;place-items:center;
+  color:var(--d30-gold);
+  background:color-mix(in srgb,var(--d30-gold) 9%,transparent);
+  font:700 18px/1 var(--ui)
+}
+.doxa31-help-card-copy strong{display:block;font:700 14px/1.2 var(--ui)}
+.doxa31-help-card-copy small{
+  display:block;margin-top:3px;color:var(--d30-muted);
+  font:500 11px/1.35 var(--ui)
+}
+.doxa31-help-card-arrow{font-size:25px;color:var(--d30-muted)}
+
+.doxa31-help-backdrop{
+  position:fixed;inset:0;z-index:225;
+  background:rgba(0,0,0,.25);
+  opacity:0;pointer-events:none;
+  transition:opacity .18s ease;
+}
+.doxa31-help-backdrop.on{opacity:1;pointer-events:auto}
+.doxa31-help-sheet{
+  position:fixed;z-index:226;left:0;right:0;bottom:0;
+  max-height:82dvh;overflow:auto;
+  padding:15px 18px calc(26px + env(safe-area-inset-bottom,0px));
+  border-radius:29px 29px 0 0;
+  color:var(--d30-text);
+  background:linear-gradient(180deg,var(--d30-panel),var(--d30-bg));
+  border-top:1px solid color-mix(in srgb,var(--d30-gold) 18%,transparent);
+  box-shadow:0 -24px 70px rgba(0,0,0,.38);
+  transform:translateY(104%);
+  visibility:hidden;
+  transition:transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s linear .24s;
+}
+.doxa31-help-sheet.on{
+  transform:none;visibility:visible;transition-delay:0s
+}
+.doxa31-sheet-grab{
+  width:45px;height:4px;border-radius:99px;
+  margin:0 auto 17px;background:rgba(255,255,255,.13)
+}
+.doxa31-help-head{
+  display:grid;grid-template-columns:1fr 42px;gap:10px;align-items:center;
+  margin-bottom:12px
+}
+.doxa31-help-head strong{
+  font:500 27px/1.15 Georgia,'Times New Roman',serif;
+  color:var(--d30-text)
+}
+.doxa31-help-head button{
+  width:42px;height:42px;border:0;background:transparent;
+  color:var(--d30-muted);font-size:26px
+}
+.doxa31-help-intro{
+  color:var(--d30-muted);
+  font:500 12.5px/1.6 var(--ui);
+  margin:0 0 16px
+}
+.doxa31-help-content .v20-tools-pack{
+  display:block!important;
+  margin:0!important
+}
+
+/* ============================================================
+   Menu de verso — referência aprovada
+   ============================================================ */
+
+/* Sem blur pesado sobre a leitura. */
+.doxa31-verse-backdrop{
+  position:fixed;inset:0;z-index:204;
+  background:rgba(0,0,0,.18);
+  opacity:0;pointer-events:none;
+  transition:opacity .16s ease;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important
+}
+.doxa31-verse-backdrop.on{opacity:1;pointer-events:auto}
+
+/* Mantém o verso selecionado acima do escurecimento e totalmente nítido. */
+body.doxa31-verse-menu-open .verse-context{
+  position:relative!important;
+  z-index:206!important;
+  isolation:isolate;
+  overflow:visible;
+  padding:11px 14px 12px!important;
+  margin-left:-14px!important;
+  margin-right:-14px!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--d30-gold) 8%,rgba(43,26,15,.74)),
+    rgba(28,18,12,.80))!important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb,var(--d30-gold) 20%,transparent),
+    0 9px 26px rgba(0,0,0,.18)!important;
+  filter:none!important;
+  text-shadow:none!important;
+  color:var(--d30-text)!important;
+}
+body.doxa31-verse-menu-open .verse-context .vnum{
+  /* propositalmente NÃO muda tipografia, tamanho ou posição do número */
+  color:var(--d30-gold)!important;
+  filter:none!important;
+  text-shadow:none!important
+}
+body.doxa31-verse-menu-open .verse-context>.hl-word,
+body.doxa31-verse-menu-open .verse-context>.oshb-word,
+body.doxa31-verse-menu-open .verse-context>.vnum,
+body.doxa31-verse-menu-open .verse-context>.xref-trigger,
+body.doxa31-verse-menu-open .verse-context>.note-pin{
+  position:relative;z-index:3;
+  filter:none!important;
+  text-shadow:none!important
+}
+
+/* Fumaça orgânica atrás das palavras */
+.doxa31-verse-smoke{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  overflow:hidden;
+  border-radius:17px;
+  pointer-events:none
+}
+.doxa31-smoke-puff{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(18px);
+  mix-blend-mode:screen;
+  opacity:0;
+  will-change:transform,opacity
+}
+.doxa31-smoke-puff.p1{
+  width:48%;height:68%;left:-12%;top:14%;
+  background:radial-gradient(circle,rgba(224,145,64,.22),rgba(111,62,29,.11) 46%,transparent 74%);
+  animation:doxa31Smoke1 5.6s ease-in-out infinite
+}
+.doxa31-smoke-puff.p2{
+  width:38%;height:58%;left:27%;top:-5%;
+  background:radial-gradient(circle,rgba(245,181,99,.17),rgba(128,70,31,.09) 48%,transparent 76%);
+  animation:doxa31Smoke2 6.8s ease-in-out .8s infinite
+}
+.doxa31-smoke-puff.p3{
+  width:45%;height:64%;right:-10%;top:25%;
+  background:radial-gradient(circle,rgba(205,125,52,.18),rgba(92,48,24,.10) 50%,transparent 77%);
+  animation:doxa31Smoke3 7.3s ease-in-out .2s infinite
+}
+.doxa31-smoke-puff.p4{
+  width:32%;height:48%;left:43%;bottom:-12%;
+  background:radial-gradient(circle,rgba(232,156,78,.14),rgba(95,53,28,.08) 48%,transparent 75%);
+  animation:doxa31Smoke4 8.2s ease-in-out 1.4s infinite
+}
+.doxa31-smoke-vein{
+  position:absolute;left:-18%;right:-18%;height:34%;top:38%;
+  border-radius:50%;
+  background:linear-gradient(90deg,
+    transparent,
+    rgba(224,149,74,.13) 34%,
+    rgba(129,75,36,.10) 58%,
+    rgba(231,161,85,.10) 76%,
+    transparent);
+  filter:blur(12px);opacity:.42;
+  animation:doxa31SmokeVein 6.4s ease-in-out infinite alternate
+}
+@keyframes doxa31Smoke1{
+  0%{transform:translate3d(-16%,12%,0) scale(.80);opacity:0}
+  18%{opacity:.48}
+  48%{transform:translate3d(32%,-10%,0) scale(1.15);opacity:.62}
+  78%{opacity:.32}
+  100%{transform:translate3d(76%,8%,0) scale(.92);opacity:0}
+}
+@keyframes doxa31Smoke2{
+  0%{transform:translate3d(-8%,20%,0) scale(.72);opacity:0}
+  22%{opacity:.40}
+  52%{transform:translate3d(18%,-16%,0) scale(1.18);opacity:.55}
+  82%{opacity:.26}
+  100%{transform:translate3d(46%,12%,0) scale(.88);opacity:0}
+}
+@keyframes doxa31Smoke3{
+  0%{transform:translate3d(18%,8%,0) scale(.76);opacity:0}
+  20%{opacity:.34}
+  50%{transform:translate3d(-20%,-12%,0) scale(1.22);opacity:.52}
+  80%{opacity:.28}
+  100%{transform:translate3d(-54%,10%,0) scale(.90);opacity:0}
+}
+@keyframes doxa31Smoke4{
+  0%{transform:translate3d(-12%,18%,0) scale(.70);opacity:0}
+  24%{opacity:.30}
+  58%{transform:translate3d(24%,-24%,0) scale(1.24);opacity:.46}
+  86%{opacity:.22}
+  100%{transform:translate3d(50%,-6%,0) scale(.86);opacity:0}
+}
+@keyframes doxa31SmokeVein{
+  0%{transform:translateX(-10%) rotate(-4deg) scaleX(.88);opacity:.24}
+  50%{transform:translateX(3%) rotate(1deg) scaleX(1.08);opacity:.46}
+  100%{transform:translateX(12%) rotate(4deg) scaleX(.94);opacity:.28}
+}
+
+/* Alças da seleção */
+.doxa31-handle{
+  position:absolute;z-index:7;
+  width:4px;height:42px;border-radius:10px;
+  background:linear-gradient(var(--d30-gold2),var(--d30-gold));
+  filter:drop-shadow(0 0 5px color-mix(in srgb,var(--d30-gold) 38%,transparent));
+  pointer-events:none;
+  animation:doxa31HandleIn .22s cubic-bezier(.2,.85,.2,1) both
+}
+.doxa31-handle::before{
+  content:'';position:absolute;
+  width:16px;height:16px;left:-6px;border-radius:50%;
+  background:var(--d30-gold2);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--d30-bg) 84%,black)
+}
+.doxa31-handle.left{left:-3px;top:3px}
+.doxa31-handle.left::before{top:-7px}
+.doxa31-handle.right{right:-3px;bottom:3px}
+.doxa31-handle.right::before{bottom:-7px}
+@keyframes doxa31HandleIn{
+  from{opacity:0;transform:scaleY(.55)}
+  to{opacity:1;transform:scaleY(1)}
+}
+
+/* Converte a grade antiga em bottom sheet vertical. */
+#verseActions.verse-actions{
+  position:fixed!important;
+  z-index:210!important;
+  left:0!important;right:0!important;top:auto!important;bottom:0!important;
+  width:100%!important;max-width:none!important;
+  margin:0!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  padding:32px 18px calc(17px + env(safe-area-inset-bottom,0px))!important;
+  border:0!important;
+  border-top:1px solid color-mix(in srgb,var(--d30-gold) 13%,transparent)!important;
+  border-radius:29px 29px 0 0!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#17120e,#090705)!important;
+  box-shadow:0 -24px 70px rgba(0,0,0,.46)!important;
+  opacity:1!important;
+  transform:translateY(105%)!important;
+  pointer-events:none!important;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1)!important
+}
+#verseActions.verse-actions::before{
+  content:'';
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:48px;height:4px;border-radius:99px;background:rgba(255,255,255,.13)
+}
+#verseActions.verse-actions.on{
+  transform:translateY(0)!important;
+  pointer-events:auto!important
+}
+#verseActions.verse-actions button{
+  width:100%!important;
+  min-height:54px!important;
+  padding:0 7px!important;
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr) 24px!important;
+  align-items:center!important;
+  gap:10px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.045)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#f3eee8!important;
+  text-align:left!important;
+  font:600 15px/1.2 var(--ui)!important
+}
+#verseActions.verse-actions button:last-child{border-bottom:0!important}
+#verseActions.verse-actions button:active{
+  background:rgba(218,162,94,.055)!important
+}
+.doxa31-va-icon{
+  width:34px;height:34px;display:grid;place-items:center;
+  color:#e0aa68
+}
+.doxa31-va-icon svg{
+  width:22px;height:22px;
+  stroke:currentColor;fill:none;stroke-width:1.75;
+  stroke-linecap:round;stroke-linejoin:round
+}
+.doxa31-va-label{min-width:0}
+.doxa31-va-chevron{
+  color:#82766b;font:300 26px/1 var(--ui);text-align:right
+}
+
+/* ============================================================
+   Leitura paralela: só visual; o núcleo/sincronismo continua original.
+   ============================================================ */
+.parallel-appbar-sync.on{
+  color:var(--d30-gold2)!important;
+  text-shadow:0 0 12px color-mix(in srgb,var(--d30-gold2) 35%,transparent)
+}
+.parallel-appbar-title small{
+  color:var(--d30-muted)!important
+}
+
+@media(prefers-reduced-motion:reduce){
+  .doxa31-smoke-puff,.doxa31-smoke-vein{animation:none!important}
+  #verseActions.verse-actions{transition:none!important}
+}
