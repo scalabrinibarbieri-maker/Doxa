@@ -133,7 +133,9 @@
     sepia:{bg:'#D8B98D',bg2:'#CDA977',panel:'#E2C59A',text:'#332317',muted:'#6E5138',gold:'#A96D36',gold2:'#C98B52',texture:true},
     white:{bg:'#FCFBF8',bg2:'#F4F2ED',panel:'#FFFFFF',text:'#1F1E1B',muted:'#69655F',gold:'#AA7B43',gold2:'#C79B67',texture:false},
     night:{bg:'#050403',bg2:'#0A0705',panel:'#0D0A07',text:'#F4EFE9',muted:'#A99B8B',gold:'#D9A25E',gold2:'#F1C989',texture:false},
-    olive:{bg:'#B9B79A',bg2:'#A8A687',panel:'#C5C3A7',text:'#25261C',muted:'#575947',gold:'#656746',gold2:'#85865C',texture:true}
+    olive:{bg:'#B9B79A',bg2:'#A8A687',panel:'#C5C3A7',text:'#25261C',muted:'#575947',gold:'#656746',gold2:'#85865C',texture:true},
+    cream:{bg:'#F3ECDF',bg2:'#EAE0D0',panel:'#FAF5EC',text:'#2A2119',muted:'#74675A',gold:'#B67B36',gold2:'#D19B57',texture:true},
+    temple:{bg:'#D8B47C',bg2:'#C89D63',panel:'#E5C798',text:'#342316',muted:'#705338',gold:'#9D642E',gold2:'#C08445',texture:true}
   };
   let currentTheme='night';
   function themeStored(){try{return localStorage.getItem(THEME_KEY)||'night'}catch(e){return'night'}}
@@ -144,6 +146,7 @@
     for(const [id,value] of Object.entries(vals)){const el=document.getElementById(id);if(!el)continue;el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}))}
     const texture=document.getElementById('normalTexture');if(texture){texture.checked=!!t.texture;texture.dispatchEvent(new Event('change',{bubbles:true}))}
     document.querySelectorAll('.doxa30-theme-option').forEach(b=>b.classList.toggle('on',b.dataset.theme===name));
+    document.body.classList.toggle('doxa-theme-texture-cream',name==='cream');document.body.classList.toggle('doxa-theme-texture-temple',name==='temple');
     const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=t.bg;if(save){try{localStorage.setItem(THEME_KEY,name)}catch(e){}}
   }
   function hideAppearanceFromSettings(){const card=document.getElementById('normalAppearanceCard');if(!card)return;const h=card.previousElementSibling;if(h&&h.tagName==='H2')h.hidden=true;card.hidden=true}
@@ -151,10 +154,10 @@
   function ensureMoreUi(){
     if(document.getElementById('doxa30MoreOverlay'))return;
     const more=document.createElement('div');more.id='doxa30MoreOverlay';more.className='doxa30-overlay';
-    more.innerHTML='<div class="doxa30-sheet"><div class="doxa30-grab"></div><h2>Mais</h2><div class="doxa30-more-list"><button class="doxa30-more-row" id="doxa30OpenThemes" type="button"><span class="doxa30-more-icon">◐</span><span class="doxa30-more-copy"><strong>Temas</strong><small>Paper, Sepia, White, Night e Olive</small></span><span class="doxa30-more-arrow">›</span></button></div></div>';
+    more.innerHTML='<div class="doxa30-sheet"><div class="doxa30-grab"></div><h2>Mais</h2><div class="doxa30-more-list"><button class="doxa30-more-row" id="doxa30OpenThemes" type="button"><span class="doxa30-more-icon">◐</span><span class="doxa30-more-copy"><strong>Temas</strong><small>7 estilos · cores e texturas</small></span><span class="doxa30-more-arrow">›</span></button></div></div>';
     const themes=document.createElement('div');themes.id='doxa30ThemeOverlay';themes.className='doxa30-overlay doxa30-theme-overlay';
-    const labels={paper:'Paper',sepia:'Sepia',white:'White',night:'Night',olive:'Olive'};
-    themes.innerHTML='<div class="doxa30-theme-tray"><div class="doxa30-theme-grid">'+['paper','sepia','white','night','olive'].map(k=>'<button class="doxa30-theme-option" type="button" data-theme="'+k+'"><span class="doxa30-swatch '+k+'"></span><span>'+labels[k]+'</span></button>').join('')+'</div></div>';
+    const labels={paper:'Paper',sepia:'Sepia',white:'White',night:'Night',olive:'Olive',cream:'Creme',temple:'Templo'};
+    themes.innerHTML='<div class="doxa30-theme-tray"><div class="doxa30-theme-grid">'+['paper','sepia','white','night','olive','cream','temple'].map(k=>'<button class="doxa30-theme-option" type="button" data-theme="'+k+'"><span class="doxa30-swatch '+k+'"></span><span>'+labels[k]+'</span></button>').join('')+'</div></div>';
     document.body.append(more,themes);
     more.addEventListener('click',e=>{if(e.target===more)closeOverlay(more)});themes.addEventListener('click',e=>{if(e.target===themes)closeOverlay(themes)});
     document.getElementById('doxa30OpenThemes')?.addEventListener('click',e=>{e.stopPropagation();more.classList.remove('on');setTimeout(()=>themes.classList.add('on'),70)});
