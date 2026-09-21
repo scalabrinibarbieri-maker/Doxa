@@ -128,43 +128,56 @@
   }
 
   const THEME_KEY='doxa:30.5:theme';
+  const TEXTURE_KEY='doxa:30.6:texture';
   const THEMES={
-    paper:{bg:'#EFE5D7',bg2:'#E1D2BC',panel:'#F8F0E5',text:'#2E2018',muted:'#6D5A49',gold:'#BF8333',gold2:'#D8A35B',texture:true},
-    sepia:{bg:'#D8B98D',bg2:'#CDA977',panel:'#E2C59A',text:'#332317',muted:'#6E5138',gold:'#A96D36',gold2:'#C98B52',texture:true},
-    white:{bg:'#FCFBF8',bg2:'#F4F2ED',panel:'#FFFFFF',text:'#1F1E1B',muted:'#69655F',gold:'#AA7B43',gold2:'#C79B67',texture:false},
-    night:{bg:'#050403',bg2:'#0A0705',panel:'#0D0A07',text:'#F4EFE9',muted:'#A99B8B',gold:'#D9A25E',gold2:'#F1C989',texture:false},
-    olive:{bg:'#B9B79A',bg2:'#A8A687',panel:'#C5C3A7',text:'#25261C',muted:'#575947',gold:'#656746',gold2:'#85865C',texture:true},
-    cream:{bg:'#F3ECDF',bg2:'#EAE0D0',panel:'#FAF5EC',text:'#2A2119',muted:'#74675A',gold:'#B67B36',gold2:'#D19B57',texture:true},
-    temple:{bg:'#D8B47C',bg2:'#C89D63',panel:'#E5C798',text:'#342316',muted:'#705338',gold:'#9D642E',gold2:'#C08445',texture:true}
+    paper:{bg:'#EFE5D7',bg2:'#E1D2BC',panel:'#F8F0E5',text:'#2E2018',muted:'#6D5A49',gold:'#BF8333',gold2:'#D8A35B'},
+    sepia:{bg:'#D8B98D',bg2:'#CDA977',panel:'#E2C59A',text:'#332317',muted:'#6E5138',gold:'#A96D36',gold2:'#C98B52'},
+    white:{bg:'#FCFBF8',bg2:'#F4F2ED',panel:'#FFFFFF',text:'#1F1E1B',muted:'#69655F',gold:'#AA7B43',gold2:'#C79B67'},
+    night:{bg:'#050403',bg2:'#0A0705',panel:'#0D0A07',text:'#F4EFE9',muted:'#A99B8B',gold:'#D9A25E',gold2:'#F1C989'},
+    olive:{bg:'#B9B79A',bg2:'#A8A687',panel:'#C5C3A7',text:'#25261C',muted:'#575947',gold:'#656746',gold2:'#85865C'}
   };
-  let currentTheme='night';
-  function themeStored(){try{return localStorage.getItem(THEME_KEY)||'night'}catch(e){return'night'}}
+  const TEXTURES=['none','paper','cream','temple'];
+  let currentTheme='night',currentTexture='none';
+  function rawThemeStored(){try{return localStorage.getItem(THEME_KEY)||'night'}catch(e){return'night'}}
+  function themeStored(){const raw=rawThemeStored();return THEMES[raw]?raw:(raw==='cream'||raw==='temple'?'paper':'night')}
+  function textureStored(){try{const t=localStorage.getItem(TEXTURE_KEY);if(TEXTURES.includes(t))return t;const legacy=rawThemeStored();if(legacy==='cream'||legacy==='temple')return legacy;return 'none'}catch(e){return'none'}}
   function setRootThemeVars(t){const root=document.documentElement.style;root.setProperty('--d30-bg',t.bg);root.setProperty('--d30-bg2',t.bg2);root.setProperty('--d30-panel',t.panel);root.setProperty('--d30-text',t.text);root.setProperty('--d30-muted',t.muted);root.setProperty('--d30-gold',t.gold);root.setProperty('--d30-gold2',t.gold2)}
   function applyTheme(name,save=true){
     if(!THEMES[name])name='night';currentTheme=name;const t=THEMES[name];document.body.dataset.doxa30Theme=name;setRootThemeVars(t);
     const vals={normalPageColor:t.bg,normalTextColor:t.text,normalAccentColor:t.gold,normalChromeColor:t.panel};
     for(const [id,value] of Object.entries(vals)){const el=document.getElementById(id);if(!el)continue;el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}))}
-    const texture=document.getElementById('normalTexture');if(texture){texture.checked=!!t.texture;texture.dispatchEvent(new Event('change',{bubbles:true}))}
     document.querySelectorAll('.doxa30-theme-option').forEach(b=>b.classList.toggle('on',b.dataset.theme===name));
-    document.body.classList.toggle('doxa-theme-texture-cream',name==='cream');document.body.classList.toggle('doxa-theme-texture-temple',name==='temple');
-    const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=t.bg;if(save){try{localStorage.setItem(THEME_KEY,name)}catch(e){}}
+    const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=t.bg;
+    try{window.dispatchEvent(new CustomEvent('doxa:themechange',{detail:{name,theme:t}}))}catch(e){}
+    if(save){try{localStorage.setItem(THEME_KEY,name)}catch(e){}}
+  }
+  function applyTexture(name,save=true){
+    if(!TEXTURES.includes(name))name='none';currentTexture=name;
+    document.body.dataset.doxa30Texture=name;
+    document.body.classList.toggle('doxa-theme-texture-cream',name==='cream');
+    document.body.classList.toggle('doxa-theme-texture-temple',name==='temple');
+    const native=document.getElementById('normalTexture');if(native){native.checked=name==='paper';native.dispatchEvent(new Event('change',{bubbles:true}))}
+    document.querySelectorAll('.doxa30-texture-option').forEach(b=>b.classList.toggle('on',b.dataset.texture===name));
+    if(save){try{localStorage.setItem(TEXTURE_KEY,name)}catch(e){}}
   }
   function hideAppearanceFromSettings(){const card=document.getElementById('normalAppearanceCard');if(!card)return;const h=card.previousElementSibling;if(h&&h.tagName==='H2')h.hidden=true;card.hidden=true}
   function closeOverlay(el){el?.classList.remove('on');setActive(document.getElementById('p-marcar')?.classList.contains('on')?'marcar':'ler')}
   function ensureMoreUi(){
     if(document.getElementById('doxa30MoreOverlay'))return;
     const more=document.createElement('div');more.id='doxa30MoreOverlay';more.className='doxa30-overlay';
-    more.innerHTML='<div class="doxa30-sheet"><div class="doxa30-grab"></div><h2>Mais</h2><div class="doxa30-more-list"><button class="doxa30-more-row" id="doxa30OpenThemes" type="button"><span class="doxa30-more-icon">◐</span><span class="doxa30-more-copy"><strong>Temas</strong><small>7 estilos · cores e texturas</small></span><span class="doxa30-more-arrow">›</span></button></div></div>';
+    more.innerHTML='<div class="doxa30-sheet"><div class="doxa30-grab"></div><h2>Mais</h2><div class="doxa30-more-list"><button class="doxa30-more-row" id="doxa30OpenThemes" type="button"><span class="doxa30-more-icon">◐</span><span class="doxa30-more-copy"><strong>Temas</strong><small>Paleta e textura da leitura</small></span><span class="doxa30-more-arrow">›</span></button></div></div>';
     const themes=document.createElement('div');themes.id='doxa30ThemeOverlay';themes.className='doxa30-overlay doxa30-theme-overlay';
-    const labels={paper:'Paper',sepia:'Sepia',white:'White',night:'Night',olive:'Olive',cream:'Creme',temple:'Templo'};
-    themes.innerHTML='<div class="doxa30-theme-tray"><div class="doxa30-theme-grid">'+['paper','sepia','white','night','olive','cream','temple'].map(k=>'<button class="doxa30-theme-option" type="button" data-theme="'+k+'"><span class="doxa30-swatch '+k+'"></span><span>'+labels[k]+'</span></button>').join('')+'</div></div>';
+    const labels={paper:'Paper',sepia:'Sepia',white:'White',night:'Night',olive:'Olive'};
+    const textureLabels={none:'Sem textura',paper:'Papel',cream:'Creme',temple:'Templo'};
+    themes.innerHTML='<div class="doxa30-theme-tray"><div class="doxa30-theme-section"><div class="doxa30-theme-section-head"><strong>Paleta</strong><small>As cores da interface e da leitura</small></div><div class="doxa30-theme-grid">'+['paper','sepia','white','night','olive'].map(k=>'<button class="doxa30-theme-option" type="button" data-theme="'+k+'"><span class="doxa30-swatch '+k+'"></span><span>'+labels[k]+'</span></button>').join('')+'</div></div><div class="doxa30-theme-section texture-section"><div class="doxa30-theme-section-head"><strong>Textura</strong><small>Independente da paleta escolhida</small></div><div class="doxa30-texture-grid">'+['none','paper','cream','temple'].map(k=>'<button class="doxa30-texture-option" type="button" data-texture="'+k+'"><span class="doxa30-texture-preview '+k+'"></span><span>'+textureLabels[k]+'</span></button>').join('')+'</div></div></div>';
     document.body.append(more,themes);
     more.addEventListener('click',e=>{if(e.target===more)closeOverlay(more)});themes.addEventListener('click',e=>{if(e.target===themes)closeOverlay(themes)});
     document.getElementById('doxa30OpenThemes')?.addEventListener('click',e=>{e.stopPropagation();more.classList.remove('on');setTimeout(()=>themes.classList.add('on'),70)});
     themes.querySelectorAll('.doxa30-theme-option').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();applyTheme(b.dataset.theme,true)}));
+    themes.querySelectorAll('.doxa30-texture-option').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();applyTexture(b.dataset.texture,true)}));
   }
   function openMore(){ensureMoreUi();hideAppearanceFromSettings();const bottom=$('#doxa30Bottom');if(bottom){bottom.querySelectorAll('.doxa30-nav-item').forEach(x=>x.classList.remove('active'));$('#doxa30More')?.classList.add('active');bottom.dataset.active='more'}document.getElementById('doxa30MoreOverlay')?.classList.add('on')}
-  function installThemes(){ensureMoreUi();hideAppearanceFromSettings();applyTheme(themeStored(),false);setTimeout(()=>{hideAppearanceFromSettings();applyTheme(currentTheme,false)},500);setTimeout(()=>{hideAppearanceFromSettings();applyTheme(currentTheme,false)},1300)}
+  function installThemes(){ensureMoreUi();hideAppearanceFromSettings();applyTheme(themeStored(),false);applyTexture(textureStored(),false);setTimeout(()=>{hideAppearanceFromSettings();applyTheme(currentTheme,false);applyTexture(currentTexture,false)},500);setTimeout(()=>{hideAppearanceFromSettings();applyTheme(currentTheme,false);applyTexture(currentTexture,false)},1300)}
 
   function applyDefaultNightOnce(){
     const key='doxa:30.5:new-shell-default-night';
@@ -175,7 +188,6 @@
       const el=document.getElementById(id);if(!el)continue;
       el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));ok=true;
     }
-    const texture=document.getElementById('normalTexture');if(texture){texture.checked=false;texture.dispatchEvent(new Event('change',{bubbles:true}))}
     if(ok){try{localStorage.setItem(key,'1')}catch(e){}}
   }
 
