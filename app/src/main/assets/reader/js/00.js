@@ -14,15 +14,29 @@
     }
   }catch(e){}
 
-  // Novo shell visual aprovado: carregado no fim do DOM para não interferir
-  // na inicialização dos recursos já existentes do leitor.
+  // Shell aprovado + extensão "Papel".
   try{
     const css=document.createElement('link');
     css.rel='stylesheet';css.id='doxa-v30-shell-css';css.href='css/21.css';
     document.head.appendChild(css);
+
     document.addEventListener('DOMContentLoaded',()=>{
       if(document.getElementById('doxa-v30-shell-js'))return;
-      const js=document.createElement('script');js.id='doxa-v30-shell-js';js.src='js/18.js';js.async=false;
+
+      const js=document.createElement('script');
+      js.id='doxa-v30-shell-js';
+      js.src='js/18.js';
+      js.async=false;
+
+      js.onload=()=>{
+        if(document.getElementById('doxa-v30-paper-js'))return;
+        const paper=document.createElement('script');
+        paper.id='doxa-v30-paper-js';
+        paper.src='js/19.js';
+        paper.async=false;
+        document.body.appendChild(paper);
+      };
+
       document.body.appendChild(js);
     },{once:true});
   }catch(e){}
