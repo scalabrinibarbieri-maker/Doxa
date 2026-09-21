@@ -87,7 +87,7 @@
 
     /* Fechar o picker sem escolher cancela a intenção. */
     for(const el of [document.getElementById('versionPickerClose'),document.getElementById('versionPickerBackdrop')]){
-      if(!el||el.dataset.doxa31PendingBound)return;
+      if(!el||el.dataset.doxa31PendingBound)continue;
       el.dataset.doxa31PendingBound='1';
       el.addEventListener('click',()=>{window.__doxa31ParallelPending=false},true);
     }
@@ -276,10 +276,236 @@
     sync();
   }
 
+
+  /* =========================================================
+     Leitura paralela v4 — duas colunas reais
+     ========================================================= */
+  function installParallelV4(){
+    const reader=document.getElementById('parallelReader');
+    const appbar=reader?.querySelector('.parallel-appbar');
+    if(!reader||!appbar)return;
+
+    if(!document.getElementById('doxa31ParallelSyncBar')){
+      const syncbar=document.createElement('div');
+      syncbar.id='doxa31ParallelSyncBar';
+      syncbar.className='doxa31-parallel-syncbar';
+      syncbar.innerHTML='<button type="button" id="doxa31ParallelSync" class="doxa31-sync-toggle"><span class="doxa31-sync-dot"></span><span id="doxa31SyncLabel">Sincronizado</span></button>';
+
+      const controls=document.createElement('div');
+      controls.id='doxa31ParallelControls';
+      controls.className='doxa31-parallel-controls';
+
+      for(const side of ['A','B']){
+        const combo=document.createElement('div');
+        combo.className='doxa31-parallel-combo';
+        combo.dataset.side=side;
+        combo.innerHTML='\
+          <button type="button" class="doxa31-parallel-passage" data-d31-passage="'+side+'"><span class="doxa31-combo-ref">—</span></button>\
+          <button type="button" class="doxa31-parallel-version" data-d31-version="'+side+'"><span class="doxa31-combo-version">—</span><span class="doxa31-combo-chevron">⌄</span></button>';
+        controls.appendChild(combo);
+      }
+
+      appbar.insertAdjacentElement('afterend',syncbar);
+      syncbar.insertAdjacentElement('afterend',controls);
+
+      controls.querySelectorAll('[data-d31-passage]').forEach(b=>b.addEventListener('click',e=>{
+        e.stopPropagation();
+        document.getElementById('pPassage'+b.dataset.d31Passage)?.click();
+      }));
+      controls.querySelectorAll('[data-d31-version]').forEach(b=>b.addEventListener('click',e=>{
+        e.stopPropagation();
+        document.getElementById('pVersionTrigger'+b.dataset.d31Version)?.click();
+      }));
+
+      document.getElementById('doxa31ParallelSync')?.addEventListener('click',e=>{
+        e.stopPropagation();
+        const cb=document.getElementById('parallelSync');
+        if(!cb)return;
+        cb.checked=!cb.checked;
+        cb.dispatchEvent(new Event('change',{bubbles:true}));
+        setTimeout(updateParallelV4,0);
+      });
+    }
+
+    const base=window.renderParallel;
+    if(typeof base==='function'&&!base.__doxa31v4){
+      const wrapped=function(){
+        const r=base.apply(this,arguments);
+        setTimeout(updateParallelV4,0);
+        return r;
+      };
+      wrapped.__doxa31v4=true;
+      window.renderParallel=wrapped;
+    }
+    updateParallelV4();
+  }
+
+  function updateParallelV4(){
+    const cb=document.getElementById('parallelSync');
+    const synced=!!cb?.checked;
+    const sync=document.getElementById('doxa31ParallelSync');
+    sync?.classList.toggle('off',!synced);
+    sync?.setAttribute('aria-pressed',synced?'true':'false');
+    const sl=document.getElementById('doxa31SyncLabel');
+    if(sl)sl.textContent=synced?'Sincronizado':'Livre';
+
+    let titleRef='';
+    for(const side of ['A','B']){
+      const passage=document.querySelector('[data-d31-passage="'+side+'"] .doxa31-combo-ref');
+      const version=document.querySelector('[data-d31-version="'+side+'"] .doxa31-combo-version');
+      const ptxt=document.querySelector('#pPassage'+side+' span:first-child')?.textContent?.trim()||'—';
+      const vtxt=document.getElementById('pVersionName'+side)?.textContent?.trim()||
+                 document.getElementById('pVersion'+side)?.selectedOptions?.[0]?.textContent?.trim()||'—';
+      if(passage)passage.textContent=ptxt;
+      if(version)version.textContent=vtxt;
+      if(side==='A')titleRef=ptxt;
+    }
+    const titleSmall=document.querySelector('.parallel-appbar-title small');
+    if(titleSmall)titleSmall.textContent=titleRef||'Leitura em duas versões';
+  }
+
+  /* =========================================================
+     Contexto temporário para recursos de verso na paralela.
+     O motor antigo calcula a referência usando mode/pos().
+     Durante o menu, apontamos temporariamente para o painel
+     pressionado e restauramos tudo ao fechar.
+     ========================================================= */
+  let parallelContextRestore=null;
+
+  function enterParallelVerseContext(side,verse){
+    try{
+      const st=sanitizeParallelState(side);
+      if(!st||st.mode==='hyper'||!CORPORA[st.mode])return false;
+
+      if(parallelContextRestore)parallelContextRestore();
+
+      const targetMode=st.mode;
+      const previousMode=mode;
+      const previousHIdx=hIdx;
+      const previousFocus=focusVerse;
+      const previousPosition=positions[targetMode] ? {...positions[targetMode]} : null;
+
+      const cp=CORPORA[targetMode];
+      const bi=cp.books.findIndex(b=>b.book===st.book);
+      if(bi<0)return false;
+
+      mode=targetMode;
+      positions[targetMode]={b:bi,c:Number(st.chapter)};
+      focusVerse=Number(verse)||null;
+
+      /* Garante que Referências Cruzadas tenha um alvo clicável
+         mesmo que a leitura principal esteja em outro capítulo. */
+      const textBody=document.getElementById('textBody');
+      const v=Number(verse);
+      if(textBody && Number.isFinite(v) && !document.getElementById('v'+v)){
+        const shadow=document.createElement('span');
+        shadow.id='v'+v;
+        shadow.className='verse doxa31-shadow-verse';
+        shadow.dataset.v=String(v);
+        shadow.hidden=true;
+        textBody.appendChild(shadow);
+      }
+
+      let restored=false;
+      parallelContextRestore=()=>{
+        if(restored)return;
+        restored=true;
+        mode=previousMode;
+        hIdx=previousHIdx;
+        focusVerse=previousFocus;
+        if(previousPosition)positions[targetMode]=previousPosition;
+        else delete positions[targetMode];
+        parallelContextRestore=null;
+      };
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function maybeRestoreParallelContext(){
+    if(!parallelContextRestore)return;
+    const popOpen=document.getElementById('verseActions')?.classList.contains('on');
+    const xrefOpen=document.getElementById('xrefSheet')?.classList.contains('on');
+    if(!popOpen&&!xrefOpen)parallelContextRestore();
+  }
+
+  function bindParallelContextRestore(){
+    for(const el of [document.getElementById('verseActions'),document.getElementById('xrefSheet')]){
+      if(!el||el.dataset.doxa31RestoreBound==='1')continue;
+      el.dataset.doxa31RestoreBound='1';
+      new MutationObserver(()=>setTimeout(maybeRestoreParallelContext,0))
+        .observe(el,{attributes:true,attributeFilter:['class']});
+    }
+  }
+
+  /* =========================================================
+     Long press também nas duas colunas da leitura paralela
+     ========================================================= */
+  function installParallelLongPress(){
+    bindParallelContextRestore();
+
+    for(const side of ['A','B']){
+      const host=document.getElementById('pText'+side);
+      if(!host||host.dataset.doxa31LongPress==='1')continue;
+      host.dataset.doxa31LongPress='1';
+
+      let timer=0,startX=0,startY=0,target=null,fired=false;
+
+      const reset=()=>{
+        clearTimeout(timer);
+        timer=0;target=null;fired=false;
+      };
+
+      host.addEventListener('touchstart',e=>{
+        if(e.touches.length!==1)return;
+        const verse=e.target.closest('.verse[data-v]');
+        if(!verse)return;
+
+        const t=e.touches[0];
+        clearTimeout(timer);
+        startX=t.clientX;
+        startY=t.clientY;
+        target=verse;
+        fired=false;
+
+        timer=setTimeout(()=>{
+          if(!target)return;
+          const v=Number(target.dataset.v);
+          if(!enterParallelVerseContext(side,v))return;
+          fired=true;
+          window.__doxaLongPressActive=true;
+          try{navigator.vibrate?.(18)}catch(_){}
+          window.DoxaVerseActions?.open(target);
+          setTimeout(()=>{window.__doxaLongPressActive=false},700);
+        },430);
+      },{passive:true});
+
+      host.addEventListener('touchmove',e=>{
+        if(!target||e.touches.length!==1)return;
+        const t=e.touches[0];
+        if(Math.hypot(t.clientX-startX,t.clientY-startY)>13&&!fired)reset();
+      },{passive:true});
+
+      host.addEventListener('touchend',()=>{
+        clearTimeout(timer);timer=0;target=null;fired=false;
+      },{passive:true});
+      host.addEventListener('touchcancel',reset,{passive:true});
+
+      host.addEventListener('scroll',()=>{
+        if(document.getElementById('verseActions')?.classList.contains('on')){
+          window.DoxaVerseActions?.close();
+        }
+      },{passive:true});
+    }
+  }
+
   function init(){
     installTools();
     installHelp();
     installVerseMenu();
+    installParallelV4();
+    installParallelLongPress();
 
     /* Reaplica caso algum módulo posterior reconstrua Ferramentas. */
     setTimeout(installTools,350);
