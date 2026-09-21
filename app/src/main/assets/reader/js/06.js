@@ -70,21 +70,35 @@
   mainBody.addEventListener('touchstart',e=>{
     if(parallelOn||e.touches.length!==1)return;const t=e.touches[0],verse=e.target.closest('.verse'),w=e.target.closest('.hl-word');if(!verse)return;
     lpVerse=verse;lpAnchor=lpCurrent=w||verse.querySelector('.hl-word');lpStartX=t.clientX;lpStartY=t.clientY;lpMoved=false;lpActive=false;lpHighlighting=false;clearTimeout(lpTimer);
-    lpTimer=setTimeout(()=>{lpActive=true;window.__doxaLongPressActive=true;lockHighlightScroll();suppressClickUntil=Date.now()+1000;lpVerse?.classList.add('verse-held');try{navigator.vibrate?.(18)}catch(_){}},430);
+    lpTimer=setTimeout(()=>{lpActive=true;window.__doxaLongPressActive=true;lockHighlightScroll();suppressClickUntil=Date.now()+1000;lpVerse?.classList.add('verse-held');try{navigator.vibrate?.(18)}catch(_){};if(lpVerse)window.DoxaVerseActions?.open(lpVerse)},430);
   },{passive:true});
   mainBody.addEventListener('touchmove',e=>{
     if(!lpVerse||e.touches.length!==1)return;const t=e.touches[0],dx=t.clientX-lpStartX,dy=t.clientY-lpStartY,dist=Math.hypot(dx,dy);if(dist>8)lpMoved=true;
     if(!lpActive){if(dist>13){clearTimeout(lpTimer);lpTimer=null;lpAnchor=lpCurrent=lpVerse=null}return}
-    if(dist>10&&!lpHighlighting){lpHighlighting=true;lpVerse?.classList.remove('verse-held');if(!lpAnchor)lpAnchor=document.elementFromPoint(t.clientX,t.clientY)?.closest?.('.hl-word')||lpVerse.querySelector('.hl-word');lpCurrent=lpAnchor}
+    if(dist>10&&!lpHighlighting){lpHighlighting=true;window.DoxaVerseActions?.close();lpVerse?.classList.remove('verse-held');if(!lpAnchor)lpAnchor=document.elementFromPoint(t.clientX,t.clientY)?.closest?.('.hl-word')||lpVerse.querySelector('.hl-word');lpCurrent=lpAnchor}
     if(lpHighlighting){e.preventDefault();e.stopPropagation();const at=document.elementFromPoint(t.clientX,t.clientY)?.closest?.('.hl-word');if(at&&mainBody.contains(at)){lpCurrent=at;paintSelecting(lpAnchor,lpCurrent)}}
   },{passive:false});
   mainBody.addEventListener('touchend',e=>{
     clearTimeout(lpTimer);lpTimer=null;if(!lpActive){lpAnchor=lpCurrent=lpVerse=null;return}
     e.preventDefault();e.stopPropagation();suppressClickUntil=Date.now()+1000;const heldVerse=lpVerse;lpVerse?.classList.remove('verse-held');
-    if(lpHighlighting&&lpAnchor){const rec=createHighlight(lpAnchor,lpCurrent||lpAnchor);applyHighlights();openSheet(rec,false)}else if(heldVerse){window.DoxaVerseActions?.open(heldVerse)}
+    if(lpHighlighting&&lpAnchor){const rec=createHighlight(lpAnchor,lpCurrent||lpAnchor);applyHighlights();openSheet(rec,false)}
     lpActive=false;lpHighlighting=false;lpAnchor=lpCurrent=lpVerse=null;clearSelecting();unlockHighlightScroll();setTimeout(()=>{window.__doxaLongPressActive=false},750)
   },{passive:false});
   mainBody.addEventListener('touchcancel',()=>{clearTimeout(lpTimer);lpTimer=null;lpVerse?.classList.remove('verse-held');lpActive=false;lpHighlighting=false;lpAnchor=lpCurrent=lpVerse=null;clearSelecting();unlockHighlightScroll();setTimeout(()=>{window.__doxaLongPressActive=false},100)});
+
+  // Long press original também nos dois painéis paralelos.
+  // Toque curto em .oshb-word continua sendo tratado pelo js/02 (Strong/Raio-X).
+  function bindParallelVerseHold(){
+    for(const side of ['A','B']){
+      const host=document.getElementById('pText'+side);if(!host||host.dataset.nativeHold==='1')continue;host.dataset.nativeHold='1';
+      let timer=null,startX=0,startY=0,target=null;
+      const clear=()=>{clearTimeout(timer);timer=null;target=null};
+      host.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;const v=e.target.closest('.verse[data-v]');if(!v)return;const t=e.touches[0];startX=t.clientX;startY=t.clientY;target=v;clearTimeout(timer);timer=setTimeout(()=>{if(!target)return;window.__doxaLongPressActive=true;try{navigator.vibrate?.(18)}catch(_){};window.DoxaVerseActions?.open(target);setTimeout(()=>{window.__doxaLongPressActive=false},800)},430)},{passive:true});
+      host.addEventListener('touchmove',e=>{if(!target||e.touches.length!==1)return;const t=e.touches[0];if(Math.hypot(t.clientX-startX,t.clientY-startY)>13)clear()},{passive:true});
+      host.addEventListener('touchend',clear,{passive:true});host.addEventListener('touchcancel',clear,{passive:true});
+    }
+  }
+  bindParallelVerseHold();
 
   // Ferramentas -> Notas
   function noteRecords(){return db.items.filter(x=>x.note&&x.note.trim()).sort((a,b)=>b.createdAt-a.createdAt)}
