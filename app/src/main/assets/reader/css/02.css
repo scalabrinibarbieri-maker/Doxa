@@ -15,16 +15,16 @@ body:not(.parallel-mode)>header .headmain::after{right:9px;font-size:19px;color:
 
 /* Barra global da leitura paralela: saída e sincronismo ficam óbvios sem mexer na disposição aprovada. */
 .parallel-appbar{
-  flex:0 0 48px;height:48px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;
+  flex:0 0 48px;height:48px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px 44px;align-items:center;
   background:color-mix(in srgb,var(--paper-2) 86%,var(--paper));color:var(--ink);
   border-bottom:1px solid color-mix(in srgb,var(--rule) 80%,transparent);
   box-shadow:0 3px 14px rgba(20,18,14,.04);z-index:8;
   padding-top:env(safe-area-inset-top,0);
 }
-.parallel-appbar-back,.parallel-appbar-sync{width:44px;height:47px;border:0;background:transparent;color:var(--ink-soft);display:grid;place-items:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.parallel-appbar-back,.parallel-appbar-layout,.parallel-appbar-sync{width:44px;height:47px;border:0;background:transparent;color:var(--ink-soft);display:grid;place-items:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .parallel-appbar-back{font:400 34px/1 var(--ui);padding-bottom:4px}
-.parallel-appbar-sync{font:700 19px/1 var(--ui);border-radius:12px}
-.parallel-appbar-back:active,.parallel-appbar-sync:active{background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.parallel-appbar-layout,.parallel-appbar-sync{font:700 19px/1 var(--ui);border-radius:12px}
+.parallel-appbar-back:active,.parallel-appbar-layout:active,.parallel-appbar-sync:active{background:color-mix(in srgb,var(--ink) 7%,transparent)}
 .parallel-appbar-sync.on{color:var(--verdigris);background:color-mix(in srgb,var(--verdigris) 8%,transparent)}
 .parallel-appbar-title{text-align:center;min-width:0;font-family:var(--ui)}
 .parallel-appbar-title strong{display:block;font-size:13px;line-height:1.15;font-weight:760;letter-spacing:.01em}
@@ -52,8 +52,8 @@ body.parallel-mode .parallel-reader{display:flex!important;flex-direction:column
 body.parallel-mode .parallel-grid{flex:1!important;min-height:0!important}
 
 @media(max-width:760px){
-  .parallel-appbar{flex-basis:46px;height:46px;grid-template-columns:42px minmax(0,1fr) 42px}
-  .parallel-appbar-back,.parallel-appbar-sync{width:42px;height:45px}
+  .parallel-appbar{flex-basis:46px;height:46px;grid-template-columns:42px minmax(0,1fr) 42px 42px}
+  .parallel-appbar-back,.parallel-appbar-layout,.parallel-appbar-sync{width:42px;height:45px}
   body.parallel-mode .parallel-pane-head{grid-template-columns:minmax(82px,.74fr) minmax(122px,1.28fr) auto!important}
   .parallel-passage-trigger{height:42px;font-size:11.5px!important;padding:0 5px!important}
 }
@@ -61,3 +61,20 @@ body.parallel-mode .parallel-grid{flex:1!important;min-height:0!important}
   body.parallel-mode .parallel-pane-head{grid-template-columns:minmax(76px,.70fr) minmax(108px,1.18fr) auto!important}
   .parallel-passage-trigger{font-size:10.8px!important}
 }
+
+
+/* Disposição original da leitura paralela — vertical por padrão, horizontal opcional. */
+body.parallel-mode.parallel-layout-vertical .parallel-grid{
+  grid-template-columns:1fr!important;
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:6px!important;
+}
+body.parallel-mode.parallel-layout-horizontal .parallel-grid{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  gap:6px!important;
+}
+body.parallel-mode.parallel-layout-horizontal .parallel-pane{min-width:0!important;min-height:0!important}
+.parallel-appbar-layout{width:44px;height:47px;border:0;background:transparent;color:var(--ink-soft);display:grid;place-items:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.parallel-appbar-layout[aria-pressed="true"]{color:var(--verdigris);background:color-mix(in srgb,var(--verdigris) 8%,transparent)}
+@media(max-width:760px){.parallel-appbar-layout{width:42px;height:45px}}
