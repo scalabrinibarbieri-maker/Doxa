@@ -43,7 +43,15 @@ public final class MainActivity extends Activity {
         catch (IOException error) { message("O Doxa não conseguiu concluir uma recuperação de recursos."); }
         if (RemotePackageInstaller.isReady(getFilesDir())) showReader(true);
         else if (new File(getFilesDir(), "reader/.ready").isFile()) prepareReader();
-        else showImport();
+        else showFirstRun();
+    }
+
+    private void showFirstRun() {
+        showImport();
+        downloadButton.setVisibility(View.GONE);
+        importButton.setVisibility(View.GONE);
+        status.setText("Preparando o Doxa…\n\nNa primeira abertura, os textos e recursos essenciais serão baixados automaticamente. Depois disso, o Doxa funciona offline.");
+        installRemote();
     }
 
     private void showImport() {
@@ -118,6 +126,9 @@ public final class MainActivity extends Activity {
                     importing = false;
                     if (!destroyed) {
                         status.setText("Não foi possível baixar o pacote.\n\n" + error.getMessage() + "\n\nVocê pode tentar novamente ou usar sua V29.");
+                        downloadButton.setText("Tentar novamente");
+                        downloadButton.setVisibility(View.VISIBLE);
+                        importButton.setVisibility(View.VISIBLE);
                         downloadButton.setEnabled(true);
                         importButton.setEnabled(true);
                         progress.setVisibility(View.GONE);
