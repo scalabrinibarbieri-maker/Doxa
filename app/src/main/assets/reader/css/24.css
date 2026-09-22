@@ -104,3 +104,17 @@ body.doxa-home-open[data-doxa30-texture="paper"]::after{display:none}
 @media(prefers-reduced-motion:reduce){
   .picker-book-v4.on::before{animation:none!important}
 }
+
+/* ============================================================
+   5. Barra inferior sumindo ao AVANÇAR capítulo
+   Na entrada do capítulo novo o texto começa deslocado 16% para a direita.
+   Esse excesso à direita alarga a página por um instante e a WebView redesenha a área
+   visível, levando junto a barra fixa. Voltando, o deslocamento é para a esquerda,
+   que não alarga nada — por isso só acontecia num sentido. Agora o excesso é cortado.
+   ============================================================ */
+html,body{overflow-x:clip}
+body.chapter-animating #p-ler,
+body.chapter-animating #singleReader{overflow-x:clip!important}
+@supports not (overflow-x:clip){
+  body.chapter-animating #p-ler{overflow-x:hidden!important}
+}
