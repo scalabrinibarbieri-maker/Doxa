@@ -56,6 +56,14 @@
     for(let k=0;k<n;k++){const [b,c,v]=POOL[order[(idx+k)%n]].split(' ');const r=verseText(b,c,v);if(r)return r}
     return null;
   }
+  /* Fundo do versículo: imagem do dia fixado > um dos fundos ativos (alterna por dia) > imagem do app. */
+  function verseImage(data){
+    const f=data.verseFixed;
+    if(f&&f.dia===dateKey()&&f.imagem_url)return f.imagem_url;
+    const list=Array.isArray(data.backgrounds)?data.backgrounds:[];
+    if(list.length){const d=new Date(),day=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);return list[day%list.length]}
+    return 'assets/home_verse.webp';
+  }
   function todayVerse(data){
     const f=data.verseFixed;
     if(f&&f.dia===dateKey()){const r=verseText(osisOf(f.livro),f.capitulo,f.versiculo);if(r)return Object.assign(r,{note:f.nota||''})}
@@ -97,16 +105,18 @@
     if(fetching)return fetching;
     fetching=(async()=>{
       try{
-        const [items,verses]=await Promise.all([
+        const [items,verses,fundos]=await Promise.all([
           sb('/rest/v1/home_itens?select=id,tipo,titulo,subtitulo,texto,imagem_url,link_url,meta,ordem,publicado_em,curtidas&publicado=eq.true&order=ordem.asc,publicado_em.desc&limit=60'),
-          sb('/rest/v1/home_versiculos?select=dia,livro,capitulo,versiculo,nota&dia=eq.'+dateKey())
+          sb('/rest/v1/home_versiculos?select=dia,livro,capitulo,versiculo,nota,imagem_url&dia=eq.'+dateKey()),
+          sb('/rest/v1/home_fundos?select=imagem_url&order=ordem.asc,criado_em.asc').catch(()=>[])
         ]);
         const all=(items||[]).map(mapItem);
         const data={remote:true,fetchedAt:Date.now(),
           news:all.filter(x=>x.type==='noticia'),
           articles:all.filter(x=>x.type==='artigo'),
           featured:all.filter(x=>x.type==='destaque'),
-          verseFixed:(verses&&verses[0])||null};
+          verseFixed:(verses&&verses[0])||null,
+          backgrounds:(fundos||[]).map(f=>f.imagem_url).filter(Boolean)};
         writeJson(HOME_KEY,data);
         render();
       }catch(e){/* sem internet: fica a última versão guardada */}
@@ -183,7 +193,7 @@
         +'<span class="doxa-home-goal"><span><em>Meta diária</em><b id="doxaHomeGoalText">0/1 capítulo</b></span><span class="doxa-home-goal-track"><i id="doxaHomeGoalBar"></i></span><strong id="doxaHomeGoalPct">0%</strong></span>'
         +'<span class="doxa-home-week" id="doxaHomeWeek"></span>'
       +'</button>'
-      +'<button class="doxa-home-verse" id="doxaHomeVerse" type="button" data-book="'+esc(v.book)+'" data-chapter="'+v.chapter+'" data-verse="'+v.verse+'" style="--home-verse-image:url(\'assets/home_verse.webp\')"><span class="doxa-home-verse-shade"></span><span class="doxa-home-verse-copy"><small>VERSÍCULO DO DIA</small><strong>“'+esc(v.text)+'”</strong><span>'+esc(v.ref)+'</span></span><span class="doxa-home-open-label">Abrir <b>›</b></span></button>'
+      +'<button class="doxa-home-verse" id="doxaHomeVerse" type="button" data-book="'+esc(v.book)+'" data-chapter="'+v.chapter+'" data-verse="'+v.verse+'" style="--home-verse-image:url(\''+cssUrl(verseImage(data))+'\')"><span class="doxa-home-verse-shade"></span><span class="doxa-home-verse-copy"><small>VERSÍCULO DO DIA</small><strong>“'+esc(v.text)+'”</strong><span>'+esc(v.ref)+'</span></span><span class="doxa-home-open-label">Abrir <b>›</b></span></button>'
       +section('Notícias','news',data.news||[],cardNews,'doxa-home-news-grid')
       +section('Artigos','articles',data.articles||[],cardArticle,'doxa-home-article-grid')
       +section('Em evidência','featured',data.featured||[],cardFeature,'doxa-home-feature-list',' doxa-home-evidence')
