@@ -1,0 +1,106 @@
+/* Doxa 31.2 · correções visuais e de desempenho
+   Carregado por último (js/00.js). Seletores com #id onde é preciso vencer css/16.css,
+   que é carregado no <body> e por isso ganhava de qualquer regra do <head>. */
+
+/* ============================================================
+   1. Home: "Início · Bom dia" rola junto com a página
+   O css/00.css tem uma regra genérica header{position:sticky;background;padding...}
+   que também pegava o <header class="doxa-home-head">.
+   ============================================================ */
+#doxa30HomeScreen .doxa-home-head{
+  position:static!important;
+  top:auto!important;
+  z-index:auto!important;
+  background:none!important;
+  border:0!important;
+  padding:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+  opacity:1!important;
+}
+
+/* ============================================================
+   2. Menu do versículo acompanha a paleta
+   O Night continua com o visual aprovado (css/16.css).
+   ============================================================ */
+body:not([data-doxa30-theme="night"]) #verseActions.verse-actions{
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--d30-panel) 92%,var(--d30-gold) 8%),
+    color-mix(in srgb,var(--d30-bg) 86%,var(--d30-panel) 14%))!important;
+  border-top:1px solid color-mix(in srgb,var(--d30-gold) 22%,transparent)!important;
+  box-shadow:0 -22px 60px color-mix(in srgb,var(--d30-text) 26%,transparent)!important;
+}
+body:not([data-doxa30-theme="night"]) #verseActions.verse-actions::before{
+  background:color-mix(in srgb,var(--d30-text) 22%,transparent)!important;
+}
+body:not([data-doxa30-theme="night"]) #verseActions.verse-actions button{
+  color:var(--d30-text)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--d30-text) 9%,transparent)!important;
+}
+body:not([data-doxa30-theme="night"]) #verseActions.verse-actions button:last-child{border-bottom:0!important}
+body:not([data-doxa30-theme="night"]) #verseActions.verse-actions button:active{
+  background:color-mix(in srgb,var(--d30-gold) 12%,transparent)!important;
+}
+body:not([data-doxa30-theme="night"]) #verseActions .va-icon{color:var(--d30-gold)!important}
+body:not([data-doxa30-theme="night"]) #verseActions .va-chevron{color:var(--d30-muted)!important}
+
+/* ============================================================
+   3. Seletor de livros abria travando
+   Cada um dos 66 botões tinha uma camada de "fumaça" com blur(14px) animada sem parar,
+   mais will-change e drop-shadow. Isso obriga a WebView a recompor 66 camadas borradas
+   a cada quadro. As cores semânticas continuam iguais; o brilho vira um gradiente parado.
+   A animação fica só no livro selecionado.
+   ============================================================ */
+.picker-book-v4,
+.passage-picker-v4 .picker-book-v4{will-change:auto!important}
+.picker-book-v4::before,
+.passage-picker-v4 .picker-book-v4::before{
+  animation:none!important;
+  filter:none!important;
+  inset:0!important;
+  opacity:.9!important;
+  background:
+    radial-gradient(ellipse 70% 60% at 30% 35%,var(--book-glow),transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 80%,color-mix(in srgb,var(--book-glow) 60%,transparent),transparent 70%)!important;
+}
+.picker-book-v4::after{filter:none!important;opacity:.28!important}
+.picker-book-v4.on::before,
+.passage-picker-v4 .picker-book-v4.on::before{
+  inset:-22%!important;
+  filter:blur(10px)!important;
+  opacity:.7!important;
+  animation:doxaPickerSmokeA 4.4s ease-in-out infinite alternate!important;
+}
+.picker-book-v4.on::after{opacity:.9!important}
+
+/* ============================================================
+   4. Pergaminho (substitui a antiga "textura de papel")
+   Uma folha envelhecida em tons de cinza multiplicada sobre a paleta:
+   manchas, fibras e bordas escurecidas aparecem em qualquer tema sem trocar as cores.
+   ============================================================ */
+body[data-doxa30-texture="paper"]::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:19;
+  pointer-events:none;
+  background:url('../assets/paper_texture.webp') center/cover no-repeat;
+  mix-blend-mode:multiply;
+  opacity:.6;
+}
+/* No Night, multiplicar sobre o preto não aparece: a folha é invertida e somada bem de leve. */
+body[data-doxa30-theme="night"][data-doxa30-texture="paper"]::after{
+  mix-blend-mode:screen;
+  filter:invert(1) sepia(.7);
+  opacity:.16;
+}
+/* Home e folhas por cima do pergaminho não recebem a textura. */
+body.doxa-home-open[data-doxa30-texture="paper"]::after{display:none}
+
+.doxa30-paper-preview{
+  background:var(--d30-bg) url('../assets/paper_texture.webp') center/cover no-repeat!important;
+  background-blend-mode:multiply!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .picker-book-v4.on::before{animation:none!important}
+}
