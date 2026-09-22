@@ -44,6 +44,25 @@
       alert('Não foi possível exportar: ' + error.message);
     } finally { busy = false; }
   }
+  /* Doxa 36: envia uma imagem gerada no leitor para o seletor de compartilhamento do Android. */
+  window.DoxaNativeShare = async (blob, text, title) => {
+    if (busy) throw new Error('Aguarde a operação atual.');
+    busy = true;
+    try {
+      await send({action: 'begin', size: blob.size});
+      for (let offset = 0; offset < blob.size; offset += 196608) {
+        const bytes = new Uint8Array(await blob.slice(offset, offset + 196608).arrayBuffer());
+        let binary = '';
+        for (let start = 0; start < bytes.length; start += 8192)
+          binary += String.fromCharCode(...bytes.subarray(start, start + 8192));
+        await send({action: 'chunk', data: btoa(binary)});
+      }
+      await send({action: 'share', mime: blob.type || 'image/jpeg', text: text || '', title: title || 'Compartilhar'});
+    } catch (error) {
+      DoxaFiles.postMessage(JSON.stringify({action: 'abort'}));
+      throw error;
+    } finally { busy = false; }
+  };
   const click = HTMLAnchorElement.prototype.click;
   HTMLAnchorElement.prototype.click = function () {
     if (this.href.startsWith('blob:')) { save(this); return; }
