@@ -32,6 +32,7 @@
     addCss('doxa-v31-tools-css','css/22.css');
     addCss('doxa-v31-home-css','css/23.css');
     addCss('doxa-v312-fixes-css','css/24.css');
+    addCss('doxa-v33-parallel-css','css/25.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
