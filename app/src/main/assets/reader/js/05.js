@@ -23,7 +23,7 @@
   applyReaderFont(false);setTimeout(()=>applyReaderFont(false),350);setTimeout(()=>applyReaderFont(false),1100);
 
   /* ===== HUD imersivo ===== */
-  let hudHidden=false,lastScrollY=window.scrollY,touchStartY=null,touchLastY=null,touchStartX=null,touchMoved=false,lastTouchHudTap=0,touchInteractive=false;
+  let hudHidden=false,lastScrollY=window.scrollY,touchStartY=null,touchLastY=null,touchStartX=null,touchMoved=false,lastTouchHudTap=0,touchInteractive=false,touchAxis=null;
   const readerPanel=()=>document.getElementById('p-ler')?.classList.contains('on');
   function overlaysOpen(){return !!document.querySelector('.strong-sheet.on,.premium-picker.on,.xref-sheet.on,.version-picker.on,.verse-actions.on,.study-screen.on,.v20-adv.on') }
   function syncParallelHud(){
@@ -49,15 +49,21 @@
   const touchHost=document.getElementById('p-ler');
   touchHost?.addEventListener('touchstart',e=>{
     const t=e.changedTouches?.[0];if(!t)return;
-    touchStartY=touchLastY=t.clientY;touchStartX=t.clientX;touchMoved=false;
+    touchStartY=touchLastY=t.clientY;touchStartX=t.clientX;touchMoved=false;touchAxis=null;
     touchInteractive=!!e.target.closest?.('button,input,select,textarea,a,.oshb-word,.note-pin,.verse-actions,.strong-sheet,.study-screen,.v20-adv');
   },{passive:true});
   touchHost?.addEventListener('touchmove',e=>{
     if(window.__doxaHighlightDragLock||touchLastY==null)return;const t=e.changedTouches?.[0];if(!t)return;
     const dy=t.clientY-touchLastY,dx=t.clientX-(touchStartX??t.clientX);
-    if(Math.abs(t.clientY-(touchStartY??t.clientY))>7||Math.abs(dx)>7)touchMoved=true;
+    const totalY=t.clientY-(touchStartY??t.clientY);
+    if(Math.abs(totalY)>7||Math.abs(dx)>7)touchMoved=true;
+    /* Trava o eixo do gesto nos primeiros ~12px. Ao arrastar para o próximo capítulo o polegar
+       costuma subir um pouco no começo do arco; antes, esse início já escondia a barra
+       (e só no sentido "avançar", porque voltando o arco desce e a barra só era mostrada). */
+    if(!touchAxis&&(Math.abs(dx)>12||Math.abs(totalY)>12))touchAxis=Math.abs(dx)>Math.abs(totalY)?'x':'y';
+    if(touchAxis!=='y')return;
     // O mesmo gesto imersivo vale para leitura normal e paralela.
-    if(Math.abs(dy)>5&&Math.abs(t.clientY-(touchStartY??t.clientY))>Math.abs(dx)*.72){
+    if(Math.abs(dy)>5&&Math.abs(totalY)>Math.abs(dx)*.72){
       if(dy<0)hideHud();
       else if(dy>0)showHud();
       touchLastY=t.clientY;
@@ -65,13 +71,15 @@
   },{passive:true});
   touchHost?.addEventListener('touchend',()=>{
     if(!touchMoved&&!touchInteractive&&!window.__doxaLongPressActive){toggleHudTap();lastTouchHudTap=Date.now()}
-    touchStartY=touchLastY=touchStartX=null;touchMoved=false;touchInteractive=false;
+    touchStartY=touchLastY=touchStartX=null;touchMoved=false;touchInteractive=false;touchAxis=null;
   },{passive:true});
   // Mouse/trackpad/scroll fallback.
   window.addEventListener('scroll',()=>{
     // Durante o swipe de capítulo, renderReader() reposiciona a página no topo.
     // Esse scroll é técnico e não deve alterar o estado visual do HUD.
     if(window.__doxaChapterSwipeAnimating||parallelOn)return;
+    // Rolagem residual durante um arraste lateral também não mexe na barra.
+    if(touchAxis==='x'){lastScrollY=window.scrollY;return}
     if(!readerPanel())return;const y=window.scrollY,d=y-lastScrollY;
     if(y<7)showHud(true);else if(d>11)hideHud();else if(d<-11)showHud();lastScrollY=y;
   },{passive:true});
