@@ -1,0 +1,24 @@
+/* Doxa 36 · Compartilhar o Versículo do Dia */
+.doxa-home-verse{position:relative}
+.doxa-verse-share{position:absolute;top:14px;right:14px;z-index:3;width:40px;height:40px;display:grid;place-items:center;border-radius:13px;
+  background:color-mix(in srgb,var(--d30-bg) 48%,transparent);border:1px solid color-mix(in srgb,var(--d30-gold) 34%,transparent);
+  color:var(--d30-gold2,#f1c989);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);-webkit-tap-highlight-color:transparent}
+.doxa-verse-share svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.doxa-verse-share:active{transform:scale(.92)}
+
+.doxa-share-backdrop{position:fixed;inset:0;z-index:240;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .28s ease}
+.doxa-share-backdrop.on{opacity:1;pointer-events:auto}
+.doxa-share-sheet{position:fixed;left:0;right:0;bottom:0;z-index:241;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 16px);
+  border-radius:26px 26px 0 0;background:var(--d30-panel);border-top:1px solid color-mix(in srgb,var(--d30-gold) 22%,transparent);color:var(--d30-text);
+  transform:translate3d(0,105%,0);transition:transform .44s cubic-bezier(.22,1,.36,1)}
+.doxa-share-sheet.on{transform:none}
+.doxa-share-grab{width:42px;height:4px;margin:0 auto 14px;border-radius:9px;background:color-mix(in srgb,var(--d30-text) 20%,transparent)}
+.doxa-share-preview{display:grid;place-items:center;height:min(56dvh,520px);margin:0 auto;aspect-ratio:1080/1350;max-width:100%;
+  border-radius:18px;overflow:hidden;background:color-mix(in srgb,var(--d30-bg) 70%,transparent);box-shadow:0 18px 44px rgba(0,0,0,.3)}
+.doxa-share-preview img{width:100%;height:100%;object-fit:contain;display:block}
+.doxa-share-loading{font:italic 15px/1.4 Georgia,serif;color:var(--d30-muted)}
+.doxa-share-actions{display:flex;gap:10px;margin-top:16px}
+.doxa-share-actions button{flex:1;height:48px;border-radius:15px;border:1px solid color-mix(in srgb,var(--d30-gold) 24%,transparent);background:none;color:var(--d30-text);font:650 15px/1 system-ui}
+.doxa-share-actions .primary{border:0;background:var(--d30-gold);color:var(--d30-bg)}
+.doxa-share-actions .primary:disabled{opacity:.45}
+.doxa-share-note{margin:12px 0 0;text-align:center;font:400 12px/1.4 system-ui;color:var(--d30-muted)}
