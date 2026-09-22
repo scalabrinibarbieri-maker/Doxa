@@ -38,7 +38,9 @@
         /* js/19.js (textura antiga) não é mais carregado: o pergaminho vive no css/24.css. */
         addScript('doxa-v31-tools-js','js/20.js',()=>{
           addScript('doxa-v31-home-js','js/21.js',()=>{
-            addScript('doxa-v32-fonts-js','js/22.js');
+            addScript('doxa-v32-fonts-js','js/22.js',()=>{
+              addScript('doxa-v321-arrival-js','js/23.js');
+            });
           });
         });
       });
