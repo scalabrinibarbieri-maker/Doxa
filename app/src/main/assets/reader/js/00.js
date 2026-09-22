@@ -31,14 +31,14 @@
     addCss('doxa-v30-shell-css','css/21.css');
     addCss('doxa-v31-tools-css','css/22.css');
     addCss('doxa-v31-home-css','css/23.css');
+    addCss('doxa-v312-fixes-css','css/24.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
-        addScript('doxa-v30-paper-js','js/19.js',()=>{
-          addScript('doxa-v31-tools-js','js/20.js',()=>{
-            addScript('doxa-v31-home-js','js/21.js',()=>{
-              addScript('doxa-v32-fonts-js','js/22.js');
-            });
+        /* js/19.js (textura antiga) não é mais carregado: o pergaminho vive no css/24.css. */
+        addScript('doxa-v31-tools-js','js/20.js',()=>{
+          addScript('doxa-v31-home-js','js/21.js',()=>{
+            addScript('doxa-v32-fonts-js','js/22.js');
           });
         });
       });

@@ -55,7 +55,7 @@
     if(!picker)return;
     pickerContext=(context==='A'||context==='B')?context:'single';
     if(pickerContext==='single'&&parallelOn)return;
-    const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';setPickerStage('book',false);renderPicker();animatePickerStage();pickerSearch?.blur();picker.classList.add('on');backdrop.classList.add('on');picker.setAttribute('aria-hidden','false')
+    const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';setPickerStage('book',false);renderPicker();pickerSearch?.blur();picker.classList.add('on');backdrop.classList.add('on');picker.setAttribute('aria-hidden','false')
   }
   function stageHeading(book){const m=pickerMode(),label=VERSION_META[m]?.label||m;if(pickerStage==='book')return['Escolher livro',label];if(pickerStage==='chapter')return[bookName(book),'Escolha o capítulo'];return[bookName(book)+' '+pickerChapter,'Escolha o versículo']}
   function renderPicker(filter=''){

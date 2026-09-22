@@ -25,11 +25,14 @@
   function removeVerseFx(el){el?.querySelectorAll(':scope>.verse-smoke,:scope>.verse-handle').forEach(x=>x.remove())}
   function positionPopover(el){pop.classList.add('on');pop.setAttribute('aria-hidden','false')}
   function closePop(){pop.classList.remove('on');pop.setAttribute('aria-hidden','true');verseBackdrop.classList.remove('on');document.body.classList.remove('verse-menu-open');removeVerseFx(activeVerseEl);activeVerseEl?.classList.remove('verse-context');activeVerseEl=null}
-  function openPop(el){closePop();activeVerseEl=el;activeRef=identityFromVerse(el);if(!activeRef)return;el.classList.add('verse-context');addVerseFx(el);document.body.classList.add('verse-menu-open');verseBackdrop.classList.add('on');positionPopover(el)}
+  let popOpenedAt=0;
+  function openPop(el){closePop();popOpenedAt=Date.now();activeVerseEl=el;activeRef=identityFromVerse(el);if(!activeRef)return;el.classList.add('verse-context');addVerseFx(el);document.body.classList.add('verse-menu-open');verseBackdrop.classList.add('on');positionPopover(el)}
   window.DoxaVerseActions={open:openPop,close:closePop};
-  verseBackdrop.addEventListener('click',closePop);
-  document.addEventListener('touchstart',e=>{if(pop.classList.contains('on')&&!e.target.closest('#verseActions')&&!e.target.closest('.verse-context'))closePop()},{passive:true});
-  window.addEventListener('scroll',()=>{if(pop.classList.contains('on'))closePop()},{passive:true});
+  /* O dedo ainda está na tela quando o menu abre: o click do soltar cai no véu e fechava o menu na hora. */
+  const popJustOpened=(ms)=>Date.now()-popOpenedAt<ms;
+  verseBackdrop.addEventListener('click',()=>{if(popJustOpened(700))return;closePop()});
+  document.addEventListener('touchstart',e=>{if(pop.classList.contains('on')&&!popJustOpened(400)&&!e.target.closest('#verseActions')&&!e.target.closest('.verse-context'))closePop()},{passive:true});
+  window.addEventListener('scroll',()=>{if(pop.classList.contains('on')&&!popJustOpened(600))closePop()},{passive:true});
   function openStudy(kind){if(!activeRef)return;studyMode=kind;compareIndex=0;delete body.dataset.compareStarted;closePop();screen.classList.add('on');screen.setAttribute('aria-hidden','false');renderStudy()}
   function closeStudy(){screen.classList.remove('on');screen.setAttribute('aria-hidden','true')}
   document.getElementById('studyBack').onclick=closeStudy;
