@@ -193,7 +193,7 @@
         +'<span class="doxa-home-goal"><span><em>Meta diária</em><b id="doxaHomeGoalText">0/1 capítulo</b></span><span class="doxa-home-goal-track"><i id="doxaHomeGoalBar"></i></span><strong id="doxaHomeGoalPct">0%</strong></span>'
         +'<span class="doxa-home-week" id="doxaHomeWeek"></span>'
       +'</button>'
-      +'<button class="doxa-home-verse" id="doxaHomeVerse" type="button" data-book="'+esc(v.book)+'" data-chapter="'+v.chapter+'" data-verse="'+v.verse+'" style="--home-verse-image:url(\''+cssUrl(verseImage(data))+'\')"><span class="doxa-home-verse-shade"></span><span class="doxa-home-verse-copy"><small>VERSÍCULO DO DIA</small><strong>“'+esc(v.text)+'”</strong><span>'+esc(v.ref)+'</span></span><span class="doxa-home-open-label">Abrir <b>›</b></span></button>'
+      +'<button class="doxa-home-verse" id="doxaHomeVerse" type="button" data-book="'+esc(v.book)+'" data-chapter="'+v.chapter+'" data-verse="'+v.verse+'" style="--home-verse-image:url(\''+cssUrl(verseImage(data))+'\')"><span class="doxa-home-verse-shade"></span><span class="doxa-home-verse-copy"><small>VERSÍCULO DO DIA</small><strong>“'+esc(v.text)+'”</strong><span>'+esc(v.ref)+'</span></span><span class="doxa-home-open-label">Abrir <b>›</b></span><span class="doxa-verse-share" role="button" tabindex="0" aria-label="Compartilhar versículo" data-share-verse><svg viewBox="0 0 24 24"><path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M6 12v6.5A1.5 1.5 0 0 0 7.5 20h9a1.5 1.5 0 0 0 1.5-1.5V12"/></svg></span></button>'
       +section('Notícias','news',data.news||[],cardNews,'doxa-home-news-grid')
       +section('Artigos','articles',data.articles||[],cardArticle,'doxa-home-article-grid')
       +section('Em evidência','featured',data.featured||[],cardFeature,'doxa-home-feature-list',' doxa-home-evidence')
@@ -339,6 +339,7 @@
       home.addEventListener('click',e=>{
         const lk=e.target.closest('[data-like]');if(lk){e.preventDefault();e.stopPropagation();toggleLike(lk.dataset.like);return}
         if(e.target.closest('#doxaHomeBreadCard')){toast(earnedToday()?'Pão Diário concluído hoje':'Leia um capítulo até o final para concluir o Pão Diário');return}
+        if(e.target.closest('[data-share-verse]')){e.preventDefault();e.stopPropagation();window.DoxaShareVerse?.();return}
         if(e.target.closest('#doxaHomeVerse')){openVerse();return}
         const all=e.target.closest('[data-see-all]');if(all){openList(all.dataset.seeAll);return}
         const it=e.target.closest('[data-open-item]');if(it){openItem(it.dataset.openItem)}
