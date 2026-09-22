@@ -1,0 +1,104 @@
+/* Doxa 34 · Ferramentas organizada, Notas e opções de exibição */
+
+/* a âncora de compatibilidade do js/06 aparecia como uma caixa tracejada vazia */
+.tool-coming[hidden]{display:none!important}
+
+/* ---------- Ferramentas ---------- */
+#p-marcar .doxa34-tools-head{display:block!important;margin:4px 2px 6px!important;padding:0!important;border:0!important;background:none!important}
+#p-marcar .doxa34-tools-head .tools-kicker{display:block;font:700 10.5px/1 system-ui,sans-serif;letter-spacing:.16em;color:var(--d30-gold)}
+#p-marcar .doxa34-tools-head h2{margin:8px 0 0!important;font:600 30px/1.05 Georgia,'Times New Roman',serif!important;color:var(--d30-text)!important;letter-spacing:0!important;text-transform:none!important}
+#p-marcar .doxa34-tools-head p{margin:6px 0 0!important;font:400 14px/1.4 system-ui,sans-serif!important;color:var(--d30-muted)!important}
+.doxa34-tools-label{margin:22px 4px 8px;font:700 10.5px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--d30-muted)}
+#p-marcar.doxa34-sub .doxa34-tools-head,#p-marcar.doxa34-sub .doxa34-tools-label,#p-marcar.doxa34-sub #doxa31ParallelTool{display:none!important}
+
+/* todos os cartões com o mesmo desenho, inclusive Leitura paralela */
+#p-marcar .tool-card,#p-marcar #doxa31ParallelTool{
+  width:100%!important;display:grid!important;grid-template-columns:48px minmax(0,1fr) auto 18px!important;gap:14px!important;align-items:center!important;
+  margin:0 0 10px!important;padding:14px 16px!important;border-radius:20px!important;text-align:left!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 14%,transparent)!important;
+  background:color-mix(in srgb,var(--d30-panel) 88%,var(--d30-bg))!important;color:var(--d30-text)!important;box-shadow:none!important;
+}
+#p-marcar .tool-card[hidden]{display:none!important}
+#p-marcar .tool-card:active,#p-marcar #doxa31ParallelTool:active{background:color-mix(in srgb,var(--d30-gold) 9%,var(--d30-panel))!important}
+#p-marcar .tool-card-icon,#p-marcar .doxa31-tool-icon{
+  width:48px!important;height:48px!important;display:grid!important;place-items:center!important;border-radius:15px!important;
+  background:color-mix(in srgb,var(--d30-gold) 12%,transparent)!important;color:var(--d30-gold)!important;font-size:22px!important;border:0!important;
+}
+#p-marcar .doxa31-tool-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#p-marcar .tool-card-copy strong,#p-marcar .doxa31-tool-copy strong{display:block;font:600 17px/1.2 Georgia,'Times New Roman',serif!important;color:var(--d30-text)!important}
+#p-marcar .tool-card-copy small,#p-marcar .doxa31-tool-copy small{display:block;margin-top:4px;font:400 13px/1.38 system-ui,sans-serif!important;color:var(--d30-muted)!important}
+#p-marcar .tool-card-count{min-width:30px;height:26px;padding:0 9px;display:grid;place-items:center;border-radius:999px;
+  background:color-mix(in srgb,var(--d30-gold) 13%,transparent)!important;color:var(--d30-gold)!important;font:700 12px/1 system-ui!important}
+#p-marcar #doxa31ParallelTool .doxa31-tool-copy{grid-column:2/4}
+#p-marcar .tool-card-arrow,#p-marcar .doxa31-tool-arrow{color:var(--d30-muted)!important;font:400 22px/1 Georgia,serif!important;text-align:right}
+
+/* ---------- menu do versículo: ícone de nota ---------- */
+#verseActions [data-va="note"] .va-icon svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- marcador no texto ---------- */
+.doxa-note-mark{
+  display:inline-grid;place-items:center;width:1.25em;height:1.25em;margin:0 0 0 .3em;padding:0;vertical-align:-.12em;
+  border:0;border-radius:.35em;background:color-mix(in srgb,var(--d30-gold) 16%,transparent);color:var(--d30-gold);
+  cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;z-index:5;
+}
+.doxa-note-mark svg{width:.82em;height:.82em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.doxa-note-mark:active{transform:scale(.9)}
+.text.hebrew .doxa-note-mark{margin:0 .3em 0 0}
+
+/* ---------- Ajustes: ocultar marcações (os dados continuam salvos) ---------- */
+body.doxa-hide-note-marks .doxa-note-mark,
+body.doxa-hide-note-marks .note-pin{display:none!important}
+body.doxa-hide-highlights #textBody .hl-word[data-hl-color]{background:none!important;color:inherit!important;box-shadow:none!important}
+
+/* ---------- editor de nota ---------- */
+.doxa-note-backdrop{position:fixed;inset:0;z-index:228;background:color-mix(in srgb,var(--d30-text) 12%,transparent);opacity:0;pointer-events:none;transition:opacity .28s ease}
+body[data-doxa30-theme="night"] .doxa-note-backdrop{background:rgba(0,0,0,.4)}
+.doxa-note-backdrop.on{opacity:1;pointer-events:auto}
+.doxa-note-sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:230;max-height:88dvh;display:flex;flex-direction:column;gap:12px;
+  padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 16px);border-radius:26px 26px 0 0;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel) 94%,var(--d30-gold) 6%),var(--d30-panel));
+  border-top:1px solid color-mix(in srgb,var(--d30-gold) 22%,transparent);box-shadow:0 -20px 60px rgba(0,0,0,.28);color:var(--d30-text);
+  transform:translate3d(0,105%,0);transition:transform .44s cubic-bezier(.22,1,.36,1);
+}
+.doxa-note-sheet.on{transform:none}
+.doxa-note-grab{width:42px;height:4px;margin:0 auto 2px;border-radius:9px;background:color-mix(in srgb,var(--d30-text) 20%,transparent)}
+.doxa-note-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.doxa-note-head small{display:block;font:700 10px/1 system-ui;letter-spacing:.16em;color:var(--d30-gold)}
+.doxa-note-head strong{display:block;margin-top:6px;font:600 22px/1.15 Georgia,'Times New Roman',serif}
+.doxa-note-head button{width:38px;height:38px;border:0;border-radius:12px;background:color-mix(in srgb,var(--d30-text) 6%,transparent);color:var(--d30-muted);font:400 24px/1 system-ui}
+.doxa-note-verse{margin:0;max-height:22dvh;overflow:auto;padding:10px 14px;border-left:2px solid color-mix(in srgb,var(--d30-gold) 55%,transparent);
+  background:color-mix(in srgb,var(--d30-gold) 7%,transparent);border-radius:0 12px 12px 0;
+  font:italic 400 15px/1.5 var(--doxa-font,Georgia,'Times New Roman',serif);color:var(--d30-muted)}
+.doxa-note-sheet textarea{
+  width:100%;min-height:120px;max-height:42dvh;resize:none;box-sizing:border-box;padding:14px;border-radius:16px;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 20%,transparent);background:color-mix(in srgb,var(--d30-bg) 55%,transparent);
+  color:var(--d30-text);font:400 16px/1.55 system-ui,sans-serif;outline:none;
+}
+.doxa-note-sheet textarea:focus{border-color:color-mix(in srgb,var(--d30-gold) 55%,transparent)}
+.doxa-note-foot{display:flex;align-items:center;gap:10px}
+.doxa-note-foot span{flex:1;text-align:center;font:500 11px/1.2 system-ui;color:var(--d30-muted)}
+.doxa-note-del,.doxa-note-save{height:44px;padding:0 18px;border-radius:14px;font:650 14px/1 system-ui}
+.doxa-note-del{border:1px solid color-mix(in srgb,var(--rubric,#b44) 40%,transparent);background:none;color:var(--rubric,#b44)}
+.doxa-note-del[hidden]{display:block!important;visibility:hidden}
+.doxa-note-save{border:0;background:var(--d30-gold);color:var(--d30-bg)}
+
+/* ---------- lista de notas ---------- */
+.doxa-notes-search{margin:4px 0 12px}
+.doxa-notes-search[hidden]{display:none}
+.doxa-notes-search input{width:100%;box-sizing:border-box;height:44px;padding:0 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--d30-gold) 16%,transparent);
+  background:color-mix(in srgb,var(--d30-panel) 80%,transparent);color:var(--d30-text);font:400 15px/1 system-ui}
+.doxa-notes-list{display:grid;gap:10px}
+.doxa-note-card{padding:14px 16px;border-radius:18px;border:1px solid color-mix(in srgb,var(--d30-gold) 14%,transparent);background:color-mix(in srgb,var(--d30-panel) 88%,var(--d30-bg))}
+.doxa-note-card:active{background:color-mix(in srgb,var(--d30-gold) 8%,var(--d30-panel))}
+.doxa-note-card header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.doxa-note-card strong{font:600 16px/1.2 Georgia,'Times New Roman',serif;color:var(--d30-gold)}
+.doxa-note-card header button{width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:11px;background:color-mix(in srgb,var(--d30-text) 6%,transparent);color:var(--d30-muted)}
+.doxa-note-card header svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.doxa-note-card p{margin:8px 0 0;font:400 14.5px/1.5 system-ui,sans-serif;color:var(--d30-text);white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.doxa-note-card footer{margin-top:8px;font:500 11px/1 system-ui;color:var(--d30-muted)}
+.doxa-notes-empty{padding:30px 18px;text-align:center;border:1px dashed color-mix(in srgb,var(--d30-gold) 22%,transparent);border-radius:18px;color:var(--d30-muted);font:400 14px/1.5 system-ui}
+.doxa-notes-empty strong{display:block;margin-bottom:6px;font:600 17px/1.2 Georgia,serif;color:var(--d30-text)}
+.doxa-notes-empty span{display:block}
+.doxa-notes-sub{margin:22px 4px 8px;font:700 10.5px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--d30-muted)}
+.doxa-notes-sub[hidden]{display:none}
