@@ -13,3 +13,11 @@
 - **Tipografia de leitura** em Ajustes: Serifada, EB Garamond e fonte importada (.ttf/.otf, até 15 MB). A escolha fica em localStorage e o arquivo da fonte no IndexedDB (`doxa-fonts-v1`). Variável CSS própria: `--doxa-font`. O hebraico não é afetado.
 
 Não testado em aparelho neste ambiente; compilação pelo GitHub Actions.
+
+# Atualização 31.2
+
+- **Cabeçalho da Home grudado:** a regra genérica `header{position:sticky}` do `css/00.css` pegava o cabeçalho da Home. Neutralizada em `css/24.css`.
+- **Menu do versículo sumindo sozinho:** ao abrir com o dedo ainda na tela, o click do soltar caía no véu e fechava o menu. `js/09.js` ignora véu, toque e rolagem nos primeiros instantes após abrir.
+- **Menu do versículo nos temas:** `css/16.css` (carregado no body) vencia as regras de tema. `css/24.css` usa `#verseActions`. Night inalterado.
+- **Seletor de livros pesado:** 66 camadas com `blur(14px)` animadas sem parar e `will-change`. Brilho agora é gradiente estático; animação só no livro selecionado. Animação da grade não é mais disparada duas vezes ao abrir (`js/03.js`).
+- **Pergaminho:** substitui a textura antiga. `assets/paper_texture.webp` (tons de cinza) multiplicada sobre a paleta; no Night, invertida em `screen`. `js/19.js` deixou de ser carregado.
