@@ -27,7 +27,7 @@ function currentRef(){if(mode==='hyper')return HYPER_BLOCKS[hIdx].ref;const p=po
 function currentKey(){if(mode==='hyper')return'h:'+hIdx;const p=pos(),cp=corpus(),pre=VERSION_META[mode].prefix;return pre+':'+cp.books[p.b].book+':'+p.c}
 async function getStored(key){try{if(window.storage&&typeof window.storage.get==='function'){const r=await window.storage.get(key);storageMode='window.storage';return r?r.value:null}}catch(e){}try{const v=localStorage.getItem(key);storageMode='localStorage';return v}catch(e){storageMode='memory';return null}}
 async function setStored(key,value){try{if(window.storage&&typeof window.storage.set==='function'){await window.storage.set(key,value);storageMode='window.storage';return true}}catch(e){}try{localStorage.setItem(key,value);storageMode='localStorage';return true}catch(e){storageMode='memory';return false}}
-let textPrefsDbPromise=null;
+let textPrefsDbPromise=null,prefsReady=false;
 function textPrefsDb(){
   if(textPrefsDbPromise)return textPrefsDbPromise;
   textPrefsDbPromise=new Promise((resolve,reject)=>{
@@ -38,17 +38,21 @@ function textPrefsDb(){
   });
   return textPrefsDbPromise;
 }
-function textPrefsSnapshot(){const out={id:'reader'};for(const k of TEXT_PREF_FIELDS)out[k]=prefs[k];return out}
+function textPrefsSnapshot(){const out={id:'reader',t:Date.now()};for(const k of TEXT_PREF_FIELDS)out[k]=prefs[k];return out}
 async function loadTextPrefsBackup(){
   let local=null;
   try{const raw=localStorage.getItem(KEY_TEXT_PREFS);if(raw)local=JSON.parse(raw)}catch(e){}
   try{
     const db=await textPrefsDb();
     const native=await new Promise((resolve,reject)=>{const tx=db.transaction('settings','readonly'),r=tx.objectStore('settings').get('reader');r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)});
-    return Object.assign({},local||{},native||{});
+    /* O localStorage é gravado na hora; o IndexedDB é assíncrono e pode ficar para trás se o app for fechado.
+       Vale a cópia mais recente. */
+    if(local&&native)return (Number(native.t)||0)>(Number(local.t)||0)?native:local;
+    return local||native;
   }catch(e){return local}
 }
 async function saveTextPrefsBackup(){
+  if(!prefsReady)return false;
   const snap=textPrefsSnapshot();
   try{localStorage.setItem(KEY_TEXT_PREFS,JSON.stringify(snap))}catch(e){}
   try{
@@ -59,7 +63,7 @@ async function saveTextPrefsBackup(){
 }
 async function load(){const m=await getStored(KEY_MARKS),p=await getStored(KEY_PREFS),tp=await loadTextPrefsBackup();try{store=m?JSON.parse(m):{}}catch(e){store={}}try{prefs=Object.assign(prefs,p?JSON.parse(p):{})}catch(e){}if(tp&&typeof tp==='object'){for(const k of TEXT_PREF_FIELDS)if(tp[k]!==undefined)prefs[k]=tp[k]}if(prefs.mode==='almeida-1911-atual')prefs.mode='almeida';if(prefs.mode==='hyper'||CORPORA[prefs.mode])mode=prefs.mode;else mode='almeida';hIdx=Math.max(0,Math.min(HYPER_BLOCKS.length-1,Number(prefs.hIdx)||0));if(prefs.positions)positions=Object.assign(positions,prefs.positions);for(const k of Object.keys(CORPORA)){const cp=CORPORA[k],pp=positions[k]||{b:0,c:1};pp.b=Math.max(0,Math.min(cp.books.length-1,Number(pp.b)||0));const chapters=cp.books[pp.b].chapters,nums=chapters.map(x=>Number(x.chapter));pp.c=nums.includes(Number(pp.c))?Number(pp.c):nums[0];positions[k]=pp}}
 async function saveMarks(){return setStored(KEY_MARKS,JSON.stringify(store))}
-async function savePrefs(){prefs.mode=mode;prefs.hIdx=hIdx;prefs.positions=positions;const payload=JSON.stringify(prefs);let ok=false;try{localStorage.setItem(KEY_PREFS,payload);ok=true}catch(e){}try{ok=(await setStored(KEY_PREFS,payload))||ok}catch(e){}await saveTextPrefsBackup();return ok}
+async function savePrefs(){if(!prefsReady)return false;prefs.mode=mode;prefs.hIdx=hIdx;prefs.positions=positions;const payload=JSON.stringify(prefs);let ok=false;try{localStorage.setItem(KEY_PREFS,payload);ok=true}catch(e){}try{ok=(await setStored(KEY_PREFS,payload))||ok}catch(e){}await saveTextPrefsBackup();return ok}
 function applyTextPrefs(save=false){
   const size=Math.max(14,Math.min(28,Number(prefs.size)||18.5));
   const margin=Math.max(8,Math.min(42,Number(prefs.textMargin)||26));
@@ -462,7 +466,7 @@ document.getElementById('swSup').onchange=e=>{prefs.showSup=e.target.checked;doc
 document.getElementById('swTextMargin')?.addEventListener('input',e=>{prefs.textMargin=Number(e.target.value);applyTextPrefs(true)});
 document.getElementById('swVerseNumbers')?.addEventListener('change',e=>{if(mode==='hyper'){e.target.checked=prefs.showVerseNumbers!==false;return}prefs.showVerseNumbers=e.target.checked;applyTextPrefs(true)});
 document.querySelectorAll('[data-reader-align]').forEach(b=>b.addEventListener('click',()=>{if(mode==='hyper')return;prefs.textAlign=b.dataset.readerAlign;applyTextPrefs(true)}));
-const persistReaderPrefsNow=()=>{try{localStorage.setItem(KEY_PREFS,JSON.stringify(prefs));localStorage.setItem(KEY_TEXT_PREFS,JSON.stringify(textPrefsSnapshot()))}catch(e){}saveTextPrefsBackup()};
+const persistReaderPrefsNow=()=>{if(!prefsReady)return;try{localStorage.setItem(KEY_PREFS,JSON.stringify(prefs));localStorage.setItem(KEY_TEXT_PREFS,JSON.stringify(textPrefsSnapshot()))}catch(e){}saveTextPrefsBackup()};
 window.addEventListener('pagehide',persistReaderPrefsNow);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistReaderPrefsNow()});
 let touchX=0,touchY=0;document.getElementById('p-ler').addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY},{passive:true});document.getElementById('p-ler').addEventListener('touchend',e=>{if(parallelOn)return;const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25)move(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(parallelOn)return;if(!document.getElementById('p-ler').classList.contains('on'))return;if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1)});
@@ -546,4 +550,4 @@ async function installAllOpenBibles(){for(const slug of OPEN_BIBLE_ORDER){const 
 window.DoxaOpenBibles={specs:OPEN_BIBLE_SPECS,install:installOpenBible,installAll:installAllOpenBibles,isInstalled:slug=>!!CORPORA[slug],render:renderOpenBibleManager};
 document.getElementById('openBibleDownloadAll')?.addEventListener('click',installAllOpenBibles);
 
-(async function(){await loadOpenBibleModules();await load();await loadAppearance();await loadParallel();bindAppearance();bindParallel();document.getElementById('swSup').checked=prefs.showSup!==false;document.getElementById('swRub').checked=prefs.rubric!==false;document.getElementById('swSize').value=Number(prefs.size)||18.5;applyTextPrefs(false);document.body.classList.toggle('hide-sup',prefs.showSup===false);document.body.classList.toggle('plain',prefs.rubric===false);renderReader();if(parallelOn)setParallelMode(true);renderChips();renderSearch();updateStorageNote();const stat=(x)=>({books:x.books.length,chapters:x.books.reduce((s,b)=>s+b.chapters.length,0),verses:x.books.reduce((s,b)=>s+b.chapters.reduce((z,c)=>z+c.verses.length,0),0)}),a=stat(ALMEIDA),w=stat(WLC),t=stat(TR);document.getElementById('stats').innerHTML='Tradução hiperliteral: '+HYPER_BLOCKS.length+' blocos, Gênesis 1.1 a 9.17.<br>Almeida 1819 / Bíblia Livre incorporada: '+a.books+' livros, '+a.chapters.toLocaleString('pt-BR')+' capítulos, '+a.verses.toLocaleString('pt-BR')+' versículos.<br>WLC corrigido (OSHB v2.2): '+w.books+' livros, '+w.chapters.toLocaleString('pt-BR')+' capítulos, '+w.verses.toLocaleString('pt-BR')+' versículos.<br>TR Stephanus 1550: '+t.books+' livros, '+t.chapters.toLocaleString('pt-BR')+' capítulos, '+t.verses.toLocaleString('pt-BR')+' versículos.<br><br>O Doxa mantém Almeida 1819, Bíblia Livre, WLC/OSHB, Textus Receptus 1550 e a Tradução Hiperliteral. O WLC mantém Strong+, lema e morfologia do Open Scriptures Hebrew Bible v2.2 (CC BY 4.0).<br><br>Referências cruzadas: dados OpenBible.info (CC BY), carregados sob demanda e armazenados localmente após o primeiro uso.'})();
+(async function(){try{await loadOpenBibleModules()}catch(e){}try{await load()}finally{prefsReady=true}await loadAppearance();await loadParallel();bindAppearance();bindParallel();document.getElementById('swSup').checked=prefs.showSup!==false;document.getElementById('swRub').checked=prefs.rubric!==false;document.getElementById('swSize').value=Number(prefs.size)||18.5;applyTextPrefs(false);document.body.classList.toggle('hide-sup',prefs.showSup===false);document.body.classList.toggle('plain',prefs.rubric===false);renderReader();if(parallelOn)setParallelMode(true);renderChips();renderSearch();updateStorageNote();const stat=(x)=>({books:x.books.length,chapters:x.books.reduce((s,b)=>s+b.chapters.length,0),verses:x.books.reduce((s,b)=>s+b.chapters.reduce((z,c)=>z+c.verses.length,0),0)}),a=stat(ALMEIDA),w=stat(WLC),t=stat(TR);document.getElementById('stats').innerHTML='Tradução hiperliteral: '+HYPER_BLOCKS.length+' blocos, Gênesis 1.1 a 9.17.<br>Almeida 1819 / Bíblia Livre incorporada: '+a.books+' livros, '+a.chapters.toLocaleString('pt-BR')+' capítulos, '+a.verses.toLocaleString('pt-BR')+' versículos.<br>WLC corrigido (OSHB v2.2): '+w.books+' livros, '+w.chapters.toLocaleString('pt-BR')+' capítulos, '+w.verses.toLocaleString('pt-BR')+' versículos.<br>TR Stephanus 1550: '+t.books+' livros, '+t.chapters.toLocaleString('pt-BR')+' capítulos, '+t.verses.toLocaleString('pt-BR')+' versículos.<br><br>O Doxa mantém Almeida 1819, Bíblia Livre, WLC/OSHB, Textus Receptus 1550 e a Tradução Hiperliteral. O WLC mantém Strong+, lema e morfologia do Open Scriptures Hebrew Bible v2.2 (CC BY 4.0).<br><br>Referências cruzadas: dados OpenBible.info (CC BY), carregados sob demanda e armazenados localmente após o primeiro uso.'})();
