@@ -195,7 +195,7 @@ body:not(.parallel-mode) #parallelToggle{display:none!important}
 body:not(.parallel-mode) #p-ler .pager{display:none!important}
 body:not(.parallel-mode) #singleReader{max-width:760px;margin:0 auto;padding:20px 26px 30px}
 body:not(.parallel-mode) #singleReader .opening{margin-top:0}
-body:not(.parallel-mode) #textBody:not(.hebrew){font-family:var(--reader-family,Georgia,'Times New Roman',serif)!important}
+body:not(.parallel-mode) #textBody:not(.hebrew){font-family:Georgia,'Times New Roman',serif!important}
 body:not(.parallel-mode) #textBody .verse{
   color:var(--d30-text)!important;
   font-size:calc(var(--reader-font-size,18.5px) * 1.55)!important;
@@ -855,26 +855,3 @@ body[data-doxa30-theme="night"] .verse-actions button{color:#f3eee8!important;bo
 body[data-doxa30-theme="night"] .verse-actions::before{background:rgba(255,255,255,.13)!important}
 
 @media(max-width:420px){.doxa30-theme-grid{grid-template-columns:repeat(5,1fr)!important;gap:4px!important}.doxa30-paper-texture-toggle{grid-template-columns:48px minmax(0,1fr) auto;padding:8px}.doxa30-paper-preview{width:44px;height:44px}.doxa30-paper-texture-state{padding:6px 7px;font-size:8px}}
-
-
-/* ===== DOXA · FONTES DE LEITURA ===== */
-@font-face{
-  font-family:'EB Garamond';
-  src:url('../fonts/EBGaramond-VariableFont_wght.ttf') format('truetype');
-  font-style:normal;
-  font-weight:400 800;
-  font-display:swap;
-}
-@font-face{
-  font-family:'EB Garamond';
-  src:url('../fonts/EBGaramond-Italic-VariableFont_wght.ttf') format('truetype');
-  font-style:italic;
-  font-weight:400 800;
-  font-display:swap;
-}
-:root{--reader-family:Georgia,'Times New Roman',serif}
-body[data-reader-font="editorial"]{--reader-family:Georgia,'Times New Roman',serif}
-body[data-reader-font="garamond"]{--reader-family:'EB Garamond',Georgia,'Times New Roman',serif}
-body[data-reader-font="garamond"] #textBody:not(.hebrew),
-body[data-reader-font="garamond"] .parallel-text:not(.hebrew),
-body[data-reader-font="garamond"] .opening p{font-optical-sizing:auto;font-variation-settings:'wght' 400}
