@@ -38,7 +38,7 @@ body.chapter-animating #singleReader{pointer-events:none}
 /* V9: tipografias nativas do Android/WebView; funcionam 100% offline. */
 
 /* ---------- Fonte de leitura ---------- */
- .text:not(.hebrew),.opening p,.parallel-text:not(.hebrew){font-family:var(--reader-family,var(--serif))!important;font-optical-sizing:auto;font-synthesis:none}
+ .text:not(.hebrew),.opening p,.parallel-text:not(.hebrew){font-family:var(--doxa-font,var(--reader-family,var(--serif)))!important;font-optical-sizing:auto;font-synthesis:none}
 body[data-reader-font="editorial"] .text:not(.hebrew),body[data-reader-font="editorial"] .opening p,body[data-reader-font="editorial"] .parallel-text:not(.hebrew){letter-spacing:.002em}
 body[data-reader-font="literaria"] .text:not(.hebrew),body[data-reader-font="literaria"] .opening p,body[data-reader-font="literaria"] .parallel-text:not(.hebrew){letter-spacing:.004em}
 body[data-reader-font="classica"] .text:not(.hebrew),body[data-reader-font="classica"] .opening p,body[data-reader-font="classica"] .parallel-text:not(.hebrew){letter-spacing:.001em}
