@@ -12,9 +12,9 @@ const VERSION_META={
 };
 let mode='almeida',hIdx=0,focusVerse=null,store={},storageMode='memory';
 let positions={almeida:{b:0,c:1},wlc:{b:0,c:1},tr:{b:0,c:1}};
-let prefs={mode:'almeida',hIdx:0,positions:null,showSup:true,rubric:true,size:18.5,textMargin:26,textAlign:'justify',showVerseNumbers:true,readerFont:'editorial'};
+let prefs={mode:'almeida',hIdx:0,positions:null,showSup:true,rubric:true,size:18.5,textMargin:26,textAlign:'justify',showVerseNumbers:true};
 const KEY_MARKS='bereshit:marks:v3',KEY_PREFS='bereshit:prefs:v4',KEY_PARALLEL='bereshit:parallel:v1',KEY_PARALLEL_LAYOUT='bereshit:parallel-layout:v2',KEY_APPEARANCE='bereshit:appearance:v1';
-const KEY_TEXT_PREFS='doxa:reader-text-prefs:v1',TEXT_PREF_FIELDS=['size','textMargin','textAlign','showVerseNumbers','readerFont'];
+const KEY_TEXT_PREFS='doxa:reader-text-prefs:v1',TEXT_PREF_FIELDS=['size','textMargin','textAlign','showVerseNumbers'];
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function norm(s){return String(s).normalize('NFD').replace(/\p{M}+/gu,'').toLowerCase()}
 function stripSup(s){return String(s).replace(/\[|\]/g,'')}
@@ -65,17 +65,16 @@ function applyTextPrefs(save=false){
   const margin=Math.max(8,Math.min(42,Number(prefs.textMargin)||26));
   const align=['left','justify','center'].includes(prefs.textAlign)?prefs.textAlign:'justify';
   const showNumbers=prefs.showVerseNumbers!==false;
-  const readerFont=['editorial','garamond'].includes(prefs.readerFont)?prefs.readerFont:'editorial';
-  prefs.size=size;prefs.textMargin=margin;prefs.textAlign=align;prefs.showVerseNumbers=showNumbers;prefs.readerFont=readerFont;
+  prefs.size=size;prefs.textMargin=margin;prefs.textAlign=align;prefs.showVerseNumbers=showNumbers;
 
   document.documentElement.style.setProperty('--reader-font-size',size+'px');
   document.documentElement.style.setProperty('--parallel-font-size',size+'px');
   document.documentElement.style.setProperty('--reader-side-padding',margin+'px');
   document.documentElement.style.setProperty('--parallel-side-padding',Math.max(7,Math.round(margin*.55))+'px');
-  document.documentElement.style.setProperty('--reader-family',readerFont==='garamond'?"'EB Garamond',Georgia,'Times New Roman',serif":"Georgia,'Times New Roman',serif");
+  document.documentElement.style.setProperty('--reader-family',"Georgia,'Times New Roman',serif");
 
   document.body.dataset.readerAlign=align;
-  document.body.dataset.readerFont=readerFont;
+  delete document.body.dataset.readerFont;
   document.body.classList.toggle('reader-hide-verse-numbers',!showNumbers);
   document.body.classList.toggle('reader-hyper-active',mode==='hyper');
 
@@ -94,7 +93,6 @@ function applyTextPrefs(save=false){
     b.classList.toggle('on',b.dataset.readerAlign===align);
     b.disabled=mode==='hyper';
   });
-  document.querySelectorAll('[data-reader-font]').forEach(b=>b.classList.toggle('on',b.dataset.readerFont===readerFont));
   const hint=document.getElementById('readerTextHint');
   if(hint)hint.textContent=mode==='hyper'
     ?'A Hiperliteral está ativa: alinhamento e números permanecem na formatação editorial própria.'
@@ -464,7 +462,6 @@ document.getElementById('swSup').onchange=e=>{prefs.showSup=e.target.checked;doc
 document.getElementById('swTextMargin')?.addEventListener('input',e=>{prefs.textMargin=Number(e.target.value);applyTextPrefs(true)});
 document.getElementById('swVerseNumbers')?.addEventListener('change',e=>{if(mode==='hyper'){e.target.checked=prefs.showVerseNumbers!==false;return}prefs.showVerseNumbers=e.target.checked;applyTextPrefs(true)});
 document.querySelectorAll('[data-reader-align]').forEach(b=>b.addEventListener('click',()=>{if(mode==='hyper')return;prefs.textAlign=b.dataset.readerAlign;applyTextPrefs(true)}));
-document.querySelectorAll('[data-reader-font]').forEach(b=>b.addEventListener('click',()=>{prefs.readerFont=b.dataset.readerFont;applyTextPrefs(true)}));
 const persistReaderPrefsNow=()=>{try{localStorage.setItem(KEY_PREFS,JSON.stringify(prefs));localStorage.setItem(KEY_TEXT_PREFS,JSON.stringify(textPrefsSnapshot()))}catch(e){}saveTextPrefsBackup()};
 window.addEventListener('pagehide',persistReaderPrefsNow);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistReaderPrefsNow()});
