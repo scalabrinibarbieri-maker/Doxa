@@ -21,3 +21,9 @@ Não testado em aparelho neste ambiente; compilação pelo GitHub Actions.
 - **Menu do versículo nos temas:** `css/16.css` (carregado no body) vencia as regras de tema. `css/24.css` usa `#verseActions`. Night inalterado.
 - **Seletor de livros pesado:** 66 camadas com `blur(14px)` animadas sem parar e `will-change`. Brilho agora é gradiente estático; animação só no livro selecionado. Animação da grade não é mais disparada duas vezes ao abrir (`js/03.js`).
 - **Pergaminho:** substitui a textura antiga. `assets/paper_texture.webp` (tons de cinza) multiplicada sobre a paleta; no Night, invertida em `screen`. `js/19.js` deixou de ser carregado.
+
+# Atualização 32 · Home no Supabase
+
+- Tabelas `home_itens` (noticia/artigo/destaque), `home_versiculos` (versículo fixado por data) e `home_curtidas`; pasta pública `doxa-home` para imagens. RLS: o app só lê o que está publicado; curtir/descurtir só em nome da própria sessão anônima. Contador de curtidas mantido por gatilho.
+- `js/21.js`: busca o conteúdo ao abrir a Home (cache de 5 min, offline com a última versão), versículo do dia automático sem repetição dentro do ciclo, tela de leitura de artigo, "Ver todos" e curtidas anônimas (sessão própria criada na primeira curtida).
+- Enquanto nenhuma busca tiver dado certo, a Home mostra o conteúdo demonstrativo. Depois da primeira busca, só aparece o que estiver publicado; seções vazias somem.
