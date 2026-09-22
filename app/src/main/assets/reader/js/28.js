@@ -1,18 +1,17 @@
 (()=>{
   'use strict';
-  /* Doxa 36.1 · Voltar para a leitura no mesmo ponto
-     O openPanel() do js/02.js termina sempre com window.scrollTo(0,0). Por isso, ao tocar em
-     "Grifar" (ou ao voltar pela aba Bíblia), a leitura recomeçava do início do capítulo.
-     Guardamos a altura da leitura ao sair e devolvemos ao voltar, desde que ainda seja o
-     mesmo capítulo. Quando o app vai abrir um versículo específico, ele rola depois e manda. */
-  if(window.__doxa361KeepScrollInstalled)return;
-  window.__doxa361KeepScrollInstalled=true;
+  /* Doxa 36.2 · Voltar para a leitura no mesmo ponto
+     O openPanel() do js/02.js termina sempre com window.scrollTo(0,0), e outras rotinas
+     (renderReader, modo grifar) também rolam para o topo logo depois da troca de painel.
+     Por isso guardamos a altura enquanto se lê e reaplicamos algumas vezes ao voltar,
+     até a tela assentar. Qualquer toque seu cancela na hora, e nada é reaplicado se o
+     capítulo mudou ou se o app está indo para um versículo específico. */
+  if(window.__doxa362KeepScrollInstalled)return;
+  window.__doxa362KeepScrollInstalled=true;
 
-  const orig=window.openPanel;
-  if(typeof orig!=='function'||orig.__doxa361)return;
-  let saved=null;
-
-  function readingKey(){
+  let saved=null,cancel=false,timers=[];
+  const reading=()=>document.getElementById('p-ler')?.classList.contains('on');
+  function key(){
     try{
       if(typeof mode==='undefined')return null;
       if(mode==='hyper')return 'hyper.'+hIdx;
@@ -20,18 +19,41 @@
       return b?mode+'.'+b.book+'.'+Number(p.c):null;
     }catch(e){return null}
   }
-  const reading=()=>document.getElementById('p-ler')?.classList.contains('on');
+  // guarda a posição o tempo todo enquanto a leitura está aberta
+  window.addEventListener('scroll',()=>{
+    if(!reading()||document.body.classList.contains('doxa-home-open'))return;
+    const y=window.scrollY;if(y>4)saved={key:key(),y};
+  },{passive:true});
 
-  const wrapped=function(name){
-    if(reading()&&window.scrollY>4)saved={key:readingKey(),y:window.scrollY};
-    const result=orig.apply(this,arguments);
-    if(name==='ler'&&saved&&saved.key&&saved.key===readingKey()){
-      const y=saved.y;
-      const go=()=>{try{window.scrollTo({top:y,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,y)}};
-      go();requestAnimationFrame(go);        // depois do desenho do painel
-    }
-    return result;
-  };
-  wrapped.__doxa361=true;
-  window.openPanel=wrapped;
+  function stop(){cancel=true;timers.forEach(clearTimeout);timers=[]}
+  document.addEventListener('touchstart',stop,{capture:true,passive:true});
+  document.addEventListener('wheel',stop,{capture:true,passive:true});
+
+  function restore(){
+    if(!saved||!saved.key||saved.key!==key())return;
+    if(typeof focusVerse!=='undefined'&&focusVerse)return;     // o app está indo para um versículo
+    const y=saved.y;cancel=false;
+    const go=()=>{
+      if(cancel||!reading())return;
+      if(document.querySelector('#textBody .verse.focus,#textBody .verse.picker-arrival'))return;
+      if(Math.abs(window.scrollY-y)<2)return;
+      try{window.scrollTo({top:y,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,y)}
+    };
+    requestAnimationFrame(go);
+    timers.forEach(clearTimeout);
+    timers=[30,90,180,320,600].map(ms=>setTimeout(go,ms));
+  }
+
+  const orig=window.openPanel;
+  if(typeof orig==='function'&&!orig.__doxa362){
+    const wrapped=function(name){
+      if(reading()&&window.scrollY>4)saved={key:key(),y:window.scrollY};
+      else stop();
+      const r=orig.apply(this,arguments);
+      if(name==='ler')restore();else stop();
+      return r;
+    };
+    wrapped.__doxa362=true;window.openPanel=wrapped;
+  }
+  window.DoxaKeepScroll={restore,saved:()=>saved};
 })();
