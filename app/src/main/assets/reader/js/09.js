@@ -40,14 +40,19 @@
         if(Math.abs(delta)<4)return;
         /* Animação própria em vez de scrollBy({behavior:'smooth'}): com o dedo ainda
            pressionando a tela, a rolagem suave nativa pode ser cancelada pela WebView. */
+        /* behavior:'instant' é obrigatório: o css/00.css tem html{scroll-behavior:smooth}, que fazia
+           cada passo virar outra rolagem suave. A página continuava andando depois do fim da
+           animação e o ouvinte de rolagem entendia isso como o usuário rolando, fechando o menu. */
         const from=window.scrollY,to=from+delta,t0=performance.now(),dur=420;
-        window.__doxaVerseAutoScrollUntil=Date.now()+dur+400;
+        window.__doxaVerseAutoScrollUntil=Number.MAX_SAFE_INTEGER;
         const ease=x=>1-Math.pow(1-x,3);
+        const jump=y=>{try{window.scrollTo({top:y,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,y)}};
         const step=now=>{
-          if(!pop.classList.contains('on'))return;
+          if(!pop.classList.contains('on')){window.__doxaVerseAutoScrollUntil=0;return}
           const k=Math.min(1,(now-t0)/dur);
-          window.scrollTo(0,from+(to-from)*ease(k));
+          jump(from+(to-from)*ease(k));
           if(k<1)requestAnimationFrame(step);
+          else window.__doxaVerseAutoScrollUntil=Date.now()+250;   // folga para o último evento de rolagem
         };
         requestAnimationFrame(step);
       });
