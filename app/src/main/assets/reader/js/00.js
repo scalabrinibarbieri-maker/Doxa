@@ -47,7 +47,9 @@
                 addScript('doxa-v33-parallel-js','js/24.js',()=>{
                   addScript('doxa-v34-notes-js','js/25.js',()=>{
                     addScript('doxa-v35-bread-js','js/26.js',()=>{
-                      addScript('doxa-v36-share-js','js/27.js');
+                      addScript('doxa-v36-share-js','js/27.js',()=>{
+                        addScript('doxa-v361-scroll-js','js/28.js');
+                      });
                     });
                   });
                 });
