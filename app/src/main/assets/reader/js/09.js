@@ -54,8 +54,18 @@
     });
   }
   function closePop(){pop.classList.remove('on');pop.setAttribute('aria-hidden','true');verseBackdrop.classList.remove('on');document.body.classList.remove('verse-menu-open');removeVerseFx(activeVerseEl);activeVerseEl?.classList.remove('verse-context');activeVerseEl=null}
-  let popOpenedAt=0;
-  function openPop(el){closePop();popOpenedAt=Date.now();activeVerseEl=el;activeRef=identityFromVerse(el);if(!activeRef)return;el.classList.add('verse-context');addVerseFx(el);document.body.classList.add('verse-menu-open');verseBackdrop.classList.add('on');positionPopover(el)}
+  let popOpenedAt=0,swallowTouch=false,releasedAt=0;
+  /* O menu abre com o dedo ainda na tela. O "soltar" desse mesmo toque gerava um click
+     no que estivesse embaixo do dedo naquele momento: o véu (fechando o menu) ou, quando
+     o versículo estava embaixo e a folha subia sob o dedo, um item do menu (abrindo um
+     recurso sozinho). Esse primeiro click é descartado; só toques novos contam. */
+  document.addEventListener('touchend',()=>{if(swallowTouch){swallowTouch=false;releasedAt=Date.now()}},true);
+  document.addEventListener('touchcancel',()=>{if(swallowTouch){swallowTouch=false;releasedAt=Date.now()}},true);
+  document.addEventListener('click',e=>{
+    if(!pop.classList.contains('on'))return;
+    if(swallowTouch||Date.now()-releasedAt<450){e.preventDefault();e.stopImmediatePropagation()}
+  },true);
+  function openPop(el){closePop();popOpenedAt=Date.now();swallowTouch=!!window.__doxaLongPressActive;releasedAt=0;activeVerseEl=el;activeRef=identityFromVerse(el);if(!activeRef)return;el.classList.add('verse-context');addVerseFx(el);document.body.classList.add('verse-menu-open');verseBackdrop.classList.add('on');positionPopover(el)}
   window.DoxaVerseActions={open:openPop,close:closePop};
   /* O dedo ainda está na tela quando o menu abre: o click do soltar cai no véu e fechava o menu na hora. */
   const popJustOpened=(ms)=>Date.now()-popOpenedAt<ms;
