@@ -43,7 +43,8 @@
 <link rel="stylesheet" id="doxa-v26-interlinear-css" href="css/14.css">
 
 <link rel="stylesheet" id="doxa-v30-shell-css" href="css/21.css">
-<link rel="stylesheet" id="doxa-v31-home-css" href="css/22.css">
+<link rel="stylesheet" id="doxa-v31-tools-css" href="css/22.css">
+<link rel="stylesheet" id="doxa-v31-home-css" href="css/23.css">
 
 </head>
 <body>
@@ -184,6 +185,21 @@
     <div class="reader-text-hint" id="readerTextHint">A Hiperliteral mantém sua formatação editorial própria.</div>
   </div>
 
+  <h2>Tipografia de leitura</h2>
+  <div class="font-style-card" id="doxaFontCard">
+    <div class="font-style-copy"><strong>Fonte do texto bíblico</strong><small>Serifada padrão, EB Garamond incorporada ou uma fonte sua (.ttf ou .otf). O hebraico mantém a fonte própria do WLC.</small></div>
+    <div class="font-style-grid" id="readerFontChoices">
+      <button type="button" class="font-style-option doxa-font-option" data-doxa-font="editorial"><span class="font-style-name">Serifada · Padrão</span><span class="font-style-preview" style="font-family:Georgia,'Times New Roman',serif">No princípio criou Deus…</span></button>
+      <button type="button" class="font-style-option doxa-font-option" data-doxa-font="garamond"><span class="font-style-name">EB Garamond</span><span class="font-style-preview" style="font-family:'EB Garamond',Georgia,serif">No princípio criou Deus…</span></button>
+      <button type="button" class="font-style-option doxa-font-option" data-doxa-font="custom" id="doxaFontCustomOption" hidden><span class="font-style-name" id="doxaFontCustomName">Minha fonte</span><span class="font-style-preview" style="font-family:'Doxa Custom',Georgia,serif">No princípio criou Deus…</span></button>
+    </div>
+    <div class="doxa-font-actions">
+      <label class="btn filebtn">Importar fonte (.ttf)<input id="doxaFontImport" type="file" accept=".ttf,.otf,font/ttf,font/otf"></label>
+      <button type="button" class="btn" id="doxaFontRemove" hidden>Remover fonte importada</button>
+    </div>
+    <div class="doxa-font-status" id="doxaFontStatus" aria-live="polite"></div>
+  </div>
+
   <h2>Tela</h2>
   <label class="switchrow doxa-screen-mode-row"><span>Usar tela toda<small>Desative para manter o espaço seguro da câmera. Ative para aproximar a interface do topo da tela.</small></span><input type="checkbox" id="swFullScreenContent"></label>
 
@@ -230,6 +246,7 @@
     <div class="license-item"><strong>Robinson–Pierpont Byzantine Textform 2018</strong><span><em>Domínio público.</em> Texto grego da edição RP2018, repositório oficial byztxt/byzantine-majority-text. Carregado sob demanda e armazenado localmente. Licença verificada em 15/09/2026.</span></div>
     <div class="license-item"><strong>SBL Greek New Testament v1.2</strong><span><em>CC BY 4.0.</em> Copyright 2010 Society of Biblical Literature e Logos Bible Software; arquivos Faithlife/SBLGNT. Carregado sob demanda e armazenado localmente. Licença verificada em 15/09/2026.</span></div>
     <div class="license-item"><strong>Comentários clássicos</strong><span><em>Public Domain Mark 1.0 conforme a fonte de distribuição.</em> Matthew Henry, Jamieson–Fausset–Brown, Adam Clarke e John Gill, fornecidos pelo Free Use Bible API. O Doxa mantém o inglês original. Licenças verificadas em 15/09/2026.</span></div>
+    <div class="license-item"><strong>EB Garamond</strong><span><em>SIL Open Font License 1.1.</em> Fonte incorporada ao aplicativo para leitura offline; arquivos normal e itálico do projeto EB Garamond.</span></div>
     <div class="license-item"><strong>Theographic Bible Metadata</strong><span><em>CC BY-SA 4.0.</em> Pessoas, lugares, eventos e grupos via Free Use Bible API, com procedência do projeto Theographic. Dados carregados por capítulo sob demanda e armazenados em cache local. Licença verificada em 15/09/2026.</span></div>
   </div>
   <h2>Corpus</h2><blockquote class="corpus-quote"><div class="empty" id="stats"></div><div class="sourcecard">Textos-base embutidos neste leitor: Almeida 1819 (Bíblia Livre) · WLC corrigido a partir do OSHB v2.2 · Textus Receptus (Stephanus 1550) · Tradução Hiperliteral Doxa. A Bíblia Livre também está disponível offline junto aos corpora principais.<br><br>Tipografia de leitura: serifada editorial padrão do Doxa, totalmente offline.<br><br><b>Camada lexical PT-BR Doxa:</b> sentidos em português vinculados por número Strong, derivados do alinhamento do OSHB com a Almeida 1819 e de equivalências lexicais controladas. O texto original de Strong/BDB/OSHB não é substituído e permanece acessível para conferência. OSHB Hebrew Lexicon: CC BY 4.0; textos de Strong e BDB em domínio público conforme a documentação do projeto.</div></blockquote>
@@ -375,8 +392,7 @@
 <script id="doxa-v24-boot-finish-js" src="js/17.js"></script>
 
 
-<script id="doxa-v30-shell-js" src="js/18.js"></script>
-<script id="doxa-v31-home-js" src="js/19.js"></script>
+<!-- 18 shell, 19 textura, 20 ferramentas, 21 Home e 22 fontes: carregados em ordem pelo js/00.js -->
 
 <!-- Doxa V29 · Interlinear morfológico de Gênesis 1–50 + Êxodo 1–40 -->
 </body></html>
