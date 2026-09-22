@@ -14,6 +14,7 @@ let mode='almeida',hIdx=0,focusVerse=null,store={},storageMode='memory';
 let positions={almeida:{b:0,c:1},wlc:{b:0,c:1},tr:{b:0,c:1}};
 let prefs={mode:'almeida',hIdx:0,positions:null,showSup:true,rubric:true,size:18.5,textMargin:26,textAlign:'justify',showVerseNumbers:true,readerFont:'editorial'};
 const KEY_MARKS='bereshit:marks:v3',KEY_PREFS='bereshit:prefs:v4',KEY_PARALLEL='bereshit:parallel:v1',KEY_PARALLEL_LAYOUT='bereshit:parallel-layout:v2',KEY_APPEARANCE='bereshit:appearance:v1';
+const KEY_TEXT_PREFS='doxa:reader-text-prefs:v1',TEXT_PREF_FIELDS=['size','textMargin','textAlign','showVerseNumbers','readerFont'];
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function norm(s){return String(s).normalize('NFD').replace(/\p{M}+/gu,'').toLowerCase()}
 function stripSup(s){return String(s).replace(/\[|\]/g,'')}
@@ -26,22 +27,55 @@ function currentRef(){if(mode==='hyper')return HYPER_BLOCKS[hIdx].ref;const p=po
 function currentKey(){if(mode==='hyper')return'h:'+hIdx;const p=pos(),cp=corpus(),pre=VERSION_META[mode].prefix;return pre+':'+cp.books[p.b].book+':'+p.c}
 async function getStored(key){try{if(window.storage&&typeof window.storage.get==='function'){const r=await window.storage.get(key);storageMode='window.storage';return r?r.value:null}}catch(e){}try{const v=localStorage.getItem(key);storageMode='localStorage';return v}catch(e){storageMode='memory';return null}}
 async function setStored(key,value){try{if(window.storage&&typeof window.storage.set==='function'){await window.storage.set(key,value);storageMode='window.storage';return true}}catch(e){}try{localStorage.setItem(key,value);storageMode='localStorage';return true}catch(e){storageMode='memory';return false}}
-async function load(){const m=await getStored(KEY_MARKS),p=await getStored(KEY_PREFS);try{store=m?JSON.parse(m):{}}catch(e){store={}}try{prefs=Object.assign(prefs,p?JSON.parse(p):{})}catch(e){}if(prefs.mode==='almeida-1911-atual')prefs.mode='almeida';if(prefs.mode==='hyper'||CORPORA[prefs.mode])mode=prefs.mode;else mode='almeida';hIdx=Math.max(0,Math.min(HYPER_BLOCKS.length-1,Number(prefs.hIdx)||0));if(prefs.positions)positions=Object.assign(positions,prefs.positions);for(const k of Object.keys(CORPORA)){const cp=CORPORA[k],pp=positions[k]||{b:0,c:1};pp.b=Math.max(0,Math.min(cp.books.length-1,Number(pp.b)||0));const chapters=cp.books[pp.b].chapters,nums=chapters.map(x=>Number(x.chapter));pp.c=nums.includes(Number(pp.c))?Number(pp.c):nums[0];positions[k]=pp}}
+let textPrefsDbPromise=null;
+function textPrefsDb(){
+  if(textPrefsDbPromise)return textPrefsDbPromise;
+  textPrefsDbPromise=new Promise((resolve,reject)=>{
+    if(!('indexedDB' in window)){reject(new Error('IndexedDB indisponível'));return}
+    const req=indexedDB.open('doxa-reader-settings-v1',1);
+    req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('settings'))db.createObjectStore('settings',{keyPath:'id'})};
+    req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('Falha no armazenamento de ajustes'));
+  });
+  return textPrefsDbPromise;
+}
+function textPrefsSnapshot(){const out={id:'reader'};for(const k of TEXT_PREF_FIELDS)out[k]=prefs[k];return out}
+async function loadTextPrefsBackup(){
+  let local=null;
+  try{const raw=localStorage.getItem(KEY_TEXT_PREFS);if(raw)local=JSON.parse(raw)}catch(e){}
+  try{
+    const db=await textPrefsDb();
+    const native=await new Promise((resolve,reject)=>{const tx=db.transaction('settings','readonly'),r=tx.objectStore('settings').get('reader');r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)});
+    return Object.assign({},local||{},native||{});
+  }catch(e){return local}
+}
+async function saveTextPrefsBackup(){
+  const snap=textPrefsSnapshot();
+  try{localStorage.setItem(KEY_TEXT_PREFS,JSON.stringify(snap))}catch(e){}
+  try{
+    const db=await textPrefsDb();
+    await new Promise((resolve,reject)=>{const tx=db.transaction('settings','readwrite');tx.objectStore('settings').put(snap);tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error)});
+  }catch(e){}
+  return true;
+}
+async function load(){const m=await getStored(KEY_MARKS),p=await getStored(KEY_PREFS),tp=await loadTextPrefsBackup();try{store=m?JSON.parse(m):{}}catch(e){store={}}try{prefs=Object.assign(prefs,p?JSON.parse(p):{})}catch(e){}if(tp&&typeof tp==='object'){for(const k of TEXT_PREF_FIELDS)if(tp[k]!==undefined)prefs[k]=tp[k]}if(prefs.mode==='almeida-1911-atual')prefs.mode='almeida';if(prefs.mode==='hyper'||CORPORA[prefs.mode])mode=prefs.mode;else mode='almeida';hIdx=Math.max(0,Math.min(HYPER_BLOCKS.length-1,Number(prefs.hIdx)||0));if(prefs.positions)positions=Object.assign(positions,prefs.positions);for(const k of Object.keys(CORPORA)){const cp=CORPORA[k],pp=positions[k]||{b:0,c:1};pp.b=Math.max(0,Math.min(cp.books.length-1,Number(pp.b)||0));const chapters=cp.books[pp.b].chapters,nums=chapters.map(x=>Number(x.chapter));pp.c=nums.includes(Number(pp.c))?Number(pp.c):nums[0];positions[k]=pp}}
 async function saveMarks(){return setStored(KEY_MARKS,JSON.stringify(store))}
-async function savePrefs(){prefs.mode=mode;prefs.hIdx=hIdx;prefs.positions=positions;return setStored(KEY_PREFS,JSON.stringify(prefs))}
+async function savePrefs(){prefs.mode=mode;prefs.hIdx=hIdx;prefs.positions=positions;const payload=JSON.stringify(prefs);let ok=false;try{localStorage.setItem(KEY_PREFS,payload);ok=true}catch(e){}try{ok=(await setStored(KEY_PREFS,payload))||ok}catch(e){}await saveTextPrefsBackup();return ok}
 function applyTextPrefs(save=false){
   const size=Math.max(14,Math.min(28,Number(prefs.size)||18.5));
   const margin=Math.max(8,Math.min(42,Number(prefs.textMargin)||26));
   const align=['left','justify','center'].includes(prefs.textAlign)?prefs.textAlign:'justify';
   const showNumbers=prefs.showVerseNumbers!==false;
-  prefs.size=size;prefs.textMargin=margin;prefs.textAlign=align;prefs.showVerseNumbers=showNumbers;
+  const readerFont=['editorial','garamond'].includes(prefs.readerFont)?prefs.readerFont:'editorial';
+  prefs.size=size;prefs.textMargin=margin;prefs.textAlign=align;prefs.showVerseNumbers=showNumbers;prefs.readerFont=readerFont;
 
   document.documentElement.style.setProperty('--reader-font-size',size+'px');
   document.documentElement.style.setProperty('--parallel-font-size',size+'px');
   document.documentElement.style.setProperty('--reader-side-padding',margin+'px');
   document.documentElement.style.setProperty('--parallel-side-padding',Math.max(7,Math.round(margin*.55))+'px');
+  document.documentElement.style.setProperty('--reader-family',readerFont==='garamond'?"'EB Garamond',Georgia,'Times New Roman',serif":"Georgia,'Times New Roman',serif");
 
   document.body.dataset.readerAlign=align;
+  document.body.dataset.readerFont=readerFont;
   document.body.classList.toggle('reader-hide-verse-numbers',!showNumbers);
   document.body.classList.toggle('reader-hyper-active',mode==='hyper');
 
@@ -60,6 +94,7 @@ function applyTextPrefs(save=false){
     b.classList.toggle('on',b.dataset.readerAlign===align);
     b.disabled=mode==='hyper';
   });
+  document.querySelectorAll('[data-reader-font]').forEach(b=>b.classList.toggle('on',b.dataset.readerFont===readerFont));
   const hint=document.getElementById('readerTextHint');
   if(hint)hint.textContent=mode==='hyper'
     ?'A Hiperliteral está ativa: alinhamento e números permanecem na formatação editorial própria.'
@@ -429,6 +464,10 @@ document.getElementById('swSup').onchange=e=>{prefs.showSup=e.target.checked;doc
 document.getElementById('swTextMargin')?.addEventListener('input',e=>{prefs.textMargin=Number(e.target.value);applyTextPrefs(true)});
 document.getElementById('swVerseNumbers')?.addEventListener('change',e=>{if(mode==='hyper'){e.target.checked=prefs.showVerseNumbers!==false;return}prefs.showVerseNumbers=e.target.checked;applyTextPrefs(true)});
 document.querySelectorAll('[data-reader-align]').forEach(b=>b.addEventListener('click',()=>{if(mode==='hyper')return;prefs.textAlign=b.dataset.readerAlign;applyTextPrefs(true)}));
+document.querySelectorAll('[data-reader-font]').forEach(b=>b.addEventListener('click',()=>{prefs.readerFont=b.dataset.readerFont;applyTextPrefs(true)}));
+const persistReaderPrefsNow=()=>{try{localStorage.setItem(KEY_PREFS,JSON.stringify(prefs));localStorage.setItem(KEY_TEXT_PREFS,JSON.stringify(textPrefsSnapshot()))}catch(e){}saveTextPrefsBackup()};
+window.addEventListener('pagehide',persistReaderPrefsNow);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistReaderPrefsNow()});
 let touchX=0,touchY=0;document.getElementById('p-ler').addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY},{passive:true});document.getElementById('p-ler').addEventListener('touchend',e=>{if(parallelOn)return;const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25)move(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(parallelOn)return;if(!document.getElementById('p-ler').classList.contains('on'))return;if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1)});
 document.getElementById('exportMarks').onclick=()=>{const data={format:'bereshit-marks',version:4,exportedAt:new Date().toISOString(),marks:store};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bereshit-marcacoes.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
 document.getElementById('importMarks').onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text()),incoming=data&&data.format==='bereshit-marks'?data.marks:data;if(!incoming||typeof incoming!=='object'||Array.isArray(incoming))throw new Error('formato');store=incoming;await saveMarks();renderMark();flash('Marcações importadas.')}catch(err){alert('Não foi possível importar este arquivo de marcações.')}e.target.value=''};
