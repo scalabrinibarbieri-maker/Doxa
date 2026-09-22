@@ -156,3 +156,51 @@ body.chapter-animating #singleReader{overflow-x:clip!important}
 .doxa-home-reader-text p{margin:0 0 1.1em}
 .doxa-home-reader-list{display:grid;gap:12px;padding:16px}
 body.doxa-home-reader-open .doxa30-bottom-wrap{display:none}
+
+/* ============================================================
+   7. Menu do versículo mais fluido e leitura visível por trás
+   ============================================================ */
+/* Subida com desaceleração longa e macia (estilo folha nativa). */
+body #verseActions.verse-actions{
+  transition:transform .44s cubic-bezier(.22,1,.36,1)!important;
+  will-change:transform;
+}
+/* Véu leve e sem desfoque: o texto ao redor continua legível. */
+html body .verse-actions-backdrop{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  transition:opacity .3s ease!important;
+}
+html body:not([data-doxa30-theme="night"]) .verse-actions-backdrop{background:color-mix(in srgb,var(--d30-text) 11%,transparent)!important}
+html body[data-doxa30-theme="night"] .verse-actions-backdrop{background:rgba(0,0,0,.30)!important}
+/* Espaço extra no fim do capítulo para o último versículo poder subir acima da folha. */
+body.verse-menu-open #singleReader{padding-bottom:calc(var(--doxa-sheet-h,55vh) + 24px)!important}
+
+/* ============================================================
+   8. Versículo segurado com o mesmo brilho vivo do Night nos temas claros
+   A fumaça dourada fica mais presente (sem lavar o texto), e um reflexo
+   passa devagar pelo cartão. Entrada com um leve "respiro".
+   ============================================================ */
+body:not([data-doxa30-theme="night"]) .verse-context{animation:doxaVerseLift .42s cubic-bezier(.22,1,.36,1) both}
+body:not([data-doxa30-theme="night"]) .verse-smoke i{mix-blend-mode:multiply!important;opacity:.62!important}
+body:not([data-doxa30-theme="night"]) .verse-smoke .p1{background:radial-gradient(circle,color-mix(in srgb,var(--d30-gold) 55%,transparent),color-mix(in srgb,var(--d30-gold) 22%,transparent) 48%,transparent 74%)!important}
+body:not([data-doxa30-theme="night"]) .verse-smoke .p2{background:radial-gradient(circle,color-mix(in srgb,var(--d30-gold2) 50%,transparent),color-mix(in srgb,var(--d30-gold) 18%,transparent) 50%,transparent 76%)!important}
+body:not([data-doxa30-theme="night"]) .verse-smoke .p3{background:radial-gradient(circle,color-mix(in srgb,var(--d30-gold) 48%,transparent),color-mix(in srgb,var(--d30-muted) 16%,transparent) 50%,transparent 77%)!important}
+body:not([data-doxa30-theme="night"]) .verse-smoke .p4{background:radial-gradient(circle,color-mix(in srgb,var(--d30-gold2) 42%,transparent),color-mix(in srgb,var(--d30-gold) 14%,transparent) 48%,transparent 75%)!important}
+body:not([data-doxa30-theme="night"]) .verse-smoke .vein{opacity:.7!important}
+body:not([data-doxa30-theme="night"]) .verse-context::after{
+  content:'';position:absolute;inset:0;z-index:2;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,color-mix(in srgb,var(--d30-panel) 55%,transparent) 48%,color-mix(in srgb,var(--d30-gold2) 22%,transparent) 52%,transparent 65%);
+  background-size:260% 100%;mix-blend-mode:soft-light;
+  animation:doxaVerseSheen 3.6s ease-in-out .35s infinite;
+}
+@keyframes doxaVerseLift{
+  0%{transform:scale(.985);box-shadow:0 0 0 0 color-mix(in srgb,var(--d30-gold) 0%,transparent)}
+  60%{transform:scale(1.006)}
+  100%{transform:none}
+}
+@keyframes doxaVerseSheen{0%{background-position:120% 0}55%,100%{background-position:-60% 0}}
+@media(prefers-reduced-motion:reduce){
+  body #verseActions.verse-actions{transition:none!important}
+  body:not([data-doxa30-theme="night"]) .verse-context,
+  body:not([data-doxa30-theme="night"]) .verse-context::after{animation:none!important}
+}
