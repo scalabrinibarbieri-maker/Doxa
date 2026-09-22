@@ -547,6 +547,43 @@ public final class MainActivity extends Activity {
                     }
                 });
                 return; // Reply only after the system save dialog completes.
+            } else if (action.equals("share")) {
+                // Doxa 36: compartilhar imagem gerada no leitor (versículo do dia) pelo seletor do Android.
+                if (exportStream == null || exportWritten != exportSize) throw new IOException("Imagem incompleta.");
+                exportStream.close(); exportStream = null;
+                File dir = new File(getCacheDir(), "share");
+                if (!dir.isDirectory() && !dir.mkdirs()) throw new IOException("Sem espaço para a imagem.");
+                String mime = payload.optString("mime", "image/jpeg");
+                if (!mime.equals("image/png")) mime = "image/jpeg";
+                File image = new File(dir, mime.equals("image/png") ? "doxa-versiculo.png" : "doxa-versiculo.jpg");
+                if (image.exists() && !image.delete()) throw new IOException("Não foi possível preparar a imagem.");
+                if (!exportFile.renameTo(image)) {
+                    try (InputStream in = new FileInputStream(exportFile); OutputStream out = new FileOutputStream(image)) {
+                        byte[] buffer = new byte[65536]; int count;
+                        while ((count = in.read(buffer)) != -1) out.write(buffer, 0, count);
+                    }
+                    exportFile.delete();
+                }
+                exportFile = null;
+                final String shareText = payload.optString("text", "");
+                final String shareTitle = payload.optString("title", "Compartilhar");
+                final String shareMime = mime;
+                final Uri shareUri = androidx.core.content.FileProvider.getUriForFile(this, getPackageName() + ".share", image);
+                runOnUiThread(() -> {
+                    if (destroyed) return;
+                    try {
+                        Intent send = new Intent(Intent.ACTION_SEND).setType(shareMime)
+                                .putExtra(Intent.EXTRA_STREAM, shareUri)
+                                .putExtra(Intent.EXTRA_TEXT, shareText)
+                                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        send.setClipData(ClipData.newRawUri("", shareUri));
+                        startActivity(Intent.createChooser(send, shareTitle));
+                        reply.postMessage("ok");
+                    } catch (ActivityNotFoundException error) {
+                        reply.postMessage("error:Nenhum aplicativo disponível para compartilhar.");
+                    }
+                });
+                return;
             } else if (action.equals("abort")) clearExport();
             else throw new IOException("Operação desconhecida.");
             runOnUiThread(() -> { if (!destroyed) reply.postMessage("ok"); });
