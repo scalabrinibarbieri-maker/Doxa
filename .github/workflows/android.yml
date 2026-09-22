@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      publicar:
+        description: 'Publicar esta versão na página oficial (download para os amigos)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -22,6 +27,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    permissions:
+      contents: write        # necessário só para publicar a versão em Releases
 
     steps:
       - uses: actions/checkout@v4
@@ -98,9 +105,9 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           mkdir -p dist/release
-          cp app/build/outputs/apk/release/app-release.apk dist/release/Doxa-30.5.apk
+          cp app/build/outputs/apk/release/app-release.apk dist/release/Doxa.apk
           cd dist/release
-          sha256sum Doxa-30.5.apk > SHA256SUMS.txt
+          sha256sum Doxa.apk > SHA256SUMS.txt
 
       - uses: actions/upload-artifact@v4
         with:
@@ -109,10 +116,25 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      # Publica na página oficial: marque "publicar" ao rodar o workflow manualmente.
+      - name: Publicar versão para download
+        if: github.event_name == 'workflow_dispatch' && inputs.publicar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(grep -o "versionName '[^']*'" app/build.gradle | head -1 | cut -d"'" -f2)
+          TAG="v$VERSION-$GITHUB_RUN_NUMBER"
+          gh release create "$TAG" \
+            dist/release/Doxa.apk dist/release/SHA256SUMS.txt \
+            --title "Doxa $VERSION" \
+            --notes "Versão $VERSION · compilação $GITHUB_RUN_NUMBER
+
+          Baixe o Doxa.apk e instale no Android. Para atualizar, instale por cima da versão anterior."
+
       - uses: actions/upload-artifact@v4
         if: github.event_name != 'pull_request'
         with:
-          name: Doxa-30.5-Oficial-${{ github.run_number }}
+          name: Doxa-Oficial-${{ github.run_number }}
           path: dist/release/
           retention-days: 90
 
