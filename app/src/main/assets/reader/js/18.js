@@ -221,6 +221,7 @@
 
   let readCheckRaf=0;
   function checkReadingComplete(){
+    if(window.DoxaBread)return;           // Doxa 35: o js/26.js conta a leitura (tempo mínimo + fim do capítulo)
     if(readCheckRaf)return;
     readCheckRaf=requestAnimationFrame(()=>{
       readCheckRaf=0;

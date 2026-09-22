@@ -210,6 +210,7 @@
   }
 
   function renderBread(){
+    if(window.DoxaBread?.renderHome){window.DoxaBread.renderHome();return}
     const ok=earnedToday(),s=streak();
     const stage=$('#doxa30BreadStage');if(stage){stage.classList.remove('earned','earned-static');if(ok)stage.classList.add('earned-static')}
     const st=$('#doxaHomeStreak');if(st)st.textContent=s+' dia'+(s===1?'':'s');

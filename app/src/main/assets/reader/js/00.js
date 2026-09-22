@@ -34,6 +34,7 @@
     addCss('doxa-v312-fixes-css','css/24.css');
     addCss('doxa-v33-parallel-css','css/25.css');
     addCss('doxa-v34-notes-css','css/26.css');
+    addCss('doxa-v35-bread-css','css/27.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
@@ -43,7 +44,9 @@
             addScript('doxa-v32-fonts-js','js/22.js',()=>{
               addScript('doxa-v321-arrival-js','js/23.js',()=>{
                 addScript('doxa-v33-parallel-js','js/24.js',()=>{
-                  addScript('doxa-v34-notes-js','js/25.js');
+                  addScript('doxa-v34-notes-js','js/25.js',()=>{
+                    addScript('doxa-v35-bread-js','js/26.js');
+                  });
                 });
               });
             });
