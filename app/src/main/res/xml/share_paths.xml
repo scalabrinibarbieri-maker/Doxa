@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Doxa 36: só a pasta cache/share é exposta, e apenas para quem recebe o compartilhamento. -->
+<paths>
+    <cache-path name="share" path="share/" />
+</paths>
