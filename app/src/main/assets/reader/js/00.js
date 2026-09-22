@@ -39,7 +39,9 @@
         addScript('doxa-v31-tools-js','js/20.js',()=>{
           addScript('doxa-v31-home-js','js/21.js',()=>{
             addScript('doxa-v32-fonts-js','js/22.js',()=>{
-              addScript('doxa-v321-arrival-js','js/23.js');
+              addScript('doxa-v321-arrival-js','js/23.js',()=>{
+                addScript('doxa-v33-parallel-js','js/24.js');
+              });
             });
           });
         });
