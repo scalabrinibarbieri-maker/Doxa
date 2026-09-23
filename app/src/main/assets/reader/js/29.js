@@ -197,11 +197,12 @@
 
   /* ---------- deixar as palavras gregas clicáveis ---------- */
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function decorate(){
-    if(typeof mode==='undefined'||mode!=='tr')return;
-    const host=document.getElementById('textBody');if(!host)return;
-    let book,chapter;
-    try{const p=pos(),b=CORPORA.tr.books[p.b];book=b.book;chapter=Number(p.c)}catch(e){return}
+  function decorate(host,book,chapter,side){
+    if(!host){
+      if(typeof mode==='undefined'||mode!=='tr')return;
+      host=document.getElementById('textBody');if(!host)return;
+      try{const p=pos(),b=CORPORA.tr.books[p.b];book=b.book;chapter=Number(p.c)}catch(e){return}
+    }
     if(BOOK[book]==null)return;
     host.querySelectorAll('.verse').forEach(vEl=>{
       if(vEl.querySelector('.oshb-word'))return;
@@ -216,12 +217,28 @@
       shown.forEach((word,i)=>{
         const j=map[i];
         if(i)html+=' ';
-        if(j>=0)html+='<span class="oshb-word greek" tabindex="0" role="button" data-b="'+esc(book)+'" data-c="'+chapter+'" data-v="'+verse+'" data-ti="'+pack.wordIdx[j]+'">'+esc(word)+'</span>';
+        if(j>=0)html+='<span class="oshb-word greek" tabindex="0" role="button"'+(side?' data-side="'+esc(side)+'"':'')+' data-b="'+esc(book)+'" data-c="'+chapter+'" data-v="'+verse+'" data-ti="'+pack.wordIdx[j]+'">'+esc(word)+'</span>';
         else html+=esc(word);
       });
       vEl.innerHTML=html;
     });
   }
+  /* Leitura paralela: o painel com grego recebe o mesmo tratamento (o hebraico já vem
+     clicável do js/02.js). O data-side mantém a ficha ligada ao painel certo. */
+  function decorateParallel(side){
+    try{
+      const st=sanitizeParallelState(side);
+      if(!st||st.mode!=='tr')return;
+      const host=document.getElementById('pText'+side);if(!host)return;
+      decorate(host,st.book,Number(st.chapter),side);
+    }catch(e){}
+  }
+  const origParallel=window.renderParallelSide;
+  if(typeof origParallel==='function'&&!origParallel.__doxa37){
+    const w=function(side){const r=origParallel.apply(this,arguments);try{decorateParallel(side)}catch(e){}return r};
+    w.__doxa37=true;window.renderParallelSide=w;
+  }
+
   const origRender=window.renderReader;
   if(typeof origRender==='function'&&!origRender.__doxa37){
     const w=function(){const r=origRender.apply(this,arguments);try{decorate()}catch(e){}return r};
@@ -236,5 +253,5 @@
 
   function init(){try{decorate()}catch(e){}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-  window.DoxaGreekStrong={decorate,morph:greekMorph,tokens:packTokens};
+  window.DoxaGreekStrong={decorate,decorateParallel,morph:greekMorph,tokens:packTokens};
 })();
