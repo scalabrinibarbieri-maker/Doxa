@@ -37,6 +37,7 @@
     addCss('doxa-v35-bread-css','css/27.css');
     addCss('doxa-v36-share-css','css/28.css');
     addCss('doxa-v38-guide-css','css/30.css');
+    addCss('doxa-v42-entities-css','css/32.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
