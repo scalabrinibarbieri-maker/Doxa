@@ -25,7 +25,7 @@
   /* ===== HUD imersivo ===== */
   let hudHidden=false,lastScrollY=window.scrollY,touchStartY=null,touchLastY=null,touchStartX=null,touchMoved=false,lastTouchHudTap=0,touchInteractive=false,touchAxis=null;
   const readerPanel=()=>document.getElementById('p-ler')?.classList.contains('on');
-  function overlaysOpen(){return !!document.querySelector('.strong-sheet.on,.premium-picker.on,.xref-sheet.on,.version-picker.on,.verse-actions.on,.study-screen.on,.v20-adv.on') }
+  function overlaysOpen(){return document.body.classList.contains('doxa-home-open')||!!document.querySelector('.strong-sheet.on,.premium-picker.on,.xref-sheet.on,.version-picker.on,.verse-actions.on,.study-screen.on,.v20-adv.on,.doxa-bread-sheet.on,.doxa-home-reader.on,.doxa-note-sheet.on,.doxa-share-sheet.on,.doxa-bread-milestone.on') }
   function syncParallelHud(){
     try{
       const ff=document.getElementById('parallelFloatRef');

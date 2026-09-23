@@ -182,6 +182,7 @@
 
   /* ---------- Home ---------- */
   function renderHome(){
+    if(!st)return;
     const today=dk(),d=st.days[today],read=d?d.ch.length:0,ok=done(today),s=streak();
     const pct=Math.min(100,Math.round(read*100/st.goal));
     const set=(id,v)=>{const el=$(id);if(el)el.textContent=v};
@@ -223,7 +224,7 @@
     $('dbsBody').addEventListener('click',onSheetClick);
     return s;
   }
-  function openSheet(){ensureSheet();calMonth=dk().slice(0,7);renderSheet();$('doxaBreadSheet').classList.add('on');$('doxaBreadSheet').setAttribute('aria-hidden','false')}
+  function openSheet(){ensureSheet();calMonth=dk().slice(0,7);$('doxaBreadSheet').classList.add('on');$('doxaBreadSheet').setAttribute('aria-hidden','false');renderSheet()}
   function closeSheet(){const s=$('doxaBreadSheet');if(!s)return;s.classList.remove('on');s.setAttribute('aria-hidden','true')}
   function calendar(){
     const [y,m]=calMonth.split('-').map(Number),first=new Date(y,m-1,1,12),daysIn=new Date(y,m,0).getDate();
