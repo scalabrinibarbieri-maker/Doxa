@@ -37,6 +37,7 @@
     addCss('doxa-v35-bread-css','css/27.css');
     addCss('doxa-v36-share-css','css/28.css');
     addCss('doxa-v38-guide-css','css/30.css');
+    addCss('doxa-v39-inline-guide-css','css/31.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
@@ -55,7 +56,9 @@
                           addScript('doxa-v37-greek-data','data/greek_strong.js',()=>{
                             addScript('doxa-v37-greek-pt','data/strong-pt-g.js',()=>{
                               addScript('doxa-v37-greek-js','js/29.js',()=>{
-                                addScript('doxa-v38-guide-js','js/30.js');
+                                addScript('doxa-v38-guide-js','js/30.js',()=>{
+                                  addScript('doxa-v39-inline-guide-js','js/31.js');
+                                });
                               });
                             });
                           });
