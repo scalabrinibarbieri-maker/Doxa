@@ -36,6 +36,7 @@
     addCss('doxa-v34-notes-css','css/26.css');
     addCss('doxa-v35-bread-css','css/27.css');
     addCss('doxa-v36-share-css','css/28.css');
+    addCss('doxa-v38-guide-css','css/30.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
@@ -53,7 +54,9 @@
                              instalados, o onerror segue em frente e o js/29.js não faz nada. */
                           addScript('doxa-v37-greek-data','data/greek_strong.js',()=>{
                             addScript('doxa-v37-greek-pt','data/strong-pt-g.js',()=>{
-                              addScript('doxa-v37-greek-js','js/29.js');
+                              addScript('doxa-v37-greek-js','js/29.js',()=>{
+                                addScript('doxa-v38-guide-js','js/30.js');
+                              });
                             });
                           });
                         });
