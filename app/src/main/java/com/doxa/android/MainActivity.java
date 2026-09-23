@@ -473,12 +473,8 @@ public final class MainActivity extends Activity {
         appUpdateCheckStarted = true;
         io.execute(() -> {
             try {
-                SharedPreferences prefs = getSharedPreferences("doxa_app_update", MODE_PRIVATE);
-                long last = prefs.getLong("last_check_ms", 0L);
-                long sixHours = 6L * 60 * 60 * 1000;
-                if (System.currentTimeMillis() - last < sixHours) return;
-                prefs.edit().putLong("last_check_ms", System.currentTimeMillis()).apply();
-
+                // Sem pausa entre checagens: são poucos aparelhos e o GitHub permite 60 consultas
+                // por hora sem autenticação, então checar a cada abertura do app é tranquilo.
                 HttpURLConnection connection = (HttpURLConnection) new URL(LATEST_RELEASE_API).openConnection();
                 connection.setConnectTimeout(10000);
                 connection.setReadTimeout(10000);
