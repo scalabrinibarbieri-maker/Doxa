@@ -1,0 +1,71 @@
+/* Doxa 38 · Guia Exegético e destaque do versículo no tema Night */
+
+/* ---------- 1. a animação do versículo segurado agora vale também no Night ---------- */
+body[data-doxa30-theme="night"] .verse-context{animation:doxaVerseLift .42s cubic-bezier(.22,1,.36,1) both}
+body[data-doxa30-theme="night"] .verse-smoke i{opacity:.7!important}
+body[data-doxa30-theme="night"] .verse-context::after{
+  content:'';position:absolute;inset:0;z-index:2;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,color-mix(in srgb,var(--d30-gold2) 26%,transparent) 48%,color-mix(in srgb,var(--d30-gold) 16%,transparent) 54%,transparent 66%);
+  background-size:260% 100%;mix-blend-mode:screen;
+  animation:doxaVerseSheen 3.6s ease-in-out .35s infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-doxa30-theme="night"] .verse-context,
+  body[data-doxa30-theme="night"] .verse-context::after{animation:none!important}
+}
+
+/* ---------- 2. Guia Exegético ---------- */
+#studyScreen .study-head{
+  background:color-mix(in srgb,var(--d30-panel) 94%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--d30-gold) 14%,transparent)!important;
+}
+#studyScreen #studyTitle{font:600 20px/1.1 Georgia,'Times New Roman',serif!important;color:var(--d30-text)!important;letter-spacing:0!important;text-transform:none!important}
+#studyScreen #studyRef{font:600 10.5px/1 system-ui,sans-serif!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:var(--d30-gold)!important}
+#studyScreen .study-scroll{background:var(--d30-bg)!important}
+
+#studyScreen .ex-label,#studyScreen .study-label{
+  margin:24px 2px 10px!important;font:700 10.5px/1 system-ui,sans-serif!important;
+  letter-spacing:.16em!important;text-transform:uppercase!important;color:var(--d30-muted)!important;background:none!important;border:0!important;padding:0!important;
+}
+#studyScreen .study-verse-card{
+  border:1px solid color-mix(in srgb,var(--d30-gold) 16%,transparent)!important;border-radius:20px!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel) 92%,var(--d30-gold) 8%),var(--d30-panel))!important;
+  color:var(--d30-text)!important;box-shadow:none!important;padding:18px 18px!important;
+  font-family:var(--doxa-font,Georgia,'Times New Roman',serif)!important;line-height:1.6!important;
+}
+#studyScreen .study-verse-card.original{font-family:var(--hebrew)!important;direction:rtl;text-align:right;font-size:1.25em!important}
+#studyScreen .study-verse-card.greek{font-family:Georgia,'Times New Roman',serif!important;font-size:1.12em!important}
+#studyScreen .study-note{
+  margin-top:14px!important;padding:12px 14px!important;border-radius:14px!important;border:0!important;
+  background:color-mix(in srgb,var(--d30-text) 5%,transparent)!important;
+  font:400 12px/1.5 system-ui,sans-serif!important;color:var(--d30-muted)!important;
+}
+#studyScreen .word-guide{display:grid!important;gap:10px!important}
+
+/* cada palavra: um cartão */
+#studyScreen .ex-row{
+  position:relative;display:block!important;padding:15px 40px 15px 16px!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 14%,transparent)!important;border-radius:18px!important;
+  background:color-mix(in srgb,var(--d30-panel) 90%,var(--d30-bg))!important;color:var(--d30-text)!important;
+  box-shadow:none!important;-webkit-tap-highlight-color:transparent;transition:background .15s ease;
+}
+#studyScreen .ex-row:active{background:color-mix(in srgb,var(--d30-gold) 9%,var(--d30-panel))!important}
+.ex-row-main{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.ex-word{display:flex;align-items:baseline;gap:10px;min-width:0}
+.ex-original{font:600 21px/1.25 Georgia,'Times New Roman',serif;color:var(--d30-text)}
+.ex-original.hebrew{font-family:var(--hebrew);font-size:23px;direction:rtl}
+.ex-translit{font:400 12.5px/1 system-ui,sans-serif;color:var(--d30-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-strong{flex:0 0 auto;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--d30-gold) 14%,transparent);
+  color:var(--d30-gold);font:700 11.5px/1 system-ui,sans-serif;letter-spacing:.04em}
+.ex-gloss{margin-top:8px;font:400 15px/1.45 var(--doxa-font,Georgia,serif);color:var(--d30-text)}
+.ex-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:8px;font:400 12px/1.4 system-ui,sans-serif;color:var(--d30-muted)}
+.ex-lemma{color:var(--d30-gold2,var(--d30-gold));font:500 14px/1 Georgia,serif}
+.ex-lemma.hebrew{font-family:var(--hebrew);direction:rtl;font-size:15px}
+.ex-chevron{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--d30-muted);font:400 22px/1 Georgia,serif;transition:transform .22s ease}
+.ex-row.open .ex-chevron{transform:translateY(-50%) rotate(90deg)}
+.ex-en{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s ease,opacity .25s ease,margin .3s ease}
+.ex-row.open .ex-en{max-height:320px;opacity:1;margin-top:12px}
+.ex-en span{display:block;font:700 9.5px/1 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--d30-gold)}
+.ex-en p{margin:6px 0 0;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--d30-text) 5%,transparent);
+  font:400 13px/1.5 system-ui,sans-serif;color:var(--d30-muted)}
+#studyScreen .word-original-en{display:none!important}
