@@ -50,7 +50,7 @@
   touchHost?.addEventListener('touchstart',e=>{
     const t=e.changedTouches?.[0];if(!t)return;
     touchStartY=touchLastY=t.clientY;touchStartX=t.clientX;touchMoved=false;touchAxis=null;
-    touchInteractive=!!e.target.closest?.('button,input,select,textarea,a,.oshb-word,.note-pin,.verse-actions,.strong-sheet,.study-screen,.v20-adv');
+    touchInteractive=!!e.target.closest?.('button,input,select,textarea,a,.oshb-word,.note-pin,.doxa-note-mark,.verse-actions,.strong-sheet,.study-screen,.v20-adv');
   },{passive:true});
   touchHost?.addEventListener('touchmove',e=>{
     if(window.__doxaHighlightDragLock||touchLastY==null)return;const t=e.changedTouches?.[0];if(!t)return;
