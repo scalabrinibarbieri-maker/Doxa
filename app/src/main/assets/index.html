@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doxa — leitor bíblico · V11</title>
+<link rel="stylesheet" href="css/00.css">
+
+<link rel="stylesheet" id="doxa-unified-ui" href="css/01.css">
+
+<link rel="stylesheet" id="doxa-v5-navigation-ui" href="css/02.css">
+
+
+<link rel="stylesheet" id="doxa-v6-flow-ui" href="css/03.css">
+
+
+<link rel="stylesheet" id="doxa-v7-immersive-ui" href="css/04.css">
+
+
+<link rel="stylesheet" id="doxa-v10-open-bibles-css" href="css/05.css">
+
+
+<link rel="stylesheet" id="doxa-v11-corpus-ui" href="css/06.css">
+
+
+<link rel="stylesheet" id="doxa-v12-picker-fix" href="css/07.css">
+
+
+<link rel="stylesheet" id="doxa-v13-picker-stability" href="css/08.css">
+
+
+<link rel="stylesheet" id="doxa-v14-strong-pt-css" href="css/09.css">
+
+
+<link rel="stylesheet" id="doxa-v21-global-bible-switch-css" href="css/10.css">
+
+<link rel="stylesheet" id="doxa-v22-swipe-hud-stability" href="css/11.css">
+
+<link rel="stylesheet" id="doxa-v23-offline-css" href="css/12.css">
+
+<link rel="stylesheet" id="doxa-v24-boot-splash-css" href="css/13.css">
+
+<link rel="stylesheet" id="doxa-v26-interlinear-css" href="css/14.css">
+
+<link rel="stylesheet" id="doxa-v30-shell-css" href="css/21.css">
+<link rel="stylesheet" id="doxa-v31-tools-css" href="css/22.css">
+<link rel="stylesheet" id="doxa-v31-home-css" href="css/23.css">
+<link rel="stylesheet" id="doxa-v312-fixes-css" href="css/24.css">
+<link rel="stylesheet" id="doxa-v33-parallel-css" href="css/25.css">
+<link rel="stylesheet" id="doxa-v34-notes-css" href="css/26.css">
+<link rel="stylesheet" id="doxa-v35-bread-css" href="css/27.css">
+<link rel="stylesheet" id="doxa-v36-share-css" href="css/28.css">
+<link rel="stylesheet" id="doxa-v38-guide-css" href="css/30.css">
+
+</head>
+<body>
+<div id="doxaBootSplash" role="status" aria-live="polite" aria-label="Carregando Doxa">
+  <div class="doxa-boot-inner">
+    <img class="doxa-boot-icon" alt="Doxa" src="data:image/webp;base64,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">
+    <div class="doxa-boot-status"><span class="doxa-boot-spinner" aria-hidden="true"></span><span>Carregando...</span></div>
+  </div>
+</div>
+<script id="doxa-v24-boot-early-js" src="js/00.js"></script>
+
+<header><div class="headmain"><span class="ref" id="hdrRef">Gn 1.1–11</span><span class="version-label" id="hdrVersion">Tradução hiperliteral</span></div><span class="page" id="hdrPage">1 / 20</span></header>
+<div class="progress" aria-hidden="true"><span id="progressFill"></span></div>
+<main>
+<section class="panel on" id="p-ler">
+  <div class="modebar">
+    <select id="versionSelect" aria-label="Versão bíblica"><option value="almeida">Almeida 1819 — Bíblia completa</option><option value="wlc">WLC — Hebraico · Strong+</option><option value="tr">Textus Receptus 1550 — Grego</option><option value="hyper">Tradução hiperliteral</option></select>
+    <button class="version-trigger-main" id="versionTrigger" type="button" aria-label="Escolher versão bíblica"><span class="version-trigger-mark" id="versionTriggerMark">A</span><span class="version-trigger-copy"><strong id="versionTriggerTitle">Almeida 1819</strong><small id="versionTriggerSub">Português · Bíblia completa</small></span><span class="version-trigger-chevron" aria-hidden="true">⌄</span></button>
+    <div class="navgrid hyper" id="navgrid"><select id="bookSelect" aria-label="Livro"></select><select id="chapterSelect" aria-label="Capítulo"></select></div>
+  </div>
+  <button class="parallel-float" id="parallelToggle" type="button" aria-pressed="false" aria-label="Abrir leitura paralela"><span class="parallel-float-icon">▥</span><span class="parallel-float-copy"><strong id="parallelToggleText">Leitura paralela</strong><small id="parallelFloatRef">na passagem atual</small></span><span class="parallel-float-arrow" aria-hidden="true">›</span></button>
+  <div id="singleReader">
+  <div class="opening" id="opening"><p>Em princípio criou Elohim <span class="et">את</span> os céus e <span class="et">את</span> a terra.</p><div class="sub" id="openingSub">Gênesis 1.1–9.17 · tradução hiperliteral · 20 blocos</div></div>
+  <div class="text" id="textBody"></div>
+  <div class="strong-hint" id="strongHint">Toque em qualquer palavra hebraica para abrir lema, raiz, Strong, morfologia e léxico.</div>
+  <button id="copyPassage" type="button" hidden aria-hidden="true" tabindex="-1"></button>
+  <div class="pager doxa-chapter-arrows" aria-label="Navegação entre capítulos"><button class="btn" id="prev" type="button" aria-label="Capítulo anterior" title="Capítulo anterior">‹</button><button class="btn" id="next" type="button" aria-label="Próximo capítulo" title="Próximo capítulo">›</button></div>
+  </div>
+
+  <div class="parallel-reader" id="parallelReader" hidden>
+    <div class="parallel-appbar" role="toolbar" aria-label="Controles da leitura paralela">
+      <button class="parallel-appbar-back" id="parallelExit" type="button" aria-label="Voltar à leitura normal" title="Voltar à leitura normal">‹</button>
+      <div class="parallel-appbar-title"><strong>Leitura paralela</strong><small id="parallelAppStatus">Sincronizada</small></div>
+      <button class="parallel-appbar-layout" id="parallelOrientation" type="button" aria-label="Alternar disposição vertical ou horizontal" title="Disposição">↕</button>
+      <button class="parallel-appbar-sync" id="parallelGlobalSync" type="button" aria-label="Ligar ou desligar sincronização" title="Sincronização">↔</button>
+    </div>
+    <div class="parallel-toolbar parallel-hidden-controls" aria-hidden="true">
+      <label><input type="checkbox" id="parallelSync" checked><span>Sincronizar</span></label>
+      <span id="parallelStatus">Livro, capítulo e versículo acompanham juntos.</span>
+      <button id="parallelSwap" type="button">Trocar</button>
+    </div>
+    <div class="parallel-grid" id="parallelGrid">
+      <section class="parallel-pane" data-side="A">
+        <div class="parallel-pane-head">
+          <div class="parallel-version-row">
+            <select id="pVersionA" aria-label="Versão bíblica do painel superior"></select>
+            <button class="parallel-version-trigger" id="pVersionTriggerA" type="button" aria-label="Escolher versão bíblica do painel superior"><span class="parallel-version-mark" id="pVersionMarkA">A</span><span class="parallel-version-name" id="pVersionNameA">Almeida</span><span class="parallel-version-chevron" aria-hidden="true">⌄</span></button>
+            <button class="picon parallel-close-clone" type="button" title="Sair da leitura paralela" aria-label="Sair da leitura paralela">×</button>
+          </div>
+          <div class="parallel-nav" id="pNavA">
+            <select id="pBookA" aria-label="Livro do painel superior"></select>
+            <select id="pChapterA" aria-label="Capítulo do painel superior"></select>
+            <button class="parallel-passage-trigger" id="pPassageA" type="button" aria-label="Escolher livro, capítulo e versículo do painel superior"><span>Gênesis 1</span><span class="parallel-passage-chevron" aria-hidden="true">⌄</span></button>
+          </div>
+          <span class="parallel-ref" id="pRefA"></span>
+          <div class="parallel-pane-actions">
+            <button class="picon parallel-sync-clone" type="button" title="Ligar ou desligar sincronização" aria-label="Ligar ou desligar sincronização"></button>
+            <button class="picon" id="pPrevA" type="button" title="Capítulo anterior" aria-label="Capítulo anterior">‹</button>
+            <button class="picon" id="pNextA" type="button" title="Próximo capítulo" aria-label="Próximo capítulo">›</button>
+            <button class="picon parallel-swap-clone" type="button" title="Trocar as duas Bíblias" aria-label="Trocar as duas Bíblias">⇅</button>
+          </div>
+        </div>
+        <div class="parallel-text" id="pTextA" tabindex="0"></div>
+      </section>
+      <section class="parallel-pane" data-side="B">
+        <div class="parallel-pane-head">
+          <div class="parallel-version-row">
+            <select id="pVersionB" aria-label="Versão bíblica do painel inferior"></select>
+            <button class="parallel-version-trigger" id="pVersionTriggerB" type="button" aria-label="Escolher versão bíblica do painel inferior"><span class="parallel-version-mark" id="pVersionMarkB">A</span><span class="parallel-version-name" id="pVersionNameB">Almeida</span><span class="parallel-version-chevron" aria-hidden="true">⌄</span></button>
+            <button class="picon parallel-close-clone" type="button" title="Sair da leitura paralela" aria-label="Sair da leitura paralela">×</button>
+          </div>
+          <div class="parallel-nav" id="pNavB">
+            <select id="pBookB" aria-label="Livro do painel inferior"></select>
+            <select id="pChapterB" aria-label="Capítulo do painel inferior"></select>
+            <button class="parallel-passage-trigger" id="pPassageB" type="button" aria-label="Escolher livro, capítulo e versículo do painel inferior"><span>Gênesis 1</span><span class="parallel-passage-chevron" aria-hidden="true">⌄</span></button>
+          </div>
+          <span class="parallel-ref" id="pRefB"></span>
+          <div class="parallel-pane-actions">
+            <button class="picon parallel-sync-clone" type="button" title="Ligar ou desligar sincronização" aria-label="Ligar ou desligar sincronização"></button>
+            <button class="picon" id="pPrevB" type="button" title="Capítulo anterior" aria-label="Capítulo anterior">‹</button>
+            <button class="picon" id="pNextB" type="button" title="Próximo capítulo" aria-label="Próximo capítulo">›</button>
+            <button class="picon parallel-swap-clone" type="button" title="Trocar as duas Bíblias" aria-label="Trocar as duas Bíblias">⇅</button>
+          </div>
+        </div>
+        <div class="parallel-text" id="pTextB" tabindex="0"></div>
+      </section>
+    </div>
+  </div>
+</section>
+<section class="panel" id="p-buscar">
+  <div class="field"><input id="q" type="search" placeholder="palavra ou expressão" autocomplete="off" enterkeyhint="search"></div>
+  <div class="search-options"><span id="searchScopeLabel">Busca na tradução hiperliteral</span></div>
+  <div class="chips" id="chips"></div><div class="count" id="count"></div><ul class="hitlist" id="hits"></ul><button class="btn search-more" id="searchLoadMore" type="button" hidden>Carregar mais 100</button>
+</section>
+<section class="panel" id="p-marcar">
+  <div class="tools-head"><span class="tools-kicker">ESTUDO</span><h2>Ferramentas</h2><p>Recursos para estudar e organizar a leitura.</p></div>
+  <button class="tool-card tool-highlight-start" id="toolsHighlightStart" type="button"><span class="tool-card-icon">▰</span><span class="tool-card-copy"><strong>Grifar</strong><small>Volte à Bíblia e pinte o texto diretamente com o dedo.</small></span><span class="tool-card-arrow">›</span></button>
+  <button class="tool-card" id="toolsHighlightsBtn" type="button"><span class="tool-card-icon">▤</span><span class="tool-card-copy"><strong>Meus grifos</strong><small>Organize grifos em pastas e volte à passagem com um toque.</small></span><span class="tool-card-count" id="toolsHighlightsCount">0</span><span class="tool-card-arrow">›</span></button>
+  <button class="tool-card" id="toolsNotesBtn" type="button"><span class="tool-card-icon">✎</span><span class="tool-card-copy"><strong>Notas</strong><small>Veja todas as anotações feitas nos grifos.</small></span><span class="tool-card-count" id="toolsNotesCount">0</span><span class="tool-card-arrow">›</span></button>
+  <div class="tools-highlights" id="toolsHighlightsView" hidden><div class="tools-library-head"><button id="toolsHighlightsBack" type="button">‹</button><div><strong>Meus grifos</strong><small>Pastas e passagens marcadas</small></div><button class="tools-library-add" id="toolsNewFolder" type="button">＋</button></div><div class="tools-folder-tabs" id="toolsFolderTabs"></div><div class="tools-library-actions"><button id="toolsDeleteFolder" type="button" hidden>Excluir pasta</button></div><div class="tools-highlight-list" id="toolsHighlightList"></div></div>
+  <div class="tools-notes" id="toolsNotesView" hidden><div class="tools-notes-head"><button id="toolsNotesBack" type="button">‹</button><div><strong>Notas</strong><small>Suas anotações no texto bíblico</small></div></div><ul class="notes-list" id="toolsNotesList"></ul></div>
+  <div class="v20-tools-pack"><div class="v20-tools-title"><strong>Estudo avançado</strong><small>Recursos integrados ao texto, sem tirar você da referência.</small></div><div class="v20-tools-grid"><div><b>אΩ</b><strong>Raio-X 2.0</strong><small>Léxico, morfologia, formas, frequência e distribuição.</small></div><div><b>⌁</b><strong>Referências 2.0</strong><small>Força OpenBible, prévia, abrir e leitura paralela.</small></div><div><b>≠</b><strong>Crítica textual</strong><small>TR 1550 × Robinson–Pierpont 2018 × SBLGNT.</small></div><div><b>¶</b><strong>Comentários</strong><small>Henry, JFB, Clarke e Gill, em inglês original.</small></div><div><b>⌖</b><strong>Pessoas e lugares</strong><small>Entidades, relações, eventos e coordenadas quando disponíveis.</small></div></div><p>Segure um versículo para abrir as ferramentas contextuais. Toque numa palavra hebraica; no NT, abra o Guia Exegético e toque numa palavra grega.</p></div>
+  <div hidden aria-hidden="true"><div id="noteRef"></div><div id="tags"></div><textarea id="note"></textarea><div id="saved"></div><ul id="marked"></ul></div>
+</section>
+<section class="panel" id="p-ajustes">
+  <span id="rowSup" hidden></span><span id="rowRub" hidden></span><input type="checkbox" id="swSup" hidden checked><input type="checkbox" id="swRub" hidden checked>
+  <div class="reader-text-settings" id="readerTextSettings">
+    <div class="reader-text-settings-head">
+      <div><strong>Texto da leitura</strong><small>Personalize a leitura normal e a leitura paralela.</small></div>
+      <span class="reader-text-settings-mark">Aa</span>
+    </div>
+
+    <label class="reader-range-row">
+      <span><strong>Tamanho do texto</strong><small>Reduza para caber mais conteúdo ou aumente para leitura confortável.</small></span>
+      <output id="swSizeValue">18,5</output>
+      <input type="range" id="swSize" min="14" max="28" step="0.5" value="18.5">
+    </label>
+
+    <label class="reader-range-row">
+      <span><strong>Margem lateral</strong><small>Aproxime o texto das bordas para aproveitar melhor a largura da tela.</small></span>
+      <output id="swTextMarginValue">26 px</output>
+      <input type="range" id="swTextMargin" min="8" max="42" step="2" value="26">
+    </label>
+
+    <div class="reader-align-setting">
+      <span class="reader-setting-copy"><strong>Alinhamento</strong><small>Não altera a Tradução Hiperliteral.</small></span>
+      <div class="reader-align-choices" id="readerAlignChoices">
+        <button type="button" data-reader-align="left">Esquerda</button>
+        <button type="button" data-reader-align="justify" class="on">Justificado</button>
+        <button type="button" data-reader-align="center">Centralizado</button>
+      </div>
+    </div>
+
+    <label class="reader-toggle-row">
+      <span><strong>Números dos versículos</strong><small>Ocultar vale para as Bíblias por capítulo e para a leitura paralela.</small></span>
+      <input type="checkbox" id="swVerseNumbers" checked>
+    </label>
+    <div class="reader-text-hint" id="readerTextHint">A Hiperliteral mantém sua formatação editorial própria.</div>
+  </div>
+
+  <h2>Tipografia de leitura</h2>
+  <div class="font-style-card" id="doxaFontCard">
+    <div class="font-style-copy"><strong>Fonte do texto bíblico</strong><small>Serifada padrão, EB Garamond incorporada ou uma fonte sua (.ttf ou .otf). O hebraico mantém a fonte própria do WLC.</small></div>
+    <div class="font-style-grid" id="readerFontChoices">
+      <button type="button" class="font-style-option doxa-font-option" data-doxa-font="editorial"><span class="font-style-name">Serifada · Padrão</span><span class="font-style-preview" style="font-family:Georgia,'Times New Roman',serif">No princípio criou Deus…</span></button>
+      <button type="button" class="font-style-option doxa-font-option" data-doxa-font="garamond"><span class="font-style-name">EB Garamond</span><span class="font-style-preview" style="font-family:'EB Garamond',Georgia,serif">No princípio criou Deus…</span></button>
+      <button type="button" class="font-style-option doxa-font-option" data-doxa-font="custom" id="doxaFontCustomOption" hidden><span class="font-style-name" id="doxaFontCustomName">Minha fonte</span><span class="font-style-preview" style="font-family:'Doxa Custom',Georgia,serif">No princípio criou Deus…</span></button>
+    </div>
+    <div class="doxa-font-actions">
+      <label class="btn filebtn">Importar fonte (.ttf)<input id="doxaFontImport" type="file" accept=".ttf,.otf,font/ttf,font/otf"></label>
+      <button type="button" class="btn" id="doxaFontRemove" hidden>Remover fonte importada</button>
+    </div>
+    <div class="doxa-font-status" id="doxaFontStatus" aria-live="polite"></div>
+  </div>
+
+  <h2>Tela</h2>
+  <label class="switchrow doxa-screen-mode-row"><span>Usar tela toda<small>Desative para manter o espaço seguro da câmera. Ative para aproximar a interface do topo da tela.</small></span><input type="checkbox" id="swFullScreenContent"></label>
+
+  <h2>Aparência do leitor</h2>
+  <div class="appearance-card" id="normalAppearanceCard">
+    <div class="appearance-title">Página, cores e leitura paralela</div>
+    <div class="appearance-sub">Uma única aparência para todo o Doxa: leitura normal, Strong+, menus e leitura em duas janelas.</div>
+    <div class="theme-presets">
+      <button class="theme-preset" type="button" data-theme-target="normal" data-theme-preset="paper">Papel</button>
+      <button class="theme-preset" type="button" data-theme-target="normal" data-theme-preset="sepia">Sépia</button>
+      <button class="theme-preset" type="button" data-theme-target="normal" data-theme-preset="white">Branco</button>
+      <button class="theme-preset" type="button" data-theme-target="normal" data-theme-preset="night">Noite</button>
+      <button class="theme-preset" type="button" data-theme-target="normal" data-theme-preset="olive">Oliva</button>
+    </div>
+    <div class="color-grid">
+      <label class="color-control"><span>Página</span><input type="color" id="normalPageColor" value="#E6E3DA"></label>
+      <label class="color-control"><span>Texto</span><input type="color" id="normalTextColor" value="#23262C"></label>
+      <label class="color-control"><span>Destaque</span><input type="color" id="normalAccentColor" value="#8C2F39"></label>
+      <label class="color-control"><span>Interface</span><input type="color" id="normalChromeColor" value="#DEDAD0"></label>
+    </div>
+    <label class="appearance-toggle"><span>Textura suave de papel <small style="display:block;color:var(--ink-faint);margin-top:2px">Aplicada também às duas janelas.</small></span><input type="checkbox" id="normalTexture"></label>
+    <button class="btn appearance-reset" id="normalAppearanceReset" type="button">Restaurar padrão</button>
+  </div>
+
+  <div hidden aria-hidden="true"><button id="exportMarks" type="button"></button><input id="importMarks" type="file"><button id="clearMarks" type="button"></button><div id="storageNote"></div></div>
+
+  <h2>Recursos offline</h2>
+  <div class="offline-pack-card" id="offlinePackCard">
+    <div class="offline-pack-head"><span class="offline-pack-icon">⇩</span><div><strong>Pacote completo de estudo</strong><small>Baixe de uma vez os bancos que normalmente são obtidos somente na primeira abertura.</small></div></div>
+    <div class="offline-pack-list"><span>⌁ Referências cruzadas</span><span>Ω Strong grego</span><span>≠ Crítica textual</span><span>¶ 4 comentários clássicos</span><span>⌖ Pessoas, lugares e entidades</span></div>
+    <p class="offline-pack-note">As Bíblias e o Strong hebraico já ficam embutidos no APK. Este pacote prepara os recursos de estudo que dependem de uma primeira conexão. Pode levar vários minutos e ocupar bastante espaço; mantenha o Doxa aberto durante o processo.</p>
+    <div class="offline-progress" id="offlineProgress"><i id="offlineProgressBar"></i></div>
+    <div class="offline-status" id="offlineStatus"><strong>Não verificado</strong><span>Você pode continuar usando os recursos normalmente e baixar tudo apenas quando quiser.</span></div>
+    <div class="offline-storage" id="offlineStorage"></div>
+    <div class="offline-actions"><button class="btn offline-primary" id="offlineDownloadAll" type="button">Baixar todos os recursos</button><button class="btn" id="offlineCancel" type="button" hidden>Cancelar</button></div>
+    <div class="offline-backup-actions"><button class="btn" id="offlineExport" type="button">Exportar backup</button><label class="btn filebtn">Importar backup<input id="offlineImport" type="file" accept=".gz,.ndjson,.json,application/gzip,application/json"></label></div>
+    <small class="offline-backup-help">O backup contém os recursos armazenados pelo Doxa e pode ser guardado fora do aplicativo para restauração futura.</small>
+  </div>
+
+  <h2>Créditos e Licenças</h2>
+  <div class="license-list" id="openBibleCredits">
+    <div class="license-item"><strong>Bíblia Livre (BLIVRE)</strong><span><em>CC BY 4.0.</em> Mantida como corpus português adicional. Fonte/proveniência: projeto Bíblia Livre / eBible.</span></div>
+    <div class="license-item"><strong>OpenBible Cross References</strong><span><em>CC BY 4.0.</em> Pontuação/relevância preservada. Fonte: OpenBible.info; distribuição usada pelo Doxa via bible-crossrefs-dataset. Licença verificada em 15/09/2026.</span></div>
+    <div class="license-item"><strong>Robinson–Pierpont Byzantine Textform 2018</strong><span><em>Domínio público.</em> Texto grego da edição RP2018, repositório oficial byztxt/byzantine-majority-text. Carregado sob demanda e armazenado localmente. Licença verificada em 15/09/2026.</span></div>
+    <div class="license-item"><strong>SBL Greek New Testament v1.2</strong><span><em>CC BY 4.0.</em> Copyright 2010 Society of Biblical Literature e Logos Bible Software; arquivos Faithlife/SBLGNT. Carregado sob demanda e armazenado localmente. Licença verificada em 15/09/2026.</span></div>
+    <div class="license-item"><strong>Comentários clássicos</strong><span><em>Public Domain Mark 1.0 conforme a fonte de distribuição.</em> Matthew Henry, Jamieson–Fausset–Brown, Adam Clarke e John Gill, fornecidos pelo Free Use Bible API. O Doxa mantém o inglês original. Licenças verificadas em 15/09/2026.</span></div>
+    <div class="license-item"><strong>Pessoas e Lugares</strong><span>Dados de Theographic Bible Metadata (CC BY-SA 4.0). Verbetes em português: <em>Easton's Bible Dictionary</em> (1897, domínio público), traduzido pelo Doxa; quando ainda não há tradução, o verbete aparece no original em inglês.</span></div>
+    <div class="license-item"><strong>Strong grego · Textus Receptus</strong><span>Texto, numeração de Strong e morfologia Robinson em domínio público (byztxt/greektext-textus-receptus e eBible TR). Léxico de Strong: openscriptures/strongs. Lema, glosa e classe gramatical: <em>STEPBible TBESG, CC BY 4.0.</em> Significados em português: Doxa.</span></div>
+    <div class="license-item"><strong>EB Garamond</strong><span><em>SIL Open Font License 1.1.</em> Fonte incorporada ao aplicativo para leitura offline; arquivos normal e itálico do projeto EB Garamond.</span></div>
+    <div class="license-item"><strong>Theographic Bible Metadata</strong><span><em>CC BY-SA 4.0.</em> Pessoas, lugares, eventos e grupos via Free Use Bible API, com procedência do projeto Theographic. Dados carregados por capítulo sob demanda e armazenados em cache local. Licença verificada em 15/09/2026.</span></div>
+  </div>
+  <h2>Corpus</h2><blockquote class="corpus-quote"><div class="empty" id="stats"></div><div class="sourcecard">Textos-base embutidos neste leitor: Almeida 1819 (Bíblia Livre) · WLC corrigido a partir do OSHB v2.2 · Textus Receptus (Stephanus 1550) · Tradução Hiperliteral Doxa. A Bíblia Livre também está disponível offline junto aos corpora principais.<br><br>Tipografia de leitura: serifada editorial padrão do Doxa, totalmente offline.<br><br><b>Camada lexical PT-BR Doxa:</b> sentidos em português vinculados por número Strong, derivados do alinhamento do OSHB com a Almeida 1819 e de equivalências lexicais controladas. O texto original de Strong/BDB/OSHB não é substituído e permanece acessível para conferência. OSHB Hebrew Lexicon: CC BY 4.0; textos de Strong e BDB em domínio público conforme a documentação do projeto.</div></blockquote>
+</section>
+</main>
+
+
+<div class="version-picker-backdrop" id="versionPickerBackdrop"></div>
+<aside class="version-picker" id="versionPicker" aria-hidden="true" aria-label="Escolher versão bíblica">
+  <div class="version-picker-grab"></div>
+  <div class="version-picker-head"><div><span>VERSÕES</span><strong>Bíblias</strong><small id="versionPickerContext">Leitura principal</small></div><button id="versionPickerClose" type="button" aria-label="Fechar">×</button></div>
+  <div class="version-picker-list" id="versionPickerList"></div>
+</aside>
+
+<div class="premium-picker-backdrop" id="premiumPickerBackdrop"></div>
+<aside class="premium-picker passage-picker-v4" id="premiumPicker" aria-hidden="true" aria-label="Escolher passagem">
+  <div class="picker-grab"></div>
+  <div class="picker-v4-top">
+    <button class="picker-back" id="pickerBack" type="button" aria-label="Voltar">‹</button>
+    <div class="picker-v4-heading"><strong id="pickerTitle">Escolher passagem</strong><small id="pickerSubtitle">Livro · capítulo · versículo</small></div>
+    <button class="picker-close" id="pickerClose" type="button" aria-label="Fechar">×</button>
+  </div>
+  <div class="picker-v4-tabs" role="tablist" aria-label="Etapa da seleção">
+    <button type="button" data-picker-stage="book" class="on">LIVRO</button>
+    <button type="button" data-picker-stage="chapter">CAPÍTULO</button>
+    <button type="button" data-picker-stage="verse">VERSÍCULO</button>
+  </div>
+  <div class="picker-v4-search"><span class="picker-search-icon" aria-hidden="true">⌕</span><input id="pickerSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Insira a passagem · ex.: Gn 1:1"></div>
+  <div class="picker-body" id="pickerBody"></div>
+  <div class="picker-v4-action" id="pickerAction" hidden>
+    <button id="pickerGo" type="button">
+      <span id="pickerGoLabel">Ir para a passagem</span>
+      <span class="picker-go-arrow">→</span>
+    </button>
+  </div>
+</aside>
+
+<div class="xref-backdrop" id="xrefBackdrop"></div>
+<aside class="xref-sheet" id="xrefSheet" aria-hidden="true" aria-label="Referências cruzadas">
+  <div class="xref-grab"></div>
+  <div class="xref-head">
+    <div><span class="xref-kicker">REFERÊNCIAS CRUZADAS</span><strong id="xrefTitle">Passagem</strong><small id="xrefSubtitle">Passagens relacionadas</small></div>
+    <button class="xref-close" id="xrefClose" type="button" aria-label="Fechar">×</button>
+  </div>
+  <div class="xref-body" id="xrefBody"></div>
+  <div class="xref-credit">Dados de referências: OpenBible.info · CC BY. O banco é armazenado no aparelho após o primeiro carregamento.</div>
+</aside>
+
+<div class="strong-backdrop" id="strongBackdrop"></div>
+<aside class="strong-sheet" id="strongSheet" aria-hidden="true" aria-label="Strong e análise lexical">
+  <div class="strong-grab"></div>
+  <div class="strong-head"><div class="strong-wordbox"><div class="strong-form" id="strongForm"></div><div class="strong-xlit" id="strongXlit"></div></div><button class="strong-close" id="strongClose" type="button" aria-label="Fechar">×</button></div>
+  <div class="strong-tabs"><button class="strong-tab on" data-stab="lex" type="button">Léxico</button><button class="strong-tab" data-stab="occ" type="button">Ocorrências</button></div>
+  <div class="strong-scroll">
+    <section class="strong-pane on" id="strongLex"></section>
+    <section class="strong-pane" id="strongOcc"></section>
+  </div>
+</aside>
+
+<nav class="bar" role="tablist"><button class="tab" role="tab" aria-selected="true" data-p="ler">Ler</button><button class="tab" role="tab" aria-selected="false" data-p="buscar">Buscar</button><button class="tab" role="tab" aria-selected="false" data-p="marcar">Ferramentas</button><button class="tab" role="tab" aria-selected="false" data-p="ajustes">Ajustes</button></nav>
+<script src="data/strong-pt.js"></script>
+<script id="doxa-v14-strong-pt-layer" src="js/01.js"></script>
+<script src="data/hyper_blocks.js"></script>
+<script src="data/almeida.js"></script>
+<script src="data/wlc.js"></script>
+<script src="data/tr.js"></script>
+<script src="data/oshb_strong.js"></script>
+<script src="js/02.js"></script>
+
+<script src="js/03.js"></script>
+
+
+<script id="doxa-v6-flow-behavior" src="js/04.js"></script>
+
+
+<script id="doxa-v7-immersive-behavior" src="js/05.js"></script>
+
+
+<link rel="stylesheet" id="doxa-v9-tools-highlights" href="css/15.css">
+
+<div class="hl-backdrop" id="hlBackdrop"></div>
+<aside class="hl-sheet" id="hlSheet" aria-hidden="true" aria-label="Grifo">
+  <div class="hl-grab"></div>
+  <div class="hl-sheet-head"><div><strong>Grifar texto</strong><small id="hlSheetRef">Passagem</small></div><button class="hl-sheet-close" id="hlSheetClose" type="button" aria-label="Fechar">×</button></div>
+  <div class="hl-colors" id="hlColors"><button class="hl-color" data-color="yellow" aria-label="Amarelo"></button><button class="hl-color" data-color="blue" aria-label="Azul"></button><button class="hl-color" data-color="red" aria-label="Vermelho"></button><button class="hl-color" data-color="purple" aria-label="Roxo"></button><button class="hl-color" data-color="green" aria-label="Verde"></button><button class="hl-color" data-color="black" aria-label="Preto"></button></div>
+  <div class="hl-primary-actions"><button class="hl-complete" id="hlComplete" type="button">Concluir</button><button class="hl-delete" id="hlRemove" type="button">Apagar</button></div>
+  <div class="hl-actions"><button class="hl-note-btn" id="hlNoteBtn" type="button">✎ &nbsp;Adicionar nota</button></div>
+  <div class="hl-note-editor" id="hlNoteEditor" hidden><textarea id="hlNoteText" placeholder="Escreva sua anotação…"></textarea><button class="hl-note-save" id="hlNoteSave" type="button">Salvar nota</button></div>
+</aside>
+<div class="hl-mode-bar" id="hlModeBar" hidden><span class="hl-mode-icon">▰</span><span><strong>Modo Grifar</strong><small>Passe o dedo sobre o texto</small></span><button id="hlModeExit" type="button">Concluir</button></div>
+
+<script id="doxa-v9-highlights-tools" src="js/06.js"></script>
+
+
+<script id="doxa-v91-parallel-button-fix" src="js/07.js"></script>
+
+
+<script id="doxa-v101-version-picker-hud-fix" src="js/08.js"></script>
+
+<link rel="stylesheet" id="doxa-v12-study-css" href="css/16.css">
+<div class="verse-actions" id="verseActions" aria-hidden="true">
+  <button type="button" data-va="xref"><span class="va-icon"><svg viewBox="0 0 24 24"><path d="M6 7h4v4"/><path d="M18 17h-4v-4"/><path d="M10 11 6 7"/><path d="M14 13l4 4"/><path d="M14 7h4v4"/><path d="M10 17H6v-4"/><path d="M14 11l4-4"/><path d="M10 13l-4 4"/></svg></span><span class="va-label">Referências Cruzadas</span><span class="va-chevron">›</span></button>
+  <button type="button" data-va="exegete"><span class="va-icon"><svg viewBox="0 0 24 24"><path d="M4 7.5c2-.7 3.9-.7 6 0v12c-2.1-.7-4-.7-6 0z"/><path d="M20 7.5c-2-.7-3.9-.7-6 0v12c2.1-.7 4-.7 6 0z"/><path d="M10 8.5h4"/><path d="M12 6v5"/></svg></span><span class="va-label">Guia Exegético</span><span class="va-chevron">›</span></button>
+  <button type="button" data-va="interlinear"><span class="va-icon"><svg viewBox="0 0 24 24"><path d="M5 6.5h14"/><path d="M5 12h14"/><path d="M5 17.5h14"/><path d="M8 9.2h8"/><path d="M8 14.8h8"/></svg></span><span class="va-label">Interlinear</span><span class="va-chevron">›</span></button>
+  <button type="button" data-va="compare"><span class="va-icon"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 4h10v10"/><path d="M14 10h4"/><path d="M16 8l2 2-2 2"/></svg></span><span class="va-label">Comparar Versos</span><span class="va-chevron">›</span></button>
+  <button type="button" data-va="comments"><span class="va-icon"><svg viewBox="0 0 24 24"><path d="M5 6h14v10H9l-4 3z"/><path d="M8 10h8"/><path d="M8 13h5"/></svg></span><span class="va-label">Comentários</span><span class="va-chevron">›</span></button>
+  <button type="button" data-va="crit"><span class="va-icon"><svg viewBox="0 0 24 24"><path d="M7 5h10v14H7z"/><path d="M9.5 9h5"/><path d="M9.5 12h5"/><path d="M9.5 15h3"/><path d="M16.5 15l2 2"/><path d="M18.5 15l-2 2"/></svg></span><span class="va-label">Crítica Textual</span><span class="va-chevron">›</span></button>
+  <button type="button" data-va="entities"><span class="va-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-5-4.6-5-9a5 5 0 1 1 10 0c0 4.4-5 9-5 9z"/><circle cx="12" cy="11" r="1.8"/></svg></span><span class="va-label">Pessoas e Lugares</span><span class="va-chevron">›</span></button>
+  <button type="button" data-va="copy"><span class="va-icon"><svg viewBox="0 0 24 24"><path d="M9 9h10v11H9z"/><path d="M5 5h10v11"/></svg></span><span class="va-label">Copiar Verso</span><span class="va-chevron">›</span></button>
+</div>
+<section class="study-screen" id="studyScreen" aria-hidden="true"><div class="study-head"><button id="studyBack" type="button" aria-label="Voltar">‹</button><div class="study-head-copy"><strong id="studyTitle">Estudo</strong><small id="studyRef">—</small></div><span></span></div><div class="study-scroll" id="studyBody"></div><div class="study-bottom" id="studyBottom"><button id="studyPrev" type="button">‹ Verso anterior</button><button id="studyNext" type="button">Próximo verso ›</button></div></section>
+<script id="doxa-v12-study-js" src="js/09.js"></script>
+
+
+<script id="doxa-v13-corpus-cleanup" src="js/10.js"></script>
+
+
+<link rel="stylesheet" id="doxa-v15-pager-fix-css" href="css/17.css">
+<script id="doxa-v15-pager-fix-js" src="js/11.js"></script>
+
+
+
+<!-- Doxa V17 · 10 Bíblias locais fornecidas pelo usuário -->
+<link rel="stylesheet" id="doxa-v17-bibles-css" href="css/18.css">
+<script id="doxa-v17-local-bibles" src="js/12.js"></script>
+<link rel="stylesheet" id="doxa-v18-hyper-continuous-css" href="css/19.css">
+<script id="doxa-v18-hyper-continuous-js" src="js/13.js"></script>
+
+
+<link rel="stylesheet" id="doxa-v20-advanced-css" href="css/20.css">
+<section class="v20-adv" id="v20Advanced" aria-hidden="true">
+  <div class="v20-adv-head"><button id="v20AdvBack" type="button" aria-label="Voltar">‹</button><div class="v20-adv-title"><strong id="v20AdvTitle">Estudo</strong><small id="v20AdvRef">—</small></div><span></span></div>
+  <div class="v20-adv-scroll" id="v20AdvBody"></div>
+</section>
+<script id="doxa-v20-advanced-js" src="js/14.js"></script>
+
+
+<script id="doxa-v21-global-bible-switch-js" src="js/15.js"></script>
+
+<script id="doxa-v23-offline-js" src="js/16.js"></script>
+
+
+<script id="doxa-v24-boot-finish-js" src="js/17.js"></script>
+
+
+<!-- 18 shell, 20 ferramentas, 21 Home e 22 fontes: carregados em ordem pelo js/00.js (19, textura antiga, aposentado) -->
+
+<!-- Doxa V29 · Interlinear morfológico de Gênesis 1–50 + Êxodo 1–40 -->
+</body></html>
