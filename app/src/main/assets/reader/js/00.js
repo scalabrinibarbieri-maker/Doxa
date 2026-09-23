@@ -48,7 +48,15 @@
                   addScript('doxa-v34-notes-js','js/25.js',()=>{
                     addScript('doxa-v35-bread-js','js/26.js',()=>{
                       addScript('doxa-v36-share-js','js/27.js',()=>{
-                        addScript('doxa-v361-scroll-js','js/28.js');
+                        addScript('doxa-v361-scroll-js','js/28.js',()=>{
+                          /* Dados do Strong grego: vêm do pacote remoto; se não estiverem
+                             instalados, o onerror segue em frente e o js/29.js não faz nada. */
+                          addScript('doxa-v37-greek-data','data/greek_strong.js',()=>{
+                            addScript('doxa-v37-greek-pt','data/strong-pt-g.js',()=>{
+                              addScript('doxa-v37-greek-js','js/29.js');
+                            });
+                          });
+                        });
                       });
                     });
                   });
