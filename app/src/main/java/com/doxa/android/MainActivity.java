@@ -3,6 +3,7 @@ package com.doxa.android;
 import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -16,11 +17,15 @@ import android.widget.*;
 import androidx.webkit.*;
 import org.json.JSONObject;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class MainActivity extends Activity {
     private static final int IMPORT = 10, PICK_FILE = 11, SAVE_FILE = 12;
@@ -34,6 +39,10 @@ public final class MainActivity extends Activity {
     private ValueCallback<Uri[]> fileCallback;
     private volatile boolean destroyed;
     private boolean importing, updateCheckStarted;
+    private volatile boolean appUpdateCheckStarted;
+    // Doxa 40: a página oficial (site) e o repositório de onde ela lê a versão mais recente.
+    private static final String OFFICIAL_SITE_URL = "https://scalabrinibarbieri-maker.github.io/Doxa/";
+    private static final String LATEST_RELEASE_API = "https://api.github.com/repos/scalabrinibarbieri-maker/Doxa/releases/latest";
     private long lastBackPressAt;
     // All export state below is confined to the single IO executor.
     private File exportFile;
@@ -384,6 +393,7 @@ public final class MainActivity extends Activity {
                     catch (IOException error) { message("Não foi possível preparar a exportação de arquivos."); }
                 }
                 maybeCheckResourceUpdates();
+                maybeCheckAppUpdate();
             }
             @Override public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError error) {
                 if (req.isForMainFrame()) new AlertDialog.Builder(MainActivity.this)
@@ -448,6 +458,65 @@ public final class MainActivity extends Activity {
                 });
             } catch (IOException ignored) {
                 // Offline or server unavailable: reading remains fully usable with local resources.
+            }
+        });
+    }
+
+    /* Doxa 40: avisa quando existe uma publicação mais nova na página oficial (GitHub Releases),
+       do mesmo jeito que o app já avisa sobre pacotes de recursos novos no Supabase — mas aqui
+       o "Atualizar agora" abre a página, porque instalar o APK exige o navegador, não a WebView.
+       O run number da tag da release (ex.: v39-201) equivale ao versionCode instalado
+       (1000 + run number, ver app/build.gradle), então a comparação não depende de nenhum
+       número extra publicado à parte. */
+    private void maybeCheckAppUpdate() {
+        if (appUpdateCheckStarted || importing) return;
+        appUpdateCheckStarted = true;
+        io.execute(() -> {
+            try {
+                SharedPreferences prefs = getSharedPreferences("doxa_app_update", MODE_PRIVATE);
+                long last = prefs.getLong("last_check_ms", 0L);
+                long sixHours = 6L * 60 * 60 * 1000;
+                if (System.currentTimeMillis() - last < sixHours) return;
+                prefs.edit().putLong("last_check_ms", System.currentTimeMillis()).apply();
+
+                HttpURLConnection connection = (HttpURLConnection) new URL(LATEST_RELEASE_API).openConnection();
+                connection.setConnectTimeout(10000);
+                connection.setReadTimeout(10000);
+                connection.setRequestProperty("Accept", "application/vnd.github+json");
+                int code = connection.getResponseCode();
+                if (code < 200 || code >= 300) { connection.disconnect(); return; }
+                StringBuilder body = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) body.append(line);
+                } finally { connection.disconnect(); }
+
+                JSONObject release = new JSONObject(body.toString());
+                String tag = release.optString("tag_name", "");
+                Matcher m = Pattern.compile("-(\\d+)$").matcher(tag);
+                if (!m.find()) return;                                  // release sem o formato esperado: nada a comparar
+                int remoteVersionCode = 1000 + Integer.parseInt(m.group(1));
+                int installedVersionCode;
+                try {
+                    installedVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+                } catch (PackageManager.NameNotFoundException e) { return; }
+                if (remoteVersionCode <= installedVersionCode) return;
+
+                String versionLabel = tag.replaceFirst("^v", "").replaceFirst("-\\d+$", "");
+                runOnUiThread(() -> {
+                    if (destroyed || importing) return;
+                    new AlertDialog.Builder(this)
+                            .setTitle("Nova versão do Doxa")
+                            .setMessage("A versão " + versionLabel + " já está disponível na página oficial.\n\n" +
+                                    "Toque em Atualizar agora para abrir a página e instalar por cima da versão atual. " +
+                                    "Seus grifos, notas e o Pão Diário continuam no lugar.")
+                            .setNegativeButton("Depois", null)
+                            .setPositiveButton("Atualizar agora", (d, w) -> openExternal(Uri.parse(OFFICIAL_SITE_URL)))
+                            .show();
+                });
+            } catch (Exception ignored) {
+                // Sem internet, GitHub fora do ar, ou resposta inesperada: a versão instalada segue normalmente.
             }
         });
     }
