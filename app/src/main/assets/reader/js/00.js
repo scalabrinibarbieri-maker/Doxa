@@ -55,7 +55,9 @@
                           addScript('doxa-v37-greek-data','data/greek_strong.js',()=>{
                             addScript('doxa-v37-greek-pt','data/strong-pt-g.js',()=>{
                               addScript('doxa-v37-greek-js','js/29.js',()=>{
-                                addScript('doxa-v38-guide-js','js/30.js');
+                                addScript('doxa-v38-guide-js','js/30.js',()=>{
+                                  addScript('doxa-v41-entidades-pt','data/entidades-pt.js');
+                                });
                               });
                             });
                           });
