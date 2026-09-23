@@ -204,3 +204,11 @@ body:not([data-doxa30-theme="night"]) .verse-context::after{
   body:not([data-doxa30-theme="night"]) .verse-context,
   body:not([data-doxa30-theme="night"]) .verse-context::after{animation:none!important}
 }
+
+/* ============================================================
+   9. Home: a barra inferior nunca some
+   O gesto de leitura (js/05.js) podia marcar hud-hidden com a Home aberta — um toque num
+   título, por exemplo — e aí a Home ficava sem barra e sem saída.
+   ============================================================ */
+body.doxa-home-open.hud-hidden .doxa30-bottom-wrap,
+body.doxa-home-open.hud-hidden #doxa30Bottom{transform:none!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
