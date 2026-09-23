@@ -1,0 +1,57 @@
+/* Doxa 39 · Guia Exegético dentro da leitura */
+.doxa-ex-panel{
+  display:block;margin:14px 0 20px;padding:4px;border-radius:22px;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 24%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel) 94%,var(--d30-gold) 6%),color-mix(in srgb,var(--d30-panel) 88%,var(--d30-bg)));
+  box-shadow:0 18px 44px color-mix(in srgb,var(--d30-text) 16%,transparent);
+  opacity:0;transform:translateY(-8px);transition:opacity .3s ease,transform .38s cubic-bezier(.22,1,.36,1);
+  font-family:system-ui,-apple-system,sans-serif;
+}
+body[data-doxa30-theme="night"] .doxa-ex-panel{box-shadow:0 18px 44px rgba(0,0,0,.45)}
+.doxa-ex-panel.on{opacity:1;transform:none}
+.dxp-head{display:flex;align-items:center;gap:12px;padding:14px 14px 12px}
+.dxp-icon{flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center;border-radius:11px;
+  background:color-mix(in srgb,var(--d30-gold) 14%,transparent);color:var(--d30-gold)}
+.dxp-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.dxp-title{flex:1;min-width:0}
+.dxp-title strong{display:block;font:600 16px/1.2 Georgia,'Times New Roman',serif;color:var(--d30-gold2,var(--d30-gold))}
+.dxp-title small{display:block;margin-top:3px;font:500 11px/1.2 system-ui,sans-serif;color:var(--d30-muted)}
+.dxp-close{flex:0 0 auto;width:34px;height:34px;border:0;border-radius:11px;background:color-mix(in srgb,var(--d30-text) 7%,transparent);
+  color:var(--d30-muted);font:400 22px/1 system-ui}
+.dxp-cards{display:grid;gap:8px;padding:0 8px 10px;max-height:none}
+.dxp-card{position:relative;padding:12px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--d30-gold) 12%,transparent);
+  background:color-mix(in srgb,var(--d30-bg) 45%,transparent);-webkit-tap-highlight-color:transparent;
+  transition:background .18s ease,border-color .18s ease,transform .12s ease}
+.dxp-card:active{transform:scale(.99)}
+.dxp-card.on{border-color:color-mix(in srgb,var(--d30-gold) 55%,transparent);background:color-mix(in srgb,var(--d30-gold) 12%,transparent)}
+.dxp-card.dxp-sem-alvo{animation:dxpSemAlvo .5s ease}
+@keyframes dxpSemAlvo{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.dxp-card-main{display:flex;align-items:baseline;gap:9px}
+.dxp-word{font:600 19px/1.25 Georgia,'Times New Roman',serif;color:var(--d30-text)}
+.dxp-word.hebrew{font-family:var(--hebrew);font-size:21px;direction:rtl}
+.dxp-translit{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:400 12px/1 system-ui;color:var(--d30-muted)}
+.dxp-strong{flex:0 0 auto;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--d30-gold) 15%,transparent);
+  color:var(--d30-gold);font:700 11px/1 system-ui;letter-spacing:.03em}
+.dxp-gloss{margin-top:6px;font:400 14.5px/1.4 var(--doxa-font,Georgia,serif);color:var(--d30-text)}
+.dxp-gloss.dxp-sem{font-style:italic;color:var(--d30-muted);font-size:13px}
+.dxp-foot{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:6px;font:400 11.5px/1.35 system-ui;color:var(--d30-muted)}
+.dxp-lemma{color:var(--d30-gold2,var(--d30-gold));font:500 13px/1 Georgia,serif}
+.dxp-lemma.hebrew{font-family:var(--hebrew);direction:rtl;font-size:14px}
+.dxp-en{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s ease,opacity .25s ease,margin .3s ease}
+.dxp-card.on .dxp-en{max-height:260px;opacity:1;margin-top:10px}
+.dxp-en span{display:block;font:700 9px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--d30-gold)}
+.dxp-en p{margin:5px 0 0;padding:9px 11px;border-radius:11px;background:color-mix(in srgb,var(--d30-text) 6%,transparent);
+  font:400 12.5px/1.45 system-ui;color:var(--d30-muted)}
+.dxp-vazio{padding:16px;font:400 13.5px/1.5 system-ui;color:var(--d30-muted);text-align:center}
+
+/* palavra acesa no corpo do texto */
+.ex-tok{border-radius:4px;transition:background .18s ease,color .18s ease,box-shadow .25s ease}
+.ex-tok.on,.hl-word.ex-tok.on,#textBody .hl-word.on{
+  background:color-mix(in srgb,var(--d30-gold) 30%,transparent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--d30-gold) 14%,transparent);
+  animation:dxpAcende 1.1s ease;
+}
+@keyframes dxpAcende{0%{background:color-mix(in srgb,var(--d30-gold) 65%,transparent)}100%{background:color-mix(in srgb,var(--d30-gold) 30%,transparent)}}
+@media(prefers-reduced-motion:reduce){
+  .doxa-ex-panel{transition:none}.ex-tok.on{animation:none}
+}
