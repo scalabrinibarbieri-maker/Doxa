@@ -38,6 +38,7 @@
     addCss('doxa-v36-share-css','css/28.css');
     addCss('doxa-v38-guide-css','css/30.css');
     addCss('doxa-v42-entities-css','css/32.css');
+    addCss('doxa-v43-timeline-css','css/33.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
@@ -57,7 +58,11 @@
                             addScript('doxa-v37-greek-pt','data/strong-pt-g.js',()=>{
                               addScript('doxa-v37-greek-js','js/29.js',()=>{
                                 addScript('doxa-v38-guide-js','js/30.js',()=>{
-                                  addScript('doxa-v41-entidades-pt','data/entidades-pt.js');
+                                  addScript('doxa-v41-entidades-pt','data/entidades-pt.js',()=>{
+                                    addScript('doxa-v43-timeline-data','data/timeline.js',()=>{
+                                      addScript('doxa-v43-timeline-js','js/33.js');
+                                    });
+                                  });
                                 });
                               });
                             });
