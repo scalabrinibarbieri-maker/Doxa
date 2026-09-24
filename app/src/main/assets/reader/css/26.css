@@ -136,3 +136,11 @@ body[data-doxa30-theme="night"] .doxa-note-backdrop{background:rgba(0,0,0,.4)}
   height:28px;padding:0 8px;border-radius:8px;border:1px solid color-mix(in srgb,var(--d30-gold) 14%,transparent);
   background:color-mix(in srgb,var(--d30-panel) 70%,transparent);color:var(--d30-muted);font:500 11px/1 system-ui;max-width:38%;
 }
+
+/* Doxa 43.7 · excluir direto na lista de Notas */
+.doxa-note-card-actions{display:flex;gap:6px}
+.doxa-note-card-actions button{width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:11px;background:color-mix(in srgb,var(--d30-text) 6%,transparent);color:var(--d30-muted)}
+.doxa-note-card-actions svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#toolsNotesList li{position:relative;padding-right:46px}
+.doxa-note-trash{position:absolute;top:10px;right:10px;width:30px;height:30px;border:0;border-radius:10px;
+  background:color-mix(in srgb,var(--d30-text) 6%,transparent);color:var(--d30-muted);font:400 20px/1 system-ui}
