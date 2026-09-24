@@ -102,3 +102,37 @@ body[data-doxa30-theme="night"] .doxa-note-backdrop{background:rgba(0,0,0,.4)}
 .doxa-notes-empty span{display:block}
 .doxa-notes-sub{margin:22px 4px 8px;font:700 10.5px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--d30-muted)}
 .doxa-notes-sub[hidden]{display:none}
+
+/* ---------- Doxa 43.1 · Ver × Editar, e pastas nas notas ---------- */
+.doxa-note-sheet .doxa-note-view-body,.doxa-note-sheet #doxaNoteViewFolderRow,.doxa-note-sheet #doxaNoteViewFoot,
+.doxa-note-sheet textarea,.doxa-note-sheet #doxaNoteEditFolderRow,.doxa-note-sheet #doxaNoteEditFoot{display:none}
+.doxa-note-sheet.mode-view .doxa-note-view-body,.doxa-note-sheet.mode-view #doxaNoteViewFolderRow,.doxa-note-sheet.mode-view #doxaNoteViewFoot{display:block}
+.doxa-note-sheet.mode-view #doxaNoteViewFoot{display:flex}
+.doxa-note-sheet.mode-edit textarea,.doxa-note-sheet.mode-edit #doxaNoteEditFolderRow{display:block}
+.doxa-note-sheet.mode-edit #doxaNoteEditFoot{display:flex}
+
+.doxa-note-view-body{
+  padding:4px 2px 2px;font:400 16px/1.6 system-ui,sans-serif;color:var(--d30-text);white-space:pre-wrap;
+  max-height:34dvh;overflow:auto;
+}
+.doxa-note-folder-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 12px;
+  font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--d30-muted)}
+.doxa-note-folder-row select{
+  flex:0 1 auto;max-width:60%;height:34px;padding:0 10px;border-radius:10px;border:1px solid color-mix(in srgb,var(--d30-gold) 18%,transparent);
+  background:color-mix(in srgb,var(--d30-panel) 80%,transparent);color:var(--d30-text);font:500 12.5px/1 system-ui;
+}
+
+/* linha de pastas na lista de Notas (mesma linguagem visual dos grifos) */
+.tools-folder-row{display:flex;align-items:center;gap:8px;margin:0 0 12px;overflow-x:auto;padding-bottom:2px}
+.tools-folder-row .tools-folder-tabs{display:flex;gap:8px;flex:1;overflow-x:auto}
+.tools-folder-add,.tools-folder-del{
+  flex:0 0 auto;width:35px;height:35px;display:grid;place-items:center;border-radius:999px;
+  border:1px solid color-mix(in srgb,var(--d30-gold) 16%,transparent);background:var(--d30-panel);color:var(--d30-gold);font:600 18px/1 system-ui;
+}
+.tools-folder-del svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.doxa-note-card footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.doxa-note-card footer small{font:500 11px/1 system-ui;color:var(--d30-muted)}
+.doxa-note-move{
+  height:28px;padding:0 8px;border-radius:8px;border:1px solid color-mix(in srgb,var(--d30-gold) 14%,transparent);
+  background:color-mix(in srgb,var(--d30-panel) 70%,transparent);color:var(--d30-muted);font:500 11px/1 system-ui;max-width:38%;
+}
