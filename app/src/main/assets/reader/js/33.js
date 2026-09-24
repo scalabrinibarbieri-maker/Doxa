@@ -198,7 +198,7 @@
       try{flash('Baixe os recursos offline em Ajustes para usar a Linha do Tempo.')}catch(_){}
       return;
     }
-    const vEl=e.target.closest('.verse[data-v]');
+    const vEl=e.target.closest('.verse');   // na leitura normal o versículo só tem id="vN", não data-v
     const ref=vEl?refFromEl(vEl):null;
     if(!ref){try{flash('Toque diretamente num versículo.')}catch(_){}return}
     render(ref);
