@@ -252,6 +252,13 @@
         db.folders=db.folders.filter(x=>x.id!==activeFolder);activeFolder='all';await save();
       });
       box.addEventListener('click',e=>{
+        const del=e.target.closest('[data-note-del]');
+        if(del){
+          if(!confirm('Excluir esta nota?'))return;
+          db.items=db.items.filter(n=>n.id!==del.dataset.noteDel);
+          (async()=>{await save();try{flash('Nota excluída.')}catch(_){}})();
+          return;
+        }
         const ed=e.target.closest('[data-note-edit]');if(ed){const n=byId(ed.dataset.noteEdit);if(n)openView(n);return}
         const go=e.target.closest('[data-note-go]');if(go){const n=byId(go.dataset.noteGo);if(n)goTo(n)}
       });
@@ -271,7 +278,7 @@
       .sort((a,b)=>(b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt));
     $('doxaNotesSearchWrap').hidden=db.items.length<4;
     $('doxaNotesList').innerHTML=rows.length?rows.map(n=>
-      '<article class="doxa-note-card" data-note-go="'+n.id+'"><header><strong>'+esc(labelOf(n))+'</strong><button type="button" data-note-edit="'+n.id+'" aria-label="Ver nota">'+ICON_PEN+'</button></header>'
+      '<article class="doxa-note-card" data-note-go="'+n.id+'"><header><strong>'+esc(labelOf(n))+'</strong><span class="doxa-note-card-actions"><button type="button" data-note-edit="'+n.id+'" aria-label="Ver nota">'+ICON_PEN+'</button><button type="button" data-note-del="'+n.id+'" aria-label="Excluir nota">'+ICON_TRASH+'</button></span></header>'
       +'<p>'+esc(n.text)+'</p><footer><small>'+esc(noteFolderName(n.folderId))+' · '+esc(fmtDate(n.updatedAt||n.createdAt))+'</small>'
       +'<select class="doxa-note-move" data-note-move="'+n.id+'" onclick="event.stopPropagation()">'+folderOptionsHtml(n.folderId).replace('value="'+(n.folderId||'')+'"','value="'+(n.folderId||'')+'" selected')+'</select></footer></article>').join('')
       :(db.items.length?'<div class="doxa-notes-empty">Nenhuma nota nesta pasta.</div>':'<div class="doxa-notes-empty"><strong>Nenhuma nota ainda</strong><span>Segure um versículo e toque em <b>Anotar</b>.</span></div>');
