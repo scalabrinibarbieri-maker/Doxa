@@ -173,24 +173,35 @@
       return{book:b.book,chapter:Number(p.c),verse:v,label:bookName(b)+' '+p.c+':'+v};
     }catch(e){return null}
   }
-  const pop=document.getElementById('verseActions');
-  if(pop)pop.addEventListener('click',e=>{
-    const t=e.target.closest('[data-va="timeline"]');if(!t)return;
-    /* Doxa 43.3 · Este botão fica no mesmo menu desde que o pacote de dados foi criado, mas o
-       módulo inteiro parava aqui, sem sequer se cadastrar, quando o pacote ainda não tinha sido
-       baixado — nesse caso o toque escapava para o handler genérico do js/09.js, que abre
-       "Comparar Versos" para qualquer data-va que não reconheça. Agora o botão sempre responde,
-       e avisa quando falta baixar os dados em vez de abrir a ferramenta errada. */
+  /* Doxa 43.4 · Linha do Tempo como um modo, entrando por Ferramentas — igual ao Grifar:
+     toque no cartão, volta pra Bíblia, toca num versículo, some ao terminar. Não fica mais
+     dependurada no menu de segurar o versículo (e, se o pacote de dados ainda não tiver sido
+     baixado, avisa em vez de deixar o toque cair em outra ferramenta). */
+  let tlMode=false;
+  const $$=id=>document.getElementById(id);
+  function setTimelineMode(on){
+    tlMode=!!on;
+    document.body.classList.toggle('doxa-timeline-mode',tlMode);
+    const bar=$$('tlModeBar');if(bar)bar.hidden=!tlMode;
+    if(tlMode){try{openPanel('ler')}catch(e){}close()}
+  }
+  const startBtn=$$('toolsTimelineStart');
+  if(startBtn)startBtn.addEventListener('click',()=>setTimelineMode(true));
+  const exitBtn=$$('tlModeExit');
+  if(exitBtn)exitBtn.addEventListener('click',()=>setTimelineMode(false));
+
+  const host=document.getElementById('textBody');
+  if(host)host.addEventListener('click',e=>{
+    if(!tlMode)return;
     e.preventDefault();e.stopImmediatePropagation();
-    try{window.DoxaVerseActions?.close()}catch(_){}
     if(typeof TIMELINE==='undefined'||!TIMELINE?.b){
       try{flash('Baixe os recursos offline em Ajustes para usar a Linha do Tempo.')}catch(_){}
       return;
     }
-    const vEl=document.querySelector('#textBody .verse.verse-context')||document.querySelector('.verse-context');
-    const ref=refFromEl(vEl);
-    if(!ref)return;
-    setTimeout(()=>render(ref),140);
+    const vEl=e.target.closest('.verse[data-v]');
+    const ref=vEl?refFromEl(vEl):null;
+    if(!ref){try{flash('Toque diretamente num versículo.')}catch(_){}return}
+    render(ref);
   },true);
 
   window.DoxaTimeline={render,close,yearFor,eraOf};
