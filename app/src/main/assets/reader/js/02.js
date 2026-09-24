@@ -469,7 +469,22 @@ document.querySelectorAll('[data-reader-align]').forEach(b=>b.addEventListener('
 const persistReaderPrefsNow=()=>{if(!prefsReady)return;try{localStorage.setItem(KEY_PREFS,JSON.stringify(prefs));localStorage.setItem(KEY_TEXT_PREFS,JSON.stringify(textPrefsSnapshot()))}catch(e){}saveTextPrefsBackup()};
 window.addEventListener('pagehide',persistReaderPrefsNow);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistReaderPrefsNow()});
-let touchX=0,touchY=0;document.getElementById('p-ler').addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY},{passive:true});document.getElementById('p-ler').addEventListener('touchend',e=>{if(parallelOn)return;const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25)move(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(parallelOn)return;if(!document.getElementById('p-ler').classList.contains('on'))return;if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1)});
+let touchX=0,touchY=0;document.getElementById('p-ler').addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY},{passive:true});document.getElementById('p-ler').addEventListener('touchend',e=>{
+  const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;
+  if(!(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25))return;
+  /* Doxa 43.2: o arraste para trocar de capítulo nunca tinha sido ligado à leitura paralela
+     (a linha antiga simplesmente saía sem fazer nada quando parallelOn). Ao chegar no fim
+     do capítulo, arrastar mais não levava a lugar nenhum. Agora identifica qual dos dois
+     painéis recebeu o toque e usa a mesma parallelMove() que as setas já usam — sincronizada
+     ou não, cada lado se comporta como já se comporta ao tocar a seta correspondente. */
+  if(parallelOn){
+    const pane=e.target.closest('.parallel-pane[data-side]');
+    const side=pane?pane.dataset.side:'A';
+    try{parallelMove(side,dx<0?1:-1)}catch(err){}
+    return;
+  }
+  move(dx<0?1:-1);
+},{passive:true});document.addEventListener('keydown',e=>{if(parallelOn)return;if(!document.getElementById('p-ler').classList.contains('on'))return;if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1)});
 document.getElementById('exportMarks').onclick=()=>{const data={format:'bereshit-marks',version:4,exportedAt:new Date().toISOString(),marks:store};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bereshit-marcacoes.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
 document.getElementById('importMarks').onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text()),incoming=data&&data.format==='bereshit-marks'?data.marks:data;if(!incoming||typeof incoming!=='object'||Array.isArray(incoming))throw new Error('formato');store=incoming;await saveMarks();renderMark();flash('Marcações importadas.')}catch(err){alert('Não foi possível importar este arquivo de marcações.')}e.target.value=''};
 document.getElementById('clearMarks').onclick=async()=>{if(!confirm('Apagar todas as marcações e notas deste aparelho?'))return;store={};await saveMarks();renderMark();flash('Marcações apagadas.')};

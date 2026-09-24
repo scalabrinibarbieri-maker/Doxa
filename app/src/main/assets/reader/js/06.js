@@ -11,6 +11,7 @@
     ov.innerHTML='<div class="doxa-folder-dialog" role="dialog" aria-modal="true" aria-labelledby="doxaFolderTitle"><div class="doxa-folder-grab"></div><div class="doxa-folder-head"><div><strong id="doxaFolderTitle">Nova pasta</strong><small id="doxaFolderSubtitle">Organize seus grifos</small></div><button id="doxaFolderClose" type="button" aria-label="Fechar">×</button></div><label class="doxa-folder-field" id="doxaFolderField"><span>Nome da pasta</span><input id="doxaFolderInput" type="text" maxlength="36" autocomplete="off" placeholder="Ex.: Promessas"></label><p class="doxa-folder-message" id="doxaFolderMessage" hidden></p><div class="doxa-folder-actions"><button id="doxaFolderCancel" type="button">Cancelar</button><button id="doxaFolderConfirm" type="button">Criar pasta</button></div></div>';
     document.body.appendChild(ov);return ov;
   }
+  window.DoxaFolderDialog=folderDialog;
   function folderDialog(opts={}){
     return new Promise(resolve=>{
       const ov=ensureFolderModal(),title=ov.querySelector('#doxaFolderTitle'),sub=ov.querySelector('#doxaFolderSubtitle'),field=ov.querySelector('#doxaFolderField'),input=ov.querySelector('#doxaFolderInput'),msg=ov.querySelector('#doxaFolderMessage'),ok=ov.querySelector('#doxaFolderConfirm');

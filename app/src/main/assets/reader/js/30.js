@@ -97,6 +97,22 @@
   });
 
   new MutationObserver(()=>{if(!working)requestAnimationFrame(upgrade)}).observe(body,{childList:true,subtree:true});
+
+  /* Doxa 43.1 · Corrige a corrida do primeiro toque
+     js/30.js é o último de uma cadeia longa de carregamento (grego, hebraico, dados...).
+     Se o Novo Testamento ainda não tinha terminado de carregar, o toque em "Guia Exegético"
+     podia acontecer ANTES deste script existir: o observer acima nem estava ligado ainda,
+     e o guia aparecia na versão antiga, sem o novo visual. Duas garantias agora:
+     1) se o guia já estiver aberto quando este script finalmente carregar, atualiza na hora;
+     2) toda chamada futura de renderStudy (troca de versículo, reabertura) força a atualização
+        também, sem depender só do observer. */
+  const origRenderStudy=window.renderStudy;
+  if(typeof origRenderStudy==='function'&&!origRenderStudy.__doxa43){
+    const wrapped=function(){const r=origRenderStudy.apply(this,arguments);try{upgrade()}catch(e){}return r};
+    wrapped.__doxa43=true;window.renderStudy=wrapped;
+  }
+  if(document.getElementById('studyScreen')?.classList.contains('on'))upgrade();
+
   upgrade();
   window.DoxaGuide={upgrade};
 })();

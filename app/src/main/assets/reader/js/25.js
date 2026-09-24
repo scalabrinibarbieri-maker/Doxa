@@ -12,11 +12,12 @@
   const KEY='doxa:notas:v1';
   const SHOW_NOTES_KEY='doxa:marcas:mostrar-notas';
   const SHOW_HL_KEY='doxa:marcas:mostrar-grifos';
-  let db={items:[]},loaded=false;
+  let db={items:[],folders:[]},loaded=false,activeFolder='all';
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const ICON_NOTE='<svg viewBox="0 0 24 24"><path d="M5 4.5h10l4 4v11H5z"/><path d="M15 4.5v4h4"/><path d="M8.5 12.5h7M8.5 16h5"/></svg>';
   const ICON_PEN='<svg viewBox="0 0 24 24"><path d="M4.5 19.5l1-4 10-10 3 3-10 10z"/><path d="M13.5 7.5l3 3"/></svg>';
+  const ICON_TRASH='<svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg>';
 
   /* ---------- armazenamento ---------- */
   async function load(){
@@ -64,37 +65,72 @@
     s.innerHTML='<div class="doxa-note-grab"></div>'
       +'<header class="doxa-note-head"><div><small>NOTA</small><strong id="doxaNoteRef"></strong></div><button type="button" id="doxaNoteClose" aria-label="Fechar">×</button></header>'
       +'<blockquote class="doxa-note-verse" id="doxaNoteVerse"></blockquote>'
+      // modo "ver": o que aparece ao tocar num versículo já anotado
+      +'<div id="doxaNoteViewBody" class="doxa-note-view-body"></div>'
+      +'<label class="doxa-note-folder-row" id="doxaNoteViewFolderRow"><span>Pasta</span><select id="doxaNoteViewFolder"></select></label>'
+      +'<div class="doxa-note-foot" id="doxaNoteViewFoot"><button type="button" class="doxa-note-del" id="doxaNoteViewDelete">Excluir</button><span id="doxaNoteViewWhen"></span><button type="button" class="doxa-note-save" id="doxaNoteViewEdit">Editar</button></div>'
+      // modo "editar": só para criar ou alterar o texto
       +'<textarea id="doxaNoteText" rows="5" placeholder="Escreva sua anotação sobre este versículo…"></textarea>'
-      +'<div class="doxa-note-foot"><button type="button" class="doxa-note-del" id="doxaNoteDelete">Excluir</button><span id="doxaNoteWhen"></span><button type="button" class="doxa-note-save" id="doxaNoteSave">Salvar</button></div>';
+      +'<label class="doxa-note-folder-row" id="doxaNoteEditFolderRow"><span>Pasta</span><select id="doxaNoteEditFolder"></select></label>'
+      +'<div class="doxa-note-foot" id="doxaNoteEditFoot"><button type="button" class="doxa-note-del" id="doxaNoteDelete">Excluir</button><span id="doxaNoteWhen"></span><button type="button" class="doxa-note-save" id="doxaNoteSave">Salvar</button></div>';
     document.body.appendChild(s);
     bd.addEventListener('click',closeEditor);
     $('doxaNoteClose').addEventListener('click',closeEditor);
     $('doxaNoteSave').addEventListener('click',saveEditor);
     $('doxaNoteDelete').addEventListener('click',deleteEditor);
+    $('doxaNoteViewDelete').addEventListener('click',deleteEditor);
+    $('doxaNoteViewEdit').addEventListener('click',()=>{if(editing)openEdit(editing.ref)});
+    $('doxaNoteViewFolder').addEventListener('change',async e=>{if(!editing?.id)return;const n=byId(editing.id);if(!n)return;n.folderId=e.target.value||null;await save()});
     const ta=$('doxaNoteText');ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,window.innerHeight*.42)+'px'});
     return s;
   }
+  function folderOptionsHtml(selected){
+    return '<option value="">Sem pasta</option>'+db.folders.map(f=>'<option value="'+f.id+'"'+(f.id===selected?' selected':'')+'>'+esc(f.name)+'</option>').join('');
+  }
   function fmtDate(t){try{return new Date(t).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return''}}
-  function openEditor(ref){
-    if(!ref)return;const s=ensureSheet(),n=find(ref);
+  /* Abre mostrando a nota (modo padrão ao tocar num versículo já anotado).
+     Sem nota ainda, vai direto para o modo de escrever — não há nada para "ver". */
+  function openNote(ref){
+    if(!ref)return;const n=find(ref);
+    if(n)openView(ref);else openEdit(ref);
+  }
+  function showSheet(){
+    const s=ensureSheet();
+    $('doxaNoteBackdrop').classList.add('on');s.classList.add('on');s.setAttribute('aria-hidden','false');document.body.classList.add('doxa-note-open');
+    return s;
+  }
+  function openView(ref){
+    if(!ref)return;const n=find(ref);if(!n){openEdit(ref);return}
+    const s=showSheet();s.classList.remove('mode-edit');s.classList.add('mode-view');
+    editing={ref,id:n.id};
+    $('doxaNoteRef').textContent=labelOf(ref);
+    const vt=verseText(ref);$('doxaNoteVerse').textContent=vt;$('doxaNoteVerse').hidden=!vt;
+    $('doxaNoteViewBody').textContent=n.text;
+    $('doxaNoteViewFolder').innerHTML=folderOptionsHtml(n.folderId);
+    $('doxaNoteViewWhen').textContent='Editada em '+fmtDate(n.updatedAt||n.createdAt);
+  }
+  function openEdit(ref){
+    if(!ref)return;const s=showSheet();s.classList.remove('mode-view');s.classList.add('mode-edit');
+    const n=find(ref);
     editing={ref,id:n?.id||null};
     $('doxaNoteRef').textContent=labelOf(ref);
     const vt=verseText(ref);$('doxaNoteVerse').textContent=vt;$('doxaNoteVerse').hidden=!vt;
     const ta=$('doxaNoteText');ta.value=n?.text||'';ta.style.height='auto';
+    $('doxaNoteEditFolder').innerHTML=folderOptionsHtml(n?.folderId);
     $('doxaNoteDelete').hidden=!n;$('doxaNoteWhen').textContent=n?('Editada em '+fmtDate(n.updatedAt||n.createdAt)):'';
-    $('doxaNoteBackdrop').classList.add('on');s.classList.add('on');s.setAttribute('aria-hidden','false');document.body.classList.add('doxa-note-open');
     setTimeout(()=>{ta.focus();ta.dispatchEvent(new Event('input'));try{ta.setSelectionRange(ta.value.length,ta.value.length)}catch(e){}},320);
   }
   function closeEditor(){
     const s=$('doxaNoteSheet');if(!s)return;$('doxaNoteText').blur();
-    s.classList.remove('on');s.setAttribute('aria-hidden','true');$('doxaNoteBackdrop').classList.remove('on');document.body.classList.remove('doxa-note-open');editing=null;
+    s.classList.remove('on','mode-view','mode-edit');s.setAttribute('aria-hidden','true');$('doxaNoteBackdrop').classList.remove('on');document.body.classList.remove('doxa-note-open');editing=null;
   }
   async function saveEditor(){
     if(!editing)return;const text=$('doxaNoteText').value.trim();
+    const folderId=$('doxaNoteEditFolder').value||null;
     if(!text){if(editing.id){db.items=db.items.filter(n=>n.id!==editing.id);await save()}closeEditor();return}
     const now=Date.now();let n=editing.id?byId(editing.id):find(editing.ref);
-    if(n){n.text=text;n.updatedAt=now}
-    else db.items.push({id:'n_'+now.toString(36)+Math.random().toString(36).slice(2,6),book:editing.ref.book,chapter:Number(editing.ref.chapter),verse:Number(editing.ref.verse),label:labelOf(editing.ref),text,createdAt:now,updatedAt:now});
+    if(n){n.text=text;n.folderId=folderId;n.updatedAt=now}
+    else db.items.push({id:'n_'+now.toString(36)+Math.random().toString(36).slice(2,6),book:editing.ref.book,chapter:Number(editing.ref.chapter),verse:Number(editing.ref.verse),label:labelOf(editing.ref),text,folderId,createdAt:now,updatedAt:now});
     await save();closeEditor();try{flash('Nota salva.')}catch(e){}
   }
   async function deleteEditor(){
@@ -116,7 +152,7 @@
       const ref=refFromEl(document.querySelector('.verse.verse-context')||document.querySelector('.verse-context'));
       try{window.DoxaVerseActions?.close()}catch(_){}
       if(!ref){try{flash('Notas funcionam nas Bíblias por capítulo.')}catch(_){}return}
-      setTimeout(()=>openEditor(ref),120);
+      setTimeout(()=>openNote(ref),120);
     },true);
     new MutationObserver(()=>{
       if(!pop.classList.contains('on'))return;
@@ -148,6 +184,16 @@
   function queuePaint(){if(painting||paintQueued)return;paintQueued=true;requestAnimationFrame(()=>{paintQueued=false;paintMarks()})}
   function installMarks(){
     const host=$('textBody');if(!host)return;
+    /* Doxa 43.1 · Antes, o marcador só era pintado um quadro DEPOIS do capítulo aparecer
+       (o observer abaixo é assíncrono, por segurança). Isso abre uma brecha: quem toca no
+       ícone rápido demais, logo que a tela abre pela primeira vez, ainda encontra o texto
+       "cru", sem o marcador ali — e o toque cai no gesto de trocar de capítulo por baixo dele.
+       Pintando também de forma síncrona, junto com o próprio redesenho, essa brecha fecha. */
+    const origRender=window.renderReader;
+    if(typeof origRender==='function'&&!origRender.__doxa431){
+      const w=function(){const r=origRender.apply(this,arguments);try{paintMarks()}catch(e){}return r};
+      w.__doxa431=true;window.renderReader=w;
+    }
     new MutationObserver(muts=>{
       if(painting)return;
       if(muts.some(m=>[...m.addedNodes].some(x=>x.nodeType===1&&!x.classList?.contains('doxa-note-mark'))))queuePaint();
@@ -156,7 +202,7 @@
       const m=e.target.closest?.('.doxa-note-mark');if(!m)return;
       e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
       if(e.type!=='click')return;
-      const n=byId(m.dataset.noteId);if(n)openEditor({book:n.book,chapter:n.chapter,verse:n.verse,label:n.label});
+      const n=byId(m.dataset.noteId);if(n)openView({book:n.book,chapter:n.chapter,verse:n.verse,label:n.label});
     };
     host.addEventListener('click',open,true);
     host.addEventListener('touchstart',e=>{if(e.target.closest?.('.doxa-note-mark'))e.stopPropagation()},{capture:true,passive:true});
@@ -176,27 +222,56 @@
     }catch(e){}
   }
   function bookOrder(book){try{return CORPORA.almeida.books.findIndex(b=>b.book===book)}catch(e){return 0}}
+  function noteFolderName(id){return id?(db.folders.find(f=>f.id===id)?.name||'Sem pasta'):'Sem pasta'}
   function renderList(){
     const view=$('toolsNotesView');if(!view)return;
     let box=$('doxaNotesBox');
     if(!box){
       box=document.createElement('div');box.id='doxaNotesBox';
-      box.innerHTML='<div class="doxa-notes-search" id="doxaNotesSearchWrap"><input id="doxaNotesSearch" type="search" placeholder="Buscar nas notas" autocomplete="off"></div><div id="doxaNotesList" class="doxa-notes-list"></div><h3 class="doxa-notes-sub" id="doxaHlNotesTitle">Notas em grifos</h3>';
+      box.innerHTML='<div class="doxa-notes-search" id="doxaNotesSearchWrap"><input id="doxaNotesSearch" type="search" placeholder="Buscar nas notas" autocomplete="off"></div>'
+        +'<div class="tools-folder-row"><div class="tools-folder-tabs" id="doxaNotesFolderTabs"></div>'
+        +'<button type="button" id="doxaNotesNewFolder" class="tools-folder-add" aria-label="Nova pasta">+</button>'
+        +'<button type="button" id="doxaNotesDeleteFolder" class="tools-folder-del" aria-label="Excluir pasta" hidden>'+ICON_TRASH+'</button></div>'
+        +'<div id="doxaNotesList" class="doxa-notes-list"></div><h3 class="doxa-notes-sub" id="doxaHlNotesTitle">Notas em grifos</h3>';
       const old=$('toolsNotesList');view.insertBefore(box,old);
       $('doxaNotesSearch').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();renderList()});
+      $('doxaNotesFolderTabs').addEventListener('click',e=>{const b=e.target.closest('[data-folder]');if(!b)return;activeFolder=b.dataset.folder;renderList()});
+      $('doxaNotesNewFolder').addEventListener('click',async()=>{
+        const name=await window.DoxaFolderDialog({title:'Nova pasta',subtitle:'Organize suas notas',placeholder:'Ex.: Promessas',confirmText:'Criar pasta'});
+        if(!name)return;db.folders.push({id:'f_'+Date.now().toString(36),name,createdAt:Date.now()});await save();
+      });
+      $('doxaNotesDeleteFolder').addEventListener('click',async()=>{
+        if(activeFolder==='all'||activeFolder==='none')return;
+        const f=db.folders.find(x=>x.id===activeFolder);if(!f)return;
+        const yes=await window.DoxaFolderDialog({title:'Excluir pasta',subtitle:'Suas notas não serão apagadas',message:'Excluir “'+f.name+'”? As notas desta pasta voltarão para Sem pasta.',confirmText:'Excluir pasta',danger:true});
+        if(!yes)return;
+        db.items.forEach(n=>{if(n.folderId===activeFolder)n.folderId=null});
+        db.folders=db.folders.filter(x=>x.id!==activeFolder);activeFolder='all';await save();
+      });
       box.addEventListener('click',e=>{
-        const ed=e.target.closest('[data-note-edit]');if(ed){const n=byId(ed.dataset.noteEdit);if(n)openEditor(n);return}
+        const ed=e.target.closest('[data-note-edit]');if(ed){const n=byId(ed.dataset.noteEdit);if(n)openView(n);return}
         const go=e.target.closest('[data-note-go]');if(go){const n=byId(go.dataset.noteGo);if(n)goTo(n)}
+      });
+      box.addEventListener('change',async e=>{
+        const s=e.target.closest('[data-note-move]');if(!s)return;
+        const n=byId(s.dataset.noteMove);if(!n)return;n.folderId=s.value||null;await save();
       });
       new MutationObserver(updateCount).observe(old,{childList:true});
     }
-    const rows=db.items.filter(n=>!query||(n.text+' '+labelOf(n)).toLowerCase().includes(query))
+    if(activeFolder!=='all'&&activeFolder!=='none'&&!db.folders.some(f=>f.id===activeFolder))activeFolder='all';
+    const tabsData=[{id:'all',name:'Todas'},{id:'none',name:'Sem pasta'},...db.folders];
+    const tabCount=id=>db.items.filter(n=>id==='all'||(id==='none'?!n.folderId:n.folderId===id)).length;
+    $('doxaNotesFolderTabs').innerHTML=tabsData.map(f=>'<button type="button" class="tools-folder-chip '+(activeFolder===f.id?'on':'')+'" data-folder="'+f.id+'"><span>'+esc(f.name)+'</span><b>'+tabCount(f.id)+'</b></button>').join('');
+    $('doxaNotesDeleteFolder').hidden=activeFolder==='all'||activeFolder==='none';
+    const inFolder=db.items.filter(n=>activeFolder==='all'||(activeFolder==='none'?!n.folderId:n.folderId===activeFolder));
+    const rows=inFolder.filter(n=>!query||(n.text+' '+labelOf(n)).toLowerCase().includes(query))
       .sort((a,b)=>(b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt));
     $('doxaNotesSearchWrap').hidden=db.items.length<4;
     $('doxaNotesList').innerHTML=rows.length?rows.map(n=>
-      '<article class="doxa-note-card" data-note-go="'+n.id+'"><header><strong>'+esc(labelOf(n))+'</strong><button type="button" data-note-edit="'+n.id+'" aria-label="Editar nota">'+ICON_PEN+'</button></header>'
-      +'<p>'+esc(n.text)+'</p><footer>'+esc(fmtDate(n.updatedAt||n.createdAt))+'</footer></article>').join('')
-      :(db.items.length?'<div class="doxa-notes-empty">Nenhuma nota encontrada.</div>':'<div class="doxa-notes-empty"><strong>Nenhuma nota ainda</strong><span>Segure um versículo e toque em <b>Anotar</b>.</span></div>');
+      '<article class="doxa-note-card" data-note-go="'+n.id+'"><header><strong>'+esc(labelOf(n))+'</strong><button type="button" data-note-edit="'+n.id+'" aria-label="Ver nota">'+ICON_PEN+'</button></header>'
+      +'<p>'+esc(n.text)+'</p><footer><small>'+esc(noteFolderName(n.folderId))+' · '+esc(fmtDate(n.updatedAt||n.createdAt))+'</small>'
+      +'<select class="doxa-note-move" data-note-move="'+n.id+'" onclick="event.stopPropagation()">'+folderOptionsHtml(n.folderId).replace('value="'+(n.folderId||'')+'"','value="'+(n.folderId||'')+'" selected')+'</select></footer></article>').join('')
+      :(db.items.length?'<div class="doxa-notes-empty">Nenhuma nota nesta pasta.</div>':'<div class="doxa-notes-empty"><strong>Nenhuma nota ainda</strong><span>Segure um versículo e toque em <b>Anotar</b>.</span></div>');
     updateCount();
   }
   function updateCount(){
@@ -243,6 +318,6 @@
     applyFlags();installTools();installSettings();installMenu();installMarks();ensureSheet();load();
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editing)closeEditor()});
   }
-  window.DoxaNotes={open:openEditor,list:()=>db.items.slice()};
+  window.DoxaNotes={open:openNote,openEdit,openView,list:()=>db.items.slice()};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
