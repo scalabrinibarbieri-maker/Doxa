@@ -22,6 +22,10 @@
   /* ---------- armazenamento ---------- */
   async function load(){
     try{const raw=await getStored(KEY);const x=raw?JSON.parse(raw):null;if(x&&Array.isArray(x.items))db=x}catch(e){}
+    /* Doxa 43.6 · notas salvas antes das pastas não têm o campo "folders"; sem ele, a lista em
+       Ferramentas quebrava a cada atualização (a nota era salva, mas nunca aparecia) e criar
+       pasta falhava em silêncio. */
+    if(!Array.isArray(db.folders))db.folders=[];
     loaded=true;paintMarks();renderList();
   }
   async function save(){try{await setStored(KEY,JSON.stringify(db))}catch(e){}paintMarks();renderList()}
@@ -205,7 +209,6 @@
       const n=byId(m.dataset.noteId);if(n)openView({book:n.book,chapter:n.chapter,verse:n.verse,label:n.label});
     };
     host.addEventListener('click',open,true);
-    host.addEventListener('touchstart',e=>{if(e.target.closest?.('.doxa-note-mark'))e.stopPropagation()},{capture:true,passive:true});
   }
 
   /* ---------- tela de Notas em Ferramentas ---------- */
