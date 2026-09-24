@@ -212,3 +212,25 @@ body:not([data-doxa30-theme="night"]) .verse-context::after{
    ============================================================ */
 body.doxa-home-open.hud-hidden .doxa30-bottom-wrap,
 body.doxa-home-open.hud-hidden #doxa30Bottom{transform:none!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+
+/* ============================================================
+   10. Linho — segunda textura
+   A trama foi centralizada em cinza médio: nos temas claros entra por "overlay" (fios em
+   relevo sobre a cor do tema); no Night, "screen" com a imagem escurecida, para acender só
+   os fios, como um tecido escuro sob luz baixa. Repete sem emenda (imagem costurada).
+   ============================================================ */
+body[data-doxa30-texture="linen"]::after{
+  content:'';position:fixed;inset:0;z-index:19;pointer-events:none;
+  background:url('../assets/linen_texture.webp') 0 0/256px 256px repeat;
+  mix-blend-mode:overlay;opacity:.55;
+}
+body[data-doxa30-theme="night"][data-doxa30-texture="linen"]::after{
+  mix-blend-mode:screen;filter:brightness(.42) contrast(1.9);opacity:.55;
+}
+body.doxa-home-open[data-doxa30-texture="linen"]::after{display:none}
+.doxa30-linen-preview{
+  background:var(--d30-bg) url('../assets/linen_texture.webp') 0 0/96px 96px repeat!important;
+  background-blend-mode:overlay!important;
+}
+body[data-doxa30-theme="night"] .doxa30-linen-preview{background-blend-mode:screen!important}
+.doxa30-paper-section .doxa30-paper-texture-toggle+.doxa30-paper-texture-toggle{margin-top:10px}
