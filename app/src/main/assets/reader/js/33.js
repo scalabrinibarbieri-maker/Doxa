@@ -7,11 +7,10 @@
      Tudo funciona offline: pacote local (window.TIMELINE), sem rede. */
   if(window.__doxa43TimelineInstalled)return;
   window.__doxa43TimelineInstalled=true;
-  if(typeof TIMELINE==='undefined'||!TIMELINE?.b)return;   // pacote não instalado ainda
 
   const $=id=>document.getElementById(id);
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const BOOK_IDX={};TIMELINE.b.forEach((b,i)=>BOOK_IDX[b]=i);
+  const BOOK_IDX={};if(typeof TIMELINE!=='undefined'&&TIMELINE?.b)TIMELINE.b.forEach((b,i)=>BOOK_IDX[b]=i);
 
   /* ---------- eras: convenção tradicional, consistente com as datas do pacote ---------- */
   const ERAS=[
@@ -177,10 +176,19 @@
   const pop=document.getElementById('verseActions');
   if(pop)pop.addEventListener('click',e=>{
     const t=e.target.closest('[data-va="timeline"]');if(!t)return;
-    const vEl=document.querySelector('#textBody .verse.verse-context')||document.querySelector('.verse-context');
-    const ref=refFromEl(vEl);
+    /* Doxa 43.3 · Este botão fica no mesmo menu desde que o pacote de dados foi criado, mas o
+       módulo inteiro parava aqui, sem sequer se cadastrar, quando o pacote ainda não tinha sido
+       baixado — nesse caso o toque escapava para o handler genérico do js/09.js, que abre
+       "Comparar Versos" para qualquer data-va que não reconheça. Agora o botão sempre responde,
+       e avisa quando falta baixar os dados em vez de abrir a ferramenta errada. */
     e.preventDefault();e.stopImmediatePropagation();
     try{window.DoxaVerseActions?.close()}catch(_){}
+    if(typeof TIMELINE==='undefined'||!TIMELINE?.b){
+      try{flash('Baixe os recursos offline em Ajustes para usar a Linha do Tempo.')}catch(_){}
+      return;
+    }
+    const vEl=document.querySelector('#textBody .verse.verse-context')||document.querySelector('.verse-context');
+    const ref=refFromEl(vEl);
     if(!ref)return;
     setTimeout(()=>render(ref),140);
   },true);
