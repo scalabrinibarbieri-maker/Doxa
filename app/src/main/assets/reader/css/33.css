@@ -58,3 +58,9 @@ body[data-doxa30-theme="night"] .doxa-tl-backdrop{background:rgba(0,0,0,.4)}
 .tl-adj strong{display:block;margin-top:6px;font:500 14px/1.35 Georgia,'Times New Roman',serif;color:var(--d30-text)}
 
 .tl-note{margin:22px 0 4px;font:italic 400 11.5px/1.5 Georgia,serif;color:var(--d30-muted)}
+
+/* ícone do cartão em Ferramentas: o SVG vinha sem traço definido e o navegador pintava
+   o círculo de preto sólido. Agora usa o mesmo traço dourado dos outros ícones. */
+#toolsTimelineStart .tool-card-icon svg{
+  width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
+}
