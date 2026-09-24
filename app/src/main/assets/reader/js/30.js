@@ -68,12 +68,20 @@
     if(working)return;working=true;
     try{
       // grego: troca a base remota pela local, quando disponível
+      /* Doxa 43.8 · O js/09.js busca uma base grega de terceiros pela internet e, quando ela
+         chega (um pouco depois, na PRIMEIRA abertura), escreve por cima do quadro grego.
+         Antes eu marcava o quadro como "já trocado" e não voltava mais nele, então essa escrita
+         tardia vencia e aparecia a versão antiga. Agora, sempre que o quadro tiver qualquer
+         linha que não seja nossa, ele é refeito a partir do pacote local. */
       const box=$('greekGuide');
-      if(box&&activeRef&&!box.dataset.doxa38){
-        const rows=greekRows(activeRef);
-        if(rows&&rows.length){
-          box.dataset.doxa38='1';box.className='word-guide';
-          box.innerHTML=rows.map(d=>'<div class="word-row ex-row" tabindex="0" role="button">'+rowHtml(d,true)+'</div>').join('');
+      if(box&&activeRef){
+        const temAlheio=box.classList.contains('study-loading')||box.querySelector('.word-row:not([data-local])')||!box.querySelector('[data-local]');
+        if(temAlheio){
+          const rows=greekRows(activeRef);
+          if(rows&&rows.length){
+            box.className='word-guide';
+            box.innerHTML=rows.map(d=>'<div class="word-row ex-row" data-local="1" tabindex="0" role="button">'+rowHtml(d,true)+'</div>').join('');
+          }
         }
       }
       body.querySelectorAll('.word-row:not(.ex-row)').forEach(row=>{
