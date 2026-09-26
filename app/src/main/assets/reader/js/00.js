@@ -84,6 +84,7 @@ window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sa
     addCss('doxa-v43-timeline-css','css/33.css');
     addCss('doxa-v45-textus-css','css/34.css');
     addCss('doxa-v47-nav-css','css/35.css');
+    addCss('doxa-v48-picker-css','css/36.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
