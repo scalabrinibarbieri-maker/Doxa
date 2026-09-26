@@ -72,12 +72,13 @@
 
 /* entrada em onda, linha por linha (só posição e opacidade) */
 .premium-picker.pk2.on .picker-stage-enter .pk-cell,
-.premium-picker.pk2 .picker-stage-enter .pk-cell{animation:pkIn .46s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 32ms + 110ms)}
-.picker-stage-enter .pk-sec h4{animation:pkIn .4s cubic-bezier(.22,1,.36,1) .08s both}
-@keyframes pkIn{from{opacity:0;transform:translate3d(0,14px,0)}}
+.premium-picker.pk2 .picker-stage-enter .pk-cell{animation:pkIn .3s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(min(var(--r,0),6) * 14ms)}
+/* Doxa 49.1: sem espera inicial e com a onda curta — a tela inteira fica pronta em ~0,4 s */
+.picker-stage-enter .pk-sec h4{animation:pkIn .26s cubic-bezier(.22,1,.36,1) both}
+@keyframes pkIn{from{opacity:0;transform:translate3d(0,10px,0)}}
 
 /* escolha: o cartão tocado pulsa antes de trocar de etapa */
-.pk-cell.picker-choice-pop{animation:pkPop .3s cubic-bezier(.34,1.6,.64,1)!important}
+.pk-cell.picker-choice-pop{animation:pkPop .18s cubic-bezier(.34,1.6,.64,1)!important}
 @keyframes pkPop{50%{transform:scale(1.08)}}
 
 /* tema claro: cartões um pouco mais claros */
