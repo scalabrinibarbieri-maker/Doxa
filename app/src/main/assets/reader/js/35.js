@@ -21,11 +21,19 @@
   function ensureGlow(){
     const b=bottom();if(!b||b.querySelector('.doxa30-nav-glow'))return;
     const g=document.createElement('span');g.className='doxa30-nav-glow';g.setAttribute('aria-hidden','true');b.prepend(g);
-    const sync=()=>{b.style.setProperty('--nav-i',activeIndex());
-      const a=b.querySelector('.doxa30-nav-item.active');
-      if(a&&!reduced()){a.classList.remove('nav-pop');void a.offsetWidth;a.classList.add('nav-pop')}};
+    /* Doxa 47.1 · Antes, o pulso do ícone mexia na "class" do botão, e o próprio observador
+       estava vigiando "class": cada pulso disparava outro pulso, sem fim, e o app congelava.
+       Agora só reage quando a aba ativa realmente muda, e o pulso é uma animação avulsa,
+       que não altera atributo nenhum. */
+    let last=activeIndex();
+    const sync=()=>{
+      const i=activeIndex();if(i===last)return;last=i;
+      b.style.setProperty('--nav-i',i);
+      const svg=b.querySelector('.doxa30-nav-item.active svg');
+      if(svg&&!reduced()&&svg.animate)svg.animate([{transform:'scale(1)'},{transform:'scale(1.2) translateY(-2px)'},{transform:'scale(1)'}],{duration:500,easing:'cubic-bezier(.34,1.6,.64,1)'});
+    };
     new MutationObserver(sync).observe(b,{attributes:true,subtree:true,attributeFilter:['class','data-active']});
-    b.style.setProperty('--nav-i',activeIndex());
+    b.style.setProperty('--nav-i',last);
   }
 
   /* ---------- troca de tela ---------- */
