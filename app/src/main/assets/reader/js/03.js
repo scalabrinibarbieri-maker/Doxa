@@ -48,7 +48,7 @@
   function pickerChoiceTransition(el,fn){
     if(!el){fn();return}
     el.classList.remove('picker-choice-pop');void el.offsetWidth;el.classList.add('picker-choice-pop');
-    setTimeout(fn,145);
+    setTimeout(fn,60);   // Doxa 49.1: era 145 ms de tela parada antes de trocar de etapa
   }
   function setPickerStage(stage,rerender=true){pickerStage=stage;pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===stage));pickerBack.disabled=stage==='book';if(rerender){renderPicker();animatePickerStage()}else updatePickerAction();}
   function openPicker(context='single'){
