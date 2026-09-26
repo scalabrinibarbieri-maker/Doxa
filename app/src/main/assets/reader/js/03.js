@@ -56,32 +56,30 @@
     pickerContext=(context==='A'||context==='B')?context:'single';
     if(pickerContext==='single'&&parallelOn)return;
     const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';
-    /* Doxa 48.1 · O seletor era redesenhado inteiro (66 livros) no mesmo instante em que
-       começava a subir, e a animação engasgava no meio. Agora: se nada mudou desde a última
-       abertura (mesma versão, mesmo livro, mesma etapa), reaproveita o que já está pronto;
-       se mudou, desenha primeiro e só começa a subir no quadro seguinte. */
-    const key=pickerContext+'|'+pickerMode()+'|'+pickerBook+'|'+pickerChapter;
-    const reuse=picker.dataset.doxaKey===key&&pickerStage==='book';
-    if(!reuse){setPickerStage('book',false);renderPicker();picker.dataset.doxaKey=key}
-    pickerSearch?.blur();picker.setAttribute('aria-hidden','false');
-    const go=()=>{picker.classList.add('on');backdrop.classList.add('on')};
-    if(reuse)go();else requestAnimationFrame(()=>requestAnimationFrame(go));
+    /* Doxa 49 · Seletor refeito: desenha primeiro (agora leve), e só começa a subir no quadro
+       seguinte, para a subida não disputar o celular com o desenho. */
+    setPickerStage('book',false);renderPicker();
+    pickerSearch?.blur();picker.setAttribute('aria-hidden','false');picker.classList.add('pk2');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{picker.classList.add('on');backdrop.classList.add('on')}));
   }
   function stageHeading(book){const m=pickerMode(),label=VERSION_META[m]?.label||m;if(pickerStage==='book')return['Escolher livro',label];if(pickerStage==='chapter')return[bookName(book),'Escolha o capítulo'];return[bookName(book)+' '+pickerChapter,'Escolha o versículo']}
   function renderPicker(filter=''){
-    if(picker)picker.dataset.doxaKey='';   // qualquer redesenho (busca, abas) invalida o reaproveitamento
-    const cp=pickerCorpus();pickerBook=Math.min(Math.max(0,pickerBook),cp.books.length-1);const b=cp.books[pickerBook];const hd=stageHeading(b);title.textContent=hd[0];subtitle.textContent=hd[1];pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===pickerStage));pickerBack.disabled=pickerStage==='book';
+    const cp=pickerCorpus();pickerBook=Math.min(Math.max(0,pickerBook),cp.books.length-1);const b=cp.books[pickerBook];const hd=stageHeading(b);title.textContent=hd[0];subtitle.textContent=hd[1];pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===pickerStage));pickerBack.disabled=pickerStage==='book';if(picker)picker.dataset.stage=pickerStage;
     if(pickerStage==='book'){
       const q=String(filter||'').trim().toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
       const books=cp.books.map((x,i)=>({x,i,name:bookName(x),abbr:PT_ABBR[x.book]||x.book})).filter(o=>!q||((o.name+' '+o.abbr+' '+o.x.book).toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q)));
-      body.innerHTML='<div class="picker-stage-title"><strong>Livros</strong><span>'+cp.books.length+' disponíveis</span></div><div class="picker-book-grid">'+books.map(o=>'<button type="button" class="picker-book-v4 '+(BOOK_GENRE[o.x.book]||'')+' '+(o.i===pickerBook?'on':'')+'" data-pb="'+o.i+'" title="'+esc(o.name)+'">'+esc(o.abbr)+'</button>').join('')+'</div>'+(books.length?'':'<div class="picker-empty">Nenhum livro encontrado.</div>');
+      const NT=new Set(['g-gospel','g-acts','g-paul','g-general','g-rev']);
+      const cell=(o,k)=>'<button type="button" class="pk-cell pk-book '+(BOOK_GENRE[o.x.book]||'')+(o.i===pickerBook?' on':'')+'" style="--r:'+Math.min(Math.floor(k/4),9)+'" data-pb="'+o.i+'" title="'+esc(o.name)+'"><b>'+esc(o.abbr)+'</b><small>'+esc(o.name)+'</small></button>';
+      const ot=books.filter(o=>!NT.has(BOOK_GENRE[o.x.book])),nt=books.filter(o=>NT.has(BOOK_GENRE[o.x.book]));
+      const sec=(t,list,off)=>list.length?'<section class="pk-sec"><h4>'+t+'<span>'+list.length+'</span></h4><div class="pk-grid pk-grid-books">'+list.map((o,k)=>cell(o,k+off)).join('')+'</div></section>':'';
+      body.innerHTML=sec('Antigo Testamento',ot,0)+sec('Novo Testamento',nt,ot.length?Math.min(ot.length,8):0)+(books.length?'':'<div class="picker-empty">Nenhum livro encontrado.</div>');
       body.querySelectorAll('[data-pb]').forEach(el=>el.onclick=()=>pickerChoiceTransition(el,()=>{pickerBook=+el.dataset.pb;const nb=cp.books[pickerBook];pickerChapter=Number(nb.chapters[0].chapter);pickerVerse=1;setPickerStage('chapter')}));updatePickerAction();animatePickerStage();return;
     }
     if(pickerStage==='chapter'){
-      const current=pickerCurrent();body.innerHTML='<div class="picker-stage-title"><strong>'+esc(bookName(b))+'</strong><span>'+b.chapters.length+' capítulos</span></div><div class="picker-number-grid">'+b.chapters.map(c=>'<button type="button" class="picker-num-v4 '+(pickerBook===current.b&&Number(c.chapter)===Number(current.c)?'on':'')+'" data-pc="'+c.chapter+'">'+c.chapter+'</button>').join('')+'</div>';
+      const current=pickerCurrent();body.innerHTML='<section class="pk-sec"><h4>'+esc(bookName(b))+'<span>'+b.chapters.length+' capítulos</span></h4><div class="pk-grid pk-grid-nums">'+b.chapters.map((c,k)=>'<button type="button" class="pk-cell pk-num'+(pickerBook===current.b&&Number(c.chapter)===Number(current.c)?' on':'')+'" style="--r:'+Math.min(Math.floor(k/6),9)+'" data-pc="'+c.chapter+'">'+c.chapter+'</button>').join('')+'</div></section>';
       body.querySelectorAll('[data-pc]').forEach(el=>el.onclick=()=>pickerChoiceTransition(el,()=>{pickerChapter=+el.dataset.pc;pickerVerse=1;setPickerStage('verse')}));updatePickerAction();animatePickerStage();return;
     }
-    const ch=b.chapters.find(c=>Number(c.chapter)===Number(pickerChapter))||b.chapters[0];pickerChapter=Number(ch.chapter);const current=pickerCurrent();body.innerHTML='<div class="picker-stage-title"><strong>'+esc(bookName(b))+' '+pickerChapter+'</strong><span>'+ch.verses.length+' versículos</span></div><div class="picker-number-grid">'+ch.verses.map(v=>'<button type="button" class="picker-num-v4 '+(Number(v.number)===Number(pickerVerse)?'on':'')+'" data-pv="'+v.number+'">'+v.number+'</button>').join('')+'</div>';
+    const ch=b.chapters.find(c=>Number(c.chapter)===Number(pickerChapter))||b.chapters[0];pickerChapter=Number(ch.chapter);const current=pickerCurrent();body.innerHTML='<section class="pk-sec"><h4>'+esc(bookName(b))+' '+pickerChapter+'<span>'+ch.verses.length+' versículos</span></h4><div class="pk-grid pk-grid-nums">'+ch.verses.map((v,k)=>'<button type="button" class="pk-cell pk-num'+(Number(v.number)===Number(pickerVerse)?' on':'')+'" style="--r:'+Math.min(Math.floor(k/6),9)+'" data-pv="'+v.number+'">'+v.number+'</button>').join('')+'</div></section>';
     body.querySelectorAll('[data-pv]').forEach(el=>el.onclick=()=>{pickerVerse=+el.dataset.pv;body.querySelectorAll('[data-pv]').forEach(x=>x.classList.toggle('on',x===el));el.classList.remove('picker-verse-pulse');void el.offsetWidth;el.classList.add('picker-verse-pulse');setTimeout(()=>el.classList.remove('picker-verse-pulse'),520);updatePickerAction()});updatePickerAction();animatePickerStage();
   }
   function chooseVerse(v){
