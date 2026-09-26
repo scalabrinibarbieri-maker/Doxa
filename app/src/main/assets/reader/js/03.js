@@ -55,10 +55,21 @@
     if(!picker)return;
     pickerContext=(context==='A'||context==='B')?context:'single';
     if(pickerContext==='single'&&parallelOn)return;
-    const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';setPickerStage('book',false);renderPicker();pickerSearch?.blur();picker.classList.add('on');backdrop.classList.add('on');picker.setAttribute('aria-hidden','false')
+    const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';
+    /* Doxa 48.1 · O seletor era redesenhado inteiro (66 livros) no mesmo instante em que
+       começava a subir, e a animação engasgava no meio. Agora: se nada mudou desde a última
+       abertura (mesma versão, mesmo livro, mesma etapa), reaproveita o que já está pronto;
+       se mudou, desenha primeiro e só começa a subir no quadro seguinte. */
+    const key=pickerContext+'|'+pickerMode()+'|'+pickerBook+'|'+pickerChapter;
+    const reuse=picker.dataset.doxaKey===key&&pickerStage==='book';
+    if(!reuse){setPickerStage('book',false);renderPicker();picker.dataset.doxaKey=key}
+    pickerSearch?.blur();picker.setAttribute('aria-hidden','false');
+    const go=()=>{picker.classList.add('on');backdrop.classList.add('on')};
+    if(reuse)go();else requestAnimationFrame(()=>requestAnimationFrame(go));
   }
   function stageHeading(book){const m=pickerMode(),label=VERSION_META[m]?.label||m;if(pickerStage==='book')return['Escolher livro',label];if(pickerStage==='chapter')return[bookName(book),'Escolha o capítulo'];return[bookName(book)+' '+pickerChapter,'Escolha o versículo']}
   function renderPicker(filter=''){
+    if(picker)picker.dataset.doxaKey='';   // qualquer redesenho (busca, abas) invalida o reaproveitamento
     const cp=pickerCorpus();pickerBook=Math.min(Math.max(0,pickerBook),cp.books.length-1);const b=cp.books[pickerBook];const hd=stageHeading(b);title.textContent=hd[0];subtitle.textContent=hd[1];pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===pickerStage));pickerBack.disabled=pickerStage==='book';
     if(pickerStage==='book'){
       const q=String(filter||'').trim().toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
