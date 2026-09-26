@@ -1,45 +1,89 @@
-/* Doxa 48 · Seletor de livros: abertura fluida e mais bonita
-   O travamento vinha da pintura: ao abrir, cada um dos 66 livros desenhava duas manchas
-   radiais por cima do fundo, e a folha subia enquanto isso acontecia — a animação se perdia.
-   Agora os livros são só o gradiente da própria cor (barato de pintar), a folha sobe numa
-   camada própria, e a grade entra logo em seguida, deslizando de leve. O livro selecionado
-   ganha um reflexo dourado que passa por ele de tempos em tempos. */
+/* Doxa 49 · Seletor de passagem refeito
+   Princípios de desempenho: cartões chapados (cor + borda, sem camadas de brilho),
+   a folha sobe numa camada própria, e tudo o que anima é só posição e opacidade —
+   o que o celular move sem redesenhar. */
 
-/* folha: camada própria, sobe com mola suave */
-.premium-picker{
-  will-change:transform;
-  transform:translate3d(0,104%,0)!important;
-  transition:transform .42s cubic-bezier(.16,1,.3,1)!important;
+/* ---------- folha ---------- */
+.premium-picker.pk2{
+  background:var(--d30-panel,#0d0a07)!important;
+  border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent)!important;
+  box-shadow:0 -24px 60px rgba(0,0,0,.35)!important;
+  will-change:transform;contain:layout paint;
+  transform:translate3d(0,102%,0)!important;
+  transition:transform .5s cubic-bezier(.16,1,.3,1)!important;
 }
-.premium-picker.on{transform:translate3d(0,0,0)!important}
-.premium-picker-backdrop{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transition:opacity .3s ease!important}
+.premium-picker.pk2.on{transform:translate3d(0,0,0)!important}
+.premium-picker-backdrop{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(0,0,0,.45)!important;transition:opacity .35s ease!important}
 
-/* grade entra depois da folha: um único elemento animado, não 66 */
-/* grade sem animação própria: tudo sobe junto, numa camada só */
-@keyframes doxaGridIn{from{opacity:0;transform:translate3d(0,18px,0) scale(.985)}}
-.picker-book-grid{contain:layout paint}
+/* ---------- topo ---------- */
+.pk2 .picker-v4-top{padding:6px 16px 2px!important}
+.pk2 #pickerTitle{font:600 22px/1.15 Georgia,'Times New Roman',serif!important;color:var(--d30-text,#f3ebe0)!important;letter-spacing:.01em}
+.pk2 #pickerSubtitle{font:700 10.5px/1 system-ui,sans-serif!important;letter-spacing:.16em!important;text-transform:uppercase;color:var(--d30-gold,#d9a25e)!important}
 
-/* livros não selecionados: só o gradiente da cor, sem manchas por cima */
-.picker-book-v4:not(.on)::before{display:none!important}
+/* abas com indicador que desliza */
+.pk2 .picker-v4-tabs{position:relative!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;margin:10px 16px 8px!important;padding:4px!important;border-radius:14px!important;
+  background:color-mix(in srgb,var(--d30-text,#fff) 5%,transparent)!important;border:0!important}
+.pk2 .picker-v4-tabs::after{content:'';position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);border-radius:11px;
+  background:color-mix(in srgb,var(--d30-gold,#d9a25e) 18%,var(--d30-panel,#0d0a07));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--d30-gold,#d9a25e) 38%,transparent);
+  transition:transform .42s cubic-bezier(.34,1.3,.64,1);z-index:0}
+.pk2[data-stage="chapter"] .picker-v4-tabs::after{transform:translateX(100%)}
+.pk2[data-stage="verse"] .picker-v4-tabs::after{transform:translateX(200%)}
+.pk2 .picker-v4-tabs button{position:relative;z-index:1;background:none!important;border:0!important;box-shadow:none!important;height:34px;
+  font:700 10.5px/1 system-ui,sans-serif!important;letter-spacing:.14em!important;color:var(--d30-muted,#9e9286)!important;transition:color .25s}
+.pk2 .picker-v4-tabs button.on{color:var(--d30-gold2,#f1c989)!important}
+.pk2 .picker-v4-tabs button::before,.pk2 .picker-v4-tabs button::after{display:none!important}
 
-/* livro selecionado: brilho dourado visível + reflexo que atravessa */
-.picker-book-v4.on{
-  box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--d30-gold2,#f1c989) 85%,transparent),0 0 22px color-mix(in srgb,var(--d30-gold,#d9a25e) 45%,transparent)!important;
-}
-.picker-book-v4.on::before{
-  display:block!important;inset:0!important;filter:none!important;opacity:1!important;z-index:0;
-  background:linear-gradient(105deg,transparent 30%,color-mix(in srgb,var(--d30-gold2,#f1c989) 38%,transparent) 48%,transparent 66%)!important;
-  transform:translate3d(-120%,0,0);
-  animation:doxaBookSheen 3.2s cubic-bezier(.45,0,.2,1) .5s infinite!important;
-}
-@keyframes doxaBookSheen{0%{transform:translate3d(-120%,0,0)}45%,100%{transform:translate3d(120%,0,0)}}
-.picker-book-v4{z-index:0}
-.picker-book-v4>*{position:relative;z-index:1}
+.pk2 .picker-v4-search{margin:0 16px 6px!important;border-radius:14px!important}
 
-/* toque: resposta imediata */
-.picker-book-v4:active{transform:scale(.94)!important;transition:transform .08s ease!important}
+/* ---------- conteúdo ---------- */
+.pk2 .picker-body{padding:4px 14px 18px!important}
+.pk-sec{margin:12px 0 4px}
+.pk-sec h4{display:flex;align-items:baseline;justify-content:space-between;margin:6px 4px 10px;
+  font:600 16px/1.2 Georgia,'Times New Roman',serif;color:var(--d30-text,#f3ebe0)}
+.pk-sec h4 span{font:700 10px/1 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--d30-muted,#9e9286)}
+.pk-grid{display:grid;gap:8px}
+.pk-grid-books{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pk-grid-nums{grid-template-columns:repeat(6,minmax(0,1fr))}
+
+/* cores dos grupos (as mesmas de antes, agora chapadas) */
+.pk-book{--pk-c:#c9a94a}
+.pk-book.g-law,.pk-book.g-gospel{--pk-c:#c9a94a}
+.pk-book.g-history,.pk-book.g-acts{--pk-c:#4fa3ad}
+.pk-book.g-wisdom,.pk-book.g-paul{--pk-c:#c07a55}
+.pk-book.g-major,.pk-book.g-general{--pk-c:#6ea763}
+.pk-book.g-minor,.pk-book.g-rev{--pk-c:#b85a6c}
+
+.pk-cell{position:relative;overflow:hidden;border-radius:14px;border:1px solid color-mix(in srgb,var(--pk-c,var(--d30-gold,#d9a25e)) 32%,transparent);
+  background:color-mix(in srgb,var(--pk-c,var(--d30-gold,#d9a25e)) 14%,var(--d30-panel,#0d0a07));color:var(--d30-text,#f3ebe0);
+  -webkit-tap-highlight-color:transparent;transition:transform .12s ease}
+.pk-book{min-height:64px;padding:8px 4px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.pk-book b{font:700 18px/1 Georgia,'Times New Roman',serif;color:color-mix(in srgb,var(--pk-c) 45%,var(--d30-text,#fff))}
+.pk-book small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 9.5px/1.1 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.pk-num{--pk-c:var(--d30-gold,#d9a25e);height:48px;font:600 17px/1 Georgia,'Times New Roman',serif}
+.pk-cell:active{transform:scale(.93)}
+
+/* selecionado: moldura dourada, halo e um reflexo que passa */
+.pk-cell.on{border:2px solid var(--d30-gold2,#f1c989);background:color-mix(in srgb,var(--d30-gold,#d9a25e) 24%,var(--d30-panel,#0d0a07));
+  box-shadow:0 0 18px color-mix(in srgb,var(--d30-gold,#d9a25e) 40%,transparent)}
+.pk-cell.on::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,236,190,.28) 48%,transparent 66%);
+  transform:translate3d(-120%,0,0);animation:pkSheen 3s cubic-bezier(.45,0,.2,1) .9s infinite}
+@keyframes pkSheen{0%{transform:translate3d(-120%,0,0)}40%,100%{transform:translate3d(120%,0,0)}}
+
+/* entrada em onda, linha por linha (só posição e opacidade) */
+.premium-picker.pk2.on .picker-stage-enter .pk-cell,
+.premium-picker.pk2 .picker-stage-enter .pk-cell{animation:pkIn .46s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 32ms + 110ms)}
+.picker-stage-enter .pk-sec h4{animation:pkIn .4s cubic-bezier(.22,1,.36,1) .08s both}
+@keyframes pkIn{from{opacity:0;transform:translate3d(0,14px,0)}}
+
+/* escolha: o cartão tocado pulsa antes de trocar de etapa */
+.pk-cell.picker-choice-pop{animation:pkPop .3s cubic-bezier(.34,1.6,.64,1)!important}
+@keyframes pkPop{50%{transform:scale(1.08)}}
+
+/* tema claro: cartões um pouco mais claros */
+body:not([data-doxa30-theme="night"]) .pk-cell{background:color-mix(in srgb,var(--pk-c,var(--d30-gold,#d9a25e)) 12%,var(--d30-bg,#fff))}
 
 @media(prefers-reduced-motion:reduce){
-  .premium-picker{transition:none!important}
-  .premium-picker.on .picker-book-grid,.picker-book-v4.on::before{animation:none!important}
+  .premium-picker.pk2{transition:none!important}
+  .pk-cell,.pk-sec h4,.pk-cell.on::after{animation:none!important}
 }
