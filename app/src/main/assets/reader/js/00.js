@@ -1,3 +1,46 @@
+/* Doxa 46 · Abertura mais leve
+   O hebraico com Strong (data/oshb_strong.js, ~17 MB) era lido inteiro antes da primeira tela,
+   mesmo por quem só lê em português — era o principal travamento ao abrir.
+   Agora a abertura usa uma "casca" vazia com a mesma forma, e o arquivo de verdade entra
+   depois: na hora, se a leitura estiver no hebraico; senão, alguns segundos depois de o app
+   estar na tela. Quando ele chega, a tela hebraica é redesenhada com as palavras clicáveis.
+   A casca é uma propriedade de window (não uma declaração), então o "const OSHB_STRONG" do
+   arquivo real pode ocupar o nome normalmente, sem conflito. */
+window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sam","2Sam","1Kgs","2Kgs","1Chr","2Chr","Ezra","Neh","Esth","Job","Ps","Prov","Eccl","Song","Isa","Jer","Lam","Ezek","Dan","Hos","Joel","Amos","Obad","Jonah","Mic","Nah","Hab","Zeph","Hag","Zech","Mal"],d:[],l:[],la:[],m:[],__stub:true};
+(()=>{
+  let state='idle';const waiting=[];
+  const redraw=()=>{
+    try{if(typeof mode!=='undefined'&&mode==='wlc'&&typeof renderReader==='function')renderReader()}catch(e){}
+    try{if(typeof parallelOn!=='undefined'&&parallelOn&&typeof renderParallelSide==='function'){renderParallelSide('A');renderParallelSide('B')}}catch(e){}
+  };
+  window.DoxaLoadOshb=function(cb){
+    if(state==='done'){cb&&cb();return}
+    if(cb)waiting.push(cb);
+    if(state==='loading')return;
+    state='loading';
+    const el=document.createElement('script');el.src='data/oshb_strong.js';el.async=true;
+    el.onload=()=>{state='done';redraw();waiting.splice(0).forEach(f=>{try{f()}catch(e){}})};
+    el.onerror=()=>{state='idle'};
+    (document.body||document.head).appendChild(el);
+  };
+  window.DoxaOshbReady=()=>state==='done';
+  const needNow=()=>{
+    try{if(typeof mode!=='undefined'&&mode==='wlc')return true}catch(e){}
+    try{if(typeof parallelOn!=='undefined'&&parallelOn&&typeof parallelState!=='undefined'&&(parallelState.A?.mode==='wlc'||parallelState.B?.mode==='wlc'))return true}catch(e){}
+    return false;
+  };
+  window.addEventListener('load',()=>{
+    // sempre que a leitura for para o hebraico, garante o arquivo
+    for(const name of ['renderReader','renderParallelSide']){
+      const orig=window[name];if(typeof orig!=='function'||orig.__doxaOshb)continue;
+      const w=function(){if(state!=='done'&&needNow())window.DoxaLoadOshb();return orig.apply(this,arguments)};
+      w.__doxaOshb=true;window[name]=w;
+    }
+    if(needNow())window.DoxaLoadOshb();
+    else{const later=()=>window.DoxaLoadOshb();setTimeout(()=>('requestIdleCallback' in window)?requestIdleCallback(later,{timeout:4000}):later(),2500)}
+  });
+})();
+
 (()=>{
   window.__doxaBootStarted=Date.now();
   document.documentElement.setAttribute('data-doxa-boot','1');
