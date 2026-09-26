@@ -49,16 +49,10 @@
     const from=activeIndex(),to=ORDER[btn.id];
     if(from===to||reduced())return;
     const dir=to>from?1:-1;
-    if(typeof document.startViewTransition==='function'){
-      e.preventDefault();e.stopImmediatePropagation();
-      document.documentElement.classList.toggle('nav-back',dir<0);
-      const t=document.startViewTransition(()=>{
-        const ev=new MouseEvent('click',{bubbles:true,cancelable:true});ev.__doxaNav=true;btn.dispatchEvent(ev);
-      });
-      t.finished.finally(()=>document.documentElement.classList.remove('nav-back'));
-    }else{
-      setTimeout(()=>fallbackEnter(dir),0);
-    }
+    /* Doxa 47.2 · As "View Transitions" do navegador deram falhas visuais neste WebView
+       (barra cortada, tela apagada). A troca agora é feita só com CSS: o Início desliza e se
+       apaga ao sair (css/35.css), e a tela que aparece entra do lado certo. */
+    setTimeout(()=>fallbackEnter(dir),0);
   },true);
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureGlow,{once:true});else ensureGlow();
