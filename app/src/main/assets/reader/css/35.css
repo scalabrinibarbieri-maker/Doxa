@@ -1,0 +1,42 @@
+/* Doxa 47 · Transição entre as abas principais */
+
+/* a barra não entra no "filme" da troca de tela: fica parada, e só o brilho anda */
+.doxa30-bottom-wrap{view-transition-name:doxa-nav}
+::view-transition-old(doxa-nav){display:none}
+::view-transition-new(doxa-nav){animation:none}
+
+::view-transition-old(root){animation:doxaNavOut .32s cubic-bezier(.4,0,.2,1) both}
+::view-transition-new(root){animation:doxaNavIn .46s cubic-bezier(.22,1,.36,1) both}
+html.nav-back::view-transition-old(root){animation-name:doxaNavOutBack}
+html.nav-back::view-transition-new(root){animation-name:doxaNavInBack}
+@keyframes doxaNavOut{to{opacity:0;transform:translate3d(-7%,0,0) scale(.985);filter:blur(5px)}}
+@keyframes doxaNavOutBack{to{opacity:0;transform:translate3d(7%,0,0) scale(.985);filter:blur(5px)}}
+@keyframes doxaNavIn{from{opacity:0;transform:translate3d(9%,0,0) scale(.985);filter:blur(6px)}}
+@keyframes doxaNavInBack{from{opacity:0;transform:translate3d(-9%,0,0) scale(.985);filter:blur(6px)}}
+
+/* aparelhos sem View Transitions: só a entrada */
+.doxa-tab-in{animation:doxaTabIn .46s cubic-bezier(.22,1,.36,1) both}
+@keyframes doxaTabIn{from{opacity:0;transform:translate3d(calc(var(--nav-dir,1) * 28px),0,0);filter:blur(5px)}}
+
+/* brilho dourado que desliza sob a aba ativa (substitui o brilho fixo de cada item) */
+.doxa30-nav-item.active::after{opacity:0!important}
+.doxa30-nav-glow{
+  position:absolute;top:50%;left:4px;width:calc((100% - 8px) / 4);height:66px;margin-top:-35px;border-radius:24px;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 55%,color-mix(in srgb,var(--d30-gold,#e08e2b) 24%,transparent),color-mix(in srgb,var(--d30-gold,#e08e2b) 7%,transparent) 50%,transparent 74%);
+  transform:translate3d(calc(var(--nav-i,1) * 100%),0,0);
+  transition:transform .55s cubic-bezier(.34,1.45,.64,1);
+}
+.doxa30-nav-item{z-index:1}
+/* filete de cima: agora vai até Início e Mais também, com o mesmo quique */
+.doxa30-bottom::before{transition:left .55s cubic-bezier(.34,1.45,.64,1)!important}
+.doxa30-bottom[data-active='home']::before{left:0}
+.doxa30-bottom[data-active='more']::before{left:75%}
+/* pulso do ícone */
+.doxa30-nav-item.nav-pop svg{animation:doxaNavPop .5s cubic-bezier(.34,1.6,.64,1)}
+@keyframes doxaNavPop{0%{transform:scale(1)}40%{transform:scale(1.2) translateY(-2px)}100%{transform:scale(1)}}
+
+@media(prefers-reduced-motion:reduce){
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+  .doxa30-nav-glow,.doxa30-bottom::before{transition:none!important}
+  .doxa30-nav-item.nav-pop svg,.doxa-tab-in{animation:none}
+}
