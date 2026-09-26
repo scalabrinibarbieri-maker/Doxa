@@ -1,0 +1,45 @@
+/* Doxa 48 · Seletor de livros: abertura fluida e mais bonita
+   O travamento vinha da pintura: ao abrir, cada um dos 66 livros desenhava duas manchas
+   radiais por cima do fundo, e a folha subia enquanto isso acontecia — a animação se perdia.
+   Agora os livros são só o gradiente da própria cor (barato de pintar), a folha sobe numa
+   camada própria, e a grade entra logo em seguida, deslizando de leve. O livro selecionado
+   ganha um reflexo dourado que passa por ele de tempos em tempos. */
+
+/* folha: camada própria, sobe com mola suave */
+.premium-picker{
+  will-change:transform;
+  transform:translate3d(0,104%,0)!important;
+  transition:transform .46s cubic-bezier(.22,1,.36,1)!important;
+}
+.premium-picker.on{transform:translate3d(0,0,0)!important}
+.premium-picker-backdrop{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transition:opacity .3s ease!important}
+
+/* grade entra depois da folha: um único elemento animado, não 66 */
+.premium-picker.on .picker-book-grid{animation:doxaGridIn .5s cubic-bezier(.22,1,.36,1) .12s both}
+@keyframes doxaGridIn{from{opacity:0;transform:translate3d(0,18px,0) scale(.985)}}
+.picker-book-grid{contain:layout paint}
+
+/* livros não selecionados: só o gradiente da cor, sem manchas por cima */
+.picker-book-v4:not(.on)::before{display:none!important}
+
+/* livro selecionado: brilho dourado visível + reflexo que atravessa */
+.picker-book-v4.on{
+  box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--d30-gold2,#f1c989) 85%,transparent),0 0 22px color-mix(in srgb,var(--d30-gold,#d9a25e) 45%,transparent)!important;
+}
+.picker-book-v4.on::before{
+  display:block!important;inset:0!important;filter:none!important;opacity:1!important;z-index:0;
+  background:linear-gradient(105deg,transparent 30%,color-mix(in srgb,var(--d30-gold2,#f1c989) 38%,transparent) 48%,transparent 66%)!important;
+  transform:translate3d(-120%,0,0);
+  animation:doxaBookSheen 3.2s cubic-bezier(.45,0,.2,1) .5s infinite!important;
+}
+@keyframes doxaBookSheen{0%{transform:translate3d(-120%,0,0)}45%,100%{transform:translate3d(120%,0,0)}}
+.picker-book-v4{z-index:0}
+.picker-book-v4>*{position:relative;z-index:1}
+
+/* toque: resposta imediata */
+.picker-book-v4:active{transform:scale(.94)!important;transition:transform .08s ease!important}
+
+@media(prefers-reduced-motion:reduce){
+  .premium-picker{transition:none!important}
+  .premium-picker.on .picker-book-grid,.picker-book-v4.on::before{animation:none!important}
+}
