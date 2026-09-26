@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.*;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.*;
@@ -52,6 +53,7 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        requestHighestRefreshRate();
         try { RemotePackageInstaller.recover(getFilesDir()); }
         catch (IOException error) { message("O Doxa não conseguiu concluir uma recuperação de recursos."); }
         if (RemotePackageInstaller.isReady(getFilesDir())) showReader(true);
@@ -698,6 +700,25 @@ public final class MainActivity extends Activity {
             return new String(out.toByteArray(), StandardCharsets.UTF_8);
         }
     }
+    /* Doxa 46: pede ao sistema a maior taxa de atualização que a tela oferece (90/120 Hz),
+       na mesma resolução. Sem isso, muitos aparelhos deixam apps "comuns" em 60 Hz. */
+    private void requestHighestRefreshRate() {
+        try {
+            Display display = Build.VERSION.SDK_INT >= 30 ? getDisplay() : getWindowManager().getDefaultDisplay();
+            if (display == null) return;
+            Display.Mode current = display.getMode();
+            Display.Mode best = current;
+            for (Display.Mode m : display.getSupportedModes()) {
+                if (m.getPhysicalWidth() == current.getPhysicalWidth()
+                        && m.getPhysicalHeight() == current.getPhysicalHeight()
+                        && m.getRefreshRate() > best.getRefreshRate()) best = m;
+            }
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.preferredDisplayModeId = best.getModeId();
+            getWindow().setAttributes(lp);
+        } catch (Exception ignored) { }
+    }
+
     private void openExternal(Uri uri) {
         if (!"https".equals(uri.getScheme()) && !"http".equals(uri.getScheme())) return;
         try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
