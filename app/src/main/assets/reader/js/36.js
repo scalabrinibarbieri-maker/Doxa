@@ -427,7 +427,7 @@
     const sheet=document.getElementById('doxaToolSheet');
     const backdrop=document.getElementById('doxaToolBackdrop');
     document.getElementById('doxaToolTitle').textContent=ref.label;
-    document.getElementById('doxaToolSubtitle').textContent='Disponível em qualquer versão bíblica desta referência';
+    document.getElementById('doxaToolSubtitle').textContent='Todo o conteúdo da Ferramenta Doxa é autoral, e portanto, protegido por direitos autorais.';
     document.getElementById('doxaToolBody').innerHTML=`
       <div class="doxa-tool-loading">
         <i></i>
