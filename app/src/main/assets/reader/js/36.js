@@ -8,6 +8,92 @@
   const CACHE_MS=5*60*1000;
   const cache=new Map();
 
+  /* =========================================================
+     Cache offline persistente · Ferramenta Doxa
+     - Cada capítulo carregado com sucesso fica salvo no aparelho.
+     - Em segundo plano, o app sincroniza o catálogo inteiro das
+       notas publicadas para que até capítulos nunca abertos antes
+       possam funcionar durante uma indisponibilidade do Supabase.
+     - IndexedDB é a cópia principal; localStorage é apenas fallback.
+     ========================================================= */
+  const OFFLINE_DB='doxa-ferramenta-cache-v1';
+  const OFFLINE_STORE='cache';
+  const OFFLINE_CATALOG='catalog:v1';
+  const OFFLINE_CATALOG_MS=24*60*60*1000;
+  let offlineDbPromise=null;
+  let catalogSyncPromise=null;
+
+  function openOfflineDb(){
+    if(offlineDbPromise)return offlineDbPromise;
+    offlineDbPromise=new Promise((resolve,reject)=>{
+      if(!('indexedDB' in window)){
+        reject(new Error('IndexedDB indisponível'));
+        return;
+      }
+      const req=indexedDB.open(OFFLINE_DB,1);
+      req.onupgradeneeded=()=>{
+        const db=req.result;
+        if(!db.objectStoreNames.contains(OFFLINE_STORE)){
+          db.createObjectStore(OFFLINE_STORE,{keyPath:'key'});
+        }
+      };
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(req.error||new Error('Falha ao abrir cache offline'));
+    });
+    return offlineDbPromise;
+  }
+
+  async function offlineGet(key){
+    try{
+      const db=await openOfflineDb();
+      return await new Promise((resolve,reject)=>{
+        const tx=db.transaction(OFFLINE_STORE,'readonly');
+        const req=tx.objectStore(OFFLINE_STORE).get(key);
+        req.onsuccess=()=>resolve(req.result||null);
+        req.onerror=()=>reject(req.error);
+      });
+    }catch(e){
+      try{
+        const raw=localStorage.getItem('doxa:tool-offline:'+key);
+        return raw?JSON.parse(raw):null;
+      }catch(_){return null}
+    }
+  }
+
+  async function offlinePut(key,value){
+    const row={key,at:Date.now(),...value};
+    try{
+      const db=await openOfflineDb();
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(OFFLINE_STORE,'readwrite');
+        tx.objectStore(OFFLINE_STORE).put(row);
+        tx.oncomplete=()=>resolve();
+        tx.onerror=()=>reject(tx.error);
+      });
+      return true;
+    }catch(e){
+      try{
+        localStorage.setItem('doxa:tool-offline:'+key,JSON.stringify(row));
+        return true;
+      }catch(_){return false}
+    }
+  }
+
+  const chapterOfflineKey=(book,chapter)=>'chapter:'+String(book)+':'+Number(chapter);
+
+  async function offlineChapter(book,chapter){
+    const saved=await offlineGet(chapterOfflineKey(book,chapter));
+    if(saved&&Array.isArray(saved.rows))return saved.rows;
+
+    // Segunda camada: catálogo completo sincronizado em segundo plano.
+    const catalog=await offlineGet(OFFLINE_CATALOG);
+    if(!catalog||!Array.isArray(catalog.rows))return null;
+    return catalog.rows.filter(x=>
+      String(x.livro)===String(book) &&
+      Number(x.capitulo)===Number(chapter)
+    );
+  }
+
   const TYPE_LABELS={
     nota:'Nota Doxa',
     idioma_original:'Idioma original',
@@ -364,41 +450,24 @@
     return Array.isArray(data)?data:[];
   }
 
-  async function fetchChapter(book,chapter,force=false){
-    const key=String(book)+':'+Number(chapter);
-    const old=cache.get(key);
-    if(!force&&old&&Date.now()-old.at<CACHE_MS)return old.rows;
-
-    const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,versoes,ordem,criado_em';
-
-    // Referência principal (estrutura antiga, continua funcionando).
-    const mainPath='/rest/v1/ferramenta_doxa?select='+fields+
-      '&livro=eq.'+encodeURIComponent(book)+
-      '&capitulo=eq.'+Number(chapter)+
-      '&publicado=eq.true&order=ordem.asc,criado_em.asc';
-
-    // Referências adicionais da mesma nota.
-    const linkedSelect='livro,capitulo,versiculo_inicio,versiculo_fim,conteudo:ferramenta_doxa!inner('+fields+',publicado)';
-    const linkedPath='/rest/v1/ferramenta_doxa_referencias?select='+encodeURIComponent(linkedSelect)+
-      '&livro=eq.'+encodeURIComponent(book)+
-      '&capitulo=eq.'+Number(chapter)+
-      '&conteudo.publicado=eq.true';
-
-    const [mainResult,linkedResult]=await Promise.allSettled([
-      sbRows(mainPath),
-      sbRows(linkedPath)
-    ]);
-
-    if(mainResult.status==='rejected'&&linkedResult.status==='rejected'){
-      throw mainResult.reason||linkedResult.reason||new Error('Falha ao consultar a Ferramenta Doxa');
+  async function sbAll(path,pageSize=1000){
+    const out=[];
+    for(let offset=0;offset<1000000;offset+=pageSize){
+      const sep=path.includes('?')?'&':'?';
+      const page=await sbRows(path+sep+'limit='+pageSize+'&offset='+offset);
+      out.push(...page);
+      if(page.length<pageSize)break;
     }
+    return out;
+  }
 
+  function mergeRows(mainRows,linkedRows){
     const merged=[];
 
-    if(mainResult.status==='fulfilled')merged.push(...mainResult.value);
+    if(Array.isArray(mainRows))merged.push(...mainRows);
 
-    if(linkedResult.status==='fulfilled'){
-      for(const refRow of linkedResult.value){
+    if(Array.isArray(linkedRows)){
+      for(const refRow of linkedRows){
         const content=refRow?.conteudo;
         if(!content)continue;
         merged.push({
@@ -415,7 +484,7 @@
     for(const row of merged){
       const start=Number(row.versiculo_inicio);
       const end=row.versiculo_fim==null?start:Number(row.versiculo_fim);
-      const signature=String(row.id)+'|'+start+'|'+end;
+      const signature=String(row.id)+'|'+String(row.livro)+'|'+Number(row.capitulo)+'|'+start+'|'+end;
       if(seen.has(signature))continue;
       seen.add(signature);
       rows.push(row);
@@ -427,8 +496,92 @@
       return String(a.criado_em||'').localeCompare(String(b.criado_em||''));
     });
 
-    cache.set(key,{at:Date.now(),rows});
     return rows;
+  }
+
+  async function syncOfflineCatalog(force=false){
+    if(catalogSyncPromise&&!force)return catalogSyncPromise;
+
+    catalogSyncPromise=(async()=>{
+      try{
+        const saved=await offlineGet(OFFLINE_CATALOG);
+        if(!force&&saved&&Date.now()-Number(saved.at||0)<OFFLINE_CATALOG_MS){
+          return saved.rows||[];
+        }
+
+        if(typeof navigator!=='undefined'&&navigator.onLine===false){
+          return saved?.rows||[];
+        }
+
+        const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,versoes,ordem,criado_em';
+        const mainPath='/rest/v1/ferramenta_doxa?select='+fields+
+          '&publicado=eq.true&order=ordem.asc,criado_em.asc';
+
+        const linkedSelect='livro,capitulo,versiculo_inicio,versiculo_fim,conteudo:ferramenta_doxa!inner('+fields+',publicado)';
+        const linkedPath='/rest/v1/ferramenta_doxa_referencias?select='+encodeURIComponent(linkedSelect)+
+          '&conteudo.publicado=eq.true&order=criado_em.asc';
+
+        const [mainRows,linkedRows]=await Promise.all([
+          sbAll(mainPath),
+          sbAll(linkedPath)
+        ]);
+
+        const rows=mergeRows(mainRows,linkedRows);
+        await offlinePut(OFFLINE_CATALOG,{rows});
+        return rows;
+      }catch(e){
+        const saved=await offlineGet(OFFLINE_CATALOG);
+        return saved?.rows||[];
+      }finally{
+        setTimeout(()=>{catalogSyncPromise=null},0);
+      }
+    })();
+
+    return catalogSyncPromise;
+  }
+
+  async function fetchChapter(book,chapter,force=false){
+    const key=String(book)+':'+Number(chapter);
+    const old=cache.get(key);
+    if(!force&&old&&Date.now()-old.at<CACHE_MS)return old.rows;
+
+    const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,versoes,ordem,criado_em';
+
+    // Referência principal.
+    const mainPath='/rest/v1/ferramenta_doxa?select='+fields+
+      '&livro=eq.'+encodeURIComponent(book)+
+      '&capitulo=eq.'+Number(chapter)+
+      '&publicado=eq.true&order=ordem.asc,criado_em.asc';
+
+    // Referências adicionais da mesma nota.
+    const linkedSelect='livro,capitulo,versiculo_inicio,versiculo_fim,conteudo:ferramenta_doxa!inner('+fields+',publicado)';
+    const linkedPath='/rest/v1/ferramenta_doxa_referencias?select='+encodeURIComponent(linkedSelect)+
+      '&livro=eq.'+encodeURIComponent(book)+
+      '&capitulo=eq.'+Number(chapter)+
+      '&conteudo.publicado=eq.true';
+
+    try{
+      const [mainRows,linkedRows]=await Promise.all([
+        sbRows(mainPath),
+        sbRows(linkedPath)
+      ]);
+
+      const rows=mergeRows(mainRows,linkedRows);
+      cache.set(key,{at:Date.now(),rows});
+
+      // Persistência não bloqueia a interface.
+      offlinePut(chapterOfflineKey(book,chapter),{rows}).catch(()=>{});
+
+      return rows;
+    }catch(e){
+      // Supabase/Internet indisponível: usa a última cópia salva.
+      const saved=await offlineChapter(book,chapter);
+      if(Array.isArray(saved)){
+        cache.set(key,{at:Date.now(),rows:saved,offline:true});
+        return saved;
+      }
+      throw e;
+    }
   }
 
   function rowsForRef(rows,ref){
@@ -438,6 +591,8 @@
       const end=x.versiculo_fim==null?start:Number(x.versiculo_fim);
       if(!(ref.verse>=start&&ref.verse<=end))continue;
       if(Array.isArray(x.versoes)&&x.versoes.length&&!x.versoes.includes(ref.sourceMode))continue;
+
+      // Se referências se cruzarem, mostra a mesma nota apenas uma vez.
       if(seen.has(x.id))continue;
       seen.add(x.id);
       out.push(x);
@@ -542,6 +697,11 @@
 
     setTimeout(removeLegacyContextButton,350);
     setTimeout(()=>{installModeButton();syncToolCardVisibility()},500);
+
+    // Faz uma cópia completa das notas em segundo plano sem atrasar a abertura do leitor.
+    setTimeout(()=>{
+      try{syncOfflineCatalog(false)}catch(e){}
+    },1400);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
@@ -551,6 +711,7 @@
     open,
     close,
     clearCache(){cache.clear()},
+    syncOffline(force=true){return syncOfflineCatalog(!!force)},
     setMode(on){setDoxaMode(!!on,false)},
     toggleMode(){setDoxaMode(!doxaModeActive,false);return doxaModeActive},
     isModeActive(){return doxaModeActive},

@@ -3,6 +3,7 @@
   let db={items:[],folders:[]},activeId=null,draft=null,highlightMode=false,dragging=false,dragAnchor=null,dragCurrent=null,activeFolder='all';
   let holdTimer=null,holdVerse=null,holdX=0,holdY=0,suppressClickUntil=0;
   let scrollLocked=false,prevBodyOverflow='',prevHtmlOverflow='';
+  let highlightNib=null,nibRaf=0,nibX=0,nibY=0,nibVisible=false;
   const sheet=document.getElementById('hlSheet'),back=document.getElementById('hlBackdrop'),colors=document.getElementById('hlColors'),noteEditor=document.getElementById('hlNoteEditor'),noteText=document.getElementById('hlNoteText');
   const mainBody=document.getElementById('textBody'),modeBar=document.getElementById('hlModeBar');
   function ensureFolderModal(){
@@ -28,15 +29,122 @@
   function lockScroll(){if(scrollLocked)return;scrollLocked=true;window.__doxaHighlightDragLock=true;prevBodyOverflow=document.body.style.overflow;prevHtmlOverflow=document.documentElement.style.overflow;document.body.style.overflow='hidden';document.documentElement.style.overflow='hidden'}
   function unlockScroll(){if(!scrollLocked){window.__doxaHighlightDragLock=false;return}scrollLocked=false;window.__doxaHighlightDragLock=false;document.body.style.overflow=prevBodyOverflow;document.documentElement.style.overflow=prevHtmlOverflow}
   document.addEventListener('touchmove',e=>{if(window.__doxaHighlightDragLock&&e.touches?.length===1)e.preventDefault()},{capture:true,passive:false});
+  function ensureHighlightNib(){
+    if(highlightNib&&document.body.contains(highlightNib))return highlightNib;
+    highlightNib=document.createElement('div');
+    highlightNib.className='doxa-highlight-nib';
+    highlightNib.setAttribute('aria-hidden','true');
+    highlightNib.innerHTML='<i></i><b></b>';
+    document.body.appendChild(highlightNib);
+    return highlightNib;
+  }
+  function positionHighlightNib(x,y,color='yellow'){
+    const nib=ensureHighlightNib();
+    nibX=x;nibY=y;nib.dataset.color=color||'yellow';
+    if(nibRaf)return;
+    nibRaf=requestAnimationFrame(()=>{
+      nibRaf=0;
+      nib.style.transform='translate3d('+(nibX-15)+'px,'+(nibY-31)+'px,0) rotate(-17deg)';
+    });
+  }
+  function showHighlightNib(x,y,color='yellow'){
+    const nib=ensureHighlightNib();
+    nibVisible=true;positionHighlightNib(x,y,color);
+    nib.classList.add('on');
+  }
+  function hideHighlightNib(){
+    nibVisible=false;
+    highlightNib?.classList.remove('on');
+  }
+  function animatePaintWord(w,reverse=false){
+    if(!w)return;
+    w.dataset.hlDir=reverse?'reverse':'forward';
+    w.classList.remove('hl-paint-in');
+    void w.offsetWidth;
+    w.classList.add('hl-paint-in');
+    clearTimeout(w.__doxaPaintTimer);
+    w.__doxaPaintTimer=setTimeout(()=>w.classList.remove('hl-paint-in'),280);
+  }
   function chapterKey(){if(mode==='hyper')return'hyper:'+hIdx;const p=pos(),cp=corpus(),b=cp.books[p.b];return mode+':'+b.book+':'+p.c}
   function meta(word){if(mode==='hyper')return{mode:'hyper',book:'Gen',chapter:hyperRange(hIdx).sc,hIdx,verse:null,ref:currentRef()};const p=pos(),cp=corpus(),b=cp.books[p.b],v=Number(word?.dataset?.hlVerse||word?.closest('.verse')?.dataset?.v||String(word?.closest('.verse')?.id||'').replace(/^v/,'')||focusVerse||1);return{mode,book:b.book,chapter:Number(p.c),hIdx:0,verse:v||1,ref:bookName(b)+' '+p.c+(v?':'+v:'')}}
   function words(){return[...mainBody.querySelectorAll('.hl-word[data-hli]')].sort((a,b)=>Number(a.dataset.hli)-Number(b.dataset.hli))}
-  function tokenize(){if(!mainBody)return;if(mode==='wlc'){let i=0;mainBody.querySelectorAll('.oshb-word').forEach(w=>{w.classList.add('hl-word');w.dataset.hli=String(i++);w.dataset.hlVerse=w.dataset.v||''});return}if(mainBody.querySelector('.hl-word[data-hli]'))return;const walker=document.createTreeWalker(mainBody,NodeFilter.SHOW_TEXT,{acceptNode(n){const p=n.parentElement;if(!p||!n.nodeValue||!/[A-Za-zÀ-ÿ0-9]/.test(n.nodeValue))return NodeFilter.FILTER_REJECT;if(p.closest('sup,button,textarea,input,select,.note-pin,.xref-marker,.oshb-punct,.hl-word'))return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);const re=/([A-Za-zÀ-ÿ0-9]+(?:[’'\-][A-Za-zÀ-ÿ0-9]+)*)/g;for(const n of nodes){const txt=n.nodeValue,parts=txt.split(re);if(parts.length<2)continue;const f=document.createDocumentFragment();for(const part of parts){if(!part)continue;if(re.test(part)){re.lastIndex=0;const s=document.createElement('span');s.className='hl-word';s.textContent=part;f.appendChild(s)}else{re.lastIndex=0;f.appendChild(document.createTextNode(part))}}n.replaceWith(f)}let i=0;mainBody.querySelectorAll('.hl-word').forEach(w=>{w.dataset.hli=String(i++);const v=w.closest('.verse');w.dataset.hlVerse=v?(v.dataset.v||String(v.id||'').replace(/^v/,'')):''})}
-  function apply(){if(!mainBody)return;tokenize();mainBody.querySelectorAll('.hl-word').forEach(w=>{w.removeAttribute('data-hl-color');w.removeAttribute('data-hl-id')});mainBody.querySelectorAll('.note-pin').forEach(n=>n.remove());const ws=words();for(const r of db.items.filter(x=>x.key===chapterKey())){const lo=Math.min(r.start,r.end),hi=Math.max(r.start,r.end);for(let i=lo;i<=hi;i++){const w=ws[i];if(!w)continue;w.dataset.hlColor=r.color||'yellow';w.dataset.hlId=r.id}if(r.note&&r.note.trim()&&ws[lo]){const pin=document.createElement('span');pin.className='note-pin';pin.dataset.noteId=r.id;pin.textContent='✎';ws[lo].before(pin)}}}
-  function clearPreview(){mainBody.querySelectorAll('.hl-word').forEach(w=>{w.classList.remove('hl-selecting');w.removeAttribute('data-hl-preview')})}
-  function paint(a,b,color='yellow'){if(!a||!b)return;const A=Number(a.dataset.hli),B=Number(b.dataset.hli),lo=Math.min(A,B),hi=Math.max(A,B);words().forEach(w=>{const i=Number(w.dataset.hli),on=i>=lo&&i<=hi;w.classList.toggle('hl-selecting',on);if(on)w.dataset.hlPreview=color;else w.removeAttribute('data-hl-preview')})}
+  function tokenize(){
+    if(!mainBody)return;
+    if(mode==='wlc'){
+      let i=0;
+      mainBody.querySelectorAll('.oshb-word').forEach(w=>{
+        w.classList.add('hl-word');
+        w.dataset.hli=String(i++);
+        w.dataset.hlVerse=w.dataset.v||'';
+      });
+      return;
+    }
+    if(mainBody.querySelector('.hl-word[data-hli]'))return;
+
+    const walker=document.createTreeWalker(mainBody,NodeFilter.SHOW_TEXT,{acceptNode(n){
+      const p=n.parentElement;
+      if(!p||!n.nodeValue||!/[A-Za-zÀ-ÿ0-9]/.test(n.nodeValue))return NodeFilter.FILTER_REJECT;
+      if(p.closest('sup,button,textarea,input,select,.note-pin,.xref-marker,.oshb-punct,.hl-word'))return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }}),nodes=[];
+    while(walker.nextNode())nodes.push(walker.currentNode);
+
+    const wordRe=/[A-Za-zÀ-ÿ0-9]+(?:[’'\-][A-Za-zÀ-ÿ0-9]+)*/g;
+    for(const n of nodes){
+      const txt=n.nodeValue,matches=[...txt.matchAll(wordRe)];
+      if(!matches.length)continue;
+      const f=document.createDocumentFragment();
+      const lead=txt.slice(0,matches[0].index);
+      if(lead)f.appendChild(document.createTextNode(lead));
+
+      matches.forEach((m,j)=>{
+        const start=m.index;
+        const end=j+1<matches.length?matches[j+1].index:txt.length;
+        const span=document.createElement('span');
+        span.className='hl-word';
+        /*
+          Cada índice continua representando UMA palavra, então os grifos já
+          salvos permanecem compatíveis. A diferença é que o span leva junto
+          a pontuação e os espaços até a próxima palavra: o marca-texto passa
+          de forma contínua por "palavra, espaço palavra".
+        */
+        span.textContent=txt.slice(start,end);
+        f.appendChild(span);
+      });
+      n.replaceWith(f);
+    }
+
+    let i=0;
+    mainBody.querySelectorAll('.hl-word').forEach(w=>{
+      w.dataset.hli=String(i++);
+      const v=w.closest('.verse');
+      w.dataset.hlVerse=v?(v.dataset.v||String(v.id||'').replace(/^v/,'')):'';
+    });
+  }
+  function apply(){if(!mainBody)return;tokenize();mainBody.querySelectorAll('.hl-word').forEach(w=>{w.removeAttribute('data-hl-color');w.removeAttribute('data-hl-id');w.classList.remove('hl-run-start','hl-run-end','hl-active-edge')});mainBody.querySelectorAll('.note-pin').forEach(n=>n.remove());const ws=words();for(const r of db.items.filter(x=>x.key===chapterKey())){const lo=Math.min(r.start,r.end),hi=Math.max(r.start,r.end);for(let i=lo;i<=hi;i++){const w=ws[i];if(!w)continue;w.dataset.hlColor=r.color||'yellow';w.dataset.hlId=r.id}ws[lo]?.classList.add('hl-run-start');ws[hi]?.classList.add('hl-run-end');if(r.note&&r.note.trim()&&ws[lo]){const pin=document.createElement('span');pin.className='note-pin';pin.dataset.noteId=r.id;pin.textContent='✎';ws[lo].before(pin)}}}
+  function clearPreview(){mainBody.querySelectorAll('.hl-word').forEach(w=>{w.classList.remove('hl-selecting','hl-paint-in','hl-run-start','hl-run-end','hl-active-edge');w.removeAttribute('data-hl-preview');w.removeAttribute('data-hl-dir')})}
+  function paint(a,b,color='yellow'){
+    if(!a||!b)return;
+    const A=Number(a.dataset.hli),B=Number(b.dataset.hli),lo=Math.min(A,B),hi=Math.max(A,B),reverse=B<A,ws=words();
+    ws.forEach(w=>{
+      const i=Number(w.dataset.hli),on=i>=lo&&i<=hi,was=w.classList.contains('hl-selecting');
+      w.classList.toggle('hl-selecting',on);
+      w.classList.remove('hl-run-start','hl-run-end','hl-active-edge');
+      if(on){
+        w.dataset.hlPreview=color;
+        if(!was)animatePaintWord(w,reverse);
+      }else{
+        w.removeAttribute('data-hl-preview');
+        w.removeAttribute('data-hl-dir');
+        w.classList.remove('hl-paint-in');
+      }
+    });
+    ws[lo]?.classList.add('hl-run-start');
+    ws[hi]?.classList.add('hl-run-end');
+    (reverse?ws[lo]:ws[hi])?.classList.add('hl-active-edge');
+  }
   function rec(id){return db.items.find(x=>x.id===id)||null}
-  function makeDraft(a,b){const A=Number(a.dataset.hli),B=Number(b.dataset.hli),lo=Math.min(A,B),hi=Math.max(A,B),ws=words(),m=meta(ws[lo]);return{key:chapterKey(),start:lo,end:hi,color:'yellow',note:'',folderId:null,excerpt:ws.slice(lo,hi+1).map(w=>w.textContent).join(' ').replace(/\s+/g,' ').trim().slice(0,220),createdAt:Date.now(),...m}}
+  function makeDraft(a,b){const A=Number(a.dataset.hli),B=Number(b.dataset.hli),lo=Math.min(A,B),hi=Math.max(A,B),ws=words(),m=meta(ws[lo]);return{key:chapterKey(),start:lo,end:hi,color:'yellow',note:'',folderId:null,excerpt:ws.slice(lo,hi+1).map(w=>w.textContent).join('').replace(/\s+/g,' ').trim().slice(0,220),createdAt:Date.now(),...m}}
   async function save(){norm();await setStored(KEY,JSON.stringify(db));renderNotes();renderLibrary()}
   async function load(){try{const raw=await getStored(KEY),x=raw?JSON.parse(raw):null;if(x&&Array.isArray(x.items))db=x}catch(e){}norm();apply();renderNotes();renderLibrary()}
   function openSheet(r,isDraft=false,showNote=false){if(!r)return;draft=isDraft?r:null;activeId=isDraft?null:r.id;document.getElementById('hlSheetRef').textContent=r.ref+' · '+(r.excerpt||'');colors.querySelectorAll('.hl-color').forEach(b=>b.classList.toggle('on',b.dataset.color===(r.color||'yellow')));document.getElementById('hlNoteBtn').hidden=isDraft;noteText.value=r.note||'';noteEditor.hidden=!showNote||isDraft;document.getElementById('hlComplete').textContent=isDraft?'Concluir':'Fechar';document.getElementById('hlRemove').textContent=isDraft?'Apagar':'Excluir grifo';sheet.classList.add('on');back.classList.add('on');sheet.setAttribute('aria-hidden','false')}
@@ -47,12 +155,12 @@
   document.getElementById('hlNoteBtn').onclick=()=>{const r=rec(activeId);if(!r)return;noteText.value=r.note||'';noteEditor.hidden=false;setTimeout(()=>noteText.focus(),50)};
   document.getElementById('hlNoteSave').onclick=async()=>{const r=rec(activeId);if(!r)return;r.note=noteText.value.trim();await save();apply();openSheet(r,false,false)};
   document.getElementById('hlSheetClose').onclick=()=>closeSheet(true);back.onclick=()=>closeSheet(true);
-  function setMode(on){highlightMode=!!on;document.body.classList.toggle('doxa-highlight-mode',highlightMode);modeBar.hidden=!highlightMode;if(highlightMode){tokenize();openPanel('ler');setTimeout(()=>document.body.classList.add('hud-hidden'),60)}else{dragging=false;unlockScroll();clearPreview();if(draft){draft=null;closeSheet()}document.body.classList.remove('hud-hidden')}}
+  function setMode(on){highlightMode=!!on;document.body.classList.toggle('doxa-highlight-mode',highlightMode);modeBar.hidden=!highlightMode;if(highlightMode){tokenize();ensureHighlightNib();openPanel('ler');setTimeout(()=>document.body.classList.add('hud-hidden'),60)}else{dragging=false;hideHighlightNib();unlockScroll();clearPreview();if(draft){draft=null;closeSheet()}document.body.classList.remove('hud-hidden')}}
   document.getElementById('toolsHighlightStart').onclick=()=>setMode(true);document.getElementById('hlModeExit').onclick=()=>setMode(false);
-  mainBody.addEventListener('touchstart',e=>{if(!highlightMode||parallelOn||e.touches.length!==1)return;tokenize();const t=e.touches[0];let w=e.target.closest('.hl-word')||document.elementFromPoint(t.clientX,t.clientY)?.closest?.('.hl-word');if(!w||!mainBody.contains(w))return;e.preventDefault();e.stopPropagation();dragging=true;dragAnchor=dragCurrent=w;lockScroll();paint(w,w,'yellow');try{navigator.vibrate?.(8)}catch(_){}},{passive:false});
-  mainBody.addEventListener('touchmove',e=>{if(!highlightMode||!dragging||e.touches.length!==1)return;e.preventDefault();e.stopPropagation();const t=e.touches[0],w=document.elementFromPoint(t.clientX,t.clientY)?.closest?.('.hl-word');if(w&&mainBody.contains(w)&&w!==dragCurrent){dragCurrent=w;paint(dragAnchor,dragCurrent,draft?.color||'yellow')}},{passive:false});
-  mainBody.addEventListener('touchend',e=>{if(!highlightMode||!dragging)return;e.preventDefault();e.stopPropagation();dragging=false;unlockScroll();if(!dragAnchor)return;draft=makeDraft(dragAnchor,dragCurrent||dragAnchor);paint(dragAnchor,dragCurrent||dragAnchor,draft.color);dragAnchor=dragCurrent=null;openSheet(draft,true,false)},{passive:false});
-  mainBody.addEventListener('touchcancel',()=>{dragging=false;unlockScroll();dragAnchor=dragCurrent=null;clearPreview();apply()});
+  mainBody.addEventListener('touchstart',e=>{if(!highlightMode||parallelOn||e.touches.length!==1)return;tokenize();const t=e.touches[0];let w=e.target.closest('.hl-word')||document.elementFromPoint(t.clientX,t.clientY)?.closest?.('.hl-word');if(!w||!mainBody.contains(w))return;e.preventDefault();e.stopPropagation();dragging=true;dragAnchor=dragCurrent=w;lockScroll();showHighlightNib(t.clientX,t.clientY,'yellow');paint(w,w,'yellow');try{navigator.vibrate?.(8)}catch(_){}},{passive:false});
+  mainBody.addEventListener('touchmove',e=>{if(!highlightMode||!dragging||e.touches.length!==1)return;e.preventDefault();e.stopPropagation();const t=e.touches[0],color=draft?.color||'yellow';positionHighlightNib(t.clientX,t.clientY,color);const w=document.elementFromPoint(t.clientX,t.clientY)?.closest?.('.hl-word');if(w&&mainBody.contains(w)&&w!==dragCurrent){dragCurrent=w;paint(dragAnchor,dragCurrent,color)}},{passive:false});
+  mainBody.addEventListener('touchend',e=>{if(!highlightMode||!dragging)return;e.preventDefault();e.stopPropagation();dragging=false;hideHighlightNib();unlockScroll();if(!dragAnchor)return;draft=makeDraft(dragAnchor,dragCurrent||dragAnchor);paint(dragAnchor,dragCurrent||dragAnchor,draft.color);dragAnchor=dragCurrent=null;openSheet(draft,true,false)},{passive:false});
+  mainBody.addEventListener('touchcancel',()=>{dragging=false;hideHighlightNib();unlockScroll();dragAnchor=dragCurrent=null;clearPreview();apply()});
   // long press only opens verse tools
   mainBody.addEventListener('touchstart',e=>{if(highlightMode||parallelOn||e.touches.length!==1)return;const v=e.target.closest('.verse');if(!v)return;const t=e.touches[0];holdVerse=v;holdX=t.clientX;holdY=t.clientY;clearTimeout(holdTimer);holdTimer=setTimeout(()=>{if(!holdVerse)return;window.__doxaLongPressActive=true;suppressClickUntil=Date.now()+1000;holdVerse.classList.add('verse-held');try{navigator.vibrate?.(18)}catch(_){};window.DoxaVerseActions?.open(holdVerse)},430)},{passive:true});
   mainBody.addEventListener('touchmove',e=>{if(highlightMode||!holdVerse||e.touches.length!==1)return;const t=e.touches[0];if(Math.hypot(t.clientX-holdX,t.clientY-holdY)>13){clearTimeout(holdTimer);holdVerse=null}},{passive:true});
