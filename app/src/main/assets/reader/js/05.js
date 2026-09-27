@@ -141,23 +141,56 @@
     bottom.querySelectorAll('.doxa30-nav-item').forEach(x=>x.classList.remove('active'));
     document.getElementById('doxa30Bible')?.classList.add('active');
   }
+  function finishChapterTransition(host){
+    host.style.transition='';
+    host.style.transform='';
+    host.style.opacity='';
+    host.style.transformOrigin='';
+    host.style.willChange='';
+    chapterAnimating=false;
+    window.__doxaChapterSwipeAnimating=false;
+    lastScrollY=window.scrollY;
+    pendingScrollY=lastScrollY;
+    document.body.classList.remove('chapter-animating');
+    lockBibleTab();
+  }
   move=function(delta){
     if(chapterAnimating||parallelOn||!document.getElementById('p-ler')?.classList.contains('on')||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return baseMoveV7.apply(this,arguments);
     const host=document.getElementById('singleReader');if(!host)return baseMoveV7.apply(this,arguments);
-    lockBibleTab();chapterAnimating=true;window.__doxaChapterSwipeAnimating=true;document.body.classList.add('chapter-animating');
-    const forward=Number(delta)>0,outX=forward?'-16%':'16%',inX=forward?'16%':'-16%';
-    host.style.transition='transform 145ms cubic-bezier(.38,.02,.65,.98),opacity 120ms ease';
-    host.style.transform='translate3d('+outX+',0,0)';host.style.opacity='0';
+
+    lockBibleTab();
+    chapterAnimating=true;
+    window.__doxaChapterSwipeAnimating=true;
+    document.body.classList.add('chapter-animating');
+
+    const forward=Number(delta)>0;
+    const outX=forward?'-10%':'10%';
+    const inX=forward?'8.5%':'-8.5%';
+    const outOrigin=forward?'66% 18%':'34% 18%';
+    const inOrigin=forward?'34% 18%':'66% 18%';
+
+    host.style.willChange='transform,opacity';
+    host.style.transformOrigin=outOrigin;
+    host.style.transition='transform 170ms cubic-bezier(.42,0,.34,.99), opacity 145ms ease-out';
+    host.style.transform='translate3d('+outX+',0,0) scale(.986)';
+    host.style.opacity='.15';
+
     setTimeout(()=>{
       baseMoveV7(delta);
-      host.style.transition='none';host.style.transform='translate3d('+inX+',0,0)';host.style.opacity='0';
+
+      host.style.transition='none';
+      host.style.transformOrigin=inOrigin;
+      host.style.transform='translate3d('+inX+',10px,0) scale(1.012)';
+      host.style.opacity='0';
       void host.offsetWidth;
+
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        host.style.transition='transform 210ms cubic-bezier(.18,.78,.20,1),opacity 175ms ease';
-        host.style.transform='translate3d(0,0,0)';host.style.opacity='1';
-        setTimeout(()=>{host.style.transition='';host.style.transform='';host.style.opacity='';chapterAnimating=false;window.__doxaChapterSwipeAnimating=false;lastScrollY=window.scrollY;pendingScrollY=lastScrollY;document.body.classList.remove('chapter-animating');lockBibleTab()},225);
+        host.style.transition='transform 340ms cubic-bezier(.16,.92,.19,1), opacity 235ms ease-out';
+        host.style.transform='translate3d(0,0,0) scale(1)';
+        host.style.opacity='1';
+        setTimeout(()=>finishChapterTransition(host),350);
       }));
-    },145);
+    },170);
   };
 
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&readerPanel()&&window.scrollY<7)showHud(true)});
