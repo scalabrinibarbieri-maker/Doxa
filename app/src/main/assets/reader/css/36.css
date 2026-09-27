@@ -1,30 +1,25 @@
-/* Doxa 49 · Seletor de passagem refeito
-   Princípios de desempenho: cartões chapados (cor + borda, sem camadas de brilho),
-   a folha sobe numa camada própria, e tudo o que anima é só posição e opacidade —
-   o que o celular move sem redesenhar. */
+/* Doxa 50 · Seletor de livros por categoria
+   Regras de fluidez: 1) a folha é opaca e só se move (transform); 2) o conteúdo é desenhado
+   ANTES de a folha começar a subir, e fica invisível durante a subida; 3) toda animação é só
+   posição/escala/opacidade; 4) nada de camadas de desfoque ou brilho em massa. */
 
 /* ---------- folha ---------- */
 .premium-picker.pk2{
   background:var(--d30-panel,#0d0a07)!important;
   border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent)!important;
   box-shadow:0 -24px 60px rgba(0,0,0,.35)!important;
-  /* Doxa 49.2 · A folha nasce já no lugar (só invisível e 28px abaixo) em vez de vir de fora
-     da tela: assim o Android já a desenhou quando ela aparece, e some o clarão branco de
-     partes ainda não pintadas. Fechada, fica sem toque e escondida depois do fim da saída. */
-  will-change:transform,opacity;
-  transform:translate3d(0,28px,0)!important;opacity:0!important;pointer-events:none!important;visibility:hidden;
-  transition:transform .42s cubic-bezier(.16,1,.3,1),opacity .26s ease,visibility 0s linear .42s!important;
+  will-change:transform;
+  transform:translate3d(0,100%,0)!important;opacity:1!important;pointer-events:none!important;visibility:hidden;
+  transition:transform .46s cubic-bezier(.16,1,.3,1),visibility 0s linear .46s!important;
 }
-.premium-picker.pk2.on{transform:translate3d(0,0,0)!important;opacity:1!important;pointer-events:auto!important;visibility:visible;
-  transition:transform .42s cubic-bezier(.16,1,.3,1),opacity .22s ease,visibility 0s!important}
+.premium-picker.pk2.on{transform:translate3d(0,0,0)!important;pointer-events:auto!important;visibility:visible;
+  transition:transform .46s cubic-bezier(.16,1,.3,1),visibility 0s!important}
 .premium-picker-backdrop{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(0,0,0,.45)!important;transition:opacity .35s ease!important}
 
 /* ---------- topo ---------- */
 .pk2 .picker-v4-top{padding:6px 16px 2px!important}
-.pk2 #pickerTitle{font:600 22px/1.15 Georgia,'Times New Roman',serif!important;color:var(--d30-text,#f3ebe0)!important;letter-spacing:.01em}
+.pk2 #pickerTitle{font:600 22px/1.15 Georgia,'Times New Roman',serif!important;color:var(--d30-text,#f3ebe0)!important}
 .pk2 #pickerSubtitle{font:700 10.5px/1 system-ui,sans-serif!important;letter-spacing:.16em!important;text-transform:uppercase;color:var(--d30-gold,#d9a25e)!important}
-
-/* abas com indicador que desliza */
 .pk2 .picker-v4-tabs{position:relative!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;margin:10px 16px 8px!important;padding:4px!important;border-radius:14px!important;
   background:color-mix(in srgb,var(--d30-text,#fff) 5%,transparent)!important;border:0!important}
 .pk2 .picker-v4-tabs::after{content:'';position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);border-radius:11px;
@@ -36,59 +31,68 @@
   font:700 10.5px/1 system-ui,sans-serif!important;letter-spacing:.14em!important;color:var(--d30-muted,#9e9286)!important;transition:color .25s}
 .pk2 .picker-v4-tabs button.on{color:var(--d30-gold2,#f1c989)!important}
 .pk2 .picker-v4-tabs button::before,.pk2 .picker-v4-tabs button::after{display:none!important}
-
 .pk2 .picker-v4-search{margin:0 16px 6px!important;border-radius:14px!important}
+.pk2 .picker-body{padding:0 14px 22px!important}
 
-/* ---------- conteúdo ---------- */
-.pk2 .picker-body{padding:4px 14px 18px!important}
-.pk-sec{margin:12px 0 4px}
-.pk-sec h4{display:flex;align-items:baseline;justify-content:space-between;margin:6px 4px 10px;
-  font:600 16px/1.2 Georgia,'Times New Roman',serif;color:var(--d30-text,#f3ebe0)}
-.pk-sec h4 span{font:700 10px/1 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--d30-muted,#9e9286)}
+/* ---------- atalhos de categoria (fixos no topo da lista) ---------- */
+.pk-chips{position:sticky;top:0;z-index:3;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:8px 14px 10px;
+  background:linear-gradient(var(--d30-panel,#0d0a07) 80%,transparent)}
+.pk-chips::-webkit-scrollbar{display:none}
+.pk-chips button{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 13px;border-radius:999px;
+  border:1px solid color-mix(in srgb,var(--pk-c) 30%,transparent);background:color-mix(in srgb,var(--pk-c) 8%,transparent);
+  color:var(--d30-muted,#9e9286);font:600 12px/1 system-ui,sans-serif;-webkit-tap-highlight-color:transparent;
+  transition:background-color .28s ease,color .28s ease,border-color .28s ease,transform .12s ease}
+.pk-chips button i{width:8px;height:8px;border-radius:50%;background:var(--pk-c);transition:transform .35s cubic-bezier(.34,1.6,.64,1)}
+.pk-chips button.on{background:color-mix(in srgb,var(--pk-c) 24%,transparent);border-color:var(--pk-c);color:var(--d30-text,#f3ebe0)}
+.pk-chips button.on i{transform:scale(1.35)}
+.pk-chips button:active{transform:scale(.94)}
+
+/* ---------- categorias ---------- */
+.pk-sec{margin:14px 0 6px;scroll-margin-top:56px}
+.pk-sec h4{display:flex;align-items:center;gap:9px;margin:6px 4px 10px;font:600 16px/1.2 Georgia,'Times New Roman',serif;color:var(--d30-text,#f3ebe0)}
+.pk-sec h4 i{width:10px;height:10px;border-radius:3px;background:var(--pk-c);box-shadow:0 0 10px color-mix(in srgb,var(--pk-c) 55%,transparent);transform:rotate(45deg)}
+.pk-sec h4 span{margin-left:auto;font:700 10px/1 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--d30-muted,#9e9286)}
 .pk-grid{display:grid;gap:8px}
 .pk-grid-books{grid-template-columns:repeat(4,minmax(0,1fr))}
 .pk-grid-nums{grid-template-columns:repeat(6,minmax(0,1fr))}
 
-/* cores dos grupos (as mesmas de antes, agora chapadas) */
-.pk-book{--pk-c:#c9a94a}
-.pk-book.g-law,.pk-book.g-gospel{--pk-c:#c9a94a}
-.pk-book.g-history,.pk-book.g-acts{--pk-c:#4fa3ad}
-.pk-book.g-wisdom,.pk-book.g-paul{--pk-c:#c07a55}
-.pk-book.g-major,.pk-book.g-general{--pk-c:#6ea763}
-.pk-book.g-minor,.pk-book.g-rev{--pk-c:#b85a6c}
-
+/* ---------- cartões ---------- */
 .pk-cell{position:relative;overflow:hidden;border-radius:14px;border:1px solid color-mix(in srgb,var(--pk-c,var(--d30-gold,#d9a25e)) 32%,transparent);
   background:color-mix(in srgb,var(--pk-c,var(--d30-gold,#d9a25e)) 14%,var(--d30-panel,#0d0a07));color:var(--d30-text,#f3ebe0);
-  -webkit-tap-highlight-color:transparent;transition:transform .12s ease}
+  -webkit-tap-highlight-color:transparent;transition:transform .14s cubic-bezier(.34,1.6,.64,1)}
+body:not([data-doxa30-theme="night"]) .pk-cell{background:color-mix(in srgb,var(--pk-c,var(--d30-gold,#d9a25e)) 12%,var(--d30-bg,#fff))}
 .pk-book{min-height:64px;padding:8px 4px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .pk-book b{font:700 18px/1 Georgia,'Times New Roman',serif;color:color-mix(in srgb,var(--pk-c) 45%,var(--d30-text,#fff))}
 .pk-book small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 9.5px/1.1 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
 .pk-num{--pk-c:var(--d30-gold,#d9a25e);height:48px;font:600 17px/1 Georgia,'Times New Roman',serif}
 .pk-cell:active{transform:scale(.93)}
 
-/* selecionado: moldura dourada, halo e um reflexo que passa */
+/* livro atual: moldura dourada, halo e reflexo que atravessa */
 .pk-cell.on{border:2px solid var(--d30-gold2,#f1c989);background:color-mix(in srgb,var(--d30-gold,#d9a25e) 24%,var(--d30-panel,#0d0a07));
   box-shadow:0 0 18px color-mix(in srgb,var(--d30-gold,#d9a25e) 40%,transparent)}
 .pk-cell.on::after{content:'';position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(105deg,transparent 30%,rgba(255,236,190,.28) 48%,transparent 66%);
-  transform:translate3d(-120%,0,0);animation:pkSheen 3s cubic-bezier(.45,0,.2,1) .9s infinite}
+  transform:translate3d(-120%,0,0);animation:pkSheen 3s cubic-bezier(.45,0,.2,1) 1.1s infinite}
 @keyframes pkSheen{0%{transform:translate3d(-120%,0,0)}40%,100%{transform:translate3d(120%,0,0)}}
 
-/* entrada em onda, linha por linha (só posição e opacidade) */
-.premium-picker.pk2.on .picker-stage-enter .pk-cell,
-.premium-picker.pk2 .picker-stage-enter .pk-cell{animation:pkIn .3s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(min(var(--r,0),6) * 14ms)}
-/* Doxa 49.1: sem espera inicial e com a onda curta — a tela inteira fica pronta em ~0,4 s */
-.picker-stage-enter .pk-sec h4{animation:pkIn .26s cubic-bezier(.22,1,.36,1) both}
-@keyframes pkIn{from{opacity:0;transform:translate3d(0,10px,0)}}
+/* ---------- entradas ----------
+   troca de etapa: onda curta, categoria a categoria;
+   abertura: a mesma onda, começando quando a folha está chegando */
+.premium-picker.pk2 .picker-stage-enter .pk-cell{animation:pkIn .36s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 26ms)}
+.premium-picker.pk2 .picker-stage-enter .pk-sec h4,.premium-picker.pk2 .picker-stage-enter .pk-chips{animation:pkIn .32s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 26ms)}
+.premium-picker.pk2 .pk-open .pk-cell{animation-delay:calc(var(--r,0) * 34ms + 200ms)}
+.premium-picker.pk2 .pk-open .pk-sec h4{animation-delay:calc(var(--r,0) * 34ms + 170ms)}
+.premium-picker.pk2 .pk-open .pk-chips{animation-delay:.14s}
+@keyframes pkIn{from{opacity:0;transform:translate3d(0,12px,0) scale(.97)}}
 
-/* escolha: o cartão tocado pulsa antes de trocar de etapa */
-.pk-cell.picker-choice-pop{animation:pkPop .18s cubic-bezier(.34,1.6,.64,1)!important}
-@keyframes pkPop{50%{transform:scale(1.08)}}
-
-/* tema claro: cartões um pouco mais claros */
-body:not([data-doxa30-theme="night"]) .pk-cell{background:color-mix(in srgb,var(--pk-c,var(--d30-gold,#d9a25e)) 12%,var(--d30-bg,#fff))}
+/* escolha: o cartão tocado cresce e solta uma onda dourada ao redor */
+.pk-cell.picker-choice-pop{animation:pkPick .3s cubic-bezier(.34,1.6,.64,1)!important;z-index:2;overflow:visible}
+@keyframes pkPick{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--d30-gold2,#f1c989) 70%,transparent)}
+  45%{transform:scale(1.08)}
+  100%{transform:scale(1);box-shadow:0 0 0 14px transparent}}
 
 @media(prefers-reduced-motion:reduce){
   .premium-picker.pk2{transition:none!important}
-  .pk-cell,.pk-sec h4,.pk-cell.on::after{animation:none!important}
+  .pk-cell,.pk-sec h4,.pk-chips,.pk-cell.on::after{animation:none!important}
 }
