@@ -34,11 +34,94 @@
 }
 
 /* Doxa 50.2 · Na leitura paralela, a barra inferior aparecia vazia (fundo e filete dourado
-   visíveis, ícones e nomes sumidos). Esta regra garante os itens visíveis e por cima de
-   qualquer camada interna da barra, e o brilho deslizante sempre fora da grade. */
+   visíveis, ícones e nomes sumidos). */
 .doxa30-nav-glow{position:absolute!important;pointer-events:none!important}
 body.parallel-mode .doxa30-bottom{grid-template-columns:repeat(4,1fr)!important}
 body.parallel-mode .doxa30-nav-item{display:flex!important;visibility:visible!important;opacity:1!important;
   transform:none!important;position:relative!important;z-index:2!important;color:var(--d30-muted,#9e9286)!important}
 body.parallel-mode .doxa30-nav-item.active{color:var(--d30-gold2,#f1c989)!important}
 body.parallel-mode .doxa30-nav-item svg,body.parallel-mode .doxa30-nav-item span{visibility:visible!important;opacity:1!important}
+
+/* ============================================================
+   Doxa 50.4 · Paralela fluida no Android WebView
+   Não muda interface nem recursos. Só evita operações caras de composição.
+   ============================================================ */
+
+/* O fundo da barra já é praticamente opaco (97–99%).
+   No WebView, o backdrop-filter criava uma camada GPU que em alguns aparelhos
+   apagava/lavava os filhos da barra e ainda precisava recalcular blur enquanto
+   o texto bíblico rolava por trás. Sem o blur, o desenho visual permanece igual,
+   mas ícones/textos voltam a ser compostos normalmente. */
+body.parallel-mode .doxa30-bottom{
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  isolation:isolate;
+}
+body.parallel-mode .doxa30-bottom-wrap{
+  will-change:transform!important;
+}
+
+/* Garante que os quatro itens sejam pintados na própria camada da barra. */
+body.parallel-mode .doxa30-nav-item{
+  visibility:visible!important;
+  opacity:1!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+body.parallel-mode .doxa30-nav-item svg{
+  visibility:visible!important;
+  opacity:1!important;
+  color:inherit!important;
+}
+body.parallel-mode .doxa30-nav-item:not(#doxa30More) svg{
+  fill:none!important;
+  stroke:currentColor!important;
+}
+body.parallel-mode #doxa30More svg{
+  fill:currentColor!important;
+  stroke:none!important;
+}
+body.parallel-mode .doxa30-nav-item span{
+  visibility:visible!important;
+  opacity:1!important;
+  color:inherit!important;
+}
+
+/* Durante a rolagem sincronizada, cada painel recorta sua própria pintura.
+   Isso impede que uma mudança em A invalide a tela inteira e vice-versa. */
+body.parallel-mode .parallel-text{
+  contain:paint;
+}
+
+/* A animação de capítulo mantém o mesmo deslocamento de 10px,
+   mas não anima a opacidade de um bloco enorme de texto.
+   Transform fica no compositor e não força blend do capítulo inteiro. */
+.parallel-pane.parallel-page-forward .parallel-text,
+.parallel-pane.parallel-page-back .parallel-text{
+  will-change:transform;
+}
+@keyframes doxaParallelForward{
+  0%{transform:translate3d(10px,0,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+@keyframes doxaParallelBack{
+  0%{transform:translate3d(-10px,0,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+
+/* HUD imersivo: max-height/padding continuam chegando aos mesmos estados,
+   mas deixam de ser interpolados quadro a quadro. Isso remove dezenas de
+   reflows durante o sumir/aparecer; opacity/transform continuam suaves. */
+body.parallel-mode .parallel-appbar{
+  transition:opacity .18s ease,transform .22s cubic-bezier(.22,.72,.18,1)!important;
+}
+body.parallel-mode .parallel-pane-head{
+  transition:opacity .17s ease!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.parallel-mode .parallel-appbar,
+  body.parallel-mode .parallel-pane-head{transition:none!important}
+}
