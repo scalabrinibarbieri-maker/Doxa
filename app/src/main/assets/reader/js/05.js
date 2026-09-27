@@ -19,12 +19,13 @@
     if(save)savePrefs();
   }
   document.querySelectorAll('[data-reader-font]').forEach(b=>b.addEventListener('click',()=>{prefs.readerFont=b.dataset.readerFont;applyReaderFont(true)}));
-  // load() is asynchronous and started by the base reader; apply once now and once after it has completed.
   applyReaderFont(false);setTimeout(()=>applyReaderFont(false),350);setTimeout(()=>applyReaderFont(false),1100);
 
   /* ===== HUD imersivo ===== */
   let hudHidden=false,lastScrollY=window.scrollY,touchStartY=null,touchLastY=null,touchStartX=null,touchMoved=false,lastTouchHudTap=0,touchInteractive=false,touchAxis=null;
+  let hudScrollRaf=0,pendingScrollY=lastScrollY;
   const readerPanel=()=>document.getElementById('p-ler')?.classList.contains('on');
+  const hudIsHidden=()=>hudHidden||document.body.classList.contains('hud-hidden');
   function overlaysOpen(){return document.body.classList.contains('doxa-home-open')||!!document.querySelector('.strong-sheet.on,.premium-picker.on,.xref-sheet.on,.version-picker.on,.verse-actions.on,.study-screen.on,.v20-adv.on,.doxa-bread-sheet.on,.doxa-home-reader.on,.doxa-note-sheet.on,.doxa-share-sheet.on,.doxa-bread-milestone.on') }
   function syncParallelHud(){
     try{
@@ -33,18 +34,22 @@
     }catch(e){}
   }
   function showHud(force=false){
+    const hidden=hudIsHidden();
+    if(!force&&!hidden)return;
     if(!force&&(!readerPanel()||overlaysOpen()))return;
+    if(!hidden){if(force)syncParallelHud();return}
     hudHidden=false;document.body.classList.remove('hud-hidden');syncParallelHud();
   }
   function hideHud(){
+    if(hudIsHidden()){hudHidden=true;return}
     if(!readerPanel()||overlaysOpen()||(!parallelOn&&window.scrollY<8))return;
     hudHidden=true;document.body.classList.add('hud-hidden');
   }
   function toggleHudTap(){
     if(!readerPanel()||overlaysOpen())return;
-    if(hudHidden)showHud(true);else{hudHidden=true;document.body.classList.add('hud-hidden')}
+    if(hudIsHidden())showHud(true);else{hudHidden=true;document.body.classList.add('hud-hidden')}
   }
-  // Initial state is intentionally visible.
+
   showHud(true);
   const touchHost=document.getElementById('p-ler');
   touchHost?.addEventListener('touchstart',e=>{
@@ -57,15 +62,11 @@
     const dy=t.clientY-touchLastY,dx=t.clientX-(touchStartX??t.clientX);
     const totalY=t.clientY-(touchStartY??t.clientY);
     if(Math.abs(totalY)>7||Math.abs(dx)>7)touchMoved=true;
-    /* Trava o eixo do gesto nos primeiros ~12px. Ao arrastar para o próximo capítulo o polegar
-       costuma subir um pouco no começo do arco; antes, esse início já escondia a barra
-       (e só no sentido "avançar", porque voltando o arco desce e a barra só era mostrada). */
     if(!touchAxis&&(Math.abs(dx)>12||Math.abs(totalY)>12))touchAxis=Math.abs(dx)>Math.abs(totalY)?'x':'y';
     if(touchAxis!=='y')return;
-    // O mesmo gesto imersivo vale para leitura normal e paralela.
     if(Math.abs(dy)>5&&Math.abs(totalY)>Math.abs(dx)*.72){
-      if(dy<0)hideHud();
-      else if(dy>0)showHud();
+      if(dy<0){if(!hudIsHidden())hideHud()}
+      else if(dy>0){if(hudIsHidden())showHud()}
       touchLastY=t.clientY;
     }
   },{passive:true});
@@ -73,30 +74,39 @@
     if(!touchMoved&&!touchInteractive&&!window.__doxaLongPressActive){toggleHudTap();lastTouchHudTap=Date.now()}
     touchStartY=touchLastY=touchStartX=null;touchMoved=false;touchInteractive=false;touchAxis=null;
   },{passive:true});
-  // Mouse/trackpad/scroll fallback.
+
+  /* Scroll fallback limitado a um cálculo por frame.
+     Durante o gesto normal, touchmove continua dando a mesma resposta imediata. */
   window.addEventListener('scroll',()=>{
-    // Durante o swipe de capítulo, renderReader() reposiciona a página no topo.
-    // Esse scroll é técnico e não deve alterar o estado visual do HUD.
-    if(window.__doxaChapterSwipeAnimating||parallelOn)return;
-    // Rolagem residual durante um arraste lateral também não mexe na barra.
-    if(touchAxis==='x'){lastScrollY=window.scrollY;return}
-    if(!readerPanel())return;const y=window.scrollY,d=y-lastScrollY;
-    if(y<7)showHud(true);else if(d>11)hideHud();else if(d<-11)showHud();lastScrollY=y;
+    pendingScrollY=window.scrollY;
+    if(hudScrollRaf)return;
+    hudScrollRaf=requestAnimationFrame(()=>{
+      hudScrollRaf=0;
+      if(window.__doxaChapterSwipeAnimating||parallelOn){lastScrollY=pendingScrollY;return}
+      if(touchAxis==='x'){lastScrollY=pendingScrollY;return}
+      if(!readerPanel()){lastScrollY=pendingScrollY;return}
+      const y=pendingScrollY,d=y-lastScrollY;
+      if(y<7){if(hudIsHidden())showHud(true)}
+      else if(d>11){if(!hudIsHidden())hideHud()}
+      else if(d<-11){if(hudIsHidden())showHud()}
+      lastScrollY=y;
+    });
   },{passive:true});
+
   document.getElementById('singleReader')?.addEventListener('click',e=>{
     if(Date.now()-lastTouchHudTap<650)return;
     if(!e.target.closest('button,input,select,textarea,a,.oshb-word,.note-pin'))toggleHudTap();
   });
 
-
-  // A paralela rola em contêineres próprios, então o HUD acompanha essas rolagens também.
   const parallelLast={A:0,B:0};
   for(const side of ['A','B']){
     const box=document.getElementById('pText'+side);if(!box)continue;
     box.addEventListener('scroll',()=>{
-      if(!parallelOn||overlaysOpen())return;
+      if(!parallelOn)return;
       const y=box.scrollTop,d=y-(parallelLast[side]||0);
-      if(y<5)showHud(true);else if(d>12)hideHud();else if(d<-12)showHud();
+      if(y<5){if(hudIsHidden())showHud(true)}
+      else if(d>12){if(!hudIsHidden())hideHud()}
+      else if(d<-12){if(hudIsHidden())showHud()}
       parallelLast[side]=y;
     },{passive:true});
   }
@@ -118,7 +128,6 @@
   document.getElementById('swFullScreenContent')?.addEventListener('change',()=>applyScreenMode(true));
   applyScreenMode(false);
 
-  // Other tabs always keep the application chrome visible.
   const baseOpenPanelV7=openPanel;
   openPanel=function(name){if(name!=='ler')showHud(true);const r=baseOpenPanelV7.apply(this,arguments);if(name==='ler')showHud(true);return r};
   const baseParallelModeV7=setParallelMode;
@@ -146,7 +155,7 @@
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
         host.style.transition='transform 210ms cubic-bezier(.18,.78,.20,1),opacity 175ms ease';
         host.style.transform='translate3d(0,0,0)';host.style.opacity='1';
-        setTimeout(()=>{host.style.transition='';host.style.transform='';host.style.opacity='';chapterAnimating=false;window.__doxaChapterSwipeAnimating=false;lastScrollY=window.scrollY;document.body.classList.remove('chapter-animating');lockBibleTab()},225);
+        setTimeout(()=>{host.style.transition='';host.style.transform='';host.style.opacity='';chapterAnimating=false;window.__doxaChapterSwipeAnimating=false;lastScrollY=window.scrollY;pendingScrollY=lastScrollY;document.body.classList.remove('chapter-animating');lockBibleTab()},225);
       }));
     },145);
   };
