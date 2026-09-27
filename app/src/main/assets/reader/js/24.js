@@ -1,75 +1,154 @@
 (()=>{
   'use strict';
-  /* Doxa 33 · Rolagem sincronizada contínua na leitura paralela
-     Antes: o painel que acompanha só pulava quando o versículo do topo mudava (em degraus),
-     e ainda com scroll-behavior:smooth, então parecia travado e atrasado.
-     Agora: calcula quanto do versículo atual já passou (ex.: 40%) e posiciona o outro painel
-     no mesmo ponto do mesmo versículo, a cada quadro. Os dois andam juntos, como se um
-     segundo dedo rolasse a outra tela. Só o painel que você está tocando comanda. */
+  /* Doxa 33.1 · Rolagem sincronizada contínua otimizada
+     Mantém exatamente o mesmo comportamento da leitura paralela:
+     - o painel tocado continua comandando;
+     - livro/capítulo/versículo continuam sincronizados;
+     - topo e fim continuam encostando juntos.
+     Diferença interna: a geometria dos versículos é medida uma única vez por renderização,
+     e a rolagem passa a usar apenas números em cache a cada frame. */
   if(window.__doxa33ParallelSyncInstalled)return;
   window.__doxa33ParallelSyncInstalled=true;
 
-  const REF=6;                     // linha de referência: 6px abaixo do topo do painel
+  const REF=6;
   let driver=null,driverUntil=0,raf=0,pendingSide=null;
+  const cache={A:null,B:null};
   const box=s=>document.getElementById('pText'+s);
   const other=s=>s==='A'?'B':'A';
 
-  function claim(side,ms=900){driver=side;driverUntil=Date.now()+ms}
-  function driverOk(side){return !driver||driver===side||Date.now()>driverUntil}
+  function now(){return performance?.now?.()||Date.now()}
+  function claim(side,ms=900){driver=side;driverUntil=now()+ms}
+  function driverOk(side){return !driver||driver===side||now()>driverUntil}
+  function invalidate(side){cache[side]=null}
 
-  /* versículo que cruza a linha de referência e a fração já rolada dele */
-  function anchor(el){
-    const verses=el.querySelectorAll('.verse[data-v]');if(!verses.length)return null;
-    const top=el.getBoundingClientRect().top+REF;
-    let lo=0,hi=verses.length-1,idx=0;
-    while(lo<=hi){const mid=(lo+hi)>>1;if(verses[mid].getBoundingClientRect().top<=top){idx=mid;lo=mid+1}else hi=mid-1}
-    const v=verses[idx],r=v.getBoundingClientRect();
-    const next=verses[idx+1],span=Math.max(1,(next?next.getBoundingClientRect().top:r.bottom)-r.top);
-    return{v:v.dataset.v,f:Math.max(0,Math.min(1,(top-r.top)/span))};
+  function geometry(side){
+    const el=box(side);if(!el)return null;
+    const verses=[...el.querySelectorAll('.verse[data-v]')];
+    if(!verses.length)return null;
+
+    const cached=cache[side];
+    if(cached&&cached.first===verses[0]&&cached.last===verses[verses.length-1])return cached;
+
+    const cr=el.getBoundingClientRect(),scroll=el.scrollTop;
+    const items=new Array(verses.length),byVerse=new Map();
+
+    for(let i=0;i<verses.length;i++){
+      const node=verses[i],r=node.getBoundingClientRect();
+      const item={
+        v:String(node.dataset.v),
+        top:r.top-cr.top+scroll,
+        bottom:r.bottom-cr.top+scroll
+      };
+      items[i]=item;
+      byVerse.set(item.v,i);
+    }
+
+    for(let i=0;i<items.length;i++){
+      const next=items[i+1];
+      items[i].span=Math.max(1,(next?next.top:items[i].bottom)-items[i].top);
+    }
+
+    return cache[side]={
+      first:verses[0],
+      last:verses[verses.length-1],
+      items,
+      byVerse
+    };
   }
+
+  function anchor(side){
+    const el=box(side),g=geometry(side);if(!el||!g)return null;
+    const y=el.scrollTop+REF,items=g.items;
+    let lo=0,hi=items.length-1,idx=0;
+    while(lo<=hi){
+      const mid=(lo+hi)>>1;
+      if(items[mid].top<=y){idx=mid;lo=mid+1}
+      else hi=mid-1;
+    }
+    const it=items[idx];
+    return{v:it.v,f:Math.max(0,Math.min(1,(y-it.top)/it.span))};
+  }
+
   function sameChapter(){
-    try{const a=parallelCanonical('A'),b=parallelCanonical('B');return a.book===b.book&&Number(a.chapter)===Number(b.chapter)}catch(e){return false}
+    try{
+      const a=parallelCanonical('A'),b=parallelCanonical('B');
+      return a.book===b.book&&Number(a.chapter)===Number(b.chapter)
+    }catch(e){return false}
   }
+
   function apply(src){
-    const s=box(src),t=box(other(src));if(!s||!t)return;
-    // topo e fim: os dois encostam juntos
-    if(s.scrollTop<=0){t.scrollTop=0;return}
-    if(s.scrollTop+s.clientHeight>=s.scrollHeight-1){t.scrollTop=t.scrollHeight;return}
-    const a=anchor(s);if(!a)return;
-    const target=t.querySelector('.verse[data-v="'+a.v+'"]');if(!target)return;
-    const list=[...t.querySelectorAll('.verse[data-v]')],i=list.indexOf(target),next=list[i+1];
-    const tr=t.getBoundingClientRect(),r=target.getBoundingClientRect();
-    const span=Math.max(1,(next?next.getBoundingClientRect().top:r.bottom)-r.top);
-    t.scrollTop+=Math.round(r.top-tr.top-REF+a.f*span);
+    const dst=other(src),s=box(src),t=box(dst);
+    if(!s||!t)return;
+
+    if(s.scrollTop<=0){
+      if(t.scrollTop!==0)t.scrollTop=0;
+      return
+    }
+    if(s.scrollTop+s.clientHeight>=s.scrollHeight-1){
+      const end=Math.max(0,t.scrollHeight-t.clientHeight);
+      if(Math.abs(t.scrollTop-end)>.25)t.scrollTop=end;
+      return
+    }
+
+    const a=anchor(src),tg=geometry(dst);
+    if(!a||!tg)return;
+    const idx=tg.byVerse.get(String(a.v));
+    if(idx==null)return;
+
+    const it=tg.items[idx];
+    const max=Math.max(0,t.scrollHeight-t.clientHeight);
+    const dest=Math.max(0,Math.min(max,it.top+a.f*it.span-REF));
+
+    if(Math.abs(t.scrollTop-dest)>.25)t.scrollTop=dest;
   }
 
   function sync(side){
     if(typeof parallelOn==='undefined'||!parallelOn||!parallelSync)return;
-    if(!driverOk(side))return;              // eco da rolagem que nós mesmos aplicamos no outro painel
-    if(!sameChapter())return;
-    if(!driver||Date.now()>driverUntil)claim(side,250);
-    else if(driver===side)driverUntil=Math.max(driverUntil,Date.now()+250);
+    if(!driverOk(side)||!sameChapter())return;
+
+    const n=now();
+    if(!driver||n>driverUntil)claim(side,250);
+    else if(driver===side)driverUntil=Math.max(driverUntil,n+250);
+
     pendingSide=side;
     if(raf)return;
-    raf=requestAnimationFrame(()=>{raf=0;const s=pendingSide;pendingSide=null;if(s)apply(s)});
+    raf=requestAnimationFrame(()=>{
+      raf=0;
+      const s=pendingSide;
+      pendingSide=null;
+      if(s)apply(s);
+    });
   }
-  window.syncParallelScroll=sync;           // substitui a versão em degraus do js/02.js
+
+  window.syncParallelScroll=sync;
 
   function bind(){
     for(const side of ['A','B']){
-      const el=box(side);if(!el||el.dataset.doxa33Sync)continue;el.dataset.doxa33Sync='1';
-      el.addEventListener('touchstart',()=>claim(side,60000),{passive:true});
-      el.addEventListener('touchend',()=>claim(side,1200),{passive:true});   // cobre a inércia depois de soltar
-      el.addEventListener('touchcancel',()=>claim(side,1200),{passive:true});
-      el.addEventListener('wheel',()=>claim(side,500),{passive:true});
-      el.addEventListener('pointerdown',()=>claim(side,60000),{passive:true});
-      el.addEventListener('pointerup',()=>claim(side,1200),{passive:true});
+      const el=box(side);if(!el)continue;
+
+      if(!el.dataset.doxa33Sync){
+        el.dataset.doxa33Sync='1';
+        el.addEventListener('touchstart',()=>claim(side,60000),{passive:true});
+        el.addEventListener('touchend',()=>claim(side,1200),{passive:true});
+        el.addEventListener('touchcancel',()=>claim(side,1200),{passive:true});
+        el.addEventListener('wheel',()=>claim(side,500),{passive:true});
+        el.addEventListener('pointerdown',()=>claim(side,60000),{passive:true});
+        el.addEventListener('pointerup',()=>claim(side,1200),{passive:true});
+      }
+
+      if(!el.dataset.doxa331Geom){
+        el.dataset.doxa331Geom='1';
+        new MutationObserver(()=>invalidate(side)).observe(el,{childList:true});
+      }
     }
   }
+
   const style=document.createElement('style');
   style.textContent='body.parallel-mode .parallel-text{scroll-behavior:auto!important;overflow-anchor:none}';
   document.head.appendChild(style);
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
+  else bind();
 })();
 
 (()=>{
@@ -112,7 +191,6 @@
     $('pxRef').addEventListener('click',()=>$('pPassageA')?.click());
     swap.addEventListener('click',()=>$('parallelSwap')?.click());
 
-    // setas de cada painel passam para junto da passagem do painel (usadas quando desincronizado)
     for(const s of ['A','B']){
       const nav=$('pNav'+s),prev=$('pPrev'+s),next=$('pNext'+s);
       if(nav&&prev&&next){prev.classList.add('px-pane-step');next.classList.add('px-pane-step');nav.append(prev,next)}
@@ -135,7 +213,7 @@
     sync.innerHTML=synced?ICON.link:ICON.unlink;sync.classList.toggle('on',synced);
     sync.setAttribute('aria-label',synced?'Desligar sincronização':'Ligar sincronização');
     const lay=$('parallelOrientation'),horizontal=(typeof parallelLayout==='undefined'?'horizontal':parallelLayout)==='horizontal';
-    lay.innerHTML=horizontal?ICON.rows:ICON.cols;       // mostra para onde vai
+    lay.innerHTML=horizontal?ICON.rows:ICON.cols;
     lay.setAttribute('aria-label',horizontal?'Um sobre o outro':'Lado a lado');
   }
 
