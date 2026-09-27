@@ -151,7 +151,7 @@
     fx.classList.remove('on','off','play');
     void fx.offsetWidth;
     fx.classList.add(on?'on':'off','play');
-    setTimeout(()=>fx.classList.remove('play','on','off'),760);
+    setTimeout(()=>fx.classList.remove('play','on','off'),980);
   }
 
   function installModeButton(){
@@ -267,7 +267,7 @@
       setTimeout(()=>{
         playModeFx(doxaModeActive);
         if(doxaModeActive)markCurrentChapter();
-      },70);
+      },95);
     }else if(doxaModeActive){
       markCurrentChapter();
     }
