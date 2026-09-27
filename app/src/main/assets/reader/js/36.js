@@ -68,6 +68,20 @@
     return identityFromVerse(document.querySelector('.verse.verse-context'));
   }
 
+
+  function cleanseVerseActions(){
+    const pop=document.getElementById('verseActions');
+    if(!pop)return;
+    const banned=['interlinear','crítica textual','critica textual'];
+    pop.querySelectorAll('button,[role="button"],.va-item,.action-item').forEach(el=>{
+      const txt=String(el.textContent||'').trim().toLowerCase();
+      const dataVa=String(el.getAttribute('data-va')||'').trim().toLowerCase();
+      if(dataVa==='interlinear'||banned.some(x=>txt.includes(x))){
+        el.remove();
+      }
+    });
+  }
+
   function createUi(){
     if(document.getElementById('doxaToolSheet'))return;
 
@@ -170,9 +184,8 @@
     if(!rows.length){
       body.innerHTML=`
         <div class="doxa-tool-empty">
-          <div class="doxa-tool-empty-mark">D</div>
+          <img class="doxa-tool-empty-icon" src="doxa_splash_icon.png" alt="" aria-hidden="true">
           <strong>Ainda não há conteúdo Doxa para esta passagem.</strong>
-          <p>Quando você publicar algo no Supabase para ${esc(ref.label)}, ele aparecerá aqui sem depender da versão bíblica aberta.</p>
         </div>`;
       return;
     }
@@ -230,7 +243,9 @@
 
   function installButton(){
     const pop=document.getElementById('verseActions');
-    if(!pop||pop.querySelector('[data-doxa-tool]'))return;
+    if(!pop)return;
+    cleanseVerseActions();
+    if(pop.querySelector('[data-doxa-tool]'))return;
 
     const btn=document.createElement('button');
     btn.type='button';
@@ -266,7 +281,13 @@
   });
 
   installButton();
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installButton,{once:true});
+  cleanseVerseActions();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{installButton();cleanseVerseActions()},{once:true});
+
+  const verseActions=document.getElementById('verseActions');
+  if(verseActions&&'MutationObserver' in window){
+    try{new MutationObserver(()=>cleanseVerseActions()).observe(verseActions,{childList:true,subtree:true})}catch(e){}
+  }
 
   window.DoxaTool={
     open,
