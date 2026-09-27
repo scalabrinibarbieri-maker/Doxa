@@ -10,8 +10,8 @@
     - se o aparelho realmente precisar de mais tempo, não revela
       uma interface incompleta: espera o leitor ficar pronto.
   */
-  const TOTAL_MS=3000;
-  const FADE_MS=360;
+  const TOTAL_MS=4500;
+  const FADE_MS=400;
   const EXIT_AT_MS=TOTAL_MS-FADE_MS;
 
   const finish=()=>{
