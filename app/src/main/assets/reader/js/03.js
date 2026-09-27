@@ -39,8 +39,17 @@
   }
   function updatePickerAction(){if(!pickerAction||!pickerGoLabel)return;pickerAction.hidden=pickerStage!=='verse';if(pickerStage!=='verse')return;const cp=pickerCorpus(),b=cp.books[pickerBook],abbr=PT_ABBR[b?.book]||b?.book||'';pickerGoLabel.textContent='Ir para '+abbr+' '+pickerChapter+':'+pickerVerse}
   function closePicker(){picker?.classList.remove('on');backdrop?.classList.remove('on');picker?.setAttribute('aria-hidden','true');pickerContext='single';}
+  let lastAnimStage=null;
   function animatePickerStage(){
     if(!body)return;
+    /* Doxa 49.3 · A onda de entrada só roda quando a etapa MUDA (livro → capítulo → versículo).
+       Ao abrir o seletor, ou ao redesenhar a mesma etapa (tocar em "Livro" já estando nela,
+       digitar na busca), o conteúdo aparece direto — antes ele sumia e reaparecia, e o
+       instante vazio era o clarão. */
+    const opening=!picker?.classList.contains('on');
+    if(opening){lastAnimStage=pickerStage;body.classList.remove('picker-stage-enter');return}
+    if(pickerStage===lastAnimStage)return;   // mesma etapa: não reinicia (a troca chama esta função duas vezes)
+    lastAnimStage=pickerStage;
     body.querySelectorAll('.picker-book-v4,.picker-num-v4').forEach((el,i)=>el.style.setProperty('--picker-i',String(Math.min(i,14))));
     body.classList.remove('picker-stage-enter');void body.offsetWidth;body.classList.add('picker-stage-enter');
     setTimeout(()=>body.classList.remove('picker-stage-enter'),520);
