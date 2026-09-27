@@ -50,7 +50,7 @@
   opacity:0;
   pointer-events:none;
   z-index:0;
-  animation:doxaBootAura 2.25s cubic-bezier(.16,.82,.2,1) .28s both;
+  animation:doxaBootAura 3.15s cubic-bezier(.16,.82,.2,1) .25s both;
 }
 
 /* Linhas muito discretas de manuscrito. */
@@ -75,7 +75,7 @@
   mask-image:radial-gradient(ellipse at center,#000 0%,rgba(0,0,0,.78) 45%,transparent 78%);
   transform:translateY(9px);
   z-index:0;
-  animation:doxaBootManuscript 1.85s ease .70s both;
+  animation:doxaBootManuscript 2.55s ease .72s both;
 }
 
 #doxaBootSplash.doxa-boot-splash-hide{
@@ -126,14 +126,13 @@
   object-fit:contain;
   margin:0 0 31px;
   opacity:0;
-  clip-path:inset(0 100% 0 0);
   transform:translateY(7px) scale(.965);
   filter:
     drop-shadow(0 0 0 rgba(226,158,85,0))
     drop-shadow(0 18px 42px rgba(0,0,0,.36))
     brightness(.86);
-  will-change:transform,opacity,filter,clip-path;
-  animation:doxaBootIconSequence 2.18s cubic-bezier(.16,.82,.2,1) .34s both;
+  will-change:transform,opacity,filter;
+  animation:doxaBootIconSequence 2.72s cubic-bezier(.16,.82,.2,1) .38s both;
 }
 
 /* Nome DOXA: entra só na parte final e recebe um brilho único. */
@@ -168,8 +167,8 @@
   transform:translateY(10px);
   will-change:opacity,transform,background-position;
   animation:
-    doxaBootTitleIn .46s cubic-bezier(.16,.82,.2,1) 2.03s both,
-    doxaBootTitleShine .58s ease 2.20s both;
+    doxaBootTitleIn .54s cubic-bezier(.16,.82,.2,1) 2.78s both,
+    doxaBootTitleShine .72s ease 3.02s both;
 }
 
 /* Assinatura final, sem barra de loading. */
@@ -188,7 +187,7 @@
   color:rgba(202,158,108,.70);
   opacity:0;
   transform:translateY(7px);
-  animation:doxaBootTaglineIn .42s ease 2.30s both;
+  animation:doxaBootTaglineIn .50s ease 3.30s both;
 }
 
 /* O texto/barra antigos continuam no DOM para acessibilidade,
@@ -204,15 +203,6 @@
   position:absolute;
 }
 .doxa-boot-spinner{display:none!important}
-
-/* Uma linha de luz cruza o ícone no instante da "inscrição". */
-.doxa-boot-inner{
-  --boot-scan-opacity:0;
-}
-.doxa-boot-inner > .doxa-boot-icon{
-  -webkit-mask-image:linear-gradient(#000,#000);
-  mask-image:linear-gradient(#000,#000);
-}
 
 @keyframes doxaBootAura{
   0%{
@@ -245,36 +235,33 @@
 @keyframes doxaBootIconSequence{
   0%{
     opacity:0;
-    clip-path:inset(0 100% 0 0);
-    transform:translateY(7px) scale(.965);
+      transform:translateY(7px) scale(.965);
     filter:
       drop-shadow(0 0 0 rgba(226,158,85,0))
       drop-shadow(0 18px 42px rgba(0,0,0,.36))
       brightness(.86);
   }
-  8%{opacity:.44}
-  38%{
+  10%{opacity:.18}
+  24%{opacity:.72}
+  42%{
     opacity:1;
-    clip-path:inset(0 0 0 0);
-    transform:translateY(0) scale(1);
+transform:translateY(0) scale(1);
     filter:
       drop-shadow(0 0 15px rgba(222,155,82,.19))
       drop-shadow(0 18px 42px rgba(0,0,0,.36))
       brightness(1);
   }
-  55%{
+  61%{
     opacity:1;
-    clip-path:inset(0 0 0 0);
-    transform:translateY(0) scale(1);
+transform:translateY(0) scale(1);
     filter:
       drop-shadow(0 0 17px rgba(224,158,86,.23))
       drop-shadow(0 18px 42px rgba(0,0,0,.36))
       brightness(1.01);
   }
-  76%{
+  79%{
     opacity:1;
-    clip-path:inset(0 0 0 0);
-    transform:translateY(-1px) scale(1.026);
+transform:translateY(-1px) scale(1.026);
     filter:
       drop-shadow(0 0 32px rgba(241,179,102,.43))
       drop-shadow(0 0 68px rgba(174,100,38,.18))
@@ -283,8 +270,7 @@
   }
   100%{
     opacity:1;
-    clip-path:inset(0 0 0 0);
-    transform:translateY(0) scale(1);
+transform:translateY(0) scale(1);
     filter:
       drop-shadow(0 0 17px rgba(222,155,82,.22))
       drop-shadow(0 18px 42px rgba(0,0,0,.36))
