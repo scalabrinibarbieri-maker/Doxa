@@ -1,0 +1,277 @@
+/* Doxa 49 · Ferramenta Doxa
+   Módulo isolado: nenhum estilo existente do leitor é substituído. */
+
+.doxa-tool-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:1800;
+  background:rgba(7,8,10,.42);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .24s ease;
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+}
+.doxa-tool-backdrop.on{opacity:1;pointer-events:auto}
+
+.doxa-tool-sheet{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:1801;
+  height:min(86vh,760px);
+  display:flex;
+  flex-direction:column;
+  border-radius:26px 26px 0 0;
+  overflow:hidden;
+  color:var(--ink,#23262c);
+  background:
+    radial-gradient(120% 70% at 50% -10%,rgba(255,255,255,.18),transparent 58%),
+    var(--paper,#e6e3da);
+  box-shadow:0 -24px 70px rgba(0,0,0,.24);
+  transform:translate3d(0,104%,0);
+  transition:transform .34s cubic-bezier(.22,.78,.22,1);
+  will-change:transform;
+}
+.doxa-tool-sheet.on{transform:translate3d(0,0,0)}
+body.doxa-tool-open{overflow:hidden}
+
+.doxa-tool-grab{
+  width:42px;
+  height:4px;
+  flex:0 0 auto;
+  margin:9px auto 2px;
+  border-radius:99px;
+  background:var(--ink-faint,rgba(35,38,44,.22));
+}
+
+.doxa-tool-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:13px 18px 15px;
+  border-bottom:1px solid color-mix(in srgb,var(--ink,#23262c) 9%,transparent);
+}
+.doxa-tool-head-copy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.doxa-tool-head-copy>span{
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.16em;
+  color:var(--accent,#8c2f39);
+}
+.doxa-tool-head-copy>strong{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font:700 20px/1.12 Georgia,'Times New Roman',serif;
+  color:var(--ink,#23262c);
+}
+.doxa-tool-head-copy>small{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+  color:var(--ink-faint,#757575);
+}
+#doxaToolClose{
+  width:38px;
+  height:38px;
+  flex:0 0 auto;
+  border:0;
+  border-radius:50%;
+  color:var(--ink,#23262c);
+  background:color-mix(in srgb,var(--ink,#23262c) 7%,transparent);
+  font-size:24px;
+  line-height:1;
+}
+
+.doxa-tool-body{
+  flex:1 1 auto;
+  overflow:auto;
+  overscroll-behavior:contain;
+  padding:18px 16px calc(24px + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling:touch;
+}
+
+.doxa-tool-loading,
+.doxa-tool-empty{
+  min-height:42vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px 26px;
+}
+.doxa-tool-loading i{
+  width:34px;
+  height:34px;
+  margin-bottom:16px;
+  border-radius:50%;
+  border:2px solid color-mix(in srgb,var(--ink,#23262c) 12%,transparent);
+  border-top-color:var(--accent,#8c2f39);
+  animation:doxa-tool-spin .8s linear infinite;
+}
+.doxa-tool-loading strong,
+.doxa-tool-empty strong{
+  font:700 20px/1.25 Georgia,'Times New Roman',serif;
+}
+.doxa-tool-loading span,
+.doxa-tool-empty p{
+  max-width:420px;
+  margin:8px 0 0;
+  color:var(--ink-faint,#777);
+  font-size:13px;
+  line-height:1.55;
+}
+@keyframes doxa-tool-spin{to{transform:rotate(360deg)}}
+
+.doxa-tool-empty-mark{
+  width:54px;
+  height:54px;
+  display:grid;
+  place-items:center;
+  margin-bottom:16px;
+  border:1px solid color-mix(in srgb,var(--accent,#8c2f39) 24%,transparent);
+  border-radius:18px;
+  color:var(--accent,#8c2f39);
+  background:color-mix(in srgb,var(--accent,#8c2f39) 7%,transparent);
+  font:700 24px/1 Georgia,'Times New Roman',serif;
+}
+.doxa-tool-empty.error .doxa-tool-empty-mark{font-family:system-ui,sans-serif}
+#doxaToolRetry{
+  margin-top:18px;
+  padding:11px 18px;
+  border:1px solid color-mix(in srgb,var(--ink,#23262c) 12%,transparent);
+  border-radius:14px;
+  color:var(--ink,#23262c);
+  background:color-mix(in srgb,var(--ink,#23262c) 5%,transparent);
+  font-weight:700;
+}
+
+.doxa-tool-card{
+  position:relative;
+  margin:0 0 14px;
+  padding:18px 17px 17px;
+  overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--ink,#23262c) 9%,transparent);
+  border-radius:20px;
+  background:
+    linear-gradient(140deg,rgba(255,255,255,.12),transparent 48%),
+    color-mix(in srgb,var(--paper,#e6e3da) 92%,var(--ink,#23262c) 8%);
+  box-shadow:0 8px 24px rgba(0,0,0,.045);
+  animation:doxa-tool-card-in .36s both cubic-bezier(.22,.78,.22,1);
+  animation-delay:calc(var(--doxa-card-index) * 45ms);
+}
+.doxa-tool-card:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:18px;
+  bottom:18px;
+  width:3px;
+  border-radius:0 3px 3px 0;
+  background:var(--accent,#8c2f39);
+  opacity:.72;
+}
+@keyframes doxa-tool-card-in{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.doxa-tool-card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.doxa-tool-type{
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--accent,#8c2f39);
+}
+.doxa-tool-index{
+  font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:var(--ink-faint,#777);
+}
+.doxa-tool-card h3{
+  margin:0;
+  color:var(--ink,#23262c);
+  font:700 21px/1.22 Georgia,'Times New Roman',serif;
+}
+.doxa-tool-card-sub{
+  margin-top:5px;
+  color:var(--ink-faint,#777);
+  font-size:12px;
+  line-height:1.4;
+}
+.doxa-tool-text{
+  margin-top:14px;
+  color:var(--ink,#23262c);
+  font:400 15px/1.72 Georgia,'Times New Roman',serif;
+}
+.doxa-tool-text p{margin:0 0 12px}
+.doxa-tool-text p:last-child{margin-bottom:0}
+.doxa-tool-image{
+  width:100%;
+  max-height:260px;
+  object-fit:cover;
+  display:block;
+  margin-top:14px;
+  border-radius:14px;
+}
+.doxa-tool-source{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px 10px;
+  margin-top:16px;
+  padding-top:13px;
+  border-top:1px solid color-mix(in srgb,var(--ink,#23262c) 8%,transparent);
+  font-size:11px;
+}
+.doxa-tool-source span{
+  color:var(--ink-faint,#777);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.doxa-tool-source strong{
+  color:var(--ink,#23262c);
+}
+.doxa-tool-source a{
+  margin-left:auto;
+  color:var(--accent,#8c2f39);
+  text-decoration:none;
+  font-weight:700;
+}
+
+.doxa-tool-va-icon{
+  display:grid;
+  place-items:center;
+}
+.doxa-tool-va-icon svg{
+  width:22px;
+  height:22px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.55;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .doxa-tool-backdrop,
+  .doxa-tool-sheet,
+  .doxa-tool-card{transition:none;animation:none}
+  .doxa-tool-loading i{animation-duration:1.6s}
+}
