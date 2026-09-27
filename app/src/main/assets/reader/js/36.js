@@ -354,35 +354,95 @@
     document.body.classList.add('doxa-tool-open');
   }
 
+  async function sbRows(path){
+    const r=await fetch(SB_URL+path,{
+      headers:{apikey:SB_KEY},
+      cache:'no-store'
+    });
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    return Array.isArray(data)?data:[];
+  }
+
   async function fetchChapter(book,chapter,force=false){
     const key=String(book)+':'+Number(chapter);
     const old=cache.get(key);
     if(!force&&old&&Date.now()-old.at<CACHE_MS)return old.rows;
 
     const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,versoes,ordem,criado_em';
-    const path='/rest/v1/ferramenta_doxa?select='+fields+
+
+    // Referência principal (estrutura antiga, continua funcionando).
+    const mainPath='/rest/v1/ferramenta_doxa?select='+fields+
       '&livro=eq.'+encodeURIComponent(book)+
       '&capitulo=eq.'+Number(chapter)+
       '&publicado=eq.true&order=ordem.asc,criado_em.asc';
 
-    const r=await fetch(SB_URL+path,{
-      headers:{apikey:SB_KEY},
-      cache:'no-store'
+    // Referências adicionais da mesma nota.
+    const linkedSelect='livro,capitulo,versiculo_inicio,versiculo_fim,conteudo:ferramenta_doxa!inner('+fields+',publicado)';
+    const linkedPath='/rest/v1/ferramenta_doxa_referencias?select='+encodeURIComponent(linkedSelect)+
+      '&livro=eq.'+encodeURIComponent(book)+
+      '&capitulo=eq.'+Number(chapter)+
+      '&conteudo.publicado=eq.true';
+
+    const [mainResult,linkedResult]=await Promise.allSettled([
+      sbRows(mainPath),
+      sbRows(linkedPath)
+    ]);
+
+    if(mainResult.status==='rejected'&&linkedResult.status==='rejected'){
+      throw mainResult.reason||linkedResult.reason||new Error('Falha ao consultar a Ferramenta Doxa');
+    }
+
+    const merged=[];
+
+    if(mainResult.status==='fulfilled')merged.push(...mainResult.value);
+
+    if(linkedResult.status==='fulfilled'){
+      for(const refRow of linkedResult.value){
+        const content=refRow?.conteudo;
+        if(!content)continue;
+        merged.push({
+          ...content,
+          livro:refRow.livro,
+          capitulo:Number(refRow.capitulo),
+          versiculo_inicio:Number(refRow.versiculo_inicio),
+          versiculo_fim:refRow.versiculo_fim==null?null:Number(refRow.versiculo_fim)
+        });
+      }
+    }
+
+    const seen=new Set(),rows=[];
+    for(const row of merged){
+      const start=Number(row.versiculo_inicio);
+      const end=row.versiculo_fim==null?start:Number(row.versiculo_fim);
+      const signature=String(row.id)+'|'+start+'|'+end;
+      if(seen.has(signature))continue;
+      seen.add(signature);
+      rows.push(row);
+    }
+
+    rows.sort((a,b)=>{
+      const byOrder=(Number(a.ordem)||0)-(Number(b.ordem)||0);
+      if(byOrder)return byOrder;
+      return String(a.criado_em||'').localeCompare(String(b.criado_em||''));
     });
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const rows=await r.json();
-    cache.set(key,{at:Date.now(),rows:Array.isArray(rows)?rows:[]});
-    return cache.get(key).rows;
+
+    cache.set(key,{at:Date.now(),rows});
+    return rows;
   }
 
   function rowsForRef(rows,ref){
-    return rows.filter(x=>{
+    const out=[],seen=new Set();
+    for(const x of rows){
       const start=Number(x.versiculo_inicio);
       const end=x.versiculo_fim==null?start:Number(x.versiculo_fim);
-      if(!(ref.verse>=start&&ref.verse<=end))return false;
-      if(Array.isArray(x.versoes)&&x.versoes.length&&!x.versoes.includes(ref.sourceMode))return false;
-      return true;
-    });
+      if(!(ref.verse>=start&&ref.verse<=end))continue;
+      if(Array.isArray(x.versoes)&&x.versoes.length&&!x.versoes.includes(ref.sourceMode))continue;
+      if(seen.has(x.id))continue;
+      seen.add(x.id);
+      out.push(x);
+    }
+    return out;
   }
 
   function textHtml(text){
