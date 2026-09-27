@@ -59,7 +59,7 @@
     el.classList.remove('picker-choice-pop');void el.offsetWidth;el.classList.add('picker-choice-pop');
     setTimeout(fn,60);   // Doxa 49.1: era 145 ms de tela parada antes de trocar de etapa
   }
-  function setPickerStage(stage,rerender=true){pickerStage=stage;pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===stage));pickerBack.disabled=stage==='book';if(rerender){renderPicker();animatePickerStage()}else updatePickerAction();}
+  function setPickerStage(stage,rerender=true){if(rerender&&stage===pickerStage&&picker?.classList.contains('on')&&!pickerSearch?.value)return;pickerStage=stage;pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===stage));pickerBack.disabled=stage==='book';if(rerender){renderPicker();animatePickerStage()}else updatePickerAction();}
   function openPicker(context='single'){
     if(!picker)return;
     pickerContext=(context==='A'||context==='B')?context:'single';
@@ -67,11 +67,31 @@
     const cur=pickerCurrent(),cp=pickerCorpus();pickerBook=Math.min(Math.max(0,cur.b),cp.books.length-1);pickerChapter=cur.c;pickerVerse=Number(cur.v)||1;pickerSearch.value='';
     /* Doxa 49 · Seletor refeito: desenha primeiro (agora leve), e só começa a subir no quadro
        seguinte, para a subida não disputar o celular com o desenho. */
-    setPickerStage('book',false);renderPicker();
-    pickerSearch?.blur();picker.setAttribute('aria-hidden','false');picker.classList.add('pk2');
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{picker.classList.add('on');backdrop.classList.add('on')}));
+    pickerStage='book';setPickerStage('book',false);pickerPageStage=null;renderPicker();
+    pickerSearch?.blur();picker.setAttribute('aria-hidden','false');picker.classList.add('pk2','pk-prep');
+    /* três quadros com a folha já visível (mas abaixo da tela) para o celular desenhá-la
+       inteira antes de ela começar a subir — daí ela sobe já pintada, com a cascata junto */
+    requestAnimationFrame(()=>requestAnimationFrame(()=>requestAnimationFrame(()=>{picker.classList.add('on');backdrop.classList.add('on');picker.classList.remove('pk-prep')})));
   }
   function stageHeading(book){const m=pickerMode(),label=VERSION_META[m]?.label||m;if(pickerStage==='book')return['Escolher livro',label];if(pickerStage==='chapter')return[bookName(book),'Escolha o capítulo'];return[bookName(book)+' '+pickerChapter,'Escolha o versículo']}
+  /* Doxa 50.1 · Troca de conteúdo sem quadro vazio.
+     Antes: body.innerHTML = nova lista → o celular mostrava 1–2 quadros em branco até pintar.
+     Agora: a lista nova é montada numa "página" e entra enquanto a antiga ainda está visível
+     por cima, se apagando. Mesma etapa (busca): troca dentro da página atual, sem animação. */
+  let pickerPageStage=null;
+  function setPickerContent(html){
+    const cur=body.querySelector(':scope>.pk-page:not(.pk-leave)');
+    const change=cur&&pickerPageStage!==pickerStage&&picker.classList.contains('on');
+    pickerPageStage=pickerStage;
+    if(!cur){body.innerHTML='<div class="pk-page">'+html+'</div>';return}
+    if(!change){cur.innerHTML=html;return}
+    const y=body.scrollTop;
+    const page=document.createElement('div');page.className='pk-page pk-enter';page.innerHTML=html;
+    cur.classList.add('pk-leave');cur.style.marginTop=(-y)+'px';cur.setAttribute('aria-hidden','true');
+    body.querySelectorAll(':scope>.pk-leave').forEach(el=>{if(el!==cur)el.remove()});
+    body.prepend(page);body.scrollTop=0;
+    setTimeout(()=>{cur.remove();page.classList.remove('pk-enter')},420);
+  }
   function renderPicker(filter=''){
     const cp=pickerCorpus();pickerBook=Math.min(Math.max(0,pickerBook),cp.books.length-1);const b=cp.books[pickerBook];const hd=stageHeading(b);title.textContent=hd[0];subtitle.textContent=hd[1];pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===pickerStage));pickerBack.disabled=pickerStage==='book';if(picker)picker.dataset.stage=pickerStage;
     if(pickerStage!=='book'&&body)body.onscroll=null;
@@ -97,15 +117,15 @@
       if(recentList.length)html+=section('recent','Lidos recentemente','var(--d30-gold,#d9a25e)',recentList,'');
       groups.forEach(g=>{html+=section(g[0][1],g[0][2],g[0][4],g[1],g[1].length+(g[1].length===1?' livro':' livros'))});
       const others=books.filter(o=>!BOOK_GENRE[o.x.book]);if(others.length)html+=section('other','Outros','var(--d30-gold,#d9a25e)',others,others.length);
-      body.innerHTML=html||'<div class="picker-empty">Nenhum livro encontrado.</div>';
+      setPickerContent(html||'<div class="picker-empty">Nenhum livro encontrado.</div>');
       /* abre já com o livro atual à vista (posicionado antes de aparecer: sem rolagem animada) */
-      if(!q){const cur=body.querySelector('.pk-sec:not([data-cat="recent"]) .pk-book.on');if(cur&&!picker.classList.contains('on')){const top=cur.offsetTop-body.offsetTop-150;body.scrollTop=Math.max(0,top)}}
+      if(!q){const cur=body.querySelector('.pk-page:not(.pk-leave) .pk-sec:not([data-cat="recent"]) .pk-book.on');if(cur&&(!picker.classList.contains('on')||pickerStage==='book')){const top=cur.offsetTop-body.offsetTop-150;body.scrollTop=Math.max(0,top)}}
       /* atalhos: toque rola até a categoria; ao rolar, o atalho da categoria visível acende */
-      const chips=body.querySelector('.pk-chips');
+      const chips=body.querySelector('.pk-page:not(.pk-leave) .pk-chips');
       if(chips){
         const setActive=id=>{chips.querySelectorAll('button').forEach(b=>{const on=b.dataset.jump===id;if(on!==b.classList.contains('on')){b.classList.toggle('on',on);if(on){const l=b.offsetLeft-chips.clientWidth/2+b.offsetWidth/2;chips.scrollTo?.({left:Math.max(0,l),behavior:'smooth'})}}})};
-        chips.querySelectorAll('button').forEach(b=>b.onclick=()=>{const sec=body.querySelector('#pks-'+b.dataset.jump);if(!sec)return;body.scrollTo?.({top:Math.max(0,sec.offsetTop-body.offsetTop-chips.offsetHeight-6),behavior:'smooth'});setActive(b.dataset.jump)});
-        let ticking=false;const secs=[...body.querySelectorAll('.pk-sec')];
+        chips.querySelectorAll('button').forEach(b=>b.onclick=()=>{const sec=body.querySelector('.pk-page:not(.pk-leave) #pks-'+b.dataset.jump);if(!sec)return;body.scrollTo?.({top:Math.max(0,sec.offsetTop-body.offsetTop-chips.offsetHeight-6),behavior:'smooth'});setActive(b.dataset.jump)});
+        let ticking=false;const secs=[...body.querySelectorAll('.pk-page:not(.pk-leave) .pk-sec')];
         body.onscroll=()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{ticking=false;const y=body.scrollTop+chips.offsetHeight+24;let id=secs[0]?.dataset.cat;for(const s2 of secs){if(s2.offsetTop-body.offsetTop<=y)id=s2.dataset.cat}setActive(id)})};
         body.onscroll();
       }else body.onscroll=null;
@@ -114,10 +134,10 @@
         pickerChapter=Number(nb.chapters[0].chapter);pickerVerse=1;setPickerStage('chapter')}));updatePickerAction();animatePickerStage();return;
     }
     if(pickerStage==='chapter'){
-      const current=pickerCurrent();body.innerHTML='<section class="pk-sec"><h4>'+esc(bookName(b))+'<span>'+b.chapters.length+' capítulos</span></h4><div class="pk-grid pk-grid-nums">'+b.chapters.map((c,k)=>'<button type="button" class="pk-cell pk-num'+(pickerBook===current.b&&Number(c.chapter)===Number(current.c)?' on':'')+'" style="--r:'+Math.min(Math.floor(k/6),9)+'" data-pc="'+c.chapter+'">'+c.chapter+'</button>').join('')+'</div></section>';
+      const current=pickerCurrent();setPickerContent('<section class="pk-sec"><h4>'+esc(bookName(b))+'<span>'+b.chapters.length+' capítulos</span></h4><div class="pk-grid pk-grid-nums">'+b.chapters.map((c,k)=>'<button type="button" class="pk-cell pk-num'+(pickerBook===current.b&&Number(c.chapter)===Number(current.c)?' on':'')+'" style="--r:'+Math.min(Math.floor(k/6),9)+'" data-pc="'+c.chapter+'">'+c.chapter+'</button>').join('')+'</div></section>');
       body.querySelectorAll('[data-pc]').forEach(el=>el.onclick=()=>pickerChoiceTransition(el,()=>{pickerChapter=+el.dataset.pc;pickerVerse=1;setPickerStage('verse')}));updatePickerAction();animatePickerStage();return;
     }
-    const ch=b.chapters.find(c=>Number(c.chapter)===Number(pickerChapter))||b.chapters[0];pickerChapter=Number(ch.chapter);const current=pickerCurrent();body.innerHTML='<section class="pk-sec"><h4>'+esc(bookName(b))+' '+pickerChapter+'<span>'+ch.verses.length+' versículos</span></h4><div class="pk-grid pk-grid-nums">'+ch.verses.map((v,k)=>'<button type="button" class="pk-cell pk-num'+(Number(v.number)===Number(pickerVerse)?' on':'')+'" style="--r:'+Math.min(Math.floor(k/6),9)+'" data-pv="'+v.number+'">'+v.number+'</button>').join('')+'</div></section>';
+    const ch=b.chapters.find(c=>Number(c.chapter)===Number(pickerChapter))||b.chapters[0];pickerChapter=Number(ch.chapter);const current=pickerCurrent();setPickerContent('<section class="pk-sec"><h4>'+esc(bookName(b))+' '+pickerChapter+'<span>'+ch.verses.length+' versículos</span></h4><div class="pk-grid pk-grid-nums">'+ch.verses.map((v,k)=>'<button type="button" class="pk-cell pk-num'+(Number(v.number)===Number(pickerVerse)?' on':'')+'" style="--r:'+Math.min(Math.floor(k/6),9)+'" data-pv="'+v.number+'">'+v.number+'</button>').join('')+'</div></section>');
     body.querySelectorAll('[data-pv]').forEach(el=>el.onclick=()=>{pickerVerse=+el.dataset.pv;body.querySelectorAll('[data-pv]').forEach(x=>x.classList.toggle('on',x===el));el.classList.remove('picker-verse-pulse');void el.offsetWidth;el.classList.add('picker-verse-pulse');setTimeout(()=>el.classList.remove('picker-verse-pulse'),520);updatePickerAction()});updatePickerAction();animatePickerStage();
   }
   function chooseVerse(v){
