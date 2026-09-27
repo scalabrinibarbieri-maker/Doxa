@@ -1,4 +1,4 @@
-/* Doxa 49 · Ferramenta Doxa
+/* Doxa 51 · Ferramenta Doxa
    Módulo isolado: nenhum estilo existente do leitor é substituído. */
 
 .doxa-tool-backdrop{
@@ -282,3 +282,37 @@ body.doxa-tool-open{overflow:hidden}
   .doxa-tool-card{transition:none;animation:none}
   .doxa-tool-loading i{animation-duration:1.6s}
 }
+
+
+/* ============================================================
+   Doxa 51 · Modo de leitura da Ferramenta Doxa
+   ============================================================ */
+.doxa-tool-mode-card{
+  position:relative;width:100%;min-height:78px;margin:0 0 12px!important;
+  display:grid!important;grid-template-columns:50px minmax(0,1fr) auto auto;
+  align-items:center;gap:12px;overflow:hidden;text-align:left;
+  border:1px solid color-mix(in srgb,var(--d30-gold,var(--accent,#8c2f39)) 18%,transparent)!important;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--d30-gold,var(--accent,#8c2f39)) 7%,transparent),transparent 46%),color-mix(in srgb,var(--d30-panel,var(--paper,#e6e3da)) 94%,var(--d30-bg,var(--paper,#e6e3da)))!important;
+  transition:transform .18s ease,border-color .25s ease,box-shadow .25s ease,background .25s ease;
+}
+.doxa-tool-mode-card:active{transform:scale(.992)}
+.doxa-tool-mode-card.is-active{border-color:color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 48%,transparent)!important;box-shadow:0 10px 30px rgba(0,0,0,.12),inset 0 0 0 1px color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 10%,transparent)}
+.doxa-tool-mode-card.is-active:after{content:"";position:absolute;left:-28%;top:0;width:24%;height:100%;pointer-events:none;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 18%,transparent),transparent);transform:skewX(-18deg);animation:doxa-tool-card-sheen 1.7s ease both}
+@keyframes doxa-tool-card-sheen{from{left:-30%}to{left:118%}}
+.doxa-tool-mode-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--d30-gold,var(--accent,#8c2f39)) 7%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--d30-gold,var(--accent,#8c2f39)) 12%,transparent)}
+.doxa-tool-mode-icon img{width:38px;height:38px;object-fit:contain;display:block;filter:drop-shadow(0 5px 9px rgba(0,0,0,.12))}
+.doxa-tool-mode-copy{min-width:0}.doxa-tool-mode-copy strong{display:block}.doxa-tool-mode-copy small{display:block;margin-top:4px;color:var(--d30-muted,var(--ink-faint,#777));font:500 11.5px/1.35 var(--ui,system-ui,sans-serif)}
+.doxa-tool-mode-state{min-width:0;padding:5px 7px 4px;border-radius:999px;color:var(--d30-gold2,var(--accent,#8c2f39));background:color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 10%,transparent);font:800 8.5px/1 var(--ui,system-ui,sans-serif);letter-spacing:.12em}.doxa-tool-mode-state:empty{display:none}
+
+body.doxa-tool-mode-active #textBody .verse.doxa-tool-hit{cursor:pointer;text-decoration-line:underline;text-decoration-style:solid;text-decoration-thickness:1.35px;text-underline-offset:.24em;text-decoration-color:color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 72%,transparent);text-decoration-skip-ink:auto}
+body.doxa-tool-mode-active #textBody .verse.doxa-tool-hit-enter{animation:doxa-tool-hit-reveal .54s both cubic-bezier(.2,.75,.2,1);animation-delay:calc(min(var(--doxa-hit-index,0),12) * 34ms)}
+@keyframes doxa-tool-hit-reveal{0%{text-decoration-color:transparent;text-shadow:0 0 0 transparent}55%{text-decoration-color:color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 88%,transparent);text-shadow:0 0 11px color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 12%,transparent)}100%{text-decoration-color:color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 72%,transparent);text-shadow:none}}
+
+.doxa-tool-mode-fx{position:fixed;inset:0;z-index:1750;display:grid;place-items:center;pointer-events:none;opacity:0;overflow:hidden}.doxa-tool-mode-fx.play{animation:doxa-tool-fx-shell .72s both ease}
+.doxa-tool-mode-fx-core{position:relative;width:82px;height:82px;display:grid;place-items:center;border-radius:25px;opacity:0;transform:scale(.82);background:color-mix(in srgb,var(--d30-panel,var(--paper,#e6e3da)) 78%,transparent);border:1px solid color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 22%,transparent);box-shadow:0 18px 50px rgba(0,0,0,.22);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.doxa-tool-mode-fx-core img{width:62px;height:62px;object-fit:contain;position:relative;z-index:2}.doxa-tool-mode-fx-ring{position:absolute;inset:11px;border-radius:20px;border:1px solid color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 34%,transparent)}
+.doxa-tool-mode-fx-line{position:absolute;left:8%;right:8%;height:1px;top:50%;opacity:0;background:linear-gradient(90deg,transparent,var(--d30-gold2,var(--accent,#8c2f39)),transparent);box-shadow:0 0 13px color-mix(in srgb,var(--d30-gold2,var(--accent,#8c2f39)) 24%,transparent);transform:scaleX(.08)}
+.doxa-tool-mode-fx.play .doxa-tool-mode-fx-core{animation:doxa-tool-fx-core .66s both cubic-bezier(.2,.8,.2,1)}.doxa-tool-mode-fx.play .doxa-tool-mode-fx-ring{animation:doxa-tool-fx-ring .62s both ease}.doxa-tool-mode-fx.play .doxa-tool-mode-fx-line{animation:doxa-tool-fx-line .66s .06s both cubic-bezier(.2,.8,.2,1)}.doxa-tool-mode-fx.off .doxa-tool-mode-fx-core{animation-direction:reverse}
+@keyframes doxa-tool-fx-shell{0%,100%{opacity:0}10%,74%{opacity:1}}@keyframes doxa-tool-fx-core{0%{opacity:0;transform:scale(.74) translateY(6px)}32%{opacity:1;transform:scale(1) translateY(0)}76%{opacity:1;transform:scale(1) translateY(0)}100%{opacity:0;transform:scale(.94) translateY(-3px)}}@keyframes doxa-tool-fx-ring{0%{opacity:0;transform:scale(.74)}45%{opacity:.9;transform:scale(1.18)}100%{opacity:0;transform:scale(1.45)}}@keyframes doxa-tool-fx-line{0%{opacity:0;transform:scaleX(.08)}34%{opacity:.72;transform:scaleX(1)}100%{opacity:0;transform:scaleX(1)}}
+
+@media (prefers-reduced-motion:reduce){.doxa-tool-mode-card,.doxa-tool-mode-card.is-active:after,.doxa-tool-hit-enter,.doxa-tool-mode-fx,.doxa-tool-mode-fx-core,.doxa-tool-mode-fx-ring,.doxa-tool-mode-fx-line{animation:none!important;transition:none!important}}
