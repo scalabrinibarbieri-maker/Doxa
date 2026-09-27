@@ -14,6 +14,7 @@
 }
 .premium-picker.pk2.on{transform:translate3d(0,0,0)!important;pointer-events:auto!important;visibility:visible;
   transition:transform .46s cubic-bezier(.16,1,.3,1),visibility 0s!important}
+.premium-picker.pk2.pk-prep{visibility:visible!important;transition:none!important}
 .premium-picker-backdrop{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(0,0,0,.45)!important;transition:opacity .35s ease!important}
 
 /* ---------- topo ---------- */
@@ -32,7 +33,11 @@
 .pk2 .picker-v4-tabs button.on{color:var(--d30-gold2,#f1c989)!important}
 .pk2 .picker-v4-tabs button::before,.pk2 .picker-v4-tabs button::after{display:none!important}
 .pk2 .picker-v4-search{margin:0 16px 6px!important;border-radius:14px!important}
-.pk2 .picker-body{padding:0 14px 22px!important}
+.pk2 .picker-body{padding:0 14px 22px!important;display:grid!important;align-content:start}
+/* páginas empilhadas na mesma célula: a antiga sai por cima enquanto a nova entra */
+.pk-page{grid-area:1/1;min-width:0}
+.pk-page.pk-leave{z-index:2;pointer-events:none;animation:pkLeave .3s cubic-bezier(.4,0,.2,1) both}
+@keyframes pkLeave{to{opacity:0;transform:translate3d(0,-8px,0) scale(.99)}}
 
 /* ---------- atalhos de categoria (fixos no topo da lista) ---------- */
 .pk-chips{position:sticky;top:0;z-index:3;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:8px 14px 10px;
@@ -78,11 +83,11 @@ body:not([data-doxa30-theme="night"]) .pk-cell{background:color-mix(in srgb,var(
 /* ---------- entradas ----------
    troca de etapa: onda curta, categoria a categoria;
    abertura: a mesma onda, começando quando a folha está chegando */
-.premium-picker.pk2 .picker-stage-enter .pk-cell{animation:pkIn .36s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 26ms)}
-.premium-picker.pk2 .picker-stage-enter .pk-sec h4,.premium-picker.pk2 .picker-stage-enter .pk-chips{animation:pkIn .32s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 26ms)}
-.premium-picker.pk2 .pk-open .pk-cell{animation-delay:calc(var(--r,0) * 34ms + 200ms)}
-.premium-picker.pk2 .pk-open .pk-sec h4{animation-delay:calc(var(--r,0) * 34ms + 170ms)}
-.premium-picker.pk2 .pk-open .pk-chips{animation-delay:.14s}
+.premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-cell{animation:pkIn .36s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 26ms)}
+.premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-sec h4,.premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-chips{animation:pkIn .32s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 26ms)}
+.premium-picker.pk2 .pk-open .pk-cell{animation-delay:calc(var(--r,0) * 30ms + 80ms)}
+.premium-picker.pk2 .pk-open .pk-sec h4{animation-delay:calc(var(--r,0) * 30ms + 60ms)}
+.premium-picker.pk2 .pk-open .pk-chips{animation-delay:.04s}
 @keyframes pkIn{from{opacity:0;transform:translate3d(0,12px,0) scale(.97)}}
 
 /* escolha: o cartão tocado cresce e solta uma onda dourada ao redor */
@@ -94,5 +99,5 @@ body:not([data-doxa30-theme="night"]) .pk-cell{background:color-mix(in srgb,var(
 
 @media(prefers-reduced-motion:reduce){
   .premium-picker.pk2{transition:none!important}
-  .pk-cell,.pk-sec h4,.pk-chips,.pk-cell.on::after{animation:none!important}
+  .pk-cell,.pk-sec h4,.pk-chips,.pk-cell.on::after,.pk-page.pk-leave{animation:none!important}
 }
