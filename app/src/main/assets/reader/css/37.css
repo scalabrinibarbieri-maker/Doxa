@@ -1,4 +1,4 @@
-/* Doxa 52 · Ferramenta Doxa
+/* Doxa 53 · Ferramenta Doxa
    Módulo isolado: nenhum estilo existente do leitor é substituído. */
 
 .doxa-tool-backdrop{
@@ -552,4 +552,229 @@ body.doxa-tool-mode-active #textBody .verse.doxa-tool-hit-enter{
   .doxa-tool-mode-fx-core::after{
     animation:none!important;
   }
+}
+
+
+/* ============================================================
+   Doxa 53 · Calibração por tema
+   Night preserva a estética aprovada. Temas claros usam um
+   âmbar mais profundo para manter contraste e um halo quente
+   próprio, em vez de depender do dourado claro do Night.
+   ============================================================ */
+body{
+  --doxa53-mark:var(--d30-gold2,var(--accent,#8c2f39));
+  --doxa53-glow:var(--d30-gold2,var(--accent,#8c2f39));
+  --doxa53-wash:var(--d30-gold,var(--accent,#8c2f39));
+  --doxa53-panel:var(--d30-panel,var(--paper,#e6e3da));
+  --doxa53-mark-opacity:88%;
+  --doxa53-edge-opacity:58%;
+  --doxa53-wash-opacity:10%;
+  --doxa53-glow-opacity:18%;
+}
+body[data-doxa30-theme="night"]{
+  --doxa53-mark:#F1C989;
+  --doxa53-glow:#E6AD63;
+  --doxa53-wash:#D9A25E;
+  --doxa53-panel:#0D0A07;
+}
+body[data-doxa30-theme="paper"]{
+  --doxa53-mark:#8D5018;
+  --doxa53-glow:#D79038;
+  --doxa53-wash:#B86F20;
+  --doxa53-panel:#F8F0E5;
+  --doxa53-mark-opacity:96%;
+  --doxa53-edge-opacity:82%;
+  --doxa53-wash-opacity:12%;
+  --doxa53-glow-opacity:23%;
+}
+body[data-doxa30-theme="sepia"]{
+  --doxa53-mark:#6E3D1D;
+  --doxa53-glow:#B96D2B;
+  --doxa53-wash:#92501F;
+  --doxa53-panel:#E2C59A;
+  --doxa53-mark-opacity:96%;
+  --doxa53-edge-opacity:84%;
+  --doxa53-wash-opacity:12%;
+  --doxa53-glow-opacity:22%;
+}
+body[data-doxa30-theme="white"]{
+  --doxa53-mark:#85501B;
+  --doxa53-glow:#C48B40;
+  --doxa53-wash:#A96B2B;
+  --doxa53-panel:#FFFFFF;
+  --doxa53-mark-opacity:96%;
+  --doxa53-edge-opacity:80%;
+  --doxa53-wash-opacity:9%;
+  --doxa53-glow-opacity:20%;
+}
+body[data-doxa30-theme="olive"]{
+  --doxa53-mark:#4B5130;
+  --doxa53-glow:#838B50;
+  --doxa53-wash:#62683D;
+  --doxa53-panel:#C5C3A7;
+  --doxa53-mark-opacity:96%;
+  --doxa53-edge-opacity:84%;
+  --doxa53-wash-opacity:13%;
+  --doxa53-glow-opacity:21%;
+}
+/* Compatibilidade com os temas/texturas editoriais já usados em builds anteriores. */
+body.doxa-theme-texture-cream{
+  --doxa53-mark:#875321;
+  --doxa53-glow:#CF8B3F;
+  --doxa53-wash:#A9682B;
+  --doxa53-mark-opacity:96%;
+  --doxa53-edge-opacity:82%;
+  --doxa53-wash-opacity:11%;
+}
+body.doxa-theme-texture-temple{
+  --doxa53-mark:#70471F;
+  --doxa53-glow:#B87932;
+  --doxa53-wash:#8C5824;
+  --doxa53-mark-opacity:97%;
+  --doxa53-edge-opacity:86%;
+  --doxa53-wash-opacity:12%;
+}
+
+/* Card da Ferramenta: o estado ativo também acompanha o contraste do tema. */
+.doxa-tool-mode-card{
+  border-color:color-mix(in srgb,var(--doxa53-mark) 22%,transparent)!important;
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--doxa53-wash) 8%,transparent),transparent 48%),
+    color-mix(in srgb,var(--doxa53-panel) 94%,var(--d30-bg,var(--paper,#e6e3da)))!important;
+}
+.doxa-tool-mode-card.is-active{
+  border-color:color-mix(in srgb,var(--doxa53-mark) 54%,transparent)!important;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.12),
+    inset 0 0 0 1px color-mix(in srgb,var(--doxa53-mark) 12%,transparent),
+    0 0 22px color-mix(in srgb,var(--doxa53-glow) 8%,transparent);
+}
+.doxa-tool-mode-card.is-active:after{
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--doxa53-glow) 24%,transparent),transparent);
+}
+.doxa-tool-mode-icon{
+  background:color-mix(in srgb,var(--doxa53-wash) 9%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--doxa53-mark) 16%,transparent);
+}
+.doxa-tool-mode-state{
+  color:var(--doxa53-mark);
+  background:color-mix(in srgb,var(--doxa53-wash) 12%,transparent);
+}
+
+/* Marca permanente no texto. Em tema claro a linha fica propositalmente
+   mais escura, enquanto o fundo continua discreto. */
+body.doxa-tool-mode-active #textBody .verse.doxa-tool-hit{
+  text-decoration-color:color-mix(in srgb,var(--doxa53-mark) var(--doxa53-mark-opacity),transparent);
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb,var(--doxa53-wash) var(--doxa53-wash-opacity),transparent),
+      color-mix(in srgb,var(--doxa53-wash) 6%,transparent) 42%,
+      transparent 94%);
+  box-shadow:
+    inset 2.5px 0 0 color-mix(in srgb,var(--doxa53-mark) var(--doxa53-edge-opacity),transparent),
+    0 1px 0 color-mix(in srgb,var(--doxa53-mark) 12%,transparent);
+}
+body[data-doxa30-theme="night"].doxa-tool-mode-active #textBody .verse.doxa-tool-hit{
+  text-shadow:0 0 13px color-mix(in srgb,var(--doxa53-glow) 9%,transparent);
+}
+body:not([data-doxa30-theme="night"]).doxa-tool-mode-active #textBody .verse.doxa-tool-hit{
+  text-shadow:none;
+}
+body.doxa-tool-mode-active #textBody .verse.doxa-tool-hit:active{
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--doxa53-wash) 19%,transparent),
+    color-mix(in srgb,var(--doxa53-wash) 9%,transparent) 50%,
+    transparent 96%);
+}
+body.doxa-tool-mode-active #textBody .verse.doxa-tool-hit-enter{
+  animation-name:doxa53-hit-reveal;
+}
+@keyframes doxa53-hit-reveal{
+  0%{
+    background-color:transparent;
+    text-decoration-color:transparent;
+    box-shadow:inset 0 0 0 transparent;
+    text-shadow:0 0 0 transparent;
+  }
+  38%{
+    background-color:color-mix(in srgb,var(--doxa53-wash) 15%,transparent);
+    text-decoration-color:var(--doxa53-mark);
+    box-shadow:
+      inset 3px 0 0 color-mix(in srgb,var(--doxa53-mark) 92%,transparent),
+      0 0 18px color-mix(in srgb,var(--doxa53-glow) var(--doxa53-glow-opacity),transparent);
+    text-shadow:0 0 12px color-mix(in srgb,var(--doxa53-glow) 10%,transparent);
+  }
+  100%{
+    background-color:transparent;
+    text-decoration-color:color-mix(in srgb,var(--doxa53-mark) var(--doxa53-mark-opacity),transparent);
+    box-shadow:
+      inset 2.5px 0 0 color-mix(in srgb,var(--doxa53-mark) var(--doxa53-edge-opacity),transparent),
+      0 1px 0 color-mix(in srgb,var(--doxa53-mark) 12%,transparent);
+    text-shadow:none;
+  }
+}
+
+/* A animação central usa duas intensidades: brilho dourado no Night e
+   âmbar contrastado nos fundos claros. */
+.doxa-tool-mode-fx::before{
+  background:radial-gradient(circle,
+    color-mix(in srgb,var(--doxa53-glow) 27%,transparent) 0%,
+    color-mix(in srgb,var(--doxa53-glow) 12%,transparent) 29%,
+    transparent 69%);
+}
+.doxa-tool-mode-fx::after{
+  background:linear-gradient(180deg,
+    transparent,
+    color-mix(in srgb,var(--doxa53-glow) 7%,transparent) 22%,
+    color-mix(in srgb,var(--doxa53-glow) 25%,transparent) 50%,
+    color-mix(in srgb,var(--doxa53-glow) 7%,transparent) 78%,
+    transparent);
+}
+.doxa-tool-mode-fx-core{
+  background:
+    radial-gradient(circle at 50% 38%,color-mix(in srgb,var(--doxa53-glow) 15%,transparent),transparent 56%),
+    color-mix(in srgb,var(--doxa53-panel) 88%,transparent);
+  border-color:color-mix(in srgb,var(--doxa53-mark) 42%,transparent);
+  box-shadow:
+    0 22px 60px rgba(0,0,0,.23),
+    0 0 34px color-mix(in srgb,var(--doxa53-glow) 20%,transparent);
+}
+.doxa-tool-mode-fx-core::before{
+  border-color:color-mix(in srgb,var(--doxa53-mark) 46%,transparent);
+  box-shadow:0 0 18px color-mix(in srgb,var(--doxa53-glow) 12%,transparent);
+}
+.doxa-tool-mode-fx-core::after{
+  border-color:color-mix(in srgb,var(--doxa53-glow) 25%,transparent);
+}
+.doxa-tool-mode-fx-core img{
+  filter:
+    drop-shadow(0 8px 14px rgba(0,0,0,.15))
+    drop-shadow(0 0 12px color-mix(in srgb,var(--doxa53-glow) 24%,transparent));
+}
+.doxa-tool-mode-fx-ring{
+  border-color:color-mix(in srgb,var(--doxa53-mark) 58%,transparent);
+  box-shadow:0 0 20px color-mix(in srgb,var(--doxa53-glow) 19%,transparent);
+}
+.doxa-tool-mode-fx-line{
+  background:linear-gradient(90deg,
+    transparent,
+    color-mix(in srgb,var(--doxa53-glow) 58%,transparent) 18%,
+    var(--doxa53-mark) 50%,
+    color-mix(in srgb,var(--doxa53-glow) 58%,transparent) 82%,
+    transparent);
+  box-shadow:
+    0 0 8px color-mix(in srgb,var(--doxa53-glow) 48%,transparent),
+    0 0 26px color-mix(in srgb,var(--doxa53-glow) 24%,transparent);
+}
+
+/* Nos fundos claros, acrescenta uma sombra quente bem sutil ao núcleo;
+   no Night mantemos o efeito luminoso original. */
+body:not([data-doxa30-theme="night"]) .doxa-tool-mode-fx-core{
+  box-shadow:
+    0 18px 45px rgba(64,43,19,.20),
+    0 0 32px color-mix(in srgb,var(--doxa53-glow) 24%,transparent),
+    inset 0 0 0 1px rgba(255,255,255,.25);
+}
+body:not([data-doxa30-theme="night"]) .doxa-tool-mode-fx::after{
+  filter:blur(7px) saturate(1.08);
 }
