@@ -47,11 +47,6 @@ body.parallel-mode .doxa30-nav-item svg,body.parallel-mode .doxa30-nav-item span
    Não muda interface nem recursos. Só evita operações caras de composição.
    ============================================================ */
 
-/* O fundo da barra já é praticamente opaco (97–99%).
-   No WebView, o backdrop-filter criava uma camada GPU que em alguns aparelhos
-   apagava/lavava os filhos da barra e ainda precisava recalcular blur enquanto
-   o texto bíblico rolava por trás. Sem o blur, o desenho visual permanece igual,
-   mas ícones/textos voltam a ser compostos normalmente. */
 body.parallel-mode .doxa30-bottom{
   -webkit-backdrop-filter:none!important;
   backdrop-filter:none!important;
@@ -61,7 +56,6 @@ body.parallel-mode .doxa30-bottom-wrap{
   will-change:transform!important;
 }
 
-/* Garante que os quatro itens sejam pintados na própria camada da barra. */
 body.parallel-mode .doxa30-nav-item{
   visibility:visible!important;
   opacity:1!important;
@@ -89,15 +83,10 @@ body.parallel-mode .doxa30-nav-item span{
   color:inherit!important;
 }
 
-/* Durante a rolagem sincronizada, cada painel recorta sua própria pintura.
-   Isso impede que uma mudança em A invalide a tela inteira e vice-versa. */
 body.parallel-mode .parallel-text{
   contain:paint;
 }
 
-/* A animação de capítulo mantém o mesmo deslocamento de 10px,
-   mas não anima a opacidade de um bloco enorme de texto.
-   Transform fica no compositor e não força blend do capítulo inteiro. */
 .parallel-pane.parallel-page-forward .parallel-text,
 .parallel-pane.parallel-page-back .parallel-text{
   will-change:transform;
@@ -111,9 +100,6 @@ body.parallel-mode .parallel-text{
   100%{transform:translate3d(0,0,0)}
 }
 
-/* HUD imersivo: max-height/padding continuam chegando aos mesmos estados,
-   mas deixam de ser interpolados quadro a quadro. Isso remove dezenas de
-   reflows durante o sumir/aparecer; opacity/transform continuam suaves. */
 body.parallel-mode .parallel-appbar{
   transition:opacity .18s ease,transform .22s cubic-bezier(.22,.72,.18,1)!important;
 }
@@ -124,4 +110,56 @@ body.parallel-mode .parallel-pane-head{
 @media(prefers-reduced-motion:reduce){
   body.parallel-mode .parallel-appbar,
   body.parallel-mode .parallel-pane-head{transition:none!important}
+}
+
+/* ============================================================
+   Doxa 50.5 · Scroll da leitura normal sem jank
+   Mesma interface e mesmas animações; só reduz rasterização e repintura.
+   ============================================================ */
+
+/* O capítulo inteiro não deve ficar permanentemente promovido a uma camada GPU.
+   A promoção volta somente enquanto a animação de troca de capítulo está rodando. */
+body:not(.chapter-animating) #singleReader{
+  will-change:auto!important;
+}
+body.chapter-animating #singleReader{
+  will-change:transform,opacity!important;
+}
+
+/* O antigo background-attachment:fixed fazia o WebView repintar o gradiente da página
+   em cada quadro de rolagem. A aparência fixa é preservada numa única camada composta. */
+html{
+  background:var(--d30-bg,#050403)!important;
+  background-image:none!important;
+  background-attachment:scroll!important;
+}
+body{
+  position:relative;
+  z-index:0;
+  isolation:isolate;
+  background:none!important;
+  background-image:none!important;
+  background-attachment:scroll!important;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% -12%,color-mix(in srgb,var(--d30-gold,#d9a25e) 12%,transparent),transparent 34%),
+    linear-gradient(180deg,var(--d30-bg,#050403) 0%,var(--d30-bg2,#0a0705) 100%);
+  transform:translate3d(0,0,0);
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  will-change:transform;
+}
+
+/* Quando o HUD já saiu da tela, ele continua visualmente igual (invisível),
+   mas suas camadas deixam de disputar composição com o texto em movimento. */
+body.hud-hidden:not(.parallel-mode) > header,
+body.hud-hidden:not(.parallel-mode) .doxa30-bottom{
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
 }
