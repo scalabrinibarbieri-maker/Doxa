@@ -1,4 +1,12 @@
+/* =========================================================
+   DOXA · Boot Splash 52
+   Abertura premium de ~3s.
+   A interface real carrega por trás e é revelada no final.
+   ========================================================= */
+
 #doxaBootSplash{
+  --doxa-boot-gold:#d9a15d;
+  --doxa-boot-gold-soft:#f0cf9d;
   position:fixed;
   inset:0;
   z-index:2147483647;
@@ -6,49 +14,81 @@
   align-items:center;
   justify-content:center;
   background:
-    radial-gradient(circle at 50% 34%,rgba(203,128,47,.24),transparent 21%),
-    radial-gradient(circle at 50% 54%,rgba(116,67,24,.11),transparent 28%),
-    linear-gradient(180deg,#010101 0%,#070605 58%,#020202 100%);
+    radial-gradient(ellipse at 50% 43%,rgba(181,108,40,.11) 0%,rgba(79,43,14,.055) 25%,transparent 52%),
+    radial-gradient(ellipse at 50% 104%,rgba(121,74,31,.07),transparent 42%),
+    linear-gradient(180deg,#010101 0%,#050403 54%,#010101 100%);
   color:#f4eadb;
   opacity:1;
   visibility:visible;
-  transition:opacity .34s ease,visibility .34s ease;
   touch-action:none;
   overscroll-behavior:none;
   overflow:hidden;
   isolation:isolate;
+  transition:
+    opacity .36s cubic-bezier(.4,0,.2,1),
+    visibility .36s cubic-bezier(.4,0,.2,1),
+    filter .36s ease;
 }
+
+/* Aura central: uma única respiração, não um loop. */
 #doxaBootSplash::before{
   content:'';
   position:absolute;
   left:50%;
-  top:38%;
-  width:min(80vw,372px);
-  height:min(80vw,372px);
+  top:43%;
+  width:min(92vw,470px);
+  height:min(92vw,470px);
   border-radius:50%;
-  background:radial-gradient(circle,rgba(220,146,62,.28) 0%,rgba(220,146,62,.12) 38%,rgba(0,0,0,0) 72%);
-  filter:blur(26px);
-  transform:translate(-50%,-50%) scale(.94);
-  opacity:.72;
-  animation:doxaBootGlowBreathe 3.6s ease-in-out infinite;
+  background:
+    radial-gradient(circle,
+      rgba(236,174,101,.27) 0%,
+      rgba(195,116,46,.13) 30%,
+      rgba(92,51,20,.055) 50%,
+      rgba(0,0,0,0) 73%);
+  filter:blur(28px);
+  transform:translate(-50%,-50%) scale(.62);
+  opacity:0;
   pointer-events:none;
   z-index:0;
+  animation:doxaBootAura 2.25s cubic-bezier(.16,.82,.2,1) .28s both;
 }
+
+/* Linhas muito discretas de manuscrito. */
 #doxaBootSplash::after{
   content:'';
   position:absolute;
-  inset:0;
+  left:8vw;
+  right:8vw;
+  top:16%;
+  bottom:15%;
   pointer-events:none;
-  opacity:.02;
-  background-image:radial-gradient(rgba(255,255,255,.55) .55px,transparent .55px);
-  background-size:4px 4px;
-  mix-blend-mode:soft-light;
+  opacity:0;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 31px,
+      rgba(228,190,137,.10) 31.5px,
+      transparent 32.5px
+    );
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,rgba(0,0,0,.78) 45%,transparent 78%);
+  mask-image:radial-gradient(ellipse at center,#000 0%,rgba(0,0,0,.78) 45%,transparent 78%);
+  transform:translateY(9px);
   z-index:0;
+  animation:doxaBootManuscript 1.85s ease .70s both;
 }
+
 #doxaBootSplash.doxa-boot-splash-hide{
   opacity:0;
   visibility:hidden;
+  filter:brightness(.88);
   pointer-events:none;
+}
+
+#doxaBootSplash.doxa-boot-splash-hide::before{
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.72);
+  transition:opacity .28s ease,transform .34s cubic-bezier(.4,0,.2,1);
 }
 
 .doxa-boot-inner{
@@ -62,156 +102,222 @@
   align-items:center;
   justify-content:center;
   padding:max(12px,env(safe-area-inset-top)) 26px max(28px,env(safe-area-inset-bottom));
-  transform:translateY(-1.5vh);
+  transform:translateY(-1.25vh);
+  opacity:1;
+  transition:
+    opacity .31s ease,
+    transform .36s cubic-bezier(.4,0,.2,1);
 }
+
+#doxaBootSplash.doxa-boot-splash-hide .doxa-boot-inner{
+  opacity:0;
+  transform:translateY(-1.25vh) scale(1.012);
+}
+
+/*
+  O ícone não "aparece" de uma vez: ele é revelado como uma inscrição,
+  seguido por uma única respiração de luz.
+*/
 .doxa-boot-icon{
   order:1;
   display:block;
-  width:min(56vw,254px);
+  width:min(55vw,248px);
   height:auto;
   object-fit:contain;
-  margin:0 0 30px;
+  margin:0 0 31px;
+  opacity:0;
+  clip-path:inset(0 100% 0 0);
+  transform:translateY(7px) scale(.965);
   filter:
-    drop-shadow(0 0 14px rgba(222,159,91,.18))
+    drop-shadow(0 0 0 rgba(226,158,85,0))
     drop-shadow(0 18px 42px rgba(0,0,0,.36))
-    brightness(1);
-  animation:
-    doxaBootIconIn .9s cubic-bezier(.16,.82,.22,1) both,
-    doxaBootIconBreathe 4.2s ease-in-out 1s infinite;
+    brightness(.86);
+  will-change:transform,opacity,filter,clip-path;
+  animation:doxaBootIconSequence 2.18s cubic-bezier(.16,.82,.2,1) .34s both;
 }
 
+/* Nome DOXA: entra só na parte final e recebe um brilho único. */
 .doxa-boot-inner::before{
   content:'DOXA';
   order:2;
-  margin:0 0 28px;
+  margin:0 0 0;
   font-family:Georgia,'Times New Roman',serif;
-  font-size:clamp(42px,9vw,62px);
+  font-size:clamp(43px,9vw,63px);
   line-height:1;
-  letter-spacing:.17em;
-  text-indent:.17em;
+  letter-spacing:.185em;
+  text-indent:.185em;
   font-weight:700;
-  background:linear-gradient(180deg,#f8e0bb 0%,#f3d2a1 30%,#dfa968 60%,#aa7138 100%);
+  background:
+    linear-gradient(
+      102deg,
+      #9b6735 0%,
+      #d69a55 24%,
+      #f4d7a8 43%,
+      #fff4df 50%,
+      #f1ca92 57%,
+      #c78745 77%,
+      #8f5b2f 100%
+    );
+  background-size:230% 100%;
+  background-position:100% 0;
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
-  text-shadow:0 0 20px rgba(214,161,100,.08);
-  animation:doxaBootRiseIn .72s ease-out .08s both;
+  text-shadow:0 0 24px rgba(214,161,100,.07);
+  opacity:0;
+  transform:translateY(10px);
+  will-change:opacity,transform,background-position;
+  animation:
+    doxaBootTitleIn .46s cubic-bezier(.16,.82,.2,1) 2.03s both,
+    doxaBootTitleShine .58s ease 2.20s both;
 }
+
+/* Assinatura final, sem barra de loading. */
 .doxa-boot-inner::after{
   content:'A PALAVRA TRANSFORMA';
   position:absolute;
   left:0;
   right:0;
-  bottom:max(44px,calc(env(safe-area-inset-bottom) + 25px));
+  bottom:max(45px,calc(env(safe-area-inset-bottom) + 25px));
   text-align:center;
   font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
-  font-size:11.5px;
+  font-size:10.5px;
   font-weight:700;
-  letter-spacing:.34em;
-  text-indent:.34em;
-  color:rgba(204,164,118,.86);
-  animation:doxaBootRiseIn .72s ease-out .34s both;
+  letter-spacing:.35em;
+  text-indent:.35em;
+  color:rgba(202,158,108,.70);
+  opacity:0;
+  transform:translateY(7px);
+  animation:doxaBootTaglineIn .42s ease 2.30s both;
 }
 
+/* O texto/barra antigos continuam no DOM para acessibilidade,
+   mas não interferem mais na assinatura visual. */
 .doxa-boot-status{
   order:3;
   width:min(77vw,356px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:15px;
-  color:rgba(244,234,219,.94);
-  font:600 15px/1.2 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
-  text-align:center;
-  animation:doxaBootRiseIn .72s ease-out .16s both;
-}
-.doxa-boot-status>span:last-child{
-  order:1;
-  display:block;
-}
-.doxa-boot-spinner{
-  order:2;
-  display:block;
-  position:relative;
-  width:100%;
-  height:8px;
-  border-radius:999px;
+  height:0;
+  margin:0;
   overflow:hidden;
-  box-sizing:border-box;
-  background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.008));
-  border:1px solid rgba(214,161,100,.14);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.05),
-    0 0 18px rgba(0,0,0,.20),
-    0 0 14px rgba(194,125,52,.07);
-}
-.doxa-boot-spinner::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.10));
+  opacity:0;
   pointer-events:none;
-}
-.doxa-boot-spinner::after{
-  content:'';
   position:absolute;
-  top:0;
-  bottom:0;
-  left:0;
-  width:46%;
-  border-radius:inherit;
-  background:linear-gradient(90deg,#9c612b 0%,#d99a52 36%,#f1c98f 72%,#fff0d1 100%);
-  box-shadow:
-    0 0 22px rgba(233,171,91,.52),
-    0 0 10px rgba(255,224,177,.40),
-    0 0 3px rgba(255,246,229,.70);
-  animation:doxaBootLoading 2.35s ease-in-out infinite;
+}
+.doxa-boot-spinner{display:none!important}
+
+/* Uma linha de luz cruza o ícone no instante da "inscrição". */
+.doxa-boot-inner{
+  --boot-scan-opacity:0;
+}
+.doxa-boot-inner > .doxa-boot-icon{
+  -webkit-mask-image:linear-gradient(#000,#000);
+  mask-image:linear-gradient(#000,#000);
 }
 
-@keyframes doxaBootIconIn{
-  from{opacity:0;transform:translateY(16px) scale(.94)}
-  to{opacity:1;transform:none}
-}
-@keyframes doxaBootRiseIn{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:none}
-}
-@keyframes doxaBootLoading{
-  0%{transform:translateX(-118%)}
-  58%{transform:translateX(176%)}
-  100%{transform:translateX(244%)}
-}
-@keyframes doxaBootIconBreathe{
-  0%,100%{
-    filter:
-      drop-shadow(0 0 14px rgba(222,159,91,.18))
-      drop-shadow(0 18px 42px rgba(0,0,0,.36))
-      brightness(1)
+@keyframes doxaBootAura{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.62);
+    filter:blur(34px);
   }
-  50%{
-    filter:
-      drop-shadow(0 0 24px rgba(235,171,96,.34))
-      drop-shadow(0 18px 42px rgba(0,0,0,.36))
-      brightness(1.075)
+  31%{
+    opacity:.50;
+  }
+  68%{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.08);
+    filter:blur(27px);
+  }
+  100%{
+    opacity:.68;
+    transform:translate(-50%,-50%) scale(.98);
+    filter:blur(29px);
   }
 }
-@keyframes doxaBootGlowBreathe{
-  0%,100%{transform:translate(-50%,-50%) scale(.94);opacity:.72}
-  50%{transform:translate(-50%,-50%) scale(1.10);opacity:1}
+
+@keyframes doxaBootManuscript{
+  0%{opacity:0;transform:translateY(9px)}
+  40%{opacity:.16}
+  72%{opacity:.11;transform:translateY(0)}
+  100%{opacity:.055;transform:translateY(-2px)}
+}
+
+@keyframes doxaBootIconSequence{
+  0%{
+    opacity:0;
+    clip-path:inset(0 100% 0 0);
+    transform:translateY(7px) scale(.965);
+    filter:
+      drop-shadow(0 0 0 rgba(226,158,85,0))
+      drop-shadow(0 18px 42px rgba(0,0,0,.36))
+      brightness(.86);
+  }
+  8%{opacity:.44}
+  38%{
+    opacity:1;
+    clip-path:inset(0 0 0 0);
+    transform:translateY(0) scale(1);
+    filter:
+      drop-shadow(0 0 15px rgba(222,155,82,.19))
+      drop-shadow(0 18px 42px rgba(0,0,0,.36))
+      brightness(1);
+  }
+  55%{
+    opacity:1;
+    clip-path:inset(0 0 0 0);
+    transform:translateY(0) scale(1);
+    filter:
+      drop-shadow(0 0 17px rgba(224,158,86,.23))
+      drop-shadow(0 18px 42px rgba(0,0,0,.36))
+      brightness(1.01);
+  }
+  76%{
+    opacity:1;
+    clip-path:inset(0 0 0 0);
+    transform:translateY(-1px) scale(1.026);
+    filter:
+      drop-shadow(0 0 32px rgba(241,179,102,.43))
+      drop-shadow(0 0 68px rgba(174,100,38,.18))
+      drop-shadow(0 18px 42px rgba(0,0,0,.36))
+      brightness(1.095);
+  }
+  100%{
+    opacity:1;
+    clip-path:inset(0 0 0 0);
+    transform:translateY(0) scale(1);
+    filter:
+      drop-shadow(0 0 17px rgba(222,155,82,.22))
+      drop-shadow(0 18px 42px rgba(0,0,0,.36))
+      brightness(1.015);
+  }
+}
+
+@keyframes doxaBootTitleIn{
+  from{opacity:0;transform:translateY(10px);filter:blur(3px)}
+  to{opacity:1;transform:translateY(0);filter:none}
+}
+@keyframes doxaBootTitleShine{
+  from{background-position:100% 0}
+  to{background-position:0% 0}
+}
+@keyframes doxaBootTaglineIn{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
 @media (max-width:420px){
-  .doxa-boot-icon{width:min(56vw,254px)}
+  .doxa-boot-icon{width:min(56vw,246px)}
 }
+
 @media (prefers-reduced-motion:reduce){
-  #doxaBootSplash{transition:none}
+  #doxaBootSplash{transition:opacity .18s linear,visibility .18s linear}
   #doxaBootSplash::before,
+  #doxaBootSplash::after,
   .doxa-boot-icon,
   .doxa-boot-inner::before,
-  .doxa-boot-inner::after,
-  .doxa-boot-status,
-  .doxa-boot-spinner::after{
+  .doxa-boot-inner::after{
     animation-duration:.001ms!important;
+    animation-delay:0s!important;
     animation-iteration-count:1!important;
   }
 }
