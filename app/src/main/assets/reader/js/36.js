@@ -76,10 +76,225 @@
     pop.querySelectorAll('button,[role="button"],.va-item,.action-item').forEach(el=>{
       const txt=String(el.textContent||'').trim().toLowerCase();
       const dataVa=String(el.getAttribute('data-va')||'').trim().toLowerCase();
-      if(dataVa==='interlinear'||banned.some(x=>txt.includes(x))){
+      if(el.hasAttribute('data-doxa-tool')||dataVa==='interlinear'||banned.some(x=>txt.includes(x))){
         el.remove();
       }
     });
+  }
+
+
+  /* =========================================================
+     Modo Ferramenta Doxa
+     Ativado pela aba Ferramentas. No modo ativo, apenas os
+     versículos com conteúdo Doxa recebem a marca editorial.
+     ========================================================= */
+  let doxaModeActive=false;
+  let markSequence=0;
+  let markTimer=0;
+
+  function rowAppliesToVersion(row,sourceMode){
+    return !(Array.isArray(row?.versoes)&&row.versoes.length&&!row.versoes.includes(sourceMode));
+  }
+
+  function clearVerseMarks(){
+    document.querySelectorAll('.verse.doxa-tool-hit').forEach(el=>{
+      el.classList.remove('doxa-tool-hit','doxa-tool-hit-enter');
+      el.removeAttribute('data-doxa-tool-hit');
+      el.style.removeProperty('--doxa-hit-index');
+    });
+  }
+
+  function currentNormalChapterRef(){
+    return identityFromVerse(document.querySelector('#textBody .verse'));
+  }
+
+  function syncModeButton(){
+    const btn=document.getElementById('toolsDoxaMode');
+    if(!btn)return;
+    btn.classList.toggle('is-active',doxaModeActive);
+    btn.setAttribute('aria-pressed',doxaModeActive?'true':'false');
+    const state=btn.querySelector('.doxa-tool-mode-state');
+    const copy=btn.querySelector('.doxa-tool-mode-copy small');
+    if(state)state.textContent=doxaModeActive?'ATIVO':'';
+    if(copy)copy.textContent=doxaModeActive
+      ?'Ativa · toque novamente para desativar'
+      :'Revele no texto os versículos com conteúdo Doxa';
+  }
+
+  function syncToolCardVisibility(){
+    const btn=document.getElementById('toolsDoxaMode');
+    if(!btn)return;
+    const notes=document.getElementById('toolsNotesView');
+    const highlights=document.getElementById('toolsHighlightsView');
+    btn.hidden=!!((notes&&!notes.hidden)||(highlights&&!highlights.hidden));
+  }
+
+  function createModeFx(){
+    if(document.getElementById('doxaToolModeFx'))return;
+    const fx=document.createElement('div');
+    fx.id='doxaToolModeFx';
+    fx.className='doxa-tool-mode-fx';
+    fx.setAttribute('aria-hidden','true');
+    fx.innerHTML=`
+      <div class="doxa-tool-mode-fx-core">
+        <span class="doxa-tool-mode-fx-ring"></span>
+        <img src="doxa_splash_icon.png" alt="">
+      </div>
+      <span class="doxa-tool-mode-fx-line"></span>`;
+    document.body.appendChild(fx);
+  }
+
+  function playModeFx(on){
+    createModeFx();
+    const fx=document.getElementById('doxaToolModeFx');
+    if(!fx)return;
+    fx.classList.remove('on','off','play');
+    void fx.offsetWidth;
+    fx.classList.add(on?'on':'off','play');
+    setTimeout(()=>fx.classList.remove('play','on','off'),760);
+  }
+
+  function installModeButton(){
+    const panel=document.getElementById('p-marcar');
+    if(!panel)return;
+    let btn=document.getElementById('toolsDoxaMode');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.type='button';
+      btn.id='toolsDoxaMode';
+      btn.className='tool-card doxa-tool-mode-card';
+      btn.setAttribute('aria-pressed','false');
+      btn.innerHTML=`
+        <span class="doxa-tool-mode-icon" aria-hidden="true"><img src="doxa_splash_icon.png" alt=""></span>
+        <span class="tool-card-copy doxa-tool-mode-copy">
+          <strong>Ferramenta Doxa</strong>
+          <small>Revele no texto os versículos com conteúdo Doxa</small>
+        </span>
+        <span class="doxa-tool-mode-state" aria-hidden="true"></span>
+        <span class="tool-card-arrow">›</span>`;
+      const anchor=document.getElementById('toolsHighlightStart')||panel.firstElementChild;
+      if(anchor)panel.insertBefore(btn,anchor); else panel.appendChild(btn);
+      btn.addEventListener('click',e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        setDoxaMode(!doxaModeActive,true);
+      });
+    }
+    syncModeButton();
+    syncToolCardVisibility();
+
+    for(const id of ['toolsNotesView','toolsHighlightsView']){
+      const el=document.getElementById(id);
+      if(!el||el.dataset.doxaModeObserved)continue;
+      el.dataset.doxaModeObserved='1';
+      try{new MutationObserver(syncToolCardVisibility).observe(el,{attributes:true,attributeFilter:['hidden']})}catch(e){}
+    }
+  }
+
+  function scheduleMarks(delay=40){
+    clearTimeout(markTimer);
+    markTimer=setTimeout(()=>markCurrentChapter(),delay);
+  }
+
+  async function markCurrentChapter(force=false){
+    const seq=++markSequence;
+    clearVerseMarks();
+    if(!doxaModeActive)return;
+
+    const base=currentNormalChapterRef();
+    if(!base){
+      if(seq===markSequence&&doxaModeActive)scheduleMarks(120);
+      return;
+    }
+
+    try{
+      const rows=await fetchChapter(base.book,base.chapter,force);
+      if(seq!==markSequence||!doxaModeActive)return;
+
+      const verses=new Set();
+      for(const row of rows){
+        if(!rowAppliesToVersion(row,base.sourceMode))continue;
+        const start=Number(row.versiculo_inicio);
+        const end=row.versiculo_fim==null?start:Number(row.versiculo_fim);
+        if(!Number.isFinite(start)||!Number.isFinite(end))continue;
+        for(let v=start;v<=end&&v<1000;v++)verses.add(v);
+      }
+
+      let hitIndex=0;
+      document.querySelectorAll('#textBody .verse').forEach(el=>{
+        const v=Number(el.dataset.v||String(el.id||'').replace(/^v/,''));
+        if(!verses.has(v))return;
+        el.classList.add('doxa-tool-hit','doxa-tool-hit-enter');
+        el.setAttribute('data-doxa-tool-hit','1');
+        el.style.setProperty('--doxa-hit-index',String(hitIndex++));
+      });
+
+      if(hitIndex){
+        setTimeout(()=>{
+          document.querySelectorAll('#textBody .verse.doxa-tool-hit-enter')
+            .forEach(el=>el.classList.remove('doxa-tool-hit-enter'));
+        },900);
+      }
+    }catch(e){
+      /* Sem conexão: o modo permanece ativo e tenta de novo
+         numa próxima renderização, sem quebrar o leitor. */
+    }
+  }
+
+  function goToNormalBible(){
+    try{
+      if(typeof setParallelMode==='function'&&(window.parallelOn||document.body.classList.contains('parallel-mode'))){
+        setParallelMode(false);
+      }
+    }catch(e){}
+    try{window.openPanel?.('ler')}catch(e){
+      try{openPanel('ler')}catch(_){}
+    }
+  }
+
+  function setDoxaMode(on,fromTools=false){
+    doxaModeActive=!!on;
+    document.body.classList.toggle('doxa-tool-mode-active',doxaModeActive);
+    syncModeButton();
+
+    if(!doxaModeActive){
+      ++markSequence;
+      clearVerseMarks();
+    }
+
+    if(fromTools){
+      goToNormalBible();
+      setTimeout(()=>{
+        playModeFx(doxaModeActive);
+        if(doxaModeActive)markCurrentChapter();
+      },70);
+    }else if(doxaModeActive){
+      markCurrentChapter();
+    }
+  }
+
+  function installReaderModeHooks(){
+    const textBody=document.getElementById('textBody');
+    if(textBody&&!textBody.dataset.doxaModeObserved){
+      textBody.dataset.doxaModeObserved='1';
+      try{
+        new MutationObserver(()=>{
+          if(doxaModeActive)scheduleMarks(55);
+        }).observe(textBody,{childList:true,subtree:true});
+      }catch(e){}
+    }
+
+    document.addEventListener('click',e=>{
+      if(!doxaModeActive)return;
+      const target=e.target instanceof Element?e.target:null;
+      const verse=target?.closest?.('#textBody .verse.doxa-tool-hit');
+      if(!verse)return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation?.();
+      const ref=identityFromVerse(verse);
+      if(ref)open(ref);
+    },true);
   }
 
   function createUi(){
@@ -241,36 +456,9 @@
     load(ref);
   }
 
-  function installButton(){
-    const pop=document.getElementById('verseActions');
-    if(!pop)return;
+  function removeLegacyContextButton(){
+    document.querySelectorAll('#verseActions [data-doxa-tool]').forEach(el=>el.remove());
     cleanseVerseActions();
-    if(pop.querySelector('[data-doxa-tool]'))return;
-
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.setAttribute('data-doxa-tool','1');
-    btn.innerHTML=`
-      <span class="va-icon doxa-tool-va-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="M6.5 4.5h6.2c3.2 0 5.8 2.6 5.8 5.8v3.4c0 3.2-2.6 5.8-5.8 5.8H6.5z"/>
-          <path d="M10 8v8"/>
-          <path d="M10 8h2.3c2 0 3.4 1.5 3.4 4s-1.4 4-3.4 4H10"/>
-        </svg>
-      </span>
-      <span class="va-label">Ferramenta Doxa</span>
-      <span class="va-chevron">›</span>`;
-
-    const copy=pop.querySelector('[data-va="copy"]');
-    if(copy)pop.insertBefore(btn,copy);
-    else pop.appendChild(btn);
-
-    btn.addEventListener('click',e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      const ref=currentRef();
-      if(ref)open(ref);
-    });
   }
 
   document.addEventListener('keydown',e=>{
@@ -280,19 +468,33 @@
     }
   });
 
-  installButton();
-  cleanseVerseActions();
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{installButton();cleanseVerseActions()},{once:true});
+  function init(){
+    removeLegacyContextButton();
+    installModeButton();
+    installReaderModeHooks();
+    createModeFx();
+    syncModeButton();
 
-  const verseActions=document.getElementById('verseActions');
-  if(verseActions&&'MutationObserver' in window){
-    try{new MutationObserver(()=>cleanseVerseActions()).observe(verseActions,{childList:true,subtree:true})}catch(e){}
+    const verseActions=document.getElementById('verseActions');
+    if(verseActions&&'MutationObserver' in window){
+      try{new MutationObserver(removeLegacyContextButton).observe(verseActions,{childList:true,subtree:true})}catch(e){}
+    }
+
+    setTimeout(removeLegacyContextButton,350);
+    setTimeout(()=>{installModeButton();syncToolCardVisibility()},500);
   }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
 
   window.DoxaTool={
     open,
     close,
     clearCache(){cache.clear()},
+    setMode(on){setDoxaMode(!!on,false)},
+    toggleMode(){setDoxaMode(!doxaModeActive,false);return doxaModeActive},
+    isModeActive(){return doxaModeActive},
+    refreshMarks(){return markCurrentChapter(true)},
     refreshCurrent(){
       const ref=currentRef();
       if(ref){openShell(ref);load(ref,true)}
