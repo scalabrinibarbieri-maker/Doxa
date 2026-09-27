@@ -47,11 +47,11 @@
        digitar na busca), o conteúdo aparece direto — antes ele sumia e reaparecia, e o
        instante vazio era o clarão. */
     const opening=!picker?.classList.contains('on');
-    if(opening){lastAnimStage=pickerStage;body.classList.remove('picker-stage-enter');return}
+    if(opening){lastAnimStage=pickerStage;body.classList.remove('picker-stage-enter','pk-open');void body.offsetWidth;body.classList.add('picker-stage-enter','pk-open');setTimeout(()=>body.classList.remove('picker-stage-enter','pk-open'),1100);return}
     if(pickerStage===lastAnimStage)return;   // mesma etapa: não reinicia (a troca chama esta função duas vezes)
     lastAnimStage=pickerStage;
     body.querySelectorAll('.picker-book-v4,.picker-num-v4').forEach((el,i)=>el.style.setProperty('--picker-i',String(Math.min(i,14))));
-    body.classList.remove('picker-stage-enter');void body.offsetWidth;body.classList.add('picker-stage-enter');
+    body.classList.remove('picker-stage-enter','pk-open');void body.offsetWidth;body.classList.add('picker-stage-enter');
     setTimeout(()=>body.classList.remove('picker-stage-enter'),520);
   }
   function pickerChoiceTransition(el,fn){
@@ -74,15 +74,44 @@
   function stageHeading(book){const m=pickerMode(),label=VERSION_META[m]?.label||m;if(pickerStage==='book')return['Escolher livro',label];if(pickerStage==='chapter')return[bookName(book),'Escolha o capítulo'];return[bookName(book)+' '+pickerChapter,'Escolha o versículo']}
   function renderPicker(filter=''){
     const cp=pickerCorpus();pickerBook=Math.min(Math.max(0,pickerBook),cp.books.length-1);const b=cp.books[pickerBook];const hd=stageHeading(b);title.textContent=hd[0];subtitle.textContent=hd[1];pickerTabs.forEach(t=>t.classList.toggle('on',t.dataset.pickerStage===pickerStage));pickerBack.disabled=pickerStage==='book';if(picker)picker.dataset.stage=pickerStage;
+    if(pickerStage!=='book'&&body)body.onscroll=null;
     if(pickerStage==='book'){
       const q=String(filter||'').trim().toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
       const books=cp.books.map((x,i)=>({x,i,name:bookName(x),abbr:PT_ABBR[x.book]||x.book})).filter(o=>!q||((o.name+' '+o.abbr+' '+o.x.book).toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q)));
-      const NT=new Set(['g-gospel','g-acts','g-paul','g-general','g-rev']);
-      const cell=(o,k)=>'<button type="button" class="pk-cell pk-book '+(BOOK_GENRE[o.x.book]||'')+(o.i===pickerBook?' on':'')+'" style="--r:'+Math.min(Math.floor(k/4),9)+'" data-pb="'+o.i+'" title="'+esc(o.name)+'"><b>'+esc(o.abbr)+'</b><small>'+esc(o.name)+'</small></button>';
-      const ot=books.filter(o=>!NT.has(BOOK_GENRE[o.x.book])),nt=books.filter(o=>NT.has(BOOK_GENRE[o.x.book]));
-      const sec=(t,list,off)=>list.length?'<section class="pk-sec"><h4>'+t+'<span>'+list.length+'</span></h4><div class="pk-grid pk-grid-books">'+list.map((o,k)=>cell(o,k+off)).join('')+'</div></section>':'';
-      body.innerHTML=sec('Antigo Testamento',ot,0)+sec('Novo Testamento',nt,ot.length?Math.min(ot.length,8):0)+(books.length?'':'<div class="picker-empty">Nenhum livro encontrado.</div>');
-      body.querySelectorAll('[data-pb]').forEach(el=>el.onclick=()=>pickerChoiceTransition(el,()=>{pickerBook=+el.dataset.pb;const nb=cp.books[pickerBook];pickerChapter=Number(nb.chapters[0].chapter);pickerVerse=1;setPickerStage('chapter')}));updatePickerAction();animatePickerStage();return;
+      /* Doxa 50 · Livros por categoria, com atalhos, recentes e posição automática */
+      const CATS=[['g-law','law','Torá','Torá',"#b9b04a"],['g-history','history','Históricos','Históricos',"#4fa3ad"],
+        ['g-wisdom','wisdom','Poéticos e Sabedoria','Poéticos',"#c07a55"],['g-major','major','Profetas Maiores','Profetas',"#6ea763"],
+        ['g-minor','minor','Profetas Menores','Menores',"#b85a6c"],['g-gospel','gospel','Evangelhos','Evangelhos',"#d9a25e"],
+        ['g-acts','acts','Atos','Atos',"#5b8fd6"],['g-paul','paul','Cartas de Paulo','Paulo',"#9b7bd1"],
+        ['g-general','general','Cartas Gerais','Gerais',"#3fae8c"],['g-rev','rev','Apocalipse','Apocalipse',"#c9543f"]];
+      let recent=[];try{recent=JSON.parse(localStorage.getItem('doxa:picker:recent')||'[]')}catch(e){}
+      const byCode={};books.forEach(o=>byCode[o.x.book]=o);
+      let wave=0;
+      const cell=(o,k,base)=>'<button type="button" class="pk-cell pk-book'+(o.i===pickerBook?' on':'')+'" style="--r:'+Math.min(base+Math.floor(k/4),8)+'" data-pb="'+o.i+'" title="'+esc(o.name)+'"><b>'+esc(o.abbr)+'</b><small>'+esc(o.name)+'</small></button>';
+      const section=(id,title,color,list,count)=>{const base=wave;wave+=1;
+        return '<section class="pk-sec" id="pks-'+id+'" data-cat="'+id+'" style="--pk-c:'+color+';--r:'+Math.min(base,8)+'"><h4><i></i>'+esc(title)+'<span>'+count+'</span></h4><div class="pk-grid pk-grid-books">'+list.map((o,k)=>cell(o,k,base)).join('')+'</div></section>'};
+      let html='';
+      const recentList=q?[]:recent.map(c=>byCode[c]).filter(Boolean).slice(0,4);
+      const groups=CATS.map(c=>[c,books.filter(o=>BOOK_GENRE[o.x.book]===c[0])]).filter(g=>g[1].length);
+      if(!q&&groups.length>1)html+='<nav class="pk-chips" aria-label="Categorias">'+(recentList.length?'<button type="button" data-jump="recent" style="--pk-c:var(--d30-gold,#d9a25e)"><i></i>Recentes</button>':'')+groups.map(g=>'<button type="button" data-jump="'+g[0][1]+'" style="--pk-c:'+g[0][4]+'"><i></i>'+g[0][3]+'</button>').join('')+'</nav>';
+      if(recentList.length)html+=section('recent','Lidos recentemente','var(--d30-gold,#d9a25e)',recentList,'');
+      groups.forEach(g=>{html+=section(g[0][1],g[0][2],g[0][4],g[1],g[1].length+(g[1].length===1?' livro':' livros'))});
+      const others=books.filter(o=>!BOOK_GENRE[o.x.book]);if(others.length)html+=section('other','Outros','var(--d30-gold,#d9a25e)',others,others.length);
+      body.innerHTML=html||'<div class="picker-empty">Nenhum livro encontrado.</div>';
+      /* abre já com o livro atual à vista (posicionado antes de aparecer: sem rolagem animada) */
+      if(!q){const cur=body.querySelector('.pk-sec:not([data-cat="recent"]) .pk-book.on');if(cur&&!picker.classList.contains('on')){const top=cur.offsetTop-body.offsetTop-150;body.scrollTop=Math.max(0,top)}}
+      /* atalhos: toque rola até a categoria; ao rolar, o atalho da categoria visível acende */
+      const chips=body.querySelector('.pk-chips');
+      if(chips){
+        const setActive=id=>{chips.querySelectorAll('button').forEach(b=>{const on=b.dataset.jump===id;if(on!==b.classList.contains('on')){b.classList.toggle('on',on);if(on){const l=b.offsetLeft-chips.clientWidth/2+b.offsetWidth/2;chips.scrollTo?.({left:Math.max(0,l),behavior:'smooth'})}}})};
+        chips.querySelectorAll('button').forEach(b=>b.onclick=()=>{const sec=body.querySelector('#pks-'+b.dataset.jump);if(!sec)return;body.scrollTo?.({top:Math.max(0,sec.offsetTop-body.offsetTop-chips.offsetHeight-6),behavior:'smooth'});setActive(b.dataset.jump)});
+        let ticking=false;const secs=[...body.querySelectorAll('.pk-sec')];
+        body.onscroll=()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{ticking=false;const y=body.scrollTop+chips.offsetHeight+24;let id=secs[0]?.dataset.cat;for(const s2 of secs){if(s2.offsetTop-body.offsetTop<=y)id=s2.dataset.cat}setActive(id)})};
+        body.onscroll();
+      }else body.onscroll=null;
+      body.querySelectorAll('[data-pb]').forEach(el=>el.onclick=()=>pickerChoiceTransition(el,()=>{pickerBook=+el.dataset.pb;const nb=cp.books[pickerBook];
+        try{const code=nb.book;recent=[code,...recent.filter(c=>c!==code)].slice(0,6);localStorage.setItem('doxa:picker:recent',JSON.stringify(recent))}catch(e){}
+        pickerChapter=Number(nb.chapters[0].chapter);pickerVerse=1;setPickerStage('chapter')}));updatePickerAction();animatePickerStage();return;
     }
     if(pickerStage==='chapter'){
       const current=pickerCurrent();body.innerHTML='<section class="pk-sec"><h4>'+esc(bookName(b))+'<span>'+b.chapters.length+' capítulos</span></h4><div class="pk-grid pk-grid-nums">'+b.chapters.map((c,k)=>'<button type="button" class="pk-cell pk-num'+(pickerBook===current.b&&Number(c.chapter)===Number(current.c)?' on':'')+'" style="--r:'+Math.min(Math.floor(k/6),9)+'" data-pc="'+c.chapter+'">'+c.chapter+'</button>').join('')+'</div></section>';
