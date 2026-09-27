@@ -83,6 +83,17 @@ body:not([data-doxa30-theme="night"]) .pk-cell{background:color-mix(in srgb,var(
 /* ---------- entradas ----------
    troca de etapa: onda curta, categoria a categoria;
    abertura: a mesma onda, começando quando a folha está chegando */
+
+/* Doxa 50.2 · anti-flash no Android WebView
+   A nova página já nasce no estado inicial da animação ANTES do reflow forçado pelo JS.
+   Assim nunca existe um quadro em que ela aparece pronta e logo depois volta para opacity:0. */
+.premium-picker.pk2 .pk-page.pk-enter .pk-cell,
+.premium-picker.pk2 .pk-page.pk-enter .pk-sec h4,
+.premium-picker.pk2 .pk-page.pk-enter .pk-chips{
+  opacity:0;
+  transform:translate3d(0,12px,0) scale(.97);
+}
+
 .premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-cell{animation:pkIn .36s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 26ms)}
 .premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-sec h4,.premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-chips{animation:pkIn .32s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--r,0) * 26ms)}
 .premium-picker.pk2 .pk-open .pk-cell{animation-delay:calc(var(--r,0) * 30ms + 80ms)}
