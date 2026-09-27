@@ -32,3 +32,13 @@
   .doxa-home-screen,.doxa-home-screen.on,.doxa30-nav-glow,.doxa30-bottom::before{transition:none!important}
   .doxa-tab-in{animation:none}
 }
+
+/* Doxa 50.2 · Na leitura paralela, a barra inferior aparecia vazia (fundo e filete dourado
+   visíveis, ícones e nomes sumidos). Esta regra garante os itens visíveis e por cima de
+   qualquer camada interna da barra, e o brilho deslizante sempre fora da grade. */
+.doxa30-nav-glow{position:absolute!important;pointer-events:none!important}
+body.parallel-mode .doxa30-bottom{grid-template-columns:repeat(4,1fr)!important}
+body.parallel-mode .doxa30-nav-item{display:flex!important;visibility:visible!important;opacity:1!important;
+  transform:none!important;position:relative!important;z-index:2!important;color:var(--d30-muted,#9e9286)!important}
+body.parallel-mode .doxa30-nav-item.active{color:var(--d30-gold2,#f1c989)!important}
+body.parallel-mode .doxa30-nav-item svg,body.parallel-mode .doxa30-nav-item span{visibility:visible!important;opacity:1!important}
