@@ -112,3 +112,64 @@ body:not([data-doxa30-theme="night"]) .pk-cell{background:color-mix(in srgb,var(
   .premium-picker.pk2{transition:none!important}
   .pk-cell,.pk-sec h4,.pk-chips,.pk-cell.on::after,.pk-page.pk-leave{animation:none!important}
 }
+
+
+/* ============================================================
+   Doxa 50.3 · CORREÇÃO DEFINITIVA DO MICRO-FLASH
+   O Android WebView estava pintando os cartões uma vez e,
+   logo depois, reiniciando animações com opacity:0.
+   Nesta versão, troca de Livro/Capítulo/Versículo NÃO anima opacidade.
+   A folha, a aba e o toque continuam animados.
+   ============================================================ */
+
+/* Neutraliza o estado pré-entrada adicionado na tentativa anterior. */
+.premium-picker.pk2 .pk-page.pk-enter .pk-cell,
+.premium-picker.pk2 .pk-page.pk-enter .pk-sec h4,
+.premium-picker.pk2 .pk-page.pk-enter .pk-chips{
+  opacity:1!important;
+  transform:none!important;
+  filter:none!important;
+}
+
+/* Mata a cascata que fazia os elementos aparecerem -> sumirem -> aparecerem. */
+.premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-cell,
+.premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-sec h4,
+.premium-picker.pk2 .picker-stage-enter .pk-page:not(.pk-leave) .pk-chips{
+  animation:none!important;
+  opacity:1!important;
+  transform:none!important;
+  filter:none!important;
+}
+
+/* Também neutraliza a animação antiga do seletor, ainda presente em css/01.css. */
+.picker-stage-enter .picker-book-v4,
+.picker-stage-enter .picker-num-v4{
+  animation:none!important;
+  opacity:1!important;
+  transform:none!important;
+  filter:none!important;
+}
+
+/* A página antiga deixa de ficar desvanecendo por cima da nova.
+   Isso evita mais uma recomposição de alpha no mesmo frame. */
+.pk-page.pk-leave{
+  animation:none!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transform:none!important;
+}
+
+/* Garante camada estável no WebView durante a troca. */
+.premium-picker.pk2,
+.premium-picker.pk2 .picker-body,
+.premium-picker.pk2 .pk-page{
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+
+/* Mantém somente animações que não causam o pisca:
+   - subida da folha
+   - indicador das abas
+   - feedback do botão tocado
+   - brilho do livro selecionado */
