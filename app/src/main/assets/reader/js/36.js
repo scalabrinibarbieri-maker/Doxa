@@ -12,6 +12,7 @@
     nota:'Nota Doxa',
     idioma_original:'Idioma original',
     contexto_historico:'Contexto histórico',
+    arqueologia:'Arqueologia',
     estrutura_literaria:'Estrutura literária',
     texto_manuscritos:'Texto & manuscritos',
     conexao:'Conexões',
@@ -23,6 +24,7 @@
     'idioma_original',
     'texto_manuscritos',
     'contexto_historico',
+    'arqueologia',
     'estrutura_literaria',
     'conexao',
     'nota'
@@ -339,6 +341,7 @@
       .doxa-tool-category[data-type="idioma_original"]{--doxa-cat:#a3404c}
       .doxa-tool-category[data-type="texto_manuscritos"]{--doxa-cat:#7359a6}
       .doxa-tool-category[data-type="contexto_historico"]{--doxa-cat:#9a6536}
+      .doxa-tool-category[data-type="arqueologia"]{--doxa-cat:#7b6848}
       .doxa-tool-category[data-type="estrutura_literaria"]{--doxa-cat:#477b70}
       .doxa-tool-category[data-type="conexao"]{--doxa-cat:#526fa6}
       .doxa-tool-category[data-type="nota"]{--doxa-cat:var(--accent,#8c2f39)}
@@ -424,6 +427,17 @@
       }
       .doxa-tool-category .doxa-tool-card:before{background:var(--doxa-cat)}
       .doxa-tool-category .doxa-tool-type{color:var(--doxa-cat)}
+      .doxa-tool-image-credit{
+        margin:-2px 2px 12px;
+        color:var(--ink-faint,#777);
+        font:600 10px/1.45 var(--ui,system-ui,sans-serif);
+        letter-spacing:.01em;
+      }
+      .doxa-tool-image-credit span{
+        margin-right:5px;
+        color:color-mix(in srgb,var(--ink-faint,#777) 78%,transparent);
+        font-weight:750;
+      }
       @keyframes doxa-tool-accordion-card-in{
         from{opacity:0;transform:translateY(-7px) scale(.994)}
         to{opacity:1;transform:none}
@@ -512,7 +526,7 @@
     const old=cache.get(key);
     if(!force&&old&&Date.now()-old.at<CACHE_MS)return old.rows;
 
-    const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,versoes,ordem,criado_em';
+    const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,imagem_fonte,versoes,ordem,criado_em';
 
     // Referência principal (estrutura antiga, continua funcionando).
     const mainPath='/rest/v1/ferramenta_doxa?select='+fields+
@@ -630,7 +644,8 @@
       const url=safeUrl(x.fonte_url);
       const img=safeUrl(x.imagem_url);
       const source=x.fonte?`<div class="doxa-tool-source"><span>Fonte</span><strong>${esc(x.fonte)}</strong>${url?`<a href="${esc(url)}" target="_blank" rel="noopener">Abrir fonte ↗</a>`:''}</div>`:'';
-      const image=img?`<img class="doxa-tool-image" src="${esc(img)}" alt="" loading="lazy">`:'';
+      const imageCredit=x.imagem_fonte?`<div class="doxa-tool-image-credit"><span>Fonte da imagem</span>${esc(x.imagem_fonte)}</div>`:'';
+      const image=img?`<img class="doxa-tool-image" src="${esc(img)}" alt="" loading="lazy">${imageCredit}`:'';
       return `
         <article class="doxa-tool-card type-${esc(x.tipo||'nota')}" style="--doxa-card-index:${i}">
           <div class="doxa-tool-card-top">
