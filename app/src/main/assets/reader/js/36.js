@@ -8,92 +8,6 @@
   const CACHE_MS=5*60*1000;
   const cache=new Map();
 
-  /* =========================================================
-     Cache offline persistente · Ferramenta Doxa
-     - Cada capítulo carregado com sucesso fica salvo no aparelho.
-     - Em segundo plano, o app sincroniza o catálogo inteiro das
-       notas publicadas para que até capítulos nunca abertos antes
-       possam funcionar durante uma indisponibilidade do Supabase.
-     - IndexedDB é a cópia principal; localStorage é apenas fallback.
-     ========================================================= */
-  const OFFLINE_DB='doxa-ferramenta-cache-v1';
-  const OFFLINE_STORE='cache';
-  const OFFLINE_CATALOG='catalog:v1';
-  const OFFLINE_CATALOG_MS=24*60*60*1000;
-  let offlineDbPromise=null;
-  let catalogSyncPromise=null;
-
-  function openOfflineDb(){
-    if(offlineDbPromise)return offlineDbPromise;
-    offlineDbPromise=new Promise((resolve,reject)=>{
-      if(!('indexedDB' in window)){
-        reject(new Error('IndexedDB indisponível'));
-        return;
-      }
-      const req=indexedDB.open(OFFLINE_DB,1);
-      req.onupgradeneeded=()=>{
-        const db=req.result;
-        if(!db.objectStoreNames.contains(OFFLINE_STORE)){
-          db.createObjectStore(OFFLINE_STORE,{keyPath:'key'});
-        }
-      };
-      req.onsuccess=()=>resolve(req.result);
-      req.onerror=()=>reject(req.error||new Error('Falha ao abrir cache offline'));
-    });
-    return offlineDbPromise;
-  }
-
-  async function offlineGet(key){
-    try{
-      const db=await openOfflineDb();
-      return await new Promise((resolve,reject)=>{
-        const tx=db.transaction(OFFLINE_STORE,'readonly');
-        const req=tx.objectStore(OFFLINE_STORE).get(key);
-        req.onsuccess=()=>resolve(req.result||null);
-        req.onerror=()=>reject(req.error);
-      });
-    }catch(e){
-      try{
-        const raw=localStorage.getItem('doxa:tool-offline:'+key);
-        return raw?JSON.parse(raw):null;
-      }catch(_){return null}
-    }
-  }
-
-  async function offlinePut(key,value){
-    const row={key,at:Date.now(),...value};
-    try{
-      const db=await openOfflineDb();
-      await new Promise((resolve,reject)=>{
-        const tx=db.transaction(OFFLINE_STORE,'readwrite');
-        tx.objectStore(OFFLINE_STORE).put(row);
-        tx.oncomplete=()=>resolve();
-        tx.onerror=()=>reject(tx.error);
-      });
-      return true;
-    }catch(e){
-      try{
-        localStorage.setItem('doxa:tool-offline:'+key,JSON.stringify(row));
-        return true;
-      }catch(_){return false}
-    }
-  }
-
-  const chapterOfflineKey=(book,chapter)=>'chapter:'+String(book)+':'+Number(chapter);
-
-  async function offlineChapter(book,chapter){
-    const saved=await offlineGet(chapterOfflineKey(book,chapter));
-    if(saved&&Array.isArray(saved.rows))return saved.rows;
-
-    // Segunda camada: catálogo completo sincronizado em segundo plano.
-    const catalog=await offlineGet(OFFLINE_CATALOG);
-    if(!catalog||!Array.isArray(catalog.rows))return null;
-    return catalog.rows.filter(x=>
-      String(x.livro)===String(book) &&
-      Number(x.capitulo)===Number(chapter)
-    );
-  }
-
   const TYPE_LABELS={
     nota:'Nota Doxa',
     idioma_original:'Idioma original',
@@ -103,6 +17,16 @@
     conexao:'Conexões',
     destaque:'Destaque Doxa'
   };
+
+  const TYPE_ORDER=[
+    'destaque',
+    'idioma_original',
+    'texto_manuscritos',
+    'contexto_historico',
+    'estrutura_literaria',
+    'conexao',
+    'nota'
+  ];
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeUrl=v=>{
@@ -383,7 +307,140 @@
     },true);
   }
 
+  function ensureCategoryStyles(){
+    if(document.getElementById('doxaToolCategoryStyles'))return;
+    const style=document.createElement('style');
+    style.id='doxaToolCategoryStyles';
+    style.textContent=`
+      .doxa-tool-overview{
+        display:flex;align-items:center;gap:7px;
+        margin:0 0 13px;padding:0 2px 2px;
+        color:var(--ink-faint,#777);
+        font:650 10.5px/1.35 var(--ui,system-ui,sans-serif);
+        letter-spacing:.025em;
+      }
+      .doxa-tool-overview i{
+        width:4px;height:4px;flex:0 0 auto;border-radius:50%;
+        background:color-mix(in srgb,var(--accent,#8c2f39) 58%,transparent);
+      }
+      .doxa-tool-categories{display:grid;gap:9px}
+      .doxa-tool-category{
+        --doxa-cat:var(--accent,#8c2f39);
+        position:relative;overflow:hidden;
+        border:1px solid color-mix(in srgb,var(--ink,#23262c) 8%,transparent);
+        border-radius:18px;
+        background:
+          linear-gradient(135deg,color-mix(in srgb,var(--doxa-cat) 5%,transparent),transparent 42%),
+          color-mix(in srgb,var(--paper,#e6e3da) 96%,var(--ink,#23262c) 4%);
+        box-shadow:0 5px 18px rgba(0,0,0,.035);
+        transition:border-color .24s ease,box-shadow .24s ease,background .24s ease;
+      }
+      .doxa-tool-category[data-type="destaque"]{--doxa-cat:#b98a35}
+      .doxa-tool-category[data-type="idioma_original"]{--doxa-cat:#a3404c}
+      .doxa-tool-category[data-type="texto_manuscritos"]{--doxa-cat:#7359a6}
+      .doxa-tool-category[data-type="contexto_historico"]{--doxa-cat:#9a6536}
+      .doxa-tool-category[data-type="estrutura_literaria"]{--doxa-cat:#477b70}
+      .doxa-tool-category[data-type="conexao"]{--doxa-cat:#526fa6}
+      .doxa-tool-category[data-type="nota"]{--doxa-cat:var(--accent,#8c2f39)}
+      .doxa-tool-category.is-open{
+        border-color:color-mix(in srgb,var(--doxa-cat) 29%,transparent);
+        box-shadow:0 11px 30px rgba(0,0,0,.06),
+          inset 0 0 0 1px color-mix(in srgb,var(--doxa-cat) 5%,transparent);
+      }
+      .doxa-tool-category-toggle{
+        width:100%;min-height:58px;display:grid;
+        grid-template-columns:auto minmax(0,1fr) auto auto;
+        align-items:center;gap:10px;
+        padding:11px 13px;border:0;background:transparent;
+        color:var(--ink,#23262c);text-align:left;
+        -webkit-tap-highlight-color:transparent;
+      }
+      .doxa-tool-category-toggle:active{
+        background:color-mix(in srgb,var(--doxa-cat) 5%,transparent);
+      }
+      .doxa-tool-category-mark{
+        width:31px;height:31px;display:grid;place-items:center;
+        border-radius:10px;
+        background:color-mix(in srgb,var(--doxa-cat) 10%,transparent);
+        box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--doxa-cat) 12%,transparent);
+      }
+      .doxa-tool-category-mark::before{
+        content:"";width:8px;height:8px;border-radius:50%;
+        background:var(--doxa-cat);
+        box-shadow:0 0 12px color-mix(in srgb,var(--doxa-cat) 35%,transparent);
+      }
+      .doxa-tool-category-name{
+        min-width:0;font:760 13px/1.2 var(--ui,system-ui,sans-serif);
+        letter-spacing:.01em;
+      }
+      .doxa-tool-category-count{
+        min-width:25px;height:25px;padding:0 8px;
+        display:grid;place-items:center;border-radius:999px;
+        color:color-mix(in srgb,var(--doxa-cat) 78%,var(--ink,#23262c));
+        background:color-mix(in srgb,var(--doxa-cat) 8%,transparent);
+        font:800 10px/1 var(--ui,system-ui,sans-serif);
+      }
+      .doxa-tool-category-chevron{
+        width:22px;height:22px;position:relative;
+        color:var(--ink-faint,#777);
+        transition:transform .30s cubic-bezier(.2,.8,.2,1),color .22s ease;
+      }
+      .doxa-tool-category-chevron::before,
+      .doxa-tool-category-chevron::after{
+        content:"";position:absolute;top:10px;width:8px;height:1.5px;
+        border-radius:2px;background:currentColor;
+      }
+      .doxa-tool-category-chevron::before{left:4px;transform:rotate(42deg)}
+      .doxa-tool-category-chevron::after{right:4px;transform:rotate(-42deg)}
+      .doxa-tool-category.is-open .doxa-tool-category-chevron{
+        transform:rotate(180deg);color:var(--doxa-cat);
+      }
+      .doxa-tool-category-panel{
+        display:grid;grid-template-rows:0fr;
+        opacity:.30;
+        transition:grid-template-rows .34s cubic-bezier(.22,.78,.22,1),opacity .24s ease;
+      }
+      .doxa-tool-category-panel-inner{min-height:0;overflow:hidden}
+      .doxa-tool-category-content{
+        padding:0 10px 10px;
+        border-top:1px solid transparent;
+        transition:border-color .22s ease,padding-top .28s ease;
+      }
+      .doxa-tool-category.is-open .doxa-tool-category-panel{grid-template-rows:1fr;opacity:1}
+      .doxa-tool-category.is-open .doxa-tool-category-content{
+        padding-top:10px;
+        border-top-color:color-mix(in srgb,var(--doxa-cat) 10%,transparent);
+      }
+      .doxa-tool-category .doxa-tool-card{
+        margin:0 0 9px;border-radius:16px;
+        box-shadow:0 5px 16px rgba(0,0,0,.035);
+        opacity:0;transform:translateY(-7px) scale(.994);
+        animation:none;
+      }
+      .doxa-tool-category .doxa-tool-card:last-child{margin-bottom:0}
+      .doxa-tool-category.is-open .doxa-tool-card{
+        animation:doxa-tool-accordion-card-in .31s both cubic-bezier(.22,.78,.22,1);
+        animation-delay:calc(var(--doxa-card-index) * 55ms + 70ms);
+      }
+      .doxa-tool-category .doxa-tool-card:before{background:var(--doxa-cat)}
+      .doxa-tool-category .doxa-tool-type{color:var(--doxa-cat)}
+      @keyframes doxa-tool-accordion-card-in{
+        from{opacity:0;transform:translateY(-7px) scale(.994)}
+        to{opacity:1;transform:none}
+      }
+      @media (prefers-reduced-motion:reduce){
+        .doxa-tool-category,.doxa-tool-category-chevron,
+        .doxa-tool-category-panel,.doxa-tool-category-content{transition:none}
+        .doxa-tool-category.is-open .doxa-tool-card{
+          animation:none;opacity:1;transform:none;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function createUi(){
+    ensureCategoryStyles();
     if(document.getElementById('doxaToolSheet'))return;
 
     const backdrop=document.createElement('div');
@@ -427,7 +484,7 @@
     const sheet=document.getElementById('doxaToolSheet');
     const backdrop=document.getElementById('doxaToolBackdrop');
     document.getElementById('doxaToolTitle').textContent=ref.label;
-    document.getElementById('doxaToolSubtitle').textContent='Todo o conteúdo da Ferramenta Doxa é autoral, e portanto, protegido por direitos autorais.';
+    document.getElementById('doxaToolSubtitle').textContent='Disponível em qualquer versão bíblica desta referência';
     document.getElementById('doxaToolBody').innerHTML=`
       <div class="doxa-tool-loading">
         <i></i>
@@ -450,24 +507,41 @@
     return Array.isArray(data)?data:[];
   }
 
-  async function sbAll(path,pageSize=1000){
-    const out=[];
-    for(let offset=0;offset<1000000;offset+=pageSize){
-      const sep=path.includes('?')?'&':'?';
-      const page=await sbRows(path+sep+'limit='+pageSize+'&offset='+offset);
-      out.push(...page);
-      if(page.length<pageSize)break;
-    }
-    return out;
-  }
+  async function fetchChapter(book,chapter,force=false){
+    const key=String(book)+':'+Number(chapter);
+    const old=cache.get(key);
+    if(!force&&old&&Date.now()-old.at<CACHE_MS)return old.rows;
 
-  function mergeRows(mainRows,linkedRows){
+    const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,versoes,ordem,criado_em';
+
+    // Referência principal (estrutura antiga, continua funcionando).
+    const mainPath='/rest/v1/ferramenta_doxa?select='+fields+
+      '&livro=eq.'+encodeURIComponent(book)+
+      '&capitulo=eq.'+Number(chapter)+
+      '&publicado=eq.true&order=ordem.asc,criado_em.asc';
+
+    // Referências adicionais da mesma nota.
+    const linkedSelect='livro,capitulo,versiculo_inicio,versiculo_fim,conteudo:ferramenta_doxa!inner('+fields+',publicado)';
+    const linkedPath='/rest/v1/ferramenta_doxa_referencias?select='+encodeURIComponent(linkedSelect)+
+      '&livro=eq.'+encodeURIComponent(book)+
+      '&capitulo=eq.'+Number(chapter)+
+      '&conteudo.publicado=eq.true';
+
+    const [mainResult,linkedResult]=await Promise.allSettled([
+      sbRows(mainPath),
+      sbRows(linkedPath)
+    ]);
+
+    if(mainResult.status==='rejected'&&linkedResult.status==='rejected'){
+      throw mainResult.reason||linkedResult.reason||new Error('Falha ao consultar a Ferramenta Doxa');
+    }
+
     const merged=[];
 
-    if(Array.isArray(mainRows))merged.push(...mainRows);
+    if(mainResult.status==='fulfilled')merged.push(...mainResult.value);
 
-    if(Array.isArray(linkedRows)){
-      for(const refRow of linkedRows){
+    if(linkedResult.status==='fulfilled'){
+      for(const refRow of linkedResult.value){
         const content=refRow?.conteudo;
         if(!content)continue;
         merged.push({
@@ -484,7 +558,7 @@
     for(const row of merged){
       const start=Number(row.versiculo_inicio);
       const end=row.versiculo_fim==null?start:Number(row.versiculo_fim);
-      const signature=String(row.id)+'|'+String(row.livro)+'|'+Number(row.capitulo)+'|'+start+'|'+end;
+      const signature=String(row.id)+'|'+start+'|'+end;
       if(seen.has(signature))continue;
       seen.add(signature);
       rows.push(row);
@@ -496,92 +570,8 @@
       return String(a.criado_em||'').localeCompare(String(b.criado_em||''));
     });
 
+    cache.set(key,{at:Date.now(),rows});
     return rows;
-  }
-
-  async function syncOfflineCatalog(force=false){
-    if(catalogSyncPromise&&!force)return catalogSyncPromise;
-
-    catalogSyncPromise=(async()=>{
-      try{
-        const saved=await offlineGet(OFFLINE_CATALOG);
-        if(!force&&saved&&Date.now()-Number(saved.at||0)<OFFLINE_CATALOG_MS){
-          return saved.rows||[];
-        }
-
-        if(typeof navigator!=='undefined'&&navigator.onLine===false){
-          return saved?.rows||[];
-        }
-
-        const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,versoes,ordem,criado_em';
-        const mainPath='/rest/v1/ferramenta_doxa?select='+fields+
-          '&publicado=eq.true&order=ordem.asc,criado_em.asc';
-
-        const linkedSelect='livro,capitulo,versiculo_inicio,versiculo_fim,conteudo:ferramenta_doxa!inner('+fields+',publicado)';
-        const linkedPath='/rest/v1/ferramenta_doxa_referencias?select='+encodeURIComponent(linkedSelect)+
-          '&conteudo.publicado=eq.true&order=criado_em.asc';
-
-        const [mainRows,linkedRows]=await Promise.all([
-          sbAll(mainPath),
-          sbAll(linkedPath)
-        ]);
-
-        const rows=mergeRows(mainRows,linkedRows);
-        await offlinePut(OFFLINE_CATALOG,{rows});
-        return rows;
-      }catch(e){
-        const saved=await offlineGet(OFFLINE_CATALOG);
-        return saved?.rows||[];
-      }finally{
-        setTimeout(()=>{catalogSyncPromise=null},0);
-      }
-    })();
-
-    return catalogSyncPromise;
-  }
-
-  async function fetchChapter(book,chapter,force=false){
-    const key=String(book)+':'+Number(chapter);
-    const old=cache.get(key);
-    if(!force&&old&&Date.now()-old.at<CACHE_MS)return old.rows;
-
-    const fields='id,livro,capitulo,versiculo_inicio,versiculo_fim,tipo,titulo,subtitulo,texto,fonte,fonte_url,imagem_url,versoes,ordem,criado_em';
-
-    // Referência principal.
-    const mainPath='/rest/v1/ferramenta_doxa?select='+fields+
-      '&livro=eq.'+encodeURIComponent(book)+
-      '&capitulo=eq.'+Number(chapter)+
-      '&publicado=eq.true&order=ordem.asc,criado_em.asc';
-
-    // Referências adicionais da mesma nota.
-    const linkedSelect='livro,capitulo,versiculo_inicio,versiculo_fim,conteudo:ferramenta_doxa!inner('+fields+',publicado)';
-    const linkedPath='/rest/v1/ferramenta_doxa_referencias?select='+encodeURIComponent(linkedSelect)+
-      '&livro=eq.'+encodeURIComponent(book)+
-      '&capitulo=eq.'+Number(chapter)+
-      '&conteudo.publicado=eq.true';
-
-    try{
-      const [mainRows,linkedRows]=await Promise.all([
-        sbRows(mainPath),
-        sbRows(linkedPath)
-      ]);
-
-      const rows=mergeRows(mainRows,linkedRows);
-      cache.set(key,{at:Date.now(),rows});
-
-      // Persistência não bloqueia a interface.
-      offlinePut(chapterOfflineKey(book,chapter),{rows}).catch(()=>{});
-
-      return rows;
-    }catch(e){
-      // Supabase/Internet indisponível: usa a última cópia salva.
-      const saved=await offlineChapter(book,chapter);
-      if(Array.isArray(saved)){
-        cache.set(key,{at:Date.now(),rows:saved,offline:true});
-        return saved;
-      }
-      throw e;
-    }
   }
 
   function rowsForRef(rows,ref){
@@ -591,8 +581,6 @@
       const end=x.versiculo_fim==null?start:Number(x.versiculo_fim);
       if(!(ref.verse>=start&&ref.verse<=end))continue;
       if(Array.isArray(x.versoes)&&x.versoes.length&&!x.versoes.includes(ref.sourceMode))continue;
-
-      // Se referências se cruzarem, mostra a mesma nota apenas uma vez.
       if(seen.has(x.id))continue;
       seen.add(x.id);
       out.push(x);
@@ -620,7 +608,24 @@
       return;
     }
 
-    body.innerHTML=rows.map((x,i)=>{
+    const grouped=new Map();
+    for(const row of rows){
+      const type=TYPE_LABELS[row.tipo]?row.tipo:'nota';
+      if(!grouped.has(type))grouped.set(type,[]);
+      grouped.get(type).push(row);
+    }
+
+    const orderedTypes=[
+      ...TYPE_ORDER.filter(type=>grouped.has(type)),
+      ...[...grouped.keys()].filter(type=>!TYPE_ORDER.includes(type))
+    ];
+
+    const contentCount=rows.length;
+    const categoryCount=orderedTypes.length;
+    const contentWord=contentCount===1?'conteúdo Doxa':'conteúdos Doxa';
+    const categoryWord=categoryCount===1?'categoria':'categorias';
+
+    const cardHtml=(x,i)=>{
       const type=TYPE_LABELS[x.tipo]||TYPE_LABELS.nota;
       const url=safeUrl(x.fonte_url);
       const img=safeUrl(x.imagem_url);
@@ -638,7 +643,60 @@
           <div class="doxa-tool-text">${textHtml(x.texto)}</div>
           ${source}
         </article>`;
-    }).join('');
+    };
+
+    body.innerHTML=`
+      <div class="doxa-tool-overview">
+        <span>${contentCount} ${contentWord}</span>
+        <i aria-hidden="true"></i>
+        <span>${categoryCount} ${categoryWord}</span>
+      </div>
+      <div class="doxa-tool-categories">
+        ${orderedTypes.map(type=>{
+          const items=grouped.get(type)||[];
+          const label=TYPE_LABELS[type]||TYPE_LABELS.nota;
+          const id='doxa-cat-'+String(type).replace(/[^a-z0-9_-]/gi,'-');
+          return `
+            <section class="doxa-tool-category" data-type="${esc(type)}">
+              <button class="doxa-tool-category-toggle" type="button"
+                aria-expanded="false" aria-controls="${esc(id)}">
+                <span class="doxa-tool-category-mark" aria-hidden="true"></span>
+                <span class="doxa-tool-category-name">${esc(label)}</span>
+                <span class="doxa-tool-category-count">${items.length}</span>
+                <span class="doxa-tool-category-chevron" aria-hidden="true"></span>
+              </button>
+              <div class="doxa-tool-category-panel" id="${esc(id)}" aria-hidden="true">
+                <div class="doxa-tool-category-panel-inner">
+                  <div class="doxa-tool-category-content">
+                    ${items.map((x,i)=>cardHtml(x,i)).join('')}
+                  </div>
+                </div>
+              </div>
+            </section>`;
+        }).join('')}
+      </div>`;
+
+    const sections=[...body.querySelectorAll('.doxa-tool-category')];
+    const setOpen=(section,on)=>{
+      section.classList.toggle('is-open',on);
+      const button=section.querySelector('.doxa-tool-category-toggle');
+      const panel=section.querySelector('.doxa-tool-category-panel');
+      button?.setAttribute('aria-expanded',on?'true':'false');
+      panel?.setAttribute('aria-hidden',on?'false':'true');
+    };
+
+    body.querySelectorAll('.doxa-tool-category-toggle').forEach(button=>{
+      button.addEventListener('click',()=>{
+        const section=button.closest('.doxa-tool-category');
+        if(!section)return;
+        const willOpen=!section.classList.contains('is-open');
+
+        for(const other of sections){
+          if(other!==section)setOpen(other,false);
+        }
+        setOpen(section,willOpen);
+      });
+    });
   }
 
   function renderError(ref){
@@ -697,11 +755,6 @@
 
     setTimeout(removeLegacyContextButton,350);
     setTimeout(()=>{installModeButton();syncToolCardVisibility()},500);
-
-    // Faz uma cópia completa das notas em segundo plano sem atrasar a abertura do leitor.
-    setTimeout(()=>{
-      try{syncOfflineCatalog(false)}catch(e){}
-    },1400);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
@@ -711,7 +764,6 @@
     open,
     close,
     clearCache(){cache.clear()},
-    syncOffline(force=true){return syncOfflineCatalog(!!force)},
     setMode(on){setDoxaMode(!!on,false)},
     toggleMode(){setDoxaMode(!doxaModeActive,false);return doxaModeActive},
     isModeActive(){return doxaModeActive},
