@@ -353,7 +353,14 @@
   }
 
   function intercept(e){
-    const target=e.target instanceof Element?e.target.closest('[data-open-item]'):null;
+    const el=e.target instanceof Element?e.target:null;
+    if(!el)return;
+
+    // O coração fica dentro do card. Nunca transforme esse toque em "abrir artigo":
+    // deixa o js/21.js receber o evento normalmente e cuidar da curtida.
+    if(el.closest('[data-like]'))return;
+
+    const target=el.closest('[data-open-item]');
     if(!target)return;
     const x=richItems.get(String(target.dataset.openItem||''));
     if(!x||!String(x.conteudo_html||'').trim())return;
