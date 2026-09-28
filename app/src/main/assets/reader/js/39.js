@@ -239,6 +239,10 @@
       .doxa-rich-content strong,.doxa-rich-content b{font-weight:700;color:color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 94%,var(--dh81,#c6924e))}
       .doxa-rich-content em,.doxa-rich-content i{font-style:italic}
       .doxa-rich-content a{color:var(--dh68,var(--d30-gold,#c6924e));text-decoration-thickness:1px;text-underline-offset:3px}
+      .doxa-rich-content mark{
+        background:none;color:#c65d14;font-weight:700;padding:0;
+      }
+      body[data-doxa30-theme="night"] .doxa-rich-content mark{color:#df9754}
       .doxa-rich-content blockquote{
         margin:1.6em 0;padding:4px 0 4px 20px;border-left:3px solid var(--dh81,var(--d30-gold,#c6924e));
         color:color-mix(in srgb,var(--dh70,var(--d30-text,#eee7dd)) 86%,var(--dh81,#c6924e));
