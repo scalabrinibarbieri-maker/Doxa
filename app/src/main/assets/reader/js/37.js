@@ -319,9 +319,11 @@
     if(generic)generic.classList.add('v50-comment-empty');
   }
 
+  /* Comentários precisam ser transformados ainda no microtask da mutação.
+     Usar requestAnimationFrame aqui deixava o navegador pintar por 1 frame
+     a interface V20 antes do layout V50, causando o flash visual. */
   function scheduleComments(){
-    cancelAnimationFrame(commentRaf);
-    commentRaf=requestAnimationFrame(enhanceComments);
+    enhanceComments();
   }
   const advBody=document.getElementById('v20AdvBody');
   if(advBody)new MutationObserver(scheduleComments).observe(advBody,{childList:true,subtree:true});
