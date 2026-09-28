@@ -93,8 +93,9 @@ window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sa
         /* js/19.js (textura antiga) não é mais carregado: o pergaminho vive no css/24.css. */
         addScript('doxa-v31-tools-js','js/20.js',()=>{
           addScript('doxa-v31-home-js','js/21.js',()=>{
-            addScript('doxa-v32-fonts-js','js/22.js',()=>{
-              addScript('doxa-v321-arrival-js','js/23.js',()=>{
+            addScript('doxa-v55-rich-home-js','js/39.js',()=>{
+              addScript('doxa-v32-fonts-js','js/22.js',()=>{
+                addScript('doxa-v321-arrival-js','js/23.js',()=>{
                 addScript('doxa-v33-parallel-js','js/24.js',()=>{
                   addScript('doxa-v34-notes-js','js/25.js',()=>{
                     addScript('doxa-v35-bread-js','js/26.js',()=>{
@@ -137,6 +138,7 @@ window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sa
           });
         });
       });
+    });
     },{once:true});
   }catch(e){}
 
