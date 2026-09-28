@@ -259,77 +259,193 @@
   const studyTitle=document.getElementById('studyTitle');
   if(studyTitle)new MutationObserver(scheduleCompare).observe(studyTitle,{childList:true,characterData:true,subtree:true});
 
-  /* ---------- Comentários: mantém a fonte atual e troca apenas apresentação ---------- */
-  function commentSkeleton(host){
-    if(!host||host.dataset.v50Skeleton)return;
-    host.dataset.v50Skeleton='1';
-    host.classList.add('v50-comments-loading');
-    host.innerHTML='<div class="v50-comment-skeleton hero"></div><div class="v50-comment-skeleton"></div><div class="v50-comment-skeleton"></div>';
+  /* ---------- Comentários V50: renderização nativa, sem montar a interface V20 ---------- */
+  const COMMENT_BOOK_API={Gen:'GEN',Exod:'EXO',Lev:'LEV',Num:'NUM',Deut:'DEU',Josh:'JOS',Judg:'JDG',Ruth:'RUT','1Sam':'1SA','2Sam':'2SA','1Kgs':'1KI','2Kgs':'2KI','1Chr':'1CH','2Chr':'2CH',Ezra:'EZR',Neh:'NEH',Esth:'EST',Job:'JOB',Ps:'PSA',Prov:'PRO',Eccl:'ECC',Song:'SNG',Isa:'ISA',Jer:'JER',Lam:'LAM',Ezek:'EZK',Dan:'DAN',Hos:'HOS',Joel:'JOL',Amos:'AMO',Obad:'OBA',Jonah:'JON',Mic:'MIC',Nah:'NAM',Hab:'HAB',Zeph:'ZEP',Hag:'HAG',Zech:'ZEC',Mal:'MAL',Matt:'MAT',Mark:'MRK',Luke:'LUK',John:'JHN',Acts:'ACT',Rom:'ROM','1Cor':'1CO','2Cor':'2CO',Gal:'GAL',Eph:'EPH',Phil:'PHP',Col:'COL','1Thess':'1TH','2Thess':'2TH','1Tim':'1TI','2Tim':'2TI',Titus:'TIT',Phlm:'PHM',Heb:'HEB',Jas:'JAS','1Pet':'1PE','2Pet':'2PE','1John':'1JN','2John':'2JN','3John':'3JN',Jude:'JUD',Rev:'REV'};
+  const COMMENTARIES_V50=[
+    ['matthew-henry','Henry','MH'],
+    ['jamieson-fausset-brown','JFB','JFB'],
+    ['adam-clarke','Clarke','AC'],
+    ['john-gill','Gill','JG']
+  ];
+  let commentaryIdV50='matthew-henry';
+  let commentRefV50=null;
+  let commentRequestV50=0;
+
+  function refFromVerseV50(){
+    try{
+      const el=document.querySelector('.verse-context');
+      if(!el)return activeRef?{...activeRef}:null;
+      const v=Number(el.dataset.v||String(el.id||'').replace(/^v/,''));
+      if(!Number.isFinite(v))return activeRef?{...activeRef}:null;
+      const pane=el.closest?.('.parallel-pane[data-side]');
+      if(pane){
+        const side=pane.dataset.side,st=sanitizeParallelState(side);
+        if(st.mode==='hyper'||!CORPORA[st.mode])return null;
+        const cp=CORPORA[st.mode],b=cp.books.find(x=>x.book===st.book);
+        if(!b)return null;
+        return{book:b.book,chapter:Number(st.chapter),verse:v,label:bookName(b)+' '+st.chapter+':'+v,sourceMode:st.mode,parallelSide:side};
+      }
+      if(mode==='hyper'||!CORPORA[mode])return null;
+      const p=pos(),cp=corpus(),b=cp.books[p.b];
+      return{book:b.book,chapter:Number(p.c),verse:v,label:bookName(b)+' '+p.c+':'+v,sourceMode:mode};
+    }catch{return activeRef?{...activeRef}:null}
   }
 
-  function enhanceComments(){
+  function commentsDbV50(){
+    return new Promise(resolve=>{
+      if(!('indexedDB' in window)){resolve(null);return}
+      const q=indexedDB.open('doxa-study-v20',1);
+      q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains('cache'))q.result.createObjectStore('cache')};
+      q.onsuccess=()=>resolve(q.result);
+      q.onerror=()=>resolve(null);
+    });
+  }
+  async function commentCacheGetV50(key){
+    try{
+      const db=await commentsDbV50(); if(!db)return null;
+      return await new Promise(resolve=>{
+        const q=db.transaction('cache','readonly').objectStore('cache').get(key);
+        q.onsuccess=()=>resolve(q.result??null); q.onerror=()=>resolve(null);
+      });
+    }catch{return null}
+  }
+  async function commentCachePutV50(key,value){
+    try{
+      const db=await commentsDbV50(); if(!db)return;
+      await new Promise(resolve=>{
+        const tx=db.transaction('cache','readwrite');
+        tx.objectStore('cache').put(value,key);
+        tx.oncomplete=()=>resolve(); tx.onerror=()=>resolve();
+      });
+    }catch{}
+  }
+  async function commentaryChapterV50(id,r){
+    const bk=COMMENT_BOOK_API[r.book];
+    if(!bk)throw new Error('Livro não mapeado');
+    const key='c:'+id+':'+bk+':'+r.chapter;
+    const cached=await commentCacheGetV50(key);
+    if(cached&&typeof cached==='object')return cached;
+    const response=await fetch('https://bible.helloao.org/api/c/'+id+'/'+bk+'/'+r.chapter+'.simple.json',{cache:'force-cache',mode:'cors'});
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    const data=await response.json();
+    await commentCachePutV50(key,data);
+    return data;
+  }
+  function commentaryTextV50(data,verse){
+    const ch=data?.chapter||{},content=Array.isArray(ch.content)?ch.content:[],exact=content.filter(x=>x?.type==='verse'&&Number(x.number)===Number(verse));
+    return{intro:ch.introduction||'',items:exact.map(x=>x.text||'').filter(Boolean)};
+  }
+
+  function commentTabsV50(){
+    return '<div class="v20-tabs v50-comment-tabs">'+COMMENTARIES_V50.map(x=>
+      '<button type="button" data-v50-commentary="'+x[0]+'" class="'+(commentaryIdV50===x[0]?'on':'')+'">'+
+        '<span class="v50-comment-tab-mark">'+x[2]+'</span><span>'+x[1]+'</span>'+
+      '</button>'
+    ).join('')+'</div>';
+  }
+  function commentSkeletonV50(){
+    return commentTabsV50()+
+      '<div class="v50-comments-loading" aria-live="polite">'+
+        '<div class="v50-comment-skeleton hero"></div>'+
+        '<div class="v50-comment-skeleton"></div>'+
+        '<div class="v50-comment-skeleton"></div>'+
+      '</div>';
+  }
+  function commentHeroV50(name,ref,words){
+    const mins=Math.max(1,Math.round(words/210));
+    return '<section class="v50-comment-hero">'+
+      '<span class="v50-comment-book" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 6.5c4-1.3 7.3-1 11 1.1v18c-3.7-2.1-7-2.4-11-1.1z"/><path d="M27 6.5c-4-1.3-7.3-1-11 1.1v18c3.7-2.1 7-2.4 11-1.1z"/><path d="M16 7.6v18"/></svg></span>'+
+      '<div class="v50-comment-hero-copy">'+
+        '<div class="v20-comment-source"><b>'+esc(name)+'</b><span>inglês original · domínio público</span></div>'+
+        '<div class="v50-comment-meta"><span>'+esc(ref)+'</span>'+(words?'<span>'+mins+' min de leitura</span>':'')+'</div>'+
+      '</div>'+
+      '<div class="v50-comment-line"></div>'+
+    '</section>';
+  }
+
+  async function renderCommentsV50(){
     const adv=document.getElementById('v20Advanced');
     const body=document.getElementById('v20AdvBody');
     const title=document.getElementById('v20AdvTitle');
-    if(!adv?.classList.contains('on')||!body||title?.textContent?.trim()!=='Comentários')return;
+    const refEl=document.getElementById('v20AdvRef');
+    const r=commentRefV50;
+    if(!adv||!body||!title||!refEl||!r)return;
 
-    const loading=body.querySelector('#v20CommentHost.v20-loading');
-    if(loading){commentSkeleton(loading);return}
+    const seq=++commentRequestV50;
+    title.textContent='Comentários';
+    refEl.textContent=r.label||r.book+' '+r.chapter+':'+r.verse;
+    body.innerHTML=commentSkeletonV50();
 
-    const tabs=body.querySelector('.v20-tabs');
-    if(tabs&&!tabs.classList.contains('v50-comment-tabs')){
-      tabs.classList.add('v50-comment-tabs');
-      tabs.querySelectorAll('[data-commentary]').forEach(btn=>{
-        const info=COMMENTARY_INFO[btn.dataset.commentary]||{mark:'C',short:btn.textContent.trim()};
-        btn.innerHTML='<span class="v50-comment-tab-mark">'+esc(info.mark)+'</span><span>'+esc(info.short)+'</span>';
-      });
+    try{
+      const data=await commentaryChapterV50(commentaryIdV50,r);
+      if(seq!==commentRequestV50)return;
+      const hit=commentaryTextV50(data,r.verse);
+      const sourceName=data?.commentary?.name||COMMENTARIES_V50.find(x=>x[0]===commentaryIdV50)?.[1]||'Comentário';
+      const words=hit.items.reduce((n,t)=>n+(String(t).match(/\S+/g)||[]).length,0);
+
+      let html=commentTabsV50()+commentHeroV50(sourceName,r.label||'',words);
+      if(hit.items.length){
+        html+='<div class="v50-comment-stack">'+hit.items.map((t,i)=>
+          '<div class="v20-card v20-comment v50-comment-card" style="--i:'+i+'">'+
+            '<span class="v50-comment-number">'+String(i+1).padStart(2,'0')+'</span>'+
+            esc(t)+
+          '</div>'
+        ).join('')+'</div>';
+      }else{
+        html+='<div class="v20-card v50-comment-empty"><h3>Sem seção diretamente indexada para este versículo</h3><p>Esta edição não marca um comentário específico em '+esc(r.label||'esta referência')+'. O Doxa não desloca automaticamente um comentário de outro versículo para cá.</p></div>';
+        if(hit.intro)html+='<details class="v20-card v50-comment-intro"><summary>Introdução do capítulo</summary><p class="v20-comment">'+esc(hit.intro)+'</p></details>';
+      }
+      body.innerHTML=html;
+    }catch{
+      if(seq!==commentRequestV50)return;
+      body.innerHTML=commentTabsV50()+
+        '<div class="doxa-compare-error"><span>⌁</span><strong>Comentário indisponível agora</strong><p>Na primeira abertura desta referência, o Doxa precisa de internet. Depois o capítulo fica salvo no cache local.</p></div>';
     }
-
-    const source=body.querySelector('.v20-comment-source');
-    if(source&&!source.closest('.v50-comment-hero')){
-      const hero=document.createElement('section');
-      hero.className='v50-comment-hero';
-      hero.innerHTML=
-        '<span class="v50-comment-book" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 6.5c4-1.3 7.3-1 11 1.1v18c-3.7-2.1-7-2.4-11-1.1z"/><path d="M27 6.5c-4-1.3-7.3-1-11 1.1v18c3.7-2.1 7-2.4 11-1.1z"/><path d="M16 7.6v18"/></svg></span>'+
-        '<div class="v50-comment-hero-copy"></div>'+
-        '<div class="v50-comment-line"></div>';
-      source.parentNode.insertBefore(hero,source);
-      hero.querySelector('.v50-comment-hero-copy').appendChild(source);
-
-      const words=[...body.querySelectorAll('.v20-card.v20-comment')].reduce((n,el)=>n+(el.textContent.trim().match(/\S+/g)||[]).length,0);
-      const mins=Math.max(1,Math.round(words/210));
-      const meta=document.createElement('div');
-      meta.className='v50-comment-meta';
-      meta.innerHTML='<span>'+esc(document.getElementById('v20AdvRef')?.textContent||'')+'</span>'+(words?'<span>'+mins+' min de leitura</span>':'');
-      hero.querySelector('.v50-comment-hero-copy').appendChild(meta);
-    }
-
-    body.querySelectorAll('.v20-card.v20-comment').forEach((card,i)=>{
-      if(card.classList.contains('v50-comment-card'))return;
-      card.classList.add('v50-comment-card');
-      card.style.setProperty('--i',String(i));
-      const num=document.createElement('span');
-      num.className='v50-comment-number';
-      num.textContent=String(i+1).padStart(2,'0');
-      card.prepend(num);
-    });
-
-    body.querySelectorAll('details.v20-card').forEach(el=>el.classList.add('v50-comment-intro'));
-    const generic=body.querySelector('#v20CommentHost > .v20-card:not(.v20-comment):not(details)');
-    if(generic)generic.classList.add('v50-comment-empty');
   }
 
-  /* Comentários precisam ser transformados ainda no microtask da mutação.
-     Usar requestAnimationFrame aqui deixava o navegador pintar por 1 frame
-     a interface V20 antes do layout V50, causando o flash visual. */
-  function scheduleComments(){
-    enhanceComments();
+  function openCommentsV50(r){
+    if(!r)return;
+    commentRefV50={...r};
+    activeRef={...r};
+    try{window.DoxaVerseActions?.close()}catch{}
+    const adv=document.getElementById('v20Advanced');
+    if(!adv)return;
+    adv.classList.add('on');
+    adv.setAttribute('aria-hidden','false');
+    renderCommentsV50();
   }
-  const advBody=document.getElementById('v20AdvBody');
-  if(advBody)new MutationObserver(scheduleComments).observe(advBody,{childList:true,subtree:true});
-  const advTitle=document.getElementById('v20AdvTitle');
-  if(advTitle)new MutationObserver(scheduleComments).observe(advTitle,{childList:true,characterData:true,subtree:true});
+
+  /* Captura no document: roda antes dos listeners antigos do js/14.
+     Assim o renderComments() V20 existe por compatibilidade, mas não é executado. */
+  document.addEventListener('click',e=>{
+    const commentsAction=e.target.closest?.('[data-va="comments"]');
+    if(commentsAction){
+      const r=refFromVerseV50();
+      if(!r)return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      openCommentsV50(r);
+      return;
+    }
+
+    const guide=e.target.closest?.('[data-v20-guide="comments"]');
+    if(guide){
+      const r=activeRef||commentRefV50;
+      if(!r)return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      openCommentsV50(r);
+      return;
+    }
+
+    const tab=e.target.closest?.('[data-v50-commentary]');
+    if(tab){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      commentaryIdV50=tab.dataset.v50Commentary;
+      renderCommentsV50();
+    }
+  },true);
 
   scheduleCompare();
-  scheduleComments();
 })();
