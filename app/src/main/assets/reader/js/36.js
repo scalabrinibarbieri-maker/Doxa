@@ -13,6 +13,8 @@
     idioma_original:'Idioma original',
     contexto_historico:'Contexto histórico',
     arqueologia:'Arqueologia',
+    tradicoes_antigas:'Tradições antigas',
+    apocrifos:'Apócrifos',
     estrutura_literaria:'Estrutura literária',
     texto_manuscritos:'Texto & manuscritos',
     conexao:'Conexões',
@@ -25,6 +27,8 @@
     'texto_manuscritos',
     'contexto_historico',
     'arqueologia',
+    'tradicoes_antigas',
+    'apocrifos',
     'estrutura_literaria',
     'conexao',
     'nota'
@@ -134,9 +138,7 @@
   }
 
   function syncToolCardVisibility(){
-    const btn=document.getElementById('toolsDoxaMode');
-    if(!btn)return;
-    const notes=document.getElementById('toolsNotesView');
+    const btn=document.getElementById('toolsNotesView');
     const highlights=document.getElementById('toolsHighlightsView');
     btn.hidden=!!((notes&&!notes.hidden)||(highlights&&!highlights.hidden));
   }
@@ -342,6 +344,8 @@
       .doxa-tool-category[data-type="texto_manuscritos"]{--doxa-cat:#7359a6}
       .doxa-tool-category[data-type="contexto_historico"]{--doxa-cat:#9a6536}
       .doxa-tool-category[data-type="arqueologia"]{--doxa-cat:#7b6848}
+      .doxa-tool-category[data-type="tradicoes_antigas"]{--doxa-cat:#8b5f83}
+      .doxa-tool-category[data-type="apocrifos"]{--doxa-cat:#8a6042}
       .doxa-tool-category[data-type="estrutura_literaria"]{--doxa-cat:#477b70}
       .doxa-tool-category[data-type="conexao"]{--doxa-cat:#526fa6}
       .doxa-tool-category[data-type="nota"]{--doxa-cat:var(--accent,#8c2f39)}
