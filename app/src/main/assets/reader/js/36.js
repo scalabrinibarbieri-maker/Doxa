@@ -138,7 +138,9 @@
   }
 
   function syncToolCardVisibility(){
-    const btn=document.getElementById('toolsNotesView');
+    const btn=document.getElementById('toolsDoxaMode');
+    if(!btn)return;
+    const notes=document.getElementById('toolsNotesView');
     const highlights=document.getElementById('toolsHighlightsView');
     btn.hidden=!!((notes&&!notes.hidden)||(highlights&&!highlights.hidden));
   }
