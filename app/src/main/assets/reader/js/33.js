@@ -194,6 +194,9 @@
   if(host)host.addEventListener('click',e=>{
     if(!tlMode)return;
     e.preventDefault();e.stopImmediatePropagation();
+    /* Doxa 51 · Gênesis usa a nova cronologia calculada do texto (js/40.js) */
+    {const vEl0=e.target.closest('.verse'),ref0=vEl0?refFromEl(vEl0):null;
+     if(ref0&&window.DoxaChrono?.handles(ref0)){window.DoxaChrono.render(ref0);return}}
     if(typeof TIMELINE==='undefined'||!TIMELINE?.b){
       try{flash('Baixe os recursos offline em Ajustes para usar a Linha do Tempo.')}catch(_){}
       return;
