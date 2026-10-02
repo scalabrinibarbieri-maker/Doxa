@@ -1,0 +1,54 @@
+/* Doxa 56 · A Lupa */
+/* entrada: um brilho dourado atravessa a tela e uma pílula avisa o modo */
+.lupa-sweep{position:fixed;inset:0;z-index:240;pointer-events:none}
+.lupa-sweep i{position:absolute;left:0;right:0;top:-30%;height:30%;
+  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--d30-gold,#d9a25e) 22%,transparent) 55%,transparent);
+  animation:lupaSweep 1.1s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes lupaSweep{to{transform:translate3d(0,450%,0)}}
+.lupa-sweep span{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 76px);transform:translate3d(-50%,-8px,0);opacity:0;
+  display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:999px;white-space:nowrap;
+  background:color-mix(in srgb,var(--d30-panel,#0d0a07) 92%,transparent);border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 40%,transparent);
+  color:var(--d30-gold2,#f1c989);font:600 12.5px/1 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);
+  animation:lupaPill 2.6s cubic-bezier(.22,1,.36,1) forwards}
+.lupa-sweep span svg{width:16px;height:16px}
+@keyframes lupaPill{12%{opacity:1;transform:translate3d(-50%,0,0)}82%{opacity:1;transform:translate3d(-50%,0,0)}100%{opacity:0;transform:translate3d(-50%,-6px,0)}}
+
+/* no modo Lupa, os versículos convidam ao toque */
+body.doxa-lupa-on #textBody .verse{cursor:pointer;border-radius:6px;transition:background-color .25s}
+body.doxa-lupa-on #textBody .verse.lupa-sel{background:color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent)}
+.doxa30-nav-item.lupa-exit{color:var(--d30-gold2,#f1c989)!important}
+
+/* cartões que brotam do versículo */
+.lupa-float{position:fixed;left:0;right:0;z-index:230;pointer-events:none}
+.lupa-track{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 16px 14px;scrollbar-width:none;pointer-events:auto}
+.lupa-track::-webkit-scrollbar{display:none}
+.lupa-card{flex:0 0 min(80vw,310px);max-height:var(--h,300px);overflow:auto;scroll-snap-align:center;padding:13px 15px 14px;border-radius:20px;
+  background:color-mix(in srgb,var(--d30-panel,#0d0a07) 96%,transparent);color:var(--d30-text,#f3ebe0);
+  border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 22%,transparent);box-shadow:0 18px 40px rgba(0,0,0,.35);
+  opacity:0;transform:translate3d(0,18px,0) scale(.86);transform-origin:50% 0}
+.lupa-float.on .lupa-card{animation:lupaBrota .5s cubic-bezier(.34,1.45,.64,1) both;animation-delay:calc(var(--i,0) * 70ms)}
+.lupa-float.out{opacity:0;transition:opacity .2s}
+@keyframes lupaBrota{from{opacity:0;transform:translate3d(0,18px,0) scale(.86)}to{opacity:1;transform:none}}
+.lupa-card header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.lupa-card header .ic{width:26px;height:26px;display:grid;place-items:center;border-radius:9px;background:color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent);color:var(--d30-gold2,#f1c989)}
+.lupa-card header .ic svg{width:16px;height:16px}
+.lupa-card header small{font:700 10px/1 system-ui,sans-serif;letter-spacing:.15em;color:var(--d30-gold,#d9a25e)}
+.lupa-q{margin:0;font:500 13px/1.3 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.lupa-big{margin:4px 0 2px;font:600 24px/1.15 Georgia,'Times New Roman',serif;color:var(--d30-text,#f3ebe0)}
+.lupa-cmp{margin:2px 0 0;font:500 12.5px/1.4 system-ui,sans-serif;color:var(--d30-gold2,#f1c989)}
+.lupa-sub{margin:8px 0 0;font:400 12.5px/1.5 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.lupa-w{display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid color-mix(in srgb,var(--d30-text,#fff) 7%,transparent)}
+.lupa-w:first-of-type{border-top:0}
+.lupa-w b{grid-row:1/3;font:500 22px/1.2 'SBL Hebrew','Ezra SIL','Times New Roman',serif;color:var(--d30-text,#f3ebe0)}
+.lupa-w b.gr{font-family:'SBL Greek','Gentium Plus',Georgia,serif;font-size:19px}
+.lupa-w span{font:500 12.5px/1.35 system-ui,sans-serif;color:var(--d30-text,#f3ebe0)}
+.lupa-w em{font:700 10.5px/1.3 system-ui,sans-serif;font-style:normal;color:var(--d30-gold2,#f1c989)}
+.lupa-acro{display:flex;gap:12px;align-items:center;padding:4px 0 6px}
+.lupa-acro b{font:500 38px/1 'SBL Hebrew','Ezra SIL',serif;color:var(--d30-gold2,#f1c989)}
+.lupa-acro span{font:400 12.5px/1.45 system-ui,sans-serif}
+.lupa-ref{margin-top:6px;padding:9px 11px;border-radius:13px;background:color-mix(in srgb,var(--d30-gold,#d9a25e) 8%,transparent)}
+.lupa-ref .lupa-sub{margin:0 0 4px}
+.lupa-ref b{display:block;font:500 18px/1.4 'SBL Hebrew','Ezra SIL',serif;direction:rtl;text-align:right}
+.lupa-ref b.gr{direction:ltr;text-align:left;font-family:'SBL Greek','Gentium Plus',Georgia,serif}
+.lupa-ref span{display:block;margin-top:2px;font:500 12px/1.4 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+@media(prefers-reduced-motion:reduce){.lupa-sweep i,.lupa-sweep span,.lupa-float.on .lupa-card{animation:none;opacity:1;transform:none}}
