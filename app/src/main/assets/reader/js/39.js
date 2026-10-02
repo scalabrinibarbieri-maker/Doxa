@@ -4,7 +4,9 @@
      - Só intercepta itens publicados que tenham conteudo_html.
      - Itens antigos continuam sendo abertos pelo js/21.js, sem mudança.
      - O HTML vindo do banco é sanitizado no cliente antes de ser exibido.
-     - Mantém um cache local para leitura offline do último conteúdo recebido. */
+     - Mantém um cache local para leitura offline do último conteúdo recebido.
+     - Permite uma imagem exclusiva no topo interno do artigo usando
+       alt="DOXA_ARTICLE_HERO", sem alterar a capa do card da Home. */
   if(window.__doxa55RichHomeInstalled)return;
   window.__doxa55RichHomeInstalled=true;
 
@@ -155,6 +157,33 @@
     return root.innerHTML;
   }
 
+  /* Se o HTML trouxer uma imagem com alt="DOXA_ARTICLE_HERO",
+     ela vira a imagem grande do topo interno e é retirada do corpo.
+     A imagem_url continua sendo a capa usada na Home. */
+  function splitArticleHero(raw,fallback){
+    try{
+      const parser=new DOMParser();
+      const doc=parser.parseFromString('<div id="doxa-rich-split">'+String(raw||'')+'</div>','text/html');
+      const root=doc.getElementById('doxa-rich-split');
+      if(!root)return{hero:safeWebUrl(fallback),html:String(raw||'')};
+
+      const img=[...root.querySelectorAll('img')].find(el=>
+        String(el.getAttribute('alt')||'').trim()==='DOXA_ARTICLE_HERO'
+      );
+
+      let hero=safeWebUrl(fallback);
+      if(img){
+        const marked=safeWebUrl(img.getAttribute('src'));
+        if(marked)hero=marked;
+        const figure=img.closest('figure');
+        (figure||img).remove();
+      }
+      return{hero,html:root.innerHTML};
+    }catch(e){
+      return{hero:safeWebUrl(fallback),html:String(raw||'')};
+    }
+  }
+
   function ensureStyles(){
     if(document.getElementById('doxaRichReaderStyles'))return;
     const style=document.createElement('style');
@@ -239,9 +268,7 @@
       .doxa-rich-content strong,.doxa-rich-content b{font-weight:700;color:color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 94%,var(--dh81,#c6924e))}
       .doxa-rich-content em,.doxa-rich-content i{font-style:italic}
       .doxa-rich-content a{color:var(--dh68,var(--d30-gold,#c6924e));text-decoration-thickness:1px;text-underline-offset:3px}
-      .doxa-rich-content mark{
-        background:none;color:#c65d14;font-weight:700;padding:0;
-      }
+      .doxa-rich-content mark{background:none;color:#c65d14;font-weight:700;padding:0}
       body[data-doxa30-theme="night"] .doxa-rich-content mark{color:#df9754}
       .doxa-rich-content blockquote{
         margin:1.6em 0;padding:4px 0 4px 20px;border-left:3px solid var(--dh81,var(--d30-gold,#c6924e));
@@ -322,14 +349,15 @@
   }
 
   function openRich(x){
-    const html=sanitizeHtml(x.conteudo_html);
+    const split=splitArticleHero(x.conteudo_html,x.imagem_url);
+    const html=sanitizeHtml(split.html);
     if(!html)return false;
     const r=ensureReader();
     const shell=r.querySelector('.doxa-rich-reader-shell');
     const kind=x.tipo==='noticia'?'Notícia':x.tipo==='destaque'?'Em evidência':'Artigo';
     r.querySelector('.doxa-rich-reader-label').textContent=kind;
     const source=safeWebUrl(x.link_url);
-    const hero=safeWebUrl(x.imagem_url);
+    const hero=split.hero;
     const kicker=[];
     if(x.autor)kicker.push('<span>'+esc(x.autor)+'</span>');
     if(x.meta)kicker.push('<i></i><span>'+esc(x.meta)+'</span>');
@@ -355,9 +383,6 @@
   function intercept(e){
     const el=e.target instanceof Element?e.target:null;
     if(!el)return;
-
-    // O coração fica dentro do card. Nunca transforme esse toque em "abrir artigo":
-    // deixa o js/21.js receber o evento normalmente e cuidar da curtida.
     if(el.closest('[data-like]'))return;
 
     const target=el.closest('[data-open-item]');
