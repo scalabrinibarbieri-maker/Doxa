@@ -117,7 +117,9 @@ window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sa
                                               addScript('doxa-v49-doxa-tool-js','js/36.js',()=>{
                                                 addScript('doxa-v54-manuscript-quotes-js','js/38.js',()=>{
                                                   addScript('doxa-v50-study-premium-js','js/37.js',()=>{
-                                                    addScript('doxa-v51-chrono-js','js/40.js');
+                                                    addScript('doxa-v51-chrono-js','js/40.js',()=>{
+                                                      addScript('doxa-v54-chrono-nt-js','js/41.js');
+                                                    });
                                                   });
                                                 });
                                               });
