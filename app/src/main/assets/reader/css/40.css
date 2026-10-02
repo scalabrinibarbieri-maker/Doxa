@@ -82,3 +82,4 @@ body:not([data-doxa30-theme="night"]) .reg-pos{color:#1f7a5c}
 .tl2-near b{font:600 13px/1.2 Georgia,serif}
 .tl2-near em{font:500 11px/1 system-ui,sans-serif;font-style:normal;color:var(--d30-muted,#9e9286)}
 .tl2-near small{grid-column:2/4;font:500 10.5px/1.2 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.tl2-bar i.rg{background:repeating-linear-gradient(90deg,color-mix(in srgb,#6b8fd6 75%,transparent) 0 6px,color-mix(in srgb,#6b8fd6 35%,transparent) 6px 9px)}
