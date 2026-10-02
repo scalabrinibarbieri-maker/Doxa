@@ -157,30 +157,31 @@
     return root.innerHTML;
   }
 
-  /* Se o HTML trouxer uma imagem com alt="DOXA_ARTICLE_HERO",
-     ela vira a imagem grande do topo interno e é retirada do corpo.
-     A imagem_url continua sendo a capa usada na Home. */
+  /* Quando o HTML trouxer alt="DOXA_ARTICLE_HERO", essa imagem é exclusiva
+     do artigo: ela sai do corpo e aparece inteira, abaixo do título.
+     A imagem_url continua sendo apenas a capa da Home.
+     Artigos antigos, sem esse marcador, mantêm o comportamento anterior. */
   function splitArticleHero(raw,fallback){
     try{
       const parser=new DOMParser();
       const doc=parser.parseFromString('<div id="doxa-rich-split">'+String(raw||'')+'</div>','text/html');
       const root=doc.getElementById('doxa-rich-split');
-      if(!root)return{hero:safeWebUrl(fallback),html:String(raw||'')};
+      if(!root)return{hero:safeWebUrl(fallback),marked:false,html:String(raw||'')};
 
       const img=[...root.querySelectorAll('img')].find(el=>
         String(el.getAttribute('alt')||'').trim()==='DOXA_ARTICLE_HERO'
       );
 
-      let hero=safeWebUrl(fallback);
       if(img){
         const marked=safeWebUrl(img.getAttribute('src'));
-        if(marked)hero=marked;
         const figure=img.closest('figure');
         (figure||img).remove();
+        return{hero:marked,marked:!!marked,html:root.innerHTML};
       }
-      return{hero,html:root.innerHTML};
+
+      return{hero:safeWebUrl(fallback),marked:false,html:root.innerHTML};
     }catch(e){
-      return{hero:safeWebUrl(fallback),html:String(raw||'')};
+      return{hero:safeWebUrl(fallback),marked:false,html:String(raw||'')};
     }
   }
 
@@ -228,6 +229,12 @@
         background-image:var(--home-image);background-size:cover;background-position:center;
         border:1px solid color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 9%,transparent);
         box-shadow:0 18px 55px color-mix(in srgb,#000 20%,transparent);
+      }
+      .doxa-rich-lead-image{
+        display:block;width:100%;height:auto;max-height:none;object-fit:contain;
+        margin:24px 0 4px;border-radius:18px;
+        border:1px solid color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 9%,transparent);
+        box-shadow:0 14px 42px color-mix(in srgb,#000 16%,transparent);
       }
       .doxa-rich-article{max-width:720px;margin:0 auto;padding:30px 8px 0}
       .doxa-rich-kicker{
@@ -302,6 +309,7 @@
       @media(max-width:680px){
         .doxa-rich-reader-shell{padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 52px)}
         .doxa-rich-reader-hero{border-radius:17px;aspect-ratio:16/9.4}
+        .doxa-rich-lead-image{margin-top:20px;border-radius:14px}
         .doxa-rich-article{padding:24px 5px 0}
         .doxa-rich-article>h1{font-size:36px}
         .doxa-rich-sub{font-size:16px}
@@ -363,11 +371,12 @@
     if(x.meta)kicker.push('<i></i><span>'+esc(x.meta)+'</span>');
 
     shell.innerHTML=
-      (hero?'<div class="doxa-rich-reader-hero" style="--home-image:url(\''+cssUrl(hero)+'\')"></div>':'')
+      ((!split.marked&&hero)?'<div class="doxa-rich-reader-hero" style="--home-image:url(\''+cssUrl(hero)+'\')"></div>':'')
       +'<article class="doxa-rich-article">'
       +(kicker.length?'<div class="doxa-rich-kicker">'+kicker.join('')+'</div>':'')
       +'<h1>'+esc(x.titulo||'')+'</h1>'
       +(x.subtitulo?'<p class="doxa-rich-sub">'+esc(x.subtitulo)+'</p>':'')
+      +((split.marked&&hero)?'<img class="doxa-rich-lead-image" src="'+esc(hero)+'" alt="">':'')
       +(source?'<div class="doxa-rich-source"><button type="button" data-rich-external="'+esc(source)+'">Abrir fonte original ›</button></div>':'')
       +'<div class="doxa-rich-content">'+html+'</div>'
       +'</article>';
