@@ -114,6 +114,39 @@
   const JUIZES=[['otniel','Otniel',48,3,7],['eude','Eúde',98,3,12],['debora','Débora e Baraque',60,4,1],['gideao','Gideão',47,6,1],
     ['abimeleque','Abimeleque',3,9,1],['tola','Tola',23,10,1],['jair','Jair',22,10,3],['jefte','Jefté',24,10,6],['ibsa','Ibsã',7,12,8],
     ['elom','Elom',10,12,11],['abdom','Abdom',8,12,13],['sansao','Sansão (opressão filisteia)',40,13,1]];
+  const PROF=[
+    ['samuel','Samuel','Israel (todas as tribos)','todos','y:ELI_D:-15','y:SAUL:30','1 Sm 3; 25:1',true],
+    ['gade','Gade','Judá','juda','y:DAVI:-10','y:DAVI:38','1 Sm 22:5; 2 Sm 24',true],
+    ['nata','Natã','Jerusalém','juda','y:DAVI:8','y:SOL:1','2 Sm 7; 12; 1 Rs 1',true],
+    ['aias','Aías de Silo','Israel (Norte)','norte','y:SOL:30','r:jeroboao:20','1 Rs 11:29; 14:2',true],
+    ['semaias','Semaías','Judá','juda','r:roboao:1','r:roboao:5','1 Rs 12:22; 2 Cr 12:5',true],
+    ['azarias_od','Azarias, filho de Odede','Judá','juda','r:asa:15','r:asa:15','2 Cr 15:1,10',false],
+    ['hanani','Hanani, o vidente','Judá','juda','r:asa:36','r:asa:36','2 Cr 16:1,7',false],
+    ['jeu_hanani','Jeú, filho de Hanani','Israel e Judá','todos','r:baasa:1','r:josafa:10','1 Rs 16:1; 2 Cr 19:2',true],
+    ['elias','Elias','Israel (Norte)','norte','r:acabe:3','r:joraoI:1','1 Rs 17 – 2 Rs 2',true],
+    ['micaias','Micaías','Israel (Samaria)','norte','r:acabe:22','r:acabe:22','1 Rs 22',false],
+    ['jaaziel','Jaaziel','Judá','juda','r:josafa:20','r:josafa:20','2 Cr 20:14',true],
+    ['eliseu','Eliseu','Israel (Norte)','norte','r:joraoI:1','r:jeoasI:5','2 Rs 2 – 13',true],
+    ['zacarias_j','Zacarias, filho de Joiada','Judá','juda','r:joas:25','r:joas:25','2 Cr 24:20',true],
+    ['jonas','Jonas','Israel · enviado a Nínive','nineve','r:jeroboao2:10','r:jeroboao2:30','2 Rs 14:25; Jn 1:1',true],
+    ['amos','Amós','Israel (Betel), vindo de Tecoa','norte','r:jeroboao2:35','r:jeroboao2:36','Am 1:1',true],
+    ['oseias_p','Oseias','Israel (Norte)','norte','r:jeroboao2:38','r:ezequias:2','Os 1:1',true],
+    ['isaias','Isaías','Judá (Jerusalém)','juda','r:uzias:52','e:ezequias','Is 1:1; 6:1',false],
+    ['miqueias','Miqueias','Judá (Moresete)','juda','r:jotao:1','r:ezequias:10','Mq 1:1; Jr 26:18',true],
+    ['odede','Odede','Israel (Samaria)','norte','r:peca:20','r:peca:20','2 Cr 28:9',true],
+    ['naum','Naum','Judá · contra Nínive','nineve','r:josias:5','r:josias:15','Na 1:1; 3:8',true],
+    ['sofonias','Sofonias','Judá','juda','r:josias:1','e:josias','Sf 1:1',false],
+    ['hulda','Hulda, a profetisa','Jerusalém','juda','r:josias:18','r:josias:18','2 Rs 22:14',false],
+    ['jeremias','Jeremias','Judá; depois o Egito','juda','r:josias:13','y:QUEDA:3','Jr 1:2–3; 43–44',false],
+    ['urias','Urias','Judá','juda','r:jeoaquim:1','r:jeoaquim:1','Jr 26:20',true],
+    ['habacuque','Habacuque','Judá','juda','r:jeoaquim:1','r:jeoaquim:11','Hc 1:6',true],
+    ['daniel','Daniel','Babilônia (depois Pérsia)','exilio','r:jeoaquim:3','r:ciro:3','Dn 1:1; 10:1',false],
+    ['ezequiel','Ezequiel','Babilônia (rio Quebar)','exilio','x:5','x:27','Ez 1:2; 29:17',false],
+    ['obadias','Obadias','Contra Edom','edom','y:QUEDA:1','y:QUEDA:5','Ob 11–14',true],
+    ['ageu','Ageu','Jerusalém (após o exílio)','pos','r:dario:2','r:dario:2','Ag 1:1',false],
+    ['zacarias','Zacarias','Jerusalém (após o exílio)','pos','r:dario:2','r:dario:4','Zc 1:1; 7:1',false],
+    ['malaquias','Malaquias','Jerusalém (após o exílio)','pos','r:artaxerxes:25','r:artaxerxes:35','Ml 1:1',true],
+  ];
   function compute2(tr,G){
     const P=G.P,Y={},R={},X={};
     Y.EGITO=P.jaco.b+130;                                        // Gn 47:9
@@ -152,6 +185,23 @@
     Y.QUEDA=R.zedequias.acc+10;                                   // 2 Rs 25:2,8
     Y.SOLTURA=R.zedequias.acc+36;                                 // 2 Rs 25:27 (37º ano do exílio)
     X.jeoacaz.cap=35;X.joaquim.cap=70;X.zedequias.cap=45;   // mortes não registradas em Reis
+    /* ---- FASE 3 · exílio e Pérsia ----
+       · Jr 25:1 — 4º ano de Jeoaquim = 1º de Nabucodonosor. 2 Rs 25:8 confere: 19º de Nabucodonosor = 11º de Zedequias.
+       · 2 Rs 25:27 — Evil-Merodaque assume no 37º ano do exílio de Joaquim (daí sai a duração do reinado de Nabucodonosor).
+       · Jr 25:11–12; 29:10; 2 Cr 36:21–22 — os 70 anos da Babilônia terminam no 1º ano de Ciro.
+       · Duração dos reinados persas: a Bíblia não informa; usam-se as durações conhecidas da história persa (marcadas). */
+    Y.EXILIO=R.zedequias.acc;                                    // deportação de Joaquim (2 Rs 24:12)
+    Y.NEB=R.jeoaquim.acc+3; Y.CIRO=Y.NEB+70;
+    const king=(k,n,s0,e0,o={})=>{R[k]={acc:s0,end:e0};add(k,n,o.b??null,o.d??null,o.ref||'',Object.assign({reign:[s0,e0],king:'X'},o))};
+    king('nabucodonosor','Nabucodonosor (Babilônia)',Y.NEB,Y.SOLTURA,{ref:'Jr 25:1; 2 Rs 25:8,27'});
+    king('evilmerodaque','Evil-Merodaque (Babilônia)',Y.SOLTURA,Y.SOLTURA+2,{ref:'2 Rs 25:27',ext:true});
+    king('belsazar','Belsazar (Babilônia)',Y.CIRO-14,Y.CIRO,{ref:'Dn 5; 7:1; 8:1',ext:true,aprox:true});
+    king('dariomedo','Dario, o medo (62 anos ao assumir, Dn 5:31)',Y.CIRO,Y.CIRO+1,{ref:'Dn 5:31; 9:1'});
+    king('ciro','Ciro (Pérsia)',Y.CIRO,Y.CIRO+9,{ref:'Ed 1:1; Dn 10:1',ext:true});
+    king('cambises','Cambises (Pérsia)',Y.CIRO+9,Y.CIRO+17,{ref:'não citado pelo nome',ext:true});
+    king('dario','Dario (Pérsia)',Y.CIRO+17,Y.CIRO+53,{ref:'Ed 4:24; Ag 1:1',ext:true});
+    king('assuero','Assuero (Pérsia)',Y.CIRO+53,Y.CIRO+74,{ref:'Et 1:1; Ed 4:6',ext:true});
+    king('artaxerxes','Artaxerxes (Pérsia)',Y.CIRO+74,Y.CIRO+115,{ref:'Ed 7:1; Ne 2:1',ext:true});
     return{Y,R,X};
   }
   const CH={};TR.forEach(t=>CH[t]=compute(t));
@@ -286,9 +336,65 @@
       [23,31,'r:jeoacaz:1',false,'Jeoacaz, três meses'],[23,36,'r:jeoaquim:1',false,'Jeoaquim rei de Judá'],[24,8,'r:joaquim:1',false,'Joaquim, três meses; primeira deportação'],
       [24,18,'r:zedequias:1',false,'Zedequias rei de Judá'],[25,1,'r:zedequias:9',false,'Cerco de Jerusalém'],[25,8,'y:QUEDA:0',false,'Jerusalém e o templo destruídos'],
       [25,27,'y:SOLTURA:0',false,'Joaquim libertado na Babilônia']],
+    '1Chr':[[10,1,'y:DAVI:0',false,'Morre Saul'],[11,1,'p:davi:37',false,'Davi rei sobre todo Israel'],[13,1,'p:davi:38',true,'A arca levada a Jerusalém'],
+      [17,1,'p:davi:40',true,'A aliança com Davi'],[21,1,'p:davi:68',true,'O recenseamento'],[22,1,'p:davi:69',true,'Preparativos para o templo'],
+      [23,1,'p:davi:70',false,'Davi velho; Salomão rei'],[29,26,'p:davi:70',false,'Morre Davi']],
+    '2Chr':[[1,1,'y:SOL:0',false,'Salomão rei'],[3,1,'y:SOL:3',false,'Começa o templo (4º ano)'],[5,1,'y:SOL:10',false,'O templo concluído'],
+      [9,1,'y:SOL:21',true,'A rainha de Sabá'],[9,29,'e:salomao',false,'Morre Salomão'],[10,1,'r:roboao:1',false,'O reino se divide'],
+      [12,2,'r:roboao:5',false,'Sisaque ataca Jerusalém'],[13,1,'r:abias:1',false,'Abias rei de Judá'],[14,1,'r:asa:1',false,'Asa rei de Judá'],
+      [15,10,'r:asa:15',false,'Renovação da aliança (15º ano de Asa)'],[16,1,'r:asa:36',false,'Asa e Baasa (36º ano)'],[16,12,'r:asa:39',false,'Asa enfermo dos pés'],
+      [17,1,'r:josafa:1',false,'Josafá rei de Judá'],[18,1,'r:acabe:22',true,'Josafá e Acabe em Ramote-Gileade'],[20,1,'r:josafa:20',true,'A vitória pelo louvor'],
+      [21,1,'r:jeorao:1',false,'Jeorão rei de Judá'],[22,1,'r:acazias:1',false,'Acazias rei de Judá'],[22,10,'r:atalia:1',false,'Atalia usurpa o trono'],
+      [24,1,'r:joas:1',false,'Joás rei de Judá'],[24,20,'r:joas:25',true,'Zacarias é apedrejado'],[25,1,'r:amazias:1',false,'Amazias rei de Judá'],
+      [26,1,'r:uzias:1',false,'Uzias rei de Judá'],[27,1,'r:jotao:1',false,'Jotão rei de Judá'],[28,1,'r:acaz:1',false,'Acaz rei de Judá'],
+      [29,1,'r:ezequias:1',false,'Ezequias rei de Judá'],[32,1,'r:ezequias:14',false,'Senaqueribe invade Judá'],[33,1,'r:manasses:1',false,'Manassés rei de Judá'],
+      [33,21,'r:amom:1',false,'Amom rei de Judá'],[34,1,'r:josias:1',false,'Josias rei de Judá'],[34,3,'r:josias:8',false,'Josias busca a Deus (8º ano)'],
+      [34,8,'r:josias:18',false,'O livro da Lei é achado'],[35,20,'e:josias',false,'Morre Josias'],[36,1,'r:jeoacaz:1',false,'Jeoacaz'],
+      [36,5,'r:jeoaquim:1',false,'Jeoaquim'],[36,9,'r:joaquim:1',false,'Joaquim'],[36,11,'r:zedequias:1',false,'Zedequias'],
+      [36,17,'y:QUEDA:0',false,'Jerusalém destruída'],[36,22,'y:CIRO:0',false,'O decreto de Ciro']],
+    Ezra:[[1,1,'y:CIRO:0',false,'O decreto de Ciro'],[3,8,'y:CIRO:1',false,'Fundamentos do templo (2º ano da volta)'],[4,1,'y:CIRO:2',true,'Oposição à reconstrução'],
+      [4,6,'r:assuero:1',true,'Acusações no reinado de Assuero'],[4,7,'r:artaxerxes:1',true,'Carta a Artaxerxes'],[4,24,'r:dario:2',false,'A obra parada até o 2º ano de Dario'],
+      [5,1,'r:dario:2',false,'Ageu e Zacarias animam a obra'],[6,15,'r:dario:6',false,'O templo concluído (6º ano de Dario)'],[7,1,'r:artaxerxes:7',false,'Esdras chega a Jerusalém']],
+    Neh:[[1,1,'r:artaxerxes:20',false,'Neemias recebe a notícia'],[2,1,'r:artaxerxes:20',false,'Neemias diante do rei'],[6,15,'r:artaxerxes:20',false,'O muro concluído em 52 dias'],
+      [8,1,'r:artaxerxes:20',false,'Esdras lê a Lei'],[13,6,'r:artaxerxes:32',false,'Neemias volta a Jerusalém (32º ano)']],
+    Esth:[[1,1,'r:assuero:3',false,'O banquete de Assuero (3º ano)'],[2,16,'r:assuero:7',false,'Ester rainha (7º ano)'],[3,7,'r:assuero:12',false,'Hamã lança sortes (12º ano)'],
+      [9,1,'r:assuero:13',false,'Purim']],
+    Isa:[[1,1,'r:uzias:52',true,'Visão de Isaías'],[6,1,'e:uzias',false,'No ano da morte do rei Uzias'],[7,1,'r:acaz:1',true,'Acaz e o sinal do Emanuel'],
+      [14,28,'e:acaz',false,'No ano da morte de Acaz'],[20,1,'r:ezequias:5',true,'Asdode'],[36,1,'r:ezequias:14',false,'Senaqueribe invade Judá'],
+      [38,1,'r:ezequias:14',false,'Ezequias enfermo'],[39,1,'r:ezequias:15',true,'Embaixada da Babilônia'],[40,1,'r:ezequias:16',true,'“Consolai o meu povo”']],
+    Jer:[[1,1,'r:josias:13',false,'Chamado de Jeremias'],[3,6,'r:josias:18',true,'Nos dias de Josias'],[7,1,'r:jeoaquim:1',true,'Sermão do templo'],
+      [21,1,'r:zedequias:9',true,'Zedequias consulta Jeremias'],[22,1,'r:jeoaquim:1',true,'Palavra à casa real'],[24,1,'r:zedequias:1',false,'Os dois cestos de figos'],
+      [25,1,'r:jeoaquim:4',false,'Os 70 anos (4º de Jeoaquim)'],[26,1,'r:jeoaquim:1',false,'Início do reinado de Jeoaquim'],[27,1,'r:zedequias:4',true,'O jugo de madeira'],
+      [28,1,'r:zedequias:4',false,'Hananias (4º de Zedequias)'],[29,1,'r:zedequias:1',true,'Carta aos exilados'],[32,1,'r:zedequias:10',false,'Jeremias compra o campo'],
+      [34,1,'r:zedequias:9',false,'Durante o cerco'],[35,1,'r:jeoaquim:10',true,'Os recabitas'],[36,1,'r:jeoaquim:4',false,'O rolo é escrito'],
+      [36,9,'r:jeoaquim:5',false,'O rolo é queimado'],[37,1,'r:zedequias:9',true,'Jeremias preso'],[39,1,'r:zedequias:9',false,'Começa o cerco'],
+      [39,2,'y:QUEDA:0',false,'Jerusalém cai'],[40,1,'y:QUEDA:0',false,'Depois da queda'],[43,1,'y:QUEDA:1',true,'Levado ao Egito'],
+      [45,1,'r:jeoaquim:4',false,'Palavra a Baruque'],[46,2,'r:jeoaquim:4',false,'Carquemis'],[47,1,'r:jeoaquim:5',true,'Contra os filisteus'],
+      [49,34,'r:zedequias:1',false,'Contra Elão'],[51,59,'r:zedequias:4',false,'Seraías leva o rolo à Babilônia'],[52,1,'r:zedequias:1',false,'Zedequias'],
+      [52,12,'y:QUEDA:0',false,'O templo queimado'],[52,31,'y:SOLTURA:0',false,'Joaquim libertado']],
+    Lam:[[1,1,'y:QUEDA:0',true,'Lamento por Jerusalém']],
+    Ezek:[[1,1,'x:5',false,'Visão junto ao rio Quebar'],[8,1,'x:6',false,'Visões do templo'],[20,1,'x:7',false,'Os anciãos consultam'],
+      [24,1,'x:9',false,'Começa o cerco de Jerusalém'],[26,1,'x:11',false,'Contra Tiro'],[29,1,'x:10',false,'Contra o Egito'],[29,17,'x:27',false,'Último oráculo datado'],
+      [30,20,'x:11',false,'O braço de Faraó'],[32,1,'x:12',false,'Lamento sobre Faraó'],[33,21,'x:12',false,'Chega a notícia da queda'],
+      [40,1,'x:25',false,'Visão do novo templo']],
+    Dan:[[1,1,'r:jeoaquim:3',false,'Daniel levado à Babilônia'],[2,1,'r:nabucodonosor:2',false,'O sonho da estátua'],[3,1,'r:nabucodonosor:18',true,'A fornalha ardente'],
+      [4,1,'r:nabucodonosor:30',true,'A loucura de Nabucodonosor'],[5,1,'e:belsazar',false,'A última noite de Belsazar'],[6,1,'r:dariomedo:1',false,'Daniel na cova dos leões'],
+      [7,1,'r:belsazar:1',false,'Os quatro animais'],[8,1,'r:belsazar:3',false,'O carneiro e o bode'],[9,1,'r:dariomedo:1',false,'As setenta semanas'],
+      [10,1,'r:ciro:3',false,'A última visão'],[11,1,'r:dariomedo:1',false,'Os reis do norte e do sul']],
+    Hos:[[1,1,'r:jeroboao2:38',true,'Oseias e Gômer']],
+    Amos:[[1,1,'r:jeroboao2:35',true,'Dois anos antes do terremoto']],
+    Obad:[[1,1,'y:QUEDA:1',true,'Contra Edom']],
+    Jonah:[[1,1,'r:jeroboao2:15',true,'Jonas enviado a Nínive']],
+    Mic:[[1,1,'r:jotao:1',true,'Contra Samaria e Jerusalém']],
+    Nah:[[1,1,'r:josias:10',true,'Contra Nínive']],
+    Hab:[[1,1,'r:jeoaquim:3',true,'Os caldeus se levantam']],
+    Zeph:[[1,1,'r:josias:5',true,'Nos dias de Josias']],
+    Hag:[[1,1,'r:dario:2',false,'2º ano de Dario'],[2,10,'r:dario:2',false,'2º ano de Dario (9º mês)']],
+    Zech:[[1,1,'r:dario:2',false,'2º ano de Dario'],[7,1,'r:dario:4',false,'4º ano de Dario']],
+    Mal:[[1,1,'r:artaxerxes:32',true,'Depois da reconstrução']],
   };
-  const BOOK_PT={Gen:'Gn',Exod:'Êx',Lev:'Lv',Num:'Nm',Deut:'Dt',Josh:'Js',Judg:'Jz',Ruth:'Rt','1Sam':'1 Sm','2Sam':'2 Sm','1Kgs':'1 Rs','2Kgs':'2 Rs'};
-  const BOOK_ORDER=['Gen','Exod','Lev','Num','Deut','Josh','Judg','Ruth','1Sam','2Sam','1Kgs','2Kgs'];
+  const BOOK_PT={Gen:'Gn',Exod:'Êx',Lev:'Lv',Num:'Nm',Deut:'Dt',Josh:'Js',Judg:'Jz',Ruth:'Rt','1Sam':'1 Sm','2Sam':'2 Sm','1Kgs':'1 Rs','2Kgs':'2 Rs','1Chr':'1 Cr','2Chr':'2 Cr',Ezra:'Ed',Neh:'Ne',Esth:'Et',Isa:'Is',Jer:'Jr',Lam:'Lm',Ezek:'Ez',Dan:'Dn',Hos:'Os',Amos:'Am',Obad:'Ob',Jonah:'Jn',Mic:'Mq',Nah:'Na',Hab:'Hc',Zeph:'Sf',Hag:'Ag',Zech:'Zc',Mal:'Ml'};
+  const BOOK_ORDER=['Gen','Exod','Lev','Num','Deut','Josh','Judg','Ruth','1Sam','2Sam','1Kgs','2Kgs','1Chr','2Chr','Ezra','Neh','Esth','Isa','Jer','Lam','Ezek','Dan','Hos','Amos','Obad','Jonah','Mic','Nah','Hab','Zeph','Hag','Zech','Mal'];
   const Y_LABEL={EXO:'o Êxodo',SOL:'o início do reinado de Salomão',SAUL:'o início do reinado de Saul',JOSUE_D:'a morte de Josué',ELI_D:'a morte de Eli',RUTE:''};
   const Y_FIXED={SAMARIA:'6º ano de Ezequias; 9º de Oseias (2 Rs 18:10)',QUEDA:'11º ano de Zedequias (2 Rs 25:2)',SOLTURA:'37º ano do exílio de Joaquim (2 Rs 25:27)',RUTE:'três gerações antes de Davi (Rt 4:17–22)'};
   function resolve(ch,spec){
@@ -301,15 +407,18 @@
       return{y,ctx};}
     if(t==='r'){const r=ch.R[a];if(!r)return null;const n=Number(b);const who=ch.P[a];return{y:r.acc+n-1,ctx:n+'º ano de '+(who?who.n:a),who:a};}
     if(t==='e'){const q=ch.P[a];const r=ch.R[a]||(q&&q.reign?{end:q.reign[1]}:null);if(!r)return null;return{y:r.end,ctx:'fim do reinado de '+(q?q.n:a),who:a};}
+    if(t==='x'){const n=Number(a);return{y:ch.Y.EXILIO+n-1,ctx:n+'º ano do exílio de Joaquim'};}
     if(t==='p'){const q=ch.P[a];if(!q||q.b==null)return null;const n=Number(b);return{y:q.b+n,ctx:q.n+' tem '+n+(n===1?' ano':' anos'),who:a};}
     return null;
   }
+  // profetas: período resolvido depois que as âncoras e rótulos existem
+TR.forEach(t=>{const ch=CH[t];ch.PR=PROF.map(([k,n,reg,cls,a,b,ref,ap])=>{const r1=resolve(ch,a),r2=resolve(ch,b);return r1&&r2?{k,n,reg,cls,s:r1.y,e:r2.y,ref,ap}:null}).filter(Boolean)});
   /* ---------- 4. Tela ---------- */
   function eraName(ch,y){
     const Y=ch.Y;
     if(y<ch.flood)return'Antes do Dilúvio';if(y<ch.P.abraao.b)return'Do Dilúvio a Abraão';if(y<Y.EGITO)return'Os patriarcas';
     if(y<Y.EXO)return'Israel no Egito';if(y<=Y.EXO+40)return'O deserto';if(y<Y.JOSUE_D)return'A conquista';if(y<Y.SAUL)return'Os juízes';
-    if(y<Y.SOL+40)return'O reino unido';if(y<Y.SAMARIA)return'Os reinos de Israel e Judá';if(y<=Y.QUEDA)return'Judá depois da queda de Samaria';return'O exílio';
+    if(y<Y.SOL+40)return'O reino unido';if(y<Y.SAMARIA)return'Os reinos de Israel e Judá';if(y<Y.QUEDA)return'Judá depois da queda de Samaria';if(y<Y.CIRO)return'O exílio na Babilônia';return'O retorno, sob a Pérsia';
   }
   function locate(ch,ref){
     if(ref.book==='Gen'){
@@ -319,7 +428,7 @@
     }
     const list=B2[ref.book];if(!list)return null;
     let a=null;for(const x of list){if(x[0]<ref.chapter||(x[0]===ref.chapter&&x[1]<=ref.verse))a=x;else break}
-    if(!a)a=list[0];
+    if(!a)return null;
     const r=resolve(ch,a[2]);if(!r)return null;
     return{y:r.y,label:a[4],ap:a[3],who:r.who||null,ctx:r.ctx,ac:a[0],av:a[1]};
   }
@@ -362,7 +471,7 @@
       let tag='';
       if(born)tag='<em class="b">nasce</em>';else if(dies)tag=q.taken?'<em class="t">tomado por Deus</em>':'<em class="d">morre</em>';
       else if(reigning)tag='<em class="r">'+(q.judge?(q.reign[0]===y?'começa a julgar':'julgando'):(q.reign[0]===y?'começa a reinar':'reinando · '+(y-q.reign[0]+1)+'º ano'))+'</em>';
-      else if(hasLife&&q.d==null)tag='<em class="u">morte não registrada</em>';
+      else if(hasLife&&q.d==null&&!(q.reign&&y<q.reign[0]))tag='<em class="u">morte não registrada</em>';
       const s0=hasLife?q.b:q.reign[0],e0=hasLife?(q.d??y):q.reign[1];
       const rg=q.reign?'<b class="rg" style="left:'+pct(q.reign[0])+'%;width:'+(pct(q.reign[1])-pct(q.reign[0])).toFixed(2)+'%"></b>':'';
       return '<div class="tl2-row'+(q.k===L.who?' me':'')+'"><div class="tl2-who"><b>'+esc(q.n)+'</b>'+(hasLife?'<span>'+qa+(qa===1?' ano':' anos')+(q.aprox?' (aprox.)':'')+'</span>':'')+tag+'</div>'
@@ -374,6 +483,14 @@
     if(here>=0){prev=evs[here-1]||null;next=evs[here+1]||null}
     else{prev=[...evs].reverse().find(e=>e.y<=y&&!(e.book===ref.book&&e.c===L.ac&&e.v===L.av))||null;next=evs.find(e=>e.y>y)||null}
     const evBtn=(e,dir)=>e?'<button type="button" class="tl2-ev" data-go="'+e.book+','+e.c+','+e.v+'"><small>'+(dir<0?'ANTES':'DEPOIS')+' · ANO '+e.y+'</small><b>'+esc(e.t)+'</b><span>'+BOOK_PT[e.book]+' '+e.c+':'+e.v+'</span></button>':'<div class="tl2-ev empty"></div>';
+    // ---- profetas: em atividade, e os que acabaram de profetizar ou estão para começar ----
+    const BOOK_PROF={Isa:'isaias',Jer:'jeremias',Lam:'jeremias',Ezek:'ezequiel',Dan:'daniel',Hos:'oseias_p',Amos:'amos',Obad:'obadias',Jonah:'jonas',Mic:'miqueias',Nah:'naum',Hab:'habacuque',Zeph:'sofonias',Hag:'ageu',Zech:'zacarias',Mal:'malaquias'};
+    const PR=ch.PR||[],act=PR.filter(q=>q.s<=y&&q.e>=y);
+    const near=PR.filter(q=>!act.includes(q)&&((q.e<y&&y-q.e<=30)||(q.s>y&&q.s-y<=30))).sort((a,b)=>Math.min(Math.abs(a.s-y),Math.abs(a.e-y))-Math.min(Math.abs(b.s-y),Math.abs(b.e-y)));
+    const per=q=>q.s===q.e?(q.ap?'≈ ':'')+'ano '+q.s:(q.ap?'≈ ':'')+'anos '+q.s+'–'+q.e;
+    const profHtml=(act.length||near.length)?'<h4>Profetas <span>'+act.length+' em atividade</span></h4>'
+      +act.map(q=>'<div class="tl2-prof'+(BOOK_PROF[ref.book]===q.k?' me':'')+'"><div><b>'+esc(q.n)+'</b><span class="reg reg-'+q.cls+'">'+esc(q.reg)+'</span></div><p>'+per(q)+' · '+esc(q.ref)+'</p></div>').join('')
+      +(near.length?'<div class="tl2-near">'+near.slice(0,6).map(q=>'<div><span class="reg reg-'+q.cls+'"></span><b>'+esc(q.n)+'</b><em>'+(q.e<y?'terminou há '+(y-q.e)+(y-q.e===1?' ano':' anos'):'começa em '+(q.s-y)+(q.s-y===1?' ano':' anos'))+'</em><small>'+esc(q.reg)+'</small></div>').join('')+'</div>':''):'';
     const notes=[],Y=ch.Y;
     if(L.who&&ch.P[L.who]?.der&&NOTE_DERIVED[L.who])notes.push(NOTE_DERIVED[L.who]);
     if(tradition==='LXX'&&ch.P.matusalem.d>ch.flood&&y>=ch.flood-200&&y<=ch.P.matusalem.d+50)
@@ -386,6 +503,10 @@
     if(BOOK_ORDER.indexOf(ref.book)>=BOOK_ORDER.indexOf('Josh')&&tradition==='SP')notes.push('O Pentateuco Samaritano contém só os cinco livros de Moisés. Daqui em diante usam-se os números do Texto Massorético, somados à data do Êxodo pelo Samaritano.');
     if(tradition==='LXX'&&y>=Y.EXO+40&&y<=Y.SOL+40)notes.push('1 Reis 6:1 na Septuaginta: o templo começa no 440º ano após o Êxodo (no Texto Massorético, 480º).');
     if(BOOK_ORDER.indexOf(ref.book)>=BOOK_ORDER.indexOf('1Kgs')&&y>=Y.SOL+40)notes.push('Reinados somados em sequência pelos anos dados em Reis; os reis de Israel entram pelos sincronismos do texto. Corregências não são aplicadas, então pode haver diferença de poucos anos em relação a cronologias acadêmicas.');
+    if(alive.some(q=>q.ext))notes.push('A Bíblia não informa a duração dos reinados de Babilônia e da Pérsia (exceto o de Nabucodonosor, que sai de 2 Rs 25:8 e 25:27). Para esses reis, usam-se as durações conhecidas da história antiga.');
+    if(y===Y.CIRO||ref.book==='Dan'&&ref.chapter===9)notes.push('O 1º ano de Ciro está calculado pelos "70 anos" da Babilônia: Jeremias 25:1 e 25:11–12 contam desde o 4º ano de Jeoaquim (1º de Nabucodonosor), e 2 Crônicas 36:21–22 liga o fim deles ao decreto de Ciro.');
+    if(ref.book==='Ezra'&&ref.chapter===4)notes.push('Esdras 4:6–23 reúne oposições de reinados posteriores (Assuero, Artaxerxes) por tema, não em ordem; o v. 24 volta à época de Dario.');
+    if(ref.book==='Ezek')notes.push('Ezequiel data as visões pelos anos do exílio do rei Joaquim, levado em 597 a.C. pela contagem comum (2 Rs 24:12; Ez 1:2).');
     const s=sheet();
     s.innerHTML='<div class="tl2-grab"></div>'
       +'<header class="tl2-head"><div><small>LINHA DO TEMPO · '+esc(ref.label||'')+'</small><strong>'+(L.ap?'≈ ':'')+'Ano '+y+'<span> desde a criação</span></strong></div><button type="button" id="tl2Close" aria-label="Fechar">×</button></header>'
@@ -394,15 +515,16 @@
       +'<div class="tl2-anchor"><span class="tl2-era">'+eraName(ch,y)+'</span><b>'+esc(L.label)+'</b><p>'+esc(L.ctx||'')+(L.ap?' <em>(aproximado)</em>':'')+' · cálculo '+TR_NAME[tradition]+'</p></div>'
       +'<h4>Quem estava vivo <span>'+alive.length+'</span></h4>'+(alive.length?'<div class="tl2-rows">'+rows+'</div>':'<p class="tl2-none">O texto não informa idades nem reinados de pessoas neste ponto.</p>')
       +'<div class="tl2-scale"><span>ano '+Math.round(lo)+'</span><span>ano '+Math.round(hi)+'</span></div>'
+      +profHtml
       +'<h4>Antes e depois</h4><div class="tl2-evs">'+evBtn(prev,-1)+evBtn(next,1)+'</div>'
       +(notes.length?'<div class="tl2-notes">'+notes.map(n=>'<p>'+esc(n)+'</p>').join('')+'</div>':'')
-      +'<p class="tl2-src">Anos calculados a partir do próprio texto: Gênesis 5 e 11, as idades informadas nas narrativas, Êxodo 12:40, 1 Reis 6:1 e os anos de reinado de Reis. Trechos sem idade ou data explícita aparecem como aproximados (≈).</p>'
+      +'<p class="tl2-src">Anos calculados a partir do próprio texto: Gênesis 5 e 11, as idades informadas nas narrativas, Êxodo 12:40, 1 Reis 6:1, os reinados de Reis e Crônicas e as datas dos próprios profetas. Trechos sem idade ou data explícita aparecem como aproximados (≈).</p>'
       +'</div>';
     s.classList.add('on');$('doxaChronoBackdrop').classList.add('on');
     s.querySelector('#tl2Close').onclick=close;
     s.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{tradition=b.dataset.tr;try{localStorage.setItem('doxa:chrono:tr',tradition)}catch(e){}render(lastRef)});
     s.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const [bk,c,v]=b.dataset.go.split(',');goTo(bk,Number(c),Number(v))});
   }
-  const handles=ref=>!!ref&&BOOK_ORDER.includes(ref.book);
+  const handles=ref=>!!ref&&BOOK_ORDER.includes(ref.book)&&!!locate(CH.TM,ref);
   window.DoxaChrono={render,close,handles,compute,anchorFor,CH};
 })();
