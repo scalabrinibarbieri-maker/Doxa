@@ -25,8 +25,8 @@
     ['claudio','Cláudio','imperador',41,54,'At 11:28; 18:2','roma'],
     ['nero','Nero','imperador (“César”, At 25:11)',54,68,'At 25:11','roma'],
     ['domiciano','Domiciano','imperador (não citado no NT)',81,96,'—','roma',true],
-    ['herodes','Herodes, o Grande','rei da Judeia',-36,-3,'Mt 2:1; Lc 1:5','herod'],
-    ['arquelau','Arquelau','etnarca da Judeia',-3,6,'Mt 2:22','herod'],
+    ['herodes','Herodes, o Grande','rei da Judeia',-36,0,'Mt 2:1; Lc 1:5','herod'],
+    ['arquelau','Arquelau','etnarca da Judeia',0,6,'Mt 2:22','herod'],
     ['antipas','Herodes Antipas','tetrarca da Galileia',-3,39,'Lc 3:1; 13:31; 23:7','herod'],
     ['filipe_t','Filipe','tetrarca da Itureia',-3,34,'Lc 3:1','herod'],
     ['agripa1','Herodes Agripa I','rei da Judeia',41,44,'At 12:1–23','herod'],
@@ -45,8 +45,8 @@
   /* Anos com fração = ordem dos fatos dentro do mesmo ano (33.26 = crucificação, antes da ressurreição em 33.27).
      Assim, em Mt 22 (mesma semana, antes da cruz) Jesus não aparece como crucificado. */
   const PES=[
-    ['joao_b','João Batista',-5,29.3,31.7,'Lc 1:36,57; 3:1–2; Mt 14:10',true,'executado por Herodes Antipas'],
-    ['jesus','Jesus',-4,29.7,33.35,'Lc 2:1–7; 3:23; Jo 2:13; 6:4; 11:55',true,''],
+    ['joao_b','João Batista',-1.5,29.3,31.7,'Lc 1:36,57; 3:1–2; Mt 14:10',true,'executado por Herodes Antipas'],
+    ['jesus','Jesus',-1.0,29.7,33.35,'Lc 2:1–7; 3:23; Jo 2:13; 6:4; 11:55',true,''],
     ['pedro','Pedro',null,29.8,65,'Mt 4:18; Jo 21:18–19',true,''],
     ['tiago_z','Tiago, filho de Zebedeu',null,29.8,44.2,'Mt 4:21; At 12:2',false,'morto por Herodes Agripa I'],
     ['joao_ap','João, o apóstolo',null,29.8,98,'Mt 4:21; Ap 1:9',true,''],
@@ -78,7 +78,7 @@
   const CARTA={};CARTAS.forEach(c=>CARTA[c[0]]=c);
   /* ---------- âncoras dos Evangelhos e de Atos: [cap, vers, ano, aproximado?, rótulo] ---------- */
   const A={
-    Matt:[[1,18,-4,true,'O nascimento de Jesus'],[2,1,-3.4,true,'Os magos; Herodes ainda vivo'],[2,19,-3.0,false,'Morre Herodes; volta do Egito'],
+    Matt:[[1,18,-1.0,true,'O nascimento de Jesus'],[2,1,-0.6,true,'Os magos; Herodes ainda vivo'],[2,19,0.0,true,'Morre Herodes; volta do Egito'],
       [3,1,29.3,false,'João Batista começa a pregar'],[3,13,29.7,true,'O batismo de Jesus'],[4,12,30.3,true,'João preso; Jesus na Galileia'],[5,1,30.5,true,'O Sermão do Monte'],
       [10,1,31.2,true,'Os doze são enviados'],[11,2,31.4,true,'João, na prisão, envia discípulos'],[14,1,31.7,true,'João Batista é morto'],[14,13,32.2,true,'A multiplicação dos pães (Páscoa, Jo 6:4)'],
       [16,13,32.5,true,'Em Cesareia de Filipe'],[17,1,32.55,true,'A transfiguração'],[19,1,33.05,true,'Rumo à Judeia'],[21,1,33.2,true,'A entrada em Jerusalém'],
@@ -86,8 +86,8 @@
     Mark:[[1,1,29.3,false,'João Batista no deserto'],[1,9,29.7,true,'O batismo de Jesus'],[1,14,30.3,true,'Jesus na Galileia'],[3,13,30.5,true,'Os doze'],
       [6,14,31.7,true,'João Batista é morto'],[6,30,32.2,true,'A multiplicação dos pães'],[8,27,32.5,true,'Em Cesareia de Filipe'],[9,2,32.55,true,'A transfiguração'],
       [10,1,33.05,true,'Rumo à Judeia'],[11,1,33.2,true,'A entrada em Jerusalém'],[14,1,33.25,true,'A Páscoa e a prisão'],[15,1,33.255,true,'O julgamento diante de Pilatos'],[15,21,33.26,true,'A crucificação'],[16,1,33.27,true,'A ressurreição']],
-    Luke:[[1,5,-6.0,true,'O anjo aparece a Zacarias'],[1,26,-5.6,true,'A anunciação a Maria'],[1,57,-5.0,true,'Nasce João Batista'],[2,1,-4.0,true,'O nascimento de Jesus'],
-      [2,22,-3.9,true,'Apresentação no templo'],[2,41,8.6,true,'Jesus aos 12 anos no templo'],[3,1,29.3,false,'O 15º ano de Tibério'],[3,21,29.7,true,'O batismo de Jesus'],
+    Luke:[[1,5,-2.3,true,'O anjo aparece a Zacarias'],[1,26,-1.75,true,'A anunciação a Maria'],[1,57,-1.5,true,'Nasce João Batista'],[2,1,-1.0,true,'O nascimento de Jesus'],
+      [2,22,-0.9,true,'Apresentação no templo'],[2,41,11.6,true,'Jesus aos 12 anos no templo'],[3,1,29.3,false,'O 15º ano de Tibério'],[3,21,29.7,true,'O batismo de Jesus'],
       [4,14,30.3,true,'Jesus na Galileia'],[6,12,30.5,true,'Os doze'],[9,7,31.75,true,'Herodes perplexo'],[9,10,32.2,true,'A multiplicação dos pães'],[9,28,32.55,true,'A transfiguração'],
       [9,51,32.8,true,'Rumo a Jerusalém'],[19,28,33.2,true,'A entrada em Jerusalém'],[22,1,33.25,true,'A Páscoa e a prisão'],[23,1,33.255,true,'Diante de Pilatos e Herodes'],[23,26,33.26,true,'A crucificação'],[24,1,33.27,true,'A ressurreição']],
     John:[[1,19,29.75,true,'O testemunho de João Batista'],[2,1,29.85,true,'As bodas em Caná'],[2,13,30.25,true,'A primeira Páscoa'],[4,1,30.4,true,'Em Samaria'],
@@ -171,9 +171,9 @@
     const evBtn=(e,dir)=>e?'<button type="button" class="tl2-ev" data-go="'+e.book+','+e.c+','+e.v+'"><small>'+(dir<0?'ANTES':'DEPOIS')+' · '+(e.ap?'≈ ':'')+yr(Math.floor(e.y)).toUpperCase()+'</small><b>'+esc(e.t)+'</b><span>'+BPT[e.book]+' '+e.c+':'+e.v+'</span></button>':'<div class="tl2-ev empty"></div>';
     // notas
     const notes=['No Novo Testamento as datas são em anos d.C./a.C., ancoradas nas referências históricas que o próprio texto cita: o 15º ano de Tibério (Lc 3:1), Herodes vivo no nascimento de Jesus (Mt 2), Gálio em Corinto (At 18:12) e a troca de Félix por Festo (At 24:27).'];
-    if(y<=0)notes.push('Jesus nasceu antes da morte de Herodes, o Grande (Mt 2:19), ocorrida em 4 a.C.; por isso o nascimento fica por volta de 6–4 a.C. — o calendário d.C. foi calculado séculos depois, com um pequeno erro.');
+    if(y<=1)notes.push('A idade de Jesus aqui segue o próprio texto: "cerca de 30 anos" no início do ministério (Lc 3:23, no 15º ano de Tibério, c. 29 d.C.). Isso põe o nascimento por volta de 2 a.C. — e, como Herodes, o Grande ainda vivia (Mt 2), a morte dele fica em 1 a.C., data defendida por parte dos estudiosos (a mais citada é 4 a.C., o que daria a Jesus alguns anos a mais).');
     if(y>=29&&y<=33&&['Matt','Mark','Luke','John'].includes(ref.book))notes.push('O ministério começa no 15º ano de Tibério (Lc 3:1, c. 29 d.C.) e João menciona três Páscoas (Jo 2:13; 6:4; 11:55). Por isso a crucificação fica em 33 d.C.; parte dos estudiosos prefere 30 d.C. As datas entre um evento e outro dos Evangelhos são aproximadas.');
-    if(y>=29&&y<=33.35&&['Matt','Mark','Luke','John','Acts'].includes(ref.book))notes.push('Lucas 3:23 diz que Jesus tinha "cerca de 30 anos" ao começar o ministério. A tradição dos "33 anos" supõe o nascimento no ano 1; mas Herodes morreu em 4 a.C. (Mt 2:19), então Jesus nasceu antes disso — por isso a idade aqui aparece maior.');
+    if(y>=29&&y<=33.35&&['Matt','Mark','Luke','John','Acts'].includes(ref.book))notes.push('Jesus começa "com cerca de 30 anos" (Lc 3:23), e João registra três Páscoas durante o ministério (Jo 2:13; 6:4; 11:55) — daí os cerca de 33 anos na crucificação. O texto não diz a idade exata; o "cerca de" de Lucas admite alguma margem.');
     if(aut.some(a=>a.ext))notes.push('Algumas autoridades são citadas sem data no texto, ou nem são citadas (Calígula, Domiciano); seus períodos vêm da história romana.');
     if(L.letter)notes.push('A data e o lugar de escrita das cartas saem das indicações dentro delas (prisões, viagens, saudações) cruzadas com Atos; onde o texto não fecha, aparecem como aproximados (≈).');
     const s=sheet();
