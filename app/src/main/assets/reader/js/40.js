@@ -78,7 +78,8 @@
       const b=P[f].b+age;P[k]={k,n,b,d:life==null?null:b+life,ref,life,der};order.push(k);
     }
     P.enoque.taken=true;
-    P.esau.cap=147;   // morte não registrada: mostrado só por um tempo plausível (como o irmão gêmeo, Jacó)
+    P.esau.cap=147;P.esau.seen=120;   // última menção: sepulta Isaque com Jacó (Gn 35:29)
+      // morte não registrada: mostrado só por um tempo plausível (como o irmão gêmeo, Jacó)
     return{P,order,flood:P.noe.b+600};
   }
 
@@ -124,7 +125,7 @@
     ['hanani','Hanani, o vidente','Judá','juda','r:asa:36','r:asa:36','2 Cr 16:1,7',false],
     ['jeu_hanani','Jeú, filho de Hanani','Israel e Judá','todos','r:baasa:1','r:josafa:10','1 Rs 16:1; 2 Cr 19:2',true],
     ['elias','Elias','Israel (Norte)','norte','r:acabe:3','r:joraoI:1','1 Rs 17 – 2 Rs 2',true],
-    ['micaias','Micaías','Israel (Samaria)','norte','r:acabe:22','r:acabe:22','1 Rs 22',false],
+    ['micaias','Micaías','Israel (Samaria)','norte','r:acabe:21','r:acabe:21','1 Rs 22',false],
     ['jaaziel','Jaaziel','Judá','juda','r:josafa:20','r:josafa:20','2 Cr 20:14',true],
     ['eliseu','Eliseu','Israel (Norte)','norte','r:joraoI:1','r:jeoasI:5','2 Rs 2 – 13',true],
     ['zacarias_j','Zacarias, filho de Joiada','Judá','juda','r:joas:25','r:joas:25','2 Cr 24:20',true],
@@ -163,9 +164,9 @@
     // pessoas
     const add=(k,n,b,d,ref,o={})=>{X[k]=Object.assign({k,n,b,d,ref},o)};
     add('levi','Levi',P.jaco.b+87,P.jaco.b+87+137,'Êx 6:16',{der:true,aprox:true});
-    add('moises','Moisés',Y.EXO-80,Y.EXO+40,'Êx 7:7; Dt 34:7');
-    add('arao','Arão',Y.EXO-83,Y.EXO+40,'Êx 7:7; Nm 33:39');
-    add('calebe','Calebe',Y.EXO-39,null,'Js 14:7,10',{cap:110});
+    add('moises','Moisés',Y.EXO-80.06,Y.EXO+39.95,'Êx 7:7; Dt 1:3; 34:7');   // 80 anos diante de Faraó; morre no 40º ano, aos 120
+    add('arao','Arão',Y.EXO-83.61,Y.EXO+39.4,'Êx 7:7; Nm 33:38–39');        // morre no 40º ano, 5º mês, aos 123
+    add('calebe','Calebe',Y.EXO-39,null,'Js 14:7,10',{cap:110,seen:85});
     add('eli','Eli',Y.ELI_D-98,Y.ELI_D,'1 Sm 4:15,18',{aprox:true});
     add('saul','Saul',null,Y.DAVI,'At 13:21',{reign:[Y.SAUL,Y.DAVI]});
     add('davi','Davi',Y.DAVI-30,Y.DAVI+40,'2 Sm 5:4',{reign:[Y.DAVI,Y.DAVI+40]});
@@ -181,6 +182,7 @@
       const s0=R[jk].acc+Math.max(0,jy-1);R[k]={acc:s0,end:s0+yrs};
       add(k,n,null,s0+yrs,ref,{reign:[s0,s0+yrs],king:'I'});
     }
+    for(let i=0;i<ISRAEL.length-1;i++){const k=ISRAEL[i][0],nk=ISRAEL[i+1][0];if(R[nk].acc<R[k].end){R[k].end=R[nk].acc;X[k].reign[1]=R[nk].acc;X[k].d=R[nk].acc}}
     Y.SAMARIA=R.ezequias.acc+5;                                   // 2 Rs 18:10
     Y.QUEDA=R.zedequias.acc+10;                                   // 2 Rs 25:2,8
     Y.SOLTURA=R.zedequias.acc+36;                                 // 2 Rs 25:27 (37º ano do exílio)
@@ -196,7 +198,7 @@
     king('nabucodonosor','Nabucodonosor (Babilônia)',Y.NEB,Y.SOLTURA,{ref:'Jr 25:1; 2 Rs 25:8,27'});
     king('evilmerodaque','Evil-Merodaque (Babilônia)',Y.SOLTURA,Y.SOLTURA+2,{ref:'2 Rs 25:27',ext:true});
     king('belsazar','Belsazar (Babilônia)',Y.CIRO-14,Y.CIRO,{ref:'Dn 5; 7:1; 8:1',ext:true,aprox:true});
-    king('dariomedo','Dario, o medo (62 anos ao assumir, Dn 5:31)',Y.CIRO,Y.CIRO+1,{ref:'Dn 5:31; 9:1'});
+    king('dariomedo','Dario, o medo (62 anos ao assumir, Dn 5:31)',Y.CIRO,Y.CIRO,{ref:'Dn 5:31; 9:1'});
     king('ciro','Ciro (Pérsia)',Y.CIRO,Y.CIRO+9,{ref:'Ed 1:1; Dn 10:1',ext:true});
     king('cambises','Cambises (Pérsia)',Y.CIRO+9,Y.CIRO+17,{ref:'não citado pelo nome',ext:true});
     king('dario','Dario (Pérsia)',Y.CIRO+17,Y.CIRO+53,{ref:'Ed 4:24; Ag 1:1',ext:true});
@@ -288,15 +290,15 @@
   const B2={
     Exod:[[1,1,'p:levi:137',true,'Os filhos de Israel no Egito'],[1,8,'y:EXO:-81',true,'Um novo rei que não conhecera José'],
       [2,1,'p:moises:0',false,'Nasce Moisés'],[2,11,'p:moises:40',true,'Moisés foge para Midiã (At 7:23)'],
-      [3,1,'p:moises:80',false,'A sarça ardente'],[7,7,'p:moises:80',false,'Moisés diante de Faraó'],
+      [3,1,'y:EXO:0',true,'A sarça ardente'],[7,7,'y:EXO:0',false,'Moisés (80) e Arão (83) diante de Faraó'],
       [12,1,'y:EXO:0',false,'A Páscoa e a saída do Egito'],[16,1,'y:EXO:0',false,'O maná (2º mês)'],
       [19,1,'y:EXO:0',false,'No Sinai (3º mês)'],[32,1,'y:EXO:0',false,'O bezerro de ouro'],[40,17,'y:EXO:1',false,'O tabernáculo é erguido (2º ano)']],
     Lev:[[1,1,'y:EXO:1',false,'Leis dadas no Sinai']],
     Num:[[1,1,'y:EXO:1',false,'O censo no Sinai (2º ano)'],[10,11,'y:EXO:1',false,'Partida do Sinai'],
       [13,1,'p:calebe:40',false,'Os espias em Cades-Barneia'],[14,26,'y:EXO:1',false,'Sentença: 40 anos no deserto'],
-      [15,1,'y:EXO:20',true,'Anos no deserto'],[20,1,'y:EXO:39',false,'Morre Miriã (40º ano)'],[20,22,'p:arao:123',false,'Morre Arão'],
-      [21,1,'y:EXO:39',false,'A caminho de Moabe'],[33,38,'p:arao:123',false,'Morre Arão (Nm 33:39)'],[33,40,'y:EXO:39',false,'Nas planícies de Moabe']],
-    Deut:[[1,1,'y:EXO:39',false,'Moisés fala ao povo (40º ano, 11º mês)'],[34,1,'p:moises:120',false,'Morre Moisés']],
+      [15,1,'y:EXO:20',true,'Anos no deserto'],[20,1,'y:EXO:39',false,'Morre Miriã (40º ano, 1º mês)'],[20,22,'y:EXO:39.4',false,'Morre Arão (40º ano, 5º mês)'],
+      [21,1,'y:EXO:39.5',false,'A caminho de Moabe'],[33,38,'y:EXO:39.4',false,'Morre Arão (Nm 33:38–39)'],[33,40,'y:EXO:39.5',false,'Nas planícies de Moabe']],
+    Deut:[[1,1,'y:EXO:39.9',false,'Moisés fala ao povo (40º ano, 11º mês)'],[34,1,'y:EXO:39.95',false,'Morre Moisés, aos 120 anos']],
     Josh:[[1,1,'y:EXO:40',false,'Josué assume'],[3,1,'y:EXO:40',false,'Travessia do Jordão'],[6,1,'y:EXO:40',false,'Jericó'],
       [11,16,'y:EXO:45',true,'Conquista da terra'],[14,6,'p:calebe:85',false,'Calebe recebe Hebrom'],
       [22,1,'y:EXO:47',true,'As tribos do outro lado do Jordão'],[23,1,'y:JOSUE_D:-5',true,'Josué já velho'],[24,29,'y:JOSUE_D:0',true,'Morre Josué (110 anos)']],
@@ -307,7 +309,7 @@
       [17,1,'y:JOSUE_D:5',true,'Mica e os danitas (início do período)'],[19,1,'y:JOSUE_D:10',true,'Gibeá (Fineias ainda vivo, Jz 20:28)']],
     Ruth:[[1,1,'y:RUTE:0',true,'Nos dias dos juízes']],
     '1Sam':[[1,1,'y:ELI_D:-30',true,'Nasce Samuel'],[3,1,'y:ELI_D:-15',true,'O menino Samuel'],[4,1,'p:eli:98',true,'Morre Eli'],
-      [7,2,'y:ELI_D:20',true,'Vinte anos em Quiriate-Jearim'],[8,1,'y:SAUL:-1',true,'O povo pede um rei'],[10,1,'y:SAUL:0',false,'Saul ungido'],
+      [7,2,'y:ELI_D:10',true,'Vinte anos em Quiriate-Jearim'],[8,1,'y:SAUL:-1',true,'O povo pede um rei'],[10,1,'y:SAUL:0',false,'Saul ungido'],
       [13,1,'y:SAUL:2',true,'Reinado de Saul'],[16,1,'p:davi:15',true,'Davi ungido'],[17,1,'p:davi:17',true,'Davi e Golias'],
       [18,1,'p:davi:18',true,'Davi na corte'],[31,1,'p:davi:30',false,'Morre Saul']],
     '2Sam':[[1,1,'p:davi:30',false,'Davi rei em Hebrom'],[5,1,'p:davi:37',false,'Davi rei sobre todo Israel'],[6,1,'p:davi:38',true,'A arca em Jerusalém'],
@@ -458,7 +460,7 @@ TR.forEach(t=>{const ch=CH[t];ch.PR=PROF.map(([k,n,reg,cls,a,b,ref,ap])=>{const 
   function render(ref){
     lastRef=ref;
     const ch=CH[tradition],L=locate(ch,ref);if(!L)return;
-    const y=L.y;
+    const y=L.y,yi=Math.floor(y);
     const alive=ch.order.map(x=>ch.P[x]).filter(q=>{
       if(q.b!=null&&q.b<=y&&(q.d!=null?q.d>=y:(q.cap==null||q.b+q.cap>=y)))return true;
       return q.b==null&&q.reign&&q.reign[0]<=y&&q.reign[1]>=y;
@@ -467,11 +469,11 @@ TR.forEach(t=>{const ch=CH[t];ch.PR=PROF.map(([k,n,reg,cls,a,b,ref,ap])=>{const 
     let lo=Math.min(...starts,y),hi=Math.max(...ends,y);if(hi-lo<120){const m=(lo+hi)/2;lo=m-60;hi=m+60}
     const pct=v=>Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100)).toFixed(2);
     const rows=alive.map(q=>{
-      const hasLife=q.b!=null,qa=hasLife?y-q.b:null,born=q.b===y,dies=q.d===y,reigning=q.reign&&q.reign[0]<=y&&q.reign[1]>=y;
+      const hasLife=q.b!=null,qa=hasLife?Math.floor(y-q.b):null,born=q.b===y,dies=q.d===y,reigning=q.reign&&q.reign[0]<=y&&q.reign[1]>=y;
       let tag='';
-      if(born)tag='<em class="b">nasce</em>';else if(dies)tag=q.taken?'<em class="t">tomado por Deus</em>':'<em class="d">morre</em>';
-      else if(reigning)tag='<em class="r">'+(q.judge?(q.reign[0]===y?'começa a julgar':'julgando'):(q.reign[0]===y?'começa a reinar':'reinando · '+(y-q.reign[0]+1)+'º ano'))+'</em>';
-      else if(hasLife&&q.d==null&&!(q.reign&&y<q.reign[0]))tag='<em class="u">morte não registrada</em>';
+      if(born)tag='<em class="b">'+(q.k==='adao'?'criado':'nasce')+'</em>';else if(dies)tag=q.taken?'<em class="t">tomado por Deus</em>':'<em class="d">morre</em>';
+      else if(reigning)tag='<em class="r">'+(q.judge?(q.reign[0]===yi?'começa a julgar':'julgando'):(q.reign[0]===yi?'começa a reinar':'reinando · '+(yi-q.reign[0]+1)+'º ano'))+'</em>';
+      else if(hasLife&&q.d==null&&!(q.reign&&y<=q.reign[1])&&!(q.seen!=null&&qa<=q.seen))tag='<em class="u">morte não registrada</em>';
       const s0=hasLife?q.b:q.reign[0],e0=hasLife?(q.d??y):q.reign[1];
       const rg=q.reign?'<b class="rg" style="left:'+pct(q.reign[0])+'%;width:'+(pct(q.reign[1])-pct(q.reign[0])).toFixed(2)+'%"></b>':'';
       return '<div class="tl2-row'+(q.k===L.who?' me':'')+'"><div class="tl2-who"><b>'+esc(q.n)+'</b>'+(hasLife?'<span>'+qa+(qa===1?' ano':' anos')+(q.aprox?' (aprox.)':'')+'</span>':'')+tag+'</div>'
@@ -482,7 +484,7 @@ TR.forEach(t=>{const ch=CH[t];ch.PR=PROF.map(([k,n,reg,cls,a,b,ref,ap])=>{const 
     let prev=null,next=null;
     if(here>=0){prev=evs[here-1]||null;next=evs[here+1]||null}
     else{prev=[...evs].reverse().find(e=>e.y<=y&&!(e.book===ref.book&&e.c===L.ac&&e.v===L.av))||null;next=evs.find(e=>e.y>y)||null}
-    const evBtn=(e,dir)=>e?'<button type="button" class="tl2-ev" data-go="'+e.book+','+e.c+','+e.v+'"><small>'+(dir<0?'ANTES':'DEPOIS')+' · ANO '+e.y+'</small><b>'+esc(e.t)+'</b><span>'+BOOK_PT[e.book]+' '+e.c+':'+e.v+'</span></button>':'<div class="tl2-ev empty"></div>';
+    const evBtn=(e,dir)=>e?'<button type="button" class="tl2-ev" data-go="'+e.book+','+e.c+','+e.v+'"><small>'+(dir<0?'ANTES':'DEPOIS')+' · ANO '+Math.floor(e.y)+'</small><b>'+esc(e.t)+'</b><span>'+BOOK_PT[e.book]+' '+e.c+':'+e.v+'</span></button>':'<div class="tl2-ev empty"></div>';
     // ---- profetas: em atividade, e os que acabaram de profetizar ou estão para começar ----
     const BOOK_PROF={Isa:'isaias',Jer:'jeremias',Lam:'jeremias',Ezek:'ezequiel',Dan:'daniel',Hos:'oseias_p',Amos:'amos',Obad:'obadias',Jonah:'jonas',Mic:'miqueias',Nah:'naum',Hab:'habacuque',Zeph:'sofonias',Hag:'ageu',Zech:'zacarias',Mal:'malaquias'};
     const PR=ch.PR||[],act=PR.filter(q=>q.s<=y&&q.e>=y);
@@ -509,12 +511,12 @@ TR.forEach(t=>{const ch=CH[t];ch.PR=PROF.map(([k,n,reg,cls,a,b,ref,ap])=>{const 
     if(ref.book==='Ezek')notes.push('Ezequiel data as visões pelos anos do exílio do rei Joaquim, levado em 597 a.C. pela contagem comum (2 Rs 24:12; Ez 1:2).');
     const s=sheet();
     s.innerHTML='<div class="tl2-grab"></div>'
-      +'<header class="tl2-head"><div><small>LINHA DO TEMPO · '+esc(ref.label||'')+'</small><strong>'+(L.ap?'≈ ':'')+'Ano '+y+'<span> desde a criação</span></strong></div><button type="button" id="tl2Close" aria-label="Fechar">×</button></header>'
+      +'<header class="tl2-head"><div><small>LINHA DO TEMPO · '+esc(ref.label||'')+'</small><strong>'+(L.ap?'≈ ':'')+'Ano '+yi+'<span> desde a criação</span></strong></div><button type="button" id="tl2Close" aria-label="Fechar">×</button></header>'
       +'<div class="tl2-tr">'+TR.map(t=>'<button type="button" data-tr="'+t+'" class="'+(t===tradition?'on':'')+'">'+t+'</button>').join('')+'</div>'
       +'<div class="tl2-scroll">'
       +'<div class="tl2-anchor"><span class="tl2-era">'+eraName(ch,y)+'</span><b>'+esc(L.label)+'</b><p>'+esc(L.ctx||'')+(L.ap?' <em>(aproximado)</em>':'')+' · cálculo '+TR_NAME[tradition]+'</p></div>'
       +'<h4>Quem estava vivo <span>'+alive.length+'</span></h4>'+(alive.length?'<div class="tl2-rows">'+rows+'</div>':'<p class="tl2-none">O texto não informa idades nem reinados de pessoas neste ponto.</p>')
-      +'<div class="tl2-scale"><span>ano '+Math.round(lo)+'</span><span>ano '+Math.round(hi)+'</span></div>'
+      +'<div class="tl2-scale"><span>ano '+Math.floor(lo)+'</span><span>ano '+Math.floor(hi)+'</span></div>'
       +profHtml
       +'<h4>Antes e depois</h4><div class="tl2-evs">'+evBtn(prev,-1)+evBtn(next,1)+'</div>'
       +(notes.length?'<div class="tl2-notes">'+notes.map(n=>'<p>'+esc(n)+'</p>').join('')+'</div>':'')
