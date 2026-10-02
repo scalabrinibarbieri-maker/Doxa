@@ -42,17 +42,19 @@
     ['ananias_s','Ananias','sumo sacerdote',47,59,'At 23:2; 24:1','templo',true],
   ];
   /* ---------- personagens: [chave, nome, nascimento (null), início da atuação, fim, ref, aproximado?, nota de fim] ---------- */
+  /* Anos com fração = ordem dos fatos dentro do mesmo ano (33.26 = crucificação, antes da ressurreição em 33.27).
+     Assim, em Mt 22 (mesma semana, antes da cruz) Jesus não aparece como crucificado. */
   const PES=[
-    ['joao_b','João Batista',-5,29,31,'Lc 1:36,57; 3:1–2; Mt 14:10',true,'executado por Herodes Antipas'],
-    ['jesus','Jesus',-4,29,33,'Lc 2:1–7; 3:23; Jo 2:13; 6:4; 11:55',true,'crucificado e ressuscitado'],
-    ['pedro','Pedro',null,29,65,'Mt 4:18; Jo 21:18–19',true,''],
-    ['tiago_z','Tiago, filho de Zebedeu',null,29,44,'Mt 4:21; At 12:2',false,'morto por Herodes Agripa I'],
-    ['joao_ap','João, o apóstolo',null,29,98,'Mt 4:21; Ap 1:9',true,''],
-    ['tiago_i','Tiago, irmão do Senhor',null,33,62,'Gl 1:19; At 15:13; Tg 1:1',true,''],
-    ['estevao','Estêvão',null,33,34,'At 6–7',true,'apedrejado'],
-    ['paulo','Paulo',null,34,66,'At 9; Gl 1:15–18; 2 Tm 4:6',true,''],
-    ['barnabe','Barnabé',null,37,50,'At 9:27; 13–15',true,''],
-    ['timoteo','Timóteo',null,49,67,'At 16:1; 2 Tm 1:2',true,''],
+    ['joao_b','João Batista',-5,29.3,31.7,'Lc 1:36,57; 3:1–2; Mt 14:10',true,'executado por Herodes Antipas'],
+    ['jesus','Jesus',-4,29.7,33.35,'Lc 2:1–7; 3:23; Jo 2:13; 6:4; 11:55',true,''],
+    ['pedro','Pedro',null,29.8,65,'Mt 4:18; Jo 21:18–19',true,''],
+    ['tiago_z','Tiago, filho de Zebedeu',null,29.8,44.2,'Mt 4:21; At 12:2',false,'morto por Herodes Agripa I'],
+    ['joao_ap','João, o apóstolo',null,29.8,98,'Mt 4:21; Ap 1:9',true,''],
+    ['tiago_i','Tiago, irmão do Senhor',null,33.27,62,'1 Co 15:7; Gl 1:19; At 15:13',true,''],
+    ['estevao','Estêvão',null,34.0,34.3,'At 6:5 – 8:2',true,'apedrejado'],
+    ['paulo','Paulo',null,34.5,66,'At 9; Gl 1:15–18; 2 Tm 4:6',true,''],
+    ['barnabe','Barnabé',null,33.5,50,'At 4:36; 9:27; 13–15',true,''],
+    ['timoteo','Timóteo',null,49.6,67,'At 16:1; 2 Tm 1:2',true,''],
   ];
   /* ---------- onde estava Paulo ---------- */
   const PAULO=[
@@ -76,29 +78,29 @@
   const CARTA={};CARTAS.forEach(c=>CARTA[c[0]]=c);
   /* ---------- âncoras dos Evangelhos e de Atos: [cap, vers, ano, aproximado?, rótulo] ---------- */
   const A={
-    Matt:[[1,18,-4,true,'O nascimento de Jesus'],[2,1,-4,true,'Os magos; Herodes ainda vivo'],[2,19,-3,false,'Morre Herodes; volta do Egito'],
-      [3,1,29,false,'João Batista começa a pregar'],[3,13,29,true,'O batismo de Jesus'],[4,12,30,true,'João preso; Jesus na Galileia'],[5,1,30,true,'O Sermão do Monte'],
-      [10,1,31,true,'Os doze são enviados'],[11,2,31,true,'João, na prisão, envia discípulos'],[14,1,31,true,'João Batista é morto'],[14,13,32,true,'A multiplicação dos pães (Páscoa, Jo 6:4)'],
-      [16,13,32,true,'Em Cesareia de Filipe'],[17,1,32,true,'A transfiguração'],[19,1,33,true,'Rumo à Judeia'],[21,1,33,true,'A entrada em Jerusalém'],
-      [26,1,33,true,'A Páscoa e a prisão'],[27,1,33,true,'A crucificação'],[28,1,33,true,'A ressurreição']],
-    Mark:[[1,1,29,false,'João Batista no deserto'],[1,9,29,true,'O batismo de Jesus'],[1,14,30,true,'Jesus na Galileia'],[3,13,30,true,'Os doze'],
-      [6,14,31,true,'João Batista é morto'],[6,30,32,true,'A multiplicação dos pães'],[8,27,32,true,'Em Cesareia de Filipe'],[9,2,32,true,'A transfiguração'],
-      [10,1,33,true,'Rumo à Judeia'],[11,1,33,true,'A entrada em Jerusalém'],[14,1,33,true,'A Páscoa e a prisão'],[15,1,33,true,'A crucificação'],[16,1,33,true,'A ressurreição']],
-    Luke:[[1,5,-6,true,'O anjo aparece a Zacarias'],[1,26,-5,true,'A anunciação a Maria'],[1,57,-5,true,'Nasce João Batista'],[2,1,-4,true,'O nascimento de Jesus'],
-      [2,22,-4,true,'Apresentação no templo'],[2,41,8,true,'Jesus aos 12 anos no templo'],[3,1,29,false,'O 15º ano de Tibério'],[3,21,29,true,'O batismo de Jesus'],
-      [4,14,30,true,'Jesus na Galileia'],[6,12,30,true,'Os doze'],[9,7,31,true,'Herodes perplexo'],[9,10,32,true,'A multiplicação dos pães'],[9,28,32,true,'A transfiguração'],
-      [9,51,32,true,'Rumo a Jerusalém'],[19,28,33,true,'A entrada em Jerusalém'],[22,1,33,true,'A Páscoa e a prisão'],[23,1,33,true,'Diante de Pilatos e Herodes'],[24,1,33,true,'A ressurreição']],
-    John:[[1,19,29,true,'O testemunho de João Batista'],[2,1,29,true,'As bodas em Caná'],[2,13,30,true,'A primeira Páscoa'],[4,1,30,true,'Em Samaria'],
-      [5,1,31,true,'Uma festa dos judeus'],[6,4,32,true,'A Páscoa da multiplicação'],[7,2,32,true,'A festa dos Tabernáculos'],[10,22,32,true,'A festa da Dedicação'],
-      [11,1,33,true,'Lázaro'],[12,1,33,true,'Seis dias antes da Páscoa'],[13,1,33,true,'A última ceia'],[18,1,33,true,'A prisão'],[19,1,33,true,'A crucificação'],
-      [20,1,33,true,'A ressurreição'],[21,1,33,true,'No mar da Galileia']],
-    Acts:[[1,1,33,true,'Ascensão'],[2,1,33,true,'Pentecostes'],[3,1,33,true,'Pedro e João no templo'],[6,1,34,true,'Os sete; Estêvão'],[8,1,34,true,'A dispersão; Filipe em Samaria'],
-      [9,1,34,true,'Conversão de Saulo'],[9,26,37,true,'Saulo em Jerusalém (Gl 1:18)'],[10,1,38,true,'Cornélio'],[11,19,43,true,'Antioquia; “cristãos”'],
-      [11,27,45,true,'A fome no tempo de Cláudio'],[12,1,44,false,'Tiago morto; Pedro preso'],[12,20,44,false,'Morre Herodes Agripa I'],[13,1,46,true,'A primeira viagem missionária'],
-      [15,1,49,true,'O Concílio de Jerusalém'],[15,36,49,true,'A segunda viagem missionária'],[16,11,50,true,'Filipos'],[17,1,50,true,'Tessalônica, Bereia e Atenas'],
-      [18,1,50,true,'Corinto; Áquila e Priscila (édito de Cláudio)'],[18,12,51,false,'Paulo diante de Gálio'],[18,23,53,true,'A terceira viagem missionária'],
-      [19,1,53,true,'Éfeso'],[20,1,56,true,'Macedônia e Grécia'],[21,17,57,true,'Paulo em Jerusalém; a prisão'],[23,23,57,true,'Levado a Cesareia'],
-      [24,27,59,false,'Festo sucede Félix'],[25,13,59,false,'Diante de Agripa II'],[27,1,59,true,'A viagem a Roma'],[28,11,60,true,'Chegada a Roma'],[28,30,62,true,'Dois anos em Roma']],
+    Matt:[[1,18,-4,true,'O nascimento de Jesus'],[2,1,-3.4,true,'Os magos; Herodes ainda vivo'],[2,19,-3.0,false,'Morre Herodes; volta do Egito'],
+      [3,1,29.3,false,'João Batista começa a pregar'],[3,13,29.7,true,'O batismo de Jesus'],[4,12,30.3,true,'João preso; Jesus na Galileia'],[5,1,30.5,true,'O Sermão do Monte'],
+      [10,1,31.2,true,'Os doze são enviados'],[11,2,31.4,true,'João, na prisão, envia discípulos'],[14,1,31.7,true,'João Batista é morto'],[14,13,32.2,true,'A multiplicação dos pães (Páscoa, Jo 6:4)'],
+      [16,13,32.5,true,'Em Cesareia de Filipe'],[17,1,32.55,true,'A transfiguração'],[19,1,33.05,true,'Rumo à Judeia'],[21,1,33.2,true,'A entrada em Jerusalém'],
+      [26,1,33.25,true,'A Páscoa e a prisão'],[27,1,33.255,true,'O julgamento diante de Pilatos'],[27,32,33.26,true,'A crucificação'],[28,1,33.27,true,'A ressurreição']],
+    Mark:[[1,1,29.3,false,'João Batista no deserto'],[1,9,29.7,true,'O batismo de Jesus'],[1,14,30.3,true,'Jesus na Galileia'],[3,13,30.5,true,'Os doze'],
+      [6,14,31.7,true,'João Batista é morto'],[6,30,32.2,true,'A multiplicação dos pães'],[8,27,32.5,true,'Em Cesareia de Filipe'],[9,2,32.55,true,'A transfiguração'],
+      [10,1,33.05,true,'Rumo à Judeia'],[11,1,33.2,true,'A entrada em Jerusalém'],[14,1,33.25,true,'A Páscoa e a prisão'],[15,1,33.255,true,'O julgamento diante de Pilatos'],[15,21,33.26,true,'A crucificação'],[16,1,33.27,true,'A ressurreição']],
+    Luke:[[1,5,-6.0,true,'O anjo aparece a Zacarias'],[1,26,-5.6,true,'A anunciação a Maria'],[1,57,-5.0,true,'Nasce João Batista'],[2,1,-4.0,true,'O nascimento de Jesus'],
+      [2,22,-3.9,true,'Apresentação no templo'],[2,41,8.6,true,'Jesus aos 12 anos no templo'],[3,1,29.3,false,'O 15º ano de Tibério'],[3,21,29.7,true,'O batismo de Jesus'],
+      [4,14,30.3,true,'Jesus na Galileia'],[6,12,30.5,true,'Os doze'],[9,7,31.75,true,'Herodes perplexo'],[9,10,32.2,true,'A multiplicação dos pães'],[9,28,32.55,true,'A transfiguração'],
+      [9,51,32.8,true,'Rumo a Jerusalém'],[19,28,33.2,true,'A entrada em Jerusalém'],[22,1,33.25,true,'A Páscoa e a prisão'],[23,1,33.255,true,'Diante de Pilatos e Herodes'],[23,26,33.26,true,'A crucificação'],[24,1,33.27,true,'A ressurreição']],
+    John:[[1,19,29.75,true,'O testemunho de João Batista'],[2,1,29.85,true,'As bodas em Caná'],[2,13,30.25,true,'A primeira Páscoa'],[4,1,30.4,true,'Em Samaria'],
+      [5,1,31.5,true,'Uma festa dos judeus'],[6,4,32.2,true,'A Páscoa da multiplicação'],[7,2,32.75,true,'A festa dos Tabernáculos'],[10,22,32.95,true,'A festa da Dedicação'],
+      [11,1,33.05,true,'Lázaro'],[12,1,33.2,true,'Seis dias antes da Páscoa'],[13,1,33.25,true,'A última ceia'],[18,1,33.25,true,'A prisão'],[19,1,33.255,true,'Açoitado e condenado'],[19,17,33.26,true,'A crucificação'],
+      [20,1,33.27,true,'A ressurreição'],[21,1,33.3,true,'No mar da Galileia']],
+    Acts:[[1,1,33.35,true,'Ascensão'],[2,1,33.4,true,'Pentecostes'],[3,1,33.5,true,'Pedro e João no templo'],[6,1,34.0,true,'Os sete; Estêvão'],[8,1,34.3,true,'A dispersão; Filipe em Samaria'],
+      [9,1,34.5,true,'Conversão de Saulo'],[9,26,37,true,'Saulo em Jerusalém (Gl 1:18)'],[10,1,38,true,'Cornélio'],[11,19,43,true,'Antioquia; “cristãos”'],
+      [11,27,44.0,true,'Ágabo anuncia a fome (tempo de Cláudio)'],[12,1,44.2,false,'Tiago morto; Pedro preso'],[12,20,44.4,false,'Morre Herodes Agripa I'],[13,1,46,true,'A primeira viagem missionária'],
+      [15,1,49,true,'O Concílio de Jerusalém'],[15,36,49.5,true,'A segunda viagem missionária'],[16,11,50,true,'Filipos'],[17,1,50.3,true,'Tessalônica, Bereia e Atenas'],
+      [18,1,50.6,true,'Corinto; Áquila e Priscila (édito de Cláudio)'],[18,12,51.5,false,'Paulo diante de Gálio'],[18,23,53,true,'A terceira viagem missionária'],
+      [19,1,53.3,true,'Éfeso'],[20,1,56.5,true,'Macedônia e Grécia'],[21,17,57.4,true,'Paulo em Jerusalém; a prisão'],[23,23,57.5,true,'Levado a Cesareia'],
+      [24,27,59.5,false,'Festo sucede Félix'],[25,13,59.6,false,'Diante de Agripa II'],[27,1,59.7,true,'A viagem a Roma'],[28,11,60.2,true,'Chegada a Roma'],[28,30,62,true,'Dois anos em Roma']],
   };
   function locate(ref){
     if(CARTA[ref.book]){const c=CARTA[ref.book];return{y:c[1],ap:c[4],label:(ref.book==='Rev'?'Livro escrito em ':'Carta escrita em ')+(c[4]?'≈ ':'')+yr(c[1]),ctx:'Escrita de: '+c[2]+' · '+c[3],ac:1,av:1,letter:c}}
@@ -139,45 +141,49 @@
   }
   function render(ref){
     const L=locate(ref);if(!L)return;
-    const y=L.y;
+    const y=L.y,yi=Math.floor(y);
     // autoridades
-    const aut=AUT.filter(a=>a[3]<=y&&a[4]>=y).map(a=>({n:a[1],sub:a[2],s:a[3],e:a[4],rg:true,
-      tag:a[3]===y?'<em class="r">começa</em>':a[4]===y?'<em class="d">termina</em>':'',ext:a[7]}));
+    const aut=AUT.filter(a=>a[3]<=yi&&a[4]>=yi).map(a=>({n:a[1],sub:a[2],s:a[3],e:a[4],rg:true,
+      tag:a[3]===yi?'<em class="r">começa</em>':a[4]===yi?'<em class="d">termina</em>':'',ext:a[7]}));
     // personagens
     const pes=PES.filter(p=>(p[2]!=null?p[2]:p[3])<=y&&p[4]>=y).map(p=>{
-      const age=p[2]!=null?y-p[2]:null,active=y>=p[3];
+      // idade: nascimento considerado no meio do ano (o texto não dá o mês)
+      const age=p[2]!=null?Math.floor(y-(p[2]+0.5)):null,active=y>=p[3];
       let tag='';
-      if(p[2]===y)tag='<em class="b">nasce</em>';else if(p[4]===y&&p[7])tag='<em class="'+(p[0]==='jesus'?'t':'d')+'">'+esc(p[7])+'</em>';
+      if(p[0]==='jesus'&&y>=33.26){tag=y<33.27?'<em class="t">crucificado</em>':y<33.35?'<em class="t">ressuscitado</em>':'<em class="t">ascensão</em>'}
+      else if(p[2]!=null&&Math.abs(y-p[2])<0.001)tag='<em class="b">nasce</em>';
+      else if(Math.abs(y-p[4])<0.001&&p[7])tag='<em class="d">'+esc(p[7])+'</em>';
       else if(active&&p[2]==null)tag='<em class="r">atuando</em>';
-      return{n:p[1],sub:age!=null?(age===1?'1 ano':(age<=0?'recém-nascido':'≈ '+age+' anos')):'',s:p[2]??p[3],e:p[4],tag,me:false};
+      return{n:p[1],sub:age!=null?(age<=0?(Math.abs(y-p[2])<0.001?'recém-nascido':'menos de 1 ano'):(age===1?'1 ano':'≈ '+age+' anos')):'',s:p[2]??p[3],e:p[4],tag,me:false};
     });
     const lo0=Math.min(y-10,...aut.map(a=>a.s),...pes.map(p=>p.s)),hi0=Math.max(y+10,...aut.map(a=>a.e),...pes.map(p=>p.e));
     const lo=Math.max(lo0,y-60),hi=Math.min(hi0,y+60);
     // Paulo
-    const pl=L.letter?[]:PAULO.filter(p=>(p[0]<=y&&y<p[1])||(p[0]===p[1]&&p[0]===y));
+    const pl=L.letter?[]:PAULO.filter(p=>(p[0]<=yi&&yi<p[1])||(p[0]===p[1]&&p[0]===yi));
     const pauloHtml=pl.length?'<h4>Onde estava Paulo</h4>'+pl.map(p=>'<div class="tl2-prof"><div><b>'+esc(p[2])+'</b></div><p>'+(p[0]===p[1]?yr(p[0]):yr(p[0])+' – '+yr(p[1]))+' · '+esc(p[3])+'</p></div>').join(''):'';
     // cartas da mesma época
-    const near=CARTAS.filter(c=>Math.abs(c[1]-y)<=3&&c[0]!==ref.book).sort((a,b)=>Math.abs(a[1]-y)-Math.abs(b[1]-y));
+    const near=CARTAS.filter(c=>Math.abs(c[1]-yi)<=3&&c[0]!==ref.book).sort((a,b)=>Math.abs(a[1]-y)-Math.abs(b[1]-y));
     const cartasHtml=near.length?'<h4>Cartas escritas por volta desta época</h4><div class="tl2-near">'+near.slice(0,6).map(c=>'<div><span class="reg reg-juda"></span><b>'+esc(BNAME[c[0]])+'</b><em>'+(c[4]?'≈ ':'')+yr(c[1])+'</em><small>de '+esc(c[2])+'</small></div>').join('')+'</div>':'';
     // antes e depois
     let here=EVS.findIndex(e=>e.book===ref.book&&e.c===L.ac&&e.v===L.av);
     if(here<0)here=EVS.findIndex(e=>e.y===y&&e.t===L.label);
     const prev=here>=0?EVS[here-1]:[...EVS].reverse().find(e=>e.y<y),next=here>=0?EVS[here+1]:EVS.find(e=>e.y>y);
-    const evBtn=(e,dir)=>e?'<button type="button" class="tl2-ev" data-go="'+e.book+','+e.c+','+e.v+'"><small>'+(dir<0?'ANTES':'DEPOIS')+' · '+(e.ap?'≈ ':'')+yr(e.y).toUpperCase()+'</small><b>'+esc(e.t)+'</b><span>'+BPT[e.book]+' '+e.c+':'+e.v+'</span></button>':'<div class="tl2-ev empty"></div>';
+    const evBtn=(e,dir)=>e?'<button type="button" class="tl2-ev" data-go="'+e.book+','+e.c+','+e.v+'"><small>'+(dir<0?'ANTES':'DEPOIS')+' · '+(e.ap?'≈ ':'')+yr(Math.floor(e.y)).toUpperCase()+'</small><b>'+esc(e.t)+'</b><span>'+BPT[e.book]+' '+e.c+':'+e.v+'</span></button>':'<div class="tl2-ev empty"></div>';
     // notas
     const notes=['No Novo Testamento as datas são em anos d.C./a.C., ancoradas nas referências históricas que o próprio texto cita: o 15º ano de Tibério (Lc 3:1), Herodes vivo no nascimento de Jesus (Mt 2), Gálio em Corinto (At 18:12) e a troca de Félix por Festo (At 24:27).'];
     if(y<=0)notes.push('Jesus nasceu antes da morte de Herodes, o Grande (Mt 2:19), ocorrida em 4 a.C.; por isso o nascimento fica por volta de 6–4 a.C. — o calendário d.C. foi calculado séculos depois, com um pequeno erro.');
     if(y>=29&&y<=33&&['Matt','Mark','Luke','John'].includes(ref.book))notes.push('O ministério começa no 15º ano de Tibério (Lc 3:1, c. 29 d.C.) e João menciona três Páscoas (Jo 2:13; 6:4; 11:55). Por isso a crucificação fica em 33 d.C.; parte dos estudiosos prefere 30 d.C. As datas entre um evento e outro dos Evangelhos são aproximadas.');
+    if(y>=29&&y<=33.35&&['Matt','Mark','Luke','John','Acts'].includes(ref.book))notes.push('Lucas 3:23 diz que Jesus tinha "cerca de 30 anos" ao começar o ministério. A tradição dos "33 anos" supõe o nascimento no ano 1; mas Herodes morreu em 4 a.C. (Mt 2:19), então Jesus nasceu antes disso — por isso a idade aqui aparece maior.');
     if(aut.some(a=>a.ext))notes.push('Algumas autoridades são citadas sem data no texto, ou nem são citadas (Calígula, Domiciano); seus períodos vêm da história romana.');
     if(L.letter)notes.push('A data e o lugar de escrita das cartas saem das indicações dentro delas (prisões, viagens, saudações) cruzadas com Atos; onde o texto não fecha, aparecem como aproximados (≈).');
     const s=sheet();
     s.innerHTML='<div class="tl2-grab"></div>'
-      +'<header class="tl2-head"><div><small>LINHA DO TEMPO · '+esc(ref.label||'')+'</small><strong>'+(L.ap?'≈ ':'')+yr(y)+'</strong></div><button type="button" id="tlntClose" aria-label="Fechar">×</button></header>'
+      +'<header class="tl2-head"><div><small>LINHA DO TEMPO · '+esc(ref.label||'')+'</small><strong>'+(L.ap?'≈ ':'')+yr(yi)+'</strong></div><button type="button" id="tlntClose" aria-label="Fechar">×</button></header>'
       +'<div class="tl2-scroll">'
       +'<div class="tl2-anchor"><span class="tl2-era">'+era(y)+'</span><b>'+esc(L.label)+'</b>'+(L.ctx?'<p>'+esc(L.ctx)+'</p>':'')+(L.ap&&!L.letter?'<p><em>(aproximado)</em></p>':'')+'</div>'
       +(pes.length?'<h4>Personagens <span>'+pes.length+'</span></h4><div class="tl2-rows">'+bars(pes,y,lo,hi)+'</div>':'')
       +'<h4>Autoridades <span>'+aut.length+'</span></h4><div class="tl2-rows">'+bars(aut,y,lo,hi)+'</div>'
-      +'<div class="tl2-scale"><span>'+yr(Math.round(lo))+'</span><span>'+yr(Math.round(hi))+'</span></div>'
+      +'<div class="tl2-scale"><span>'+yr(Math.floor(lo))+'</span><span>'+yr(Math.floor(hi))+'</span></div>'
       +pauloHtml+cartasHtml
       +'<h4>Antes e depois</h4><div class="tl2-evs">'+evBtn(prev,-1)+evBtn(next,1)+'</div>'
       +'<div class="tl2-notes">'+notes.map(n=>'<p>'+esc(n)+'</p>').join('')+'</div>'
