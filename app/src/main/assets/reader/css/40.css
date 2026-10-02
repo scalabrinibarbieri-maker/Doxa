@@ -56,3 +56,29 @@ body:not([data-doxa30-theme="night"]) .tl2-bar u{background:#3a2a18;box-shadow:n
 body:not([data-doxa30-theme="night"]) .tl2-who em.r{color:#3c5ea8}
 .tl2-bar b.rg{position:absolute;top:2px;bottom:2px;border-radius:99px;background:repeating-linear-gradient(90deg,color-mix(in srgb,#6b8fd6 75%,transparent) 0 6px,color-mix(in srgb,#6b8fd6 35%,transparent) 6px 9px)}
 .tl2-none{margin:0 2px;font:italic 400 13px/1.5 Georgia,serif;color:var(--d30-muted,#9e9286)}
+/* profetas */
+.tl2-prof{padding:11px 13px;margin-bottom:7px;border-radius:14px;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 14%,transparent);background:color-mix(in srgb,var(--d30-text,#fff) 3%,transparent)}
+.tl2-prof.me{border-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 55%,transparent);background:color-mix(in srgb,var(--d30-gold,#d9a25e) 9%,transparent)}
+.tl2-prof>div{display:flex;flex-wrap:wrap;align-items:center;gap:6px 9px}
+.tl2-prof b{font:600 15px/1.2 Georgia,'Times New Roman',serif}
+.tl2-prof p{margin:5px 0 0;font:500 11.5px/1.4 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.tl2-prof .reg,.tl2-near .reg{font:700 9.5px/1 system-ui,sans-serif;letter-spacing:.04em;padding:4px 8px;border-radius:999px}
+.reg-norte{background:color-mix(in srgb,#5b8fd6 22%,transparent);color:#9db6ec}
+.reg-juda{background:color-mix(in srgb,#d9a25e 22%,transparent);color:#f1c989}
+.reg-exilio{background:color-mix(in srgb,#9b7bd1 24%,transparent);color:#c3aef0}
+.reg-nineve{background:color-mix(in srgb,#c96a4a 24%,transparent);color:#e8a088}
+.reg-edom{background:color-mix(in srgb,#a27a52 26%,transparent);color:#d8b48c}
+.reg-pos{background:color-mix(in srgb,#3fae8c 22%,transparent);color:#7fd6b8}
+.reg-todos{background:color-mix(in srgb,var(--d30-text,#fff) 10%,transparent);color:var(--d30-text,#f3ebe0)}
+body:not([data-doxa30-theme="night"]) .reg-norte{color:#2f5aa0}
+body:not([data-doxa30-theme="night"]) .reg-juda{color:#8a5a14}
+body:not([data-doxa30-theme="night"]) .reg-exilio{color:#5d3fa0}
+body:not([data-doxa30-theme="night"]) .reg-nineve{color:#9a3b20}
+body:not([data-doxa30-theme="night"]) .reg-edom{color:#6e4a26}
+body:not([data-doxa30-theme="night"]) .reg-pos{color:#1f7a5c}
+.tl2-near{display:grid;gap:6px;margin-top:4px}
+.tl2-near>div{display:grid;grid-template-columns:10px auto 1fr;align-items:baseline;column-gap:8px}
+.tl2-near .reg{width:8px;height:8px;padding:0;border-radius:50%;align-self:center}
+.tl2-near b{font:600 13px/1.2 Georgia,serif}
+.tl2-near em{font:500 11px/1 system-ui,sans-serif;font-style:normal;color:var(--d30-muted,#9e9286)}
+.tl2-near small{grid-column:2/4;font:500 10.5px/1.2 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
