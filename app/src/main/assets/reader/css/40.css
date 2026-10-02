@@ -52,3 +52,7 @@ body:not([data-doxa30-theme="night"]) .tl2-who em.d{color:#a5492e}
 body:not([data-doxa30-theme="night"]) .tl2-who em.t,body:not([data-doxa30-theme="night"]) .tl2-anchor em{color:#9a6a24}
 body:not([data-doxa30-theme="night"]) .tl2-bar u{background:#3a2a18;box-shadow:none}
 .tl2-who em.u{background:color-mix(in srgb,var(--d30-text,#fff) 8%,transparent);color:var(--d30-muted,#9e9286);text-transform:none;letter-spacing:0;font-weight:600}
+.tl2-who em.r{background:color-mix(in srgb,#6b8fd6 22%,transparent);color:#9db6ec;text-transform:none;letter-spacing:0}
+body:not([data-doxa30-theme="night"]) .tl2-who em.r{color:#3c5ea8}
+.tl2-bar b.rg{position:absolute;top:2px;bottom:2px;border-radius:99px;background:repeating-linear-gradient(90deg,color-mix(in srgb,#6b8fd6 75%,transparent) 0 6px,color-mix(in srgb,#6b8fd6 35%,transparent) 6px 9px)}
+.tl2-none{margin:0 2px;font:italic 400 13px/1.5 Georgia,serif;color:var(--d30-muted,#9e9286)}
