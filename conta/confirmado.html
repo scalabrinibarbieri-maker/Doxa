@@ -1,0 +1,8 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Conta confirmada · Doxa</title><link rel="stylesheet" href="base.css"></head>
+<body><main><div class="brand">Doxa</div><div class="card" id="box"><h1>Conta confirmada</h1><p>Seu e-mail foi confirmado. Volte ao aplicativo Doxa e entre com seu e-mail e senha.</p><p class="muted">Seus grifos, notas e Pão Diário passam a ficar guardados na sua conta.</p></div></main>
+<script>
+// se o link vier com erro (link expirado ou já usado), avisa
+const h=new URLSearchParams(location.hash.slice(1)),q=new URLSearchParams(location.search);
+const err=h.get('error_description')||q.get('error_description');
+if(err){document.getElementById('box').innerHTML='<h1>Link inválido ou expirado</h1><p>Esse link de confirmação já foi usado ou expirou. Se a sua conta já estiver confirmada, é só entrar no aplicativo. Se não, crie a conta de novo no Doxa para receber outro link.</p>'}
+</script></body></html>

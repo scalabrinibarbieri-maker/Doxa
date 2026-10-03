@@ -1,0 +1,24 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Excluir conta · Doxa</title><link rel="stylesheet" href="base.css"></head>
+<body><main><div class="brand">Doxa</div><div class="card" id="box"><h1>Excluir a Conta Doxa</h1>
+<p>Isso apaga sua conta e tudo o que está guardado nela no servidor: perfil, grifos, notas, pastas, Pão Diário e preferências. <b>Não dá para desfazer.</b></p>
+<p class="muted">Também é possível excluir pelo aplicativo, em Mais → Conta Doxa → “Excluir minha conta”. O que estiver salvo no celular continua no celular.</p>
+<label for="em">E-mail da conta</label><input id="em" type="email" autocomplete="email">
+<label for="pw">Senha</label><input id="pw" type="password" autocomplete="current-password">
+<label for="cf">Para confirmar, escreva EXCLUIR</label><input id="cf" autocapitalize="characters">
+<button class="danger" id="go" type="button">Excluir minha conta</button><div class="msg" id="msg"></div></div></main>
+<script>
+const SB='https://fxruwzaaiecqsxkuxmsp.supabase.co',KEY='sb_publishable_aDmA8htcNCaC0IfGLpT5Hg_lx7IOceG';
+const msg=t=>{document.getElementById('msg').textContent=t};
+document.getElementById('go').addEventListener('click',async()=>{
+  const email=document.getElementById('em').value.trim().toLowerCase(),password=document.getElementById('pw').value;
+  if(document.getElementById('cf').value.trim().toUpperCase()!=='EXCLUIR')return msg('Escreva EXCLUIR para confirmar.');
+  const bt=document.getElementById('go');bt.disabled=true;bt.textContent='Excluindo…';
+  try{
+    const r=await fetch(SB+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const j=await r.json().catch(()=>({}));if(!r.ok||!j.access_token)throw new Error('E-mail ou senha incorretos.');
+    const d=await fetch(SB+'/rest/v1/rpc/delete_my_account',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+j.access_token,'Content-Type':'application/json'},body:'{}'});
+    if(!d.ok)throw new Error('Não foi possível excluir agora. Tente de novo em instantes.');
+    document.getElementById('box').innerHTML='<h1>Conta excluída</h1><p>Sua Conta Doxa e os dados guardados nela foram apagados do servidor.</p>';
+  }catch(e){msg(e.message);bt.disabled=false;bt.textContent='Excluir minha conta'}
+});
+</script></body></html>

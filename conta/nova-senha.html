@@ -1,0 +1,22 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nova senha · Doxa</title><link rel="stylesheet" href="base.css"></head>
+<body><main><div class="brand">Doxa</div><div class="card" id="box"><h1>Criar nova senha</h1><p class="muted">Escolha a nova senha da sua Conta Doxa.</p>
+<label for="p1">Nova senha</label><input id="p1" type="password" autocomplete="new-password" minlength="6">
+<label for="p2">Repita a senha</label><input id="p2" type="password" autocomplete="new-password" minlength="6">
+<button id="go" type="button">Salvar nova senha</button><div class="msg" id="msg"></div></div></main>
+<script>
+const SB='https://fxruwzaaiecqsxkuxmsp.supabase.co',KEY='sb_publishable_aDmA8htcNCaC0IfGLpT5Hg_lx7IOceG';
+const h=new URLSearchParams(location.hash.slice(1));const token=h.get('access_token');
+const msg=(t,ok)=>{const m=document.getElementById('msg');m.textContent=t;m.className='msg'+(ok?' ok':'')};
+if(!token){document.getElementById('box').innerHTML='<h1>Link inválido ou expirado</h1><p>Peça um novo link no aplicativo Doxa, em Mais → Conta Doxa → “Esqueci minha senha”.</p>'}
+document.getElementById('go')?.addEventListener('click',async()=>{
+  const a=document.getElementById('p1').value,b=document.getElementById('p2').value;
+  if(a.length<6)return msg('A senha precisa ter pelo menos 6 caracteres.');
+  if(a!==b)return msg('As duas senhas não são iguais.');
+  const bt=document.getElementById('go');bt.disabled=true;bt.textContent='Salvando…';
+  try{const r=await fetch(SB+'/auth/v1/user',{method:'PUT',headers:{apikey:KEY,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({password:a})});
+    if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(/same/i.test(j.msg||'')?'A nova senha precisa ser diferente da anterior.':'Não foi possível salvar. Peça um novo link no aplicativo.')}
+    history.replaceState(null,'',location.pathname);
+    document.getElementById('box').innerHTML='<h1>Senha alterada</h1><p>Pronto. Volte ao aplicativo Doxa e entre com a nova senha.</p>';
+  }catch(e){msg(e.message);bt.disabled=false;bt.textContent='Salvar nova senha'}
+});
+</script></body></html>
