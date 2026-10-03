@@ -312,6 +312,147 @@
     if(attempt<8)setTimeout(()=>bootTools(attempt+1),180+attempt*90);
   }
 
+
+  /* ============================================================
+     Doxa 60 · social nos módulos e no leitor rico
+     A coleção do Jean continua agrupada, mas cada módulo volta a
+     ter curtida + comentários, inclusive dentro do próprio artigo.
+     ============================================================ */
+  const HOME_SESSION_KEY='doxa:home:session:v1';
+  const HOME_LIKED_KEY='doxa:home:liked:v1';
+  const articleLikeCounts=new Map();
+  let articleLikePending=new Set(),articleLikeTimer=null,pendingRichItemId='';
+  const HEART='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-7.3-4.4-9.2-9A5.1 5.1 0 0 1 12 6.1a5.1 5.1 0 0 1 9.2 5.2c-1.9 4.6-9.2 9-9.2 9z"/></svg>';
+
+  function readLocalJson(key,def){try{const v=JSON.parse(localStorage.getItem(key)||'null');return v??def}catch(e){return def}}
+  function writeLocalJson(key,v){try{localStorage.setItem(key,JSON.stringify(v))}catch(e){}}
+  function homeLikedSet(){return new Set(readLocalJson(HOME_LIKED_KEY,[]))}
+  function saveHomeLiked(set){writeLocalJson(HOME_LIKED_KEY,[...set])}
+
+  async function homeLikeSb(path,{method='GET',body,token,prefer}={}){
+    const h={apikey:APIKEY,'Content-Type':'application/json'};
+    if(token)h.Authorization='Bearer '+token;
+    if(prefer)h.Prefer=prefer;
+    const r=await fetch(SB+path,{method,headers:h,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});
+    const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
+    if(!r.ok){const er=new Error((j&&(j.message||j.msg||j.details))||('HTTP '+r.status));er.status=r.status;throw er}
+    return j;
+  }
+  async function homeLikeSession(){
+    let s=readLocalJson(HOME_SESSION_KEY,null);
+    const save=r=>{s={access_token:r.access_token,refresh_token:r.refresh_token,expires_at:Date.now()+(Number(r.expires_in)||3600)*1000,user_id:r.user?.id||s?.user_id};writeLocalJson(HOME_SESSION_KEY,s);return s};
+    if(s&&s.access_token&&Date.now()<(s.expires_at||0)-60000)return s;
+    if(s&&s.refresh_token){
+      try{return save(await homeLikeSb('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:s.refresh_token}}))}catch(e){}
+    }
+    return save(await homeLikeSb('/auth/v1/signup',{method:'POST',body:{}}));
+  }
+
+  function syncLikeDom(id){
+    const n=articleLikeCounts.get(id),on=homeLikedSet().has(id);
+    document.querySelectorAll('[data-like]').forEach(el=>{
+      if(String(el.dataset.like)!==String(id))return;
+      el.classList.toggle('on',on);
+      if(el.hasAttribute('data-article-social-like')){
+        const b=el.querySelector('b');if(b&&n!=null)b.textContent=String(n);
+      }
+    });
+  }
+  function syncHomeLikeCache(id,n){
+    try{
+      const d=JSON.parse(localStorage.getItem('doxa:home:content:v2')||'null');
+      if(!d)return;
+      let changed=false;
+      for(const k of ['news','articles','featured'])for(const x of d[k]||[])if(String(x.id)===String(id)){x.likes=n;changed=true}
+      if(changed)localStorage.setItem('doxa:home:content:v2',JSON.stringify(d));
+    }catch(e){}
+  }
+  async function fetchArticleLikeCounts(ids){
+    const list=(ids||[...articleLikePending]).filter(isUuid);articleLikePending=new Set();
+    if(!list.length)return;
+    try{
+      const rows=await api('/rest/v1/home_itens?select=id,curtidas&id=in.('+list.join(',')+')');
+      for(const id of list)if(!articleLikeCounts.has(id))articleLikeCounts.set(id,0);
+      for(const row of rows||[])articleLikeCounts.set(String(row.id),Math.max(0,Number(row.curtidas)||0));
+      for(const id of list)syncLikeDom(id);
+    }catch(e){}
+  }
+  function wantArticleLikeCount(id){
+    if(!isUuid(id)||articleLikeCounts.has(id))return;
+    articleLikePending.add(id);clearTimeout(articleLikeTimer);articleLikeTimer=setTimeout(fetchArticleLikeCounts,120);
+  }
+
+  function articleLikeHtml(id,extra=''){
+    const on=homeLikedSet().has(id),n=articleLikeCounts.get(id);
+    return '<span class="doxa-home-like doxa-article-social-like'+(on?' on':'')+(extra?' '+extra:'')+'" role="button" tabindex="0" data-like="'+esc(id)+'" data-article-social-like="1" aria-label="Curtir">'+HEART+'<b>'+(n==null?'':n)+'</b></span>';
+  }
+
+  function ensureModuleSocial(){
+    document.querySelectorAll('.doxa-collection-module[data-open-item]').forEach(card=>{
+      const id=String(card.dataset.openItem||'');if(!isUuid(id))return;
+      if(card.querySelector('[data-article-social-like]')){wantArticleLikeCount(id);return}
+      const copy=card.querySelector('.doxa-collection-module-copy');if(!copy)return;
+      const row=document.createElement('span');row.className='doxa-module-social';row.setAttribute('aria-label','Interações do módulo');
+      row.innerHTML=articleLikeHtml(id,'doxa-module-like');
+      copy.appendChild(row);wantArticleLikeCount(id);
+    });
+  }
+
+  function ensureRichSocial(){
+    const reader=document.getElementById('doxaRichReader');
+    if(!reader||!reader.classList.contains('on'))return;
+    const article=reader.querySelector('.doxa-rich-article');if(!article)return;
+    if(article.querySelector('.doxa-rich-social'))return;
+    const id=String(pendingRichItemId||'');if(!isUuid(id))return;
+    const row=document.createElement('div');row.className='doxa-rich-social';row.dataset.socialItem=id;
+    row.innerHTML='<span class="doxa-rich-social-label">INTERAÇÕES</span><div class="doxa-rich-social-actions">'+articleLikeHtml(id,'doxa-rich-like')+'</div>';
+    const source=article.querySelector('.doxa-rich-source');
+    const content=article.querySelector('.doxa-rich-content');
+    if(source)source.insertAdjacentElement('afterend',row);
+    else if(content)content.insertAdjacentElement('beforebegin',row);
+    else article.appendChild(row);
+    wantArticleLikeCount(id);
+  }
+
+  async function toggleArticleLike(el){
+    const id=String(el?.dataset?.like||'');if(!isUuid(id))return;
+    if(el.dataset.likeBusy==='1')return;el.dataset.likeBusy='1';
+    if(!articleLikeCounts.has(id))await fetchArticleLikeCounts([id]);
+    const set=homeLikedSet(),was=set.has(id),oldCount=Math.max(0,Number(articleLikeCounts.get(id))||0);
+    if(was)set.delete(id);else set.add(id);saveHomeLiked(set);
+    articleLikeCounts.set(id,Math.max(0,oldCount+(was?-1:1)));syncLikeDom(id);syncHomeLikeCache(id,articleLikeCounts.get(id));
+    try{
+      const tok=(await homeLikeSession()).access_token;
+      if(was)await homeLikeSb('/rest/v1/home_curtidas?item_id=eq.'+encodeURIComponent(id),{method:'DELETE',token:tok,prefer:'return=minimal'});
+      else{
+        try{await homeLikeSb('/rest/v1/home_curtidas',{method:'POST',token:tok,body:{item_id:id},prefer:'return=minimal'})}
+        catch(e){if(e.status!==409)throw e}
+      }
+    }catch(e){
+      const back=homeLikedSet();if(was)back.add(id);else back.delete(id);saveHomeLiked(back);
+      articleLikeCounts.set(id,oldCount);syncLikeDom(id);syncHomeLikeCache(id,oldCount);toast('Sem conexão. Tente curtir de novo.');
+    }finally{delete el.dataset.likeBusy}
+  }
+
+  // Captura antes do leitor rico: guarda qual artigo/módulo será aberto.
+  window.addEventListener('click',e=>{
+    const el=e.target instanceof Element?e.target:null;if(!el)return;
+    const like=el.closest('[data-article-social-like]');
+    if(like){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();toggleArticleLike(like);return}
+    if(el.closest('[data-cmt]'))return;
+    const item=el.closest('[data-open-item]');
+    if(item&&isUuid(item.dataset.openItem))pendingRichItemId=String(item.dataset.openItem);
+  },true);
+  window.addEventListener('keydown',e=>{
+    if((e.key==='Enter'||e.key===' ')&&e.target?.matches?.('[data-article-social-like]')){e.preventDefault();toggleArticleLike(e.target)}
+  },true);
+
+  let socialTimer=null;
+  const socialObserver=new MutationObserver(()=>{
+    clearTimeout(socialTimer);socialTimer=setTimeout(()=>{ensureModuleSocial();ensureRichSocial();decorate()},35);
+  });
+  socialObserver.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+
   decorate();
   bootTools();
   window.DoxaComments={open,refreshCounts:()=>fetchCounts([...counts.keys()])};
