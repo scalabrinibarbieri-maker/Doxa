@@ -408,8 +408,16 @@ public final class MainActivity extends Activity {
             @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
                 if (fileCallback != null) fileCallback.onReceiveValue(null);
                 fileCallback = callback;
+                // Doxa 58 · respeita o tipo pedido pela página (ex.: foto de perfil → só imagens, abre a galeria)
+                String type = "*/*";
                 try {
-                    startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("*/*")
+                    String[] accept = params != null ? params.getAcceptTypes() : null;
+                    if (accept != null) for (String a : accept) {
+                        if (a != null && a.trim().startsWith("image/")) { type = "image/*"; break; }
+                    }
+                } catch (Exception ignored) { }
+                try {
+                    startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).setType(type)
                             .addCategory(Intent.CATEGORY_OPENABLE), PICK_FILE);
                 } catch (ActivityNotFoundException error) { fileCallback.onReceiveValue(null); fileCallback = null; }
                 return true;
