@@ -1,11 +1,11 @@
 name: Página oficial
 
-# Publica a pasta site/ no GitHub Pages.
+# Publica a página oficial (index.html) e as páginas da Conta Doxa (conta/) no GitHub Pages.
 # Uma vez, em Settings → Pages, escolha Source: GitHub Actions.
 on:
   push:
     branches: [main]
-    paths: ['index.html', '.github/workflows/pages.yml']
+    paths: ['index.html', 'conta/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -26,11 +26,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      # A página é um arquivo único na raiz (index.html), com as imagens embutidas.
-      - name: Separar a página
+      # A página oficial é um arquivo único na raiz (index.html), com as imagens embutidas.
+      # A pasta conta/ tem as páginas da Conta Doxa: confirmação de e-mail, nova senha,
+      # excluir conta e política de privacidade (os links dos e-mails apontam para elas).
+      - name: Separar as páginas
         run: |
           mkdir -p _site
           cp index.html _site/index.html
+          if [ -d conta ]; then cp -r conta _site/conta; fi
+          touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
