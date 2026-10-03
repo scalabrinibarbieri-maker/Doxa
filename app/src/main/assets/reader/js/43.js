@@ -84,9 +84,40 @@
     return{session:false};
   }
   async function recover(email){await http('/auth/v1/recover?redirect_to='+encodeURIComponent(SITE+'nova-senha.html'),{method:'POST',auth:false,body:{email}})}
-  async function signOut(){try{await http('/auth/v1/logout',{method:'POST'})}catch(e){}const u=uid();sess=null;saveSess();try{if(u)localStorage.removeItem('doxa:conta:base:'+u)}catch(e){}}
-  async function deleteAccount(){await http('/rest/v1/rpc/delete_my_account',{method:'POST',body:{}});const u=uid();sess=null;saveSess();try{if(u)localStorage.removeItem('doxa:conta:base:'+u)}catch(e){}}
-  async function loadProfile(){if(!uid())return null;const r=await http('/rest/v1/profiles?id=eq.'+uid()+'&select=display_name,username');return r&&r[0]||null}
+  async function signOut(){try{await http('/auth/v1/logout',{method:'POST'})}catch(e){}const u=uid();sess=null;saveSess();try{localStorage.removeItem('doxa:conta:perfil')}catch(e){}try{if(u)localStorage.removeItem('doxa:conta:base:'+u)}catch(e){}}
+  async function deleteAccount(){try{if(profile&&profile.avatar_url)removeObject(profile.avatar_url)}catch(e){}await http('/rest/v1/rpc/delete_my_account',{method:'POST',body:{}});const u=uid();sess=null;saveSess();try{localStorage.removeItem('doxa:conta:perfil')}catch(e){}try{if(u)localStorage.removeItem('doxa:conta:base:'+u)}catch(e){}}
+  const PKEY='doxa:conta:perfil';
+  async function loadProfile(){if(!uid())return null;const r=await http('/rest/v1/profiles?id=eq.'+uid()+'&select=display_name,username,avatar_url');const p=r&&r[0]||null;try{localStorage.setItem(PKEY,JSON.stringify(p))}catch(e){}return p}
+  async function saveAvatarUrl(url){await http('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',body:{avatar_url:url},headers:{Prefer:'return=minimal'}})}
+  /* ---- foto de perfil: recorta no centro, reduz para 512×512 e envia para o armazenamento ---- */
+  async function makeAvatar(file){
+    let bmp;
+    try{bmp=await createImageBitmap(file,{imageOrientation:'from-image'})}
+    catch(e){bmp=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Não consegui abrir essa imagem.'));i.src=URL.createObjectURL(file)})}
+    const w=bmp.width,h=bmp.height,side=Math.min(w,h),S=512;
+    const c=document.createElement('canvas');c.width=S;c.height=S;
+    const g=c.getContext('2d');g.imageSmoothingQuality='high';
+    g.drawImage(bmp,(w-side)/2,(h-side)/2,side,side,0,0,S,S);
+    return await new Promise(res=>c.toBlob(res,'image/jpeg',0.86));
+  }
+  async function uploadAvatar(file){
+    if(!file||!/^image\//.test(file.type||'image/'))throw new Error('Escolha uma imagem.');
+    const blob=await makeAvatar(file);if(!blob)throw new Error('Não consegui preparar a imagem.');
+    await ensureFresh();
+    const path=uid()+'/foto-'+Date.now()+'.jpg';
+    let r;
+    try{r=await fetch(SB+'/storage/v1/object/avatars/'+path,{method:'POST',headers:{apikey:APIKEY,Authorization:'Bearer '+sess.access_token,'Content-Type':'image/jpeg','x-upsert':'true'},body:blob})}
+    catch(e){throw new Error('Sem conexão com a internet.')}
+    if(!r.ok)throw new Error('Não foi possível enviar a foto agora.');
+    const url=SB+'/storage/v1/object/public/avatars/'+path;
+    const old=profile&&profile.avatar_url;
+    await saveAvatarUrl(url);
+    profile=Object.assign(profile||{},{avatar_url:url});try{localStorage.setItem(PKEY,JSON.stringify(profile))}catch(e){}
+    if(old&&old.includes('/avatars/'+uid()+'/'))removeObject(old);
+    return url;
+  }
+  function removeObject(url){const i=url.indexOf('/avatars/');if(i<0)return;http('/storage/v1/object/avatars/'+url.slice(i+9),{method:'DELETE'}).catch(()=>{})}
+  async function removeAvatar(){const old=profile&&profile.avatar_url;await saveAvatarUrl(null);profile=Object.assign(profile||{},{avatar_url:null});try{localStorage.setItem(PKEY,JSON.stringify(profile))}catch(e){}if(old)removeObject(old)}
   async function saveProfile(name){await http('/rest/v1/profiles?id=eq.'+uid(),{method:'PATCH',body:{display_name:name},headers:{Prefer:'return=minimal'}})}
 
   // ---------------- sincronização ----------------
@@ -215,13 +246,15 @@
   function setStatus(s){status=s;paintRow();paintStatus()}
   function since(t){if(!t)return'ainda não sincronizado';const s=Math.round((Date.now()-t)/1000);if(s<60)return'sincronizado agora';const m=Math.round(s/60);if(m<60)return'sincronizado há '+m+' min';const h=Math.round(m/60);if(h<24)return'sincronizado há '+h+' h';return'sincronizado há '+Math.round(h/24)+' dia(s)'}
   function toast(msg){let t=$('contaToast');if(!t){t=document.createElement('div');t.id='contaToast';t.className='conta-toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2800)}
-  let profile=null;
+  let profile=null;try{profile=JSON.parse(localStorage.getItem('doxa:conta:perfil')||'null')}catch(e){}
   function displayName(){return(profile&&profile.display_name)||(sess&&sess.user&&((sess.user.user_metadata&&sess.user.user_metadata.name)||sess.user.email))||''}
+  function avatarHtml(cls){const u=profile&&profile.avatar_url,n=(displayName()||'?').trim().charAt(0).toUpperCase();return u?'<span class="'+cls+' has-photo"><img src="'+esc(u)+'" alt=""></span>':'<span class="'+cls+'">'+esc(n)+'</span>'}
   function paintRow(){
     const row=$('contaRow');if(!row)return;
     const small=row.querySelector('small'),strong=row.querySelector('strong');
     if(!uid()){strong.textContent='Conta Doxa';small.textContent='Entre para guardar grifos, notas e Pão Diário na nuvem'}
     else{strong.textContent=displayName()||'Conta Doxa';small.textContent=status==='sync'?'sincronizando…':status==='err'?'não sincronizou · toque para ver':since(loadBase().last)}
+    const ic=row.querySelector('.doxa30-more-icon');if(ic){if(uid()&&profile&&profile.avatar_url){ic.classList.add('has-photo');ic.innerHTML='<img src="'+esc(profile.avatar_url)+'" alt="">'}else if(ic.classList.contains('has-photo')){ic.classList.remove('has-photo');ic.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 19.5c1.2-3.4 3.8-5 7-5s5.8 1.6 7 5"/></svg>'}}
   }
   function ensureRow(){
     const list=document.querySelector('#doxa30MoreOverlay .doxa30-more-list');
@@ -247,7 +280,8 @@
     if(!uid())return renderOut(body);
     const L=localState();const nHl=L.maps.hl.size,nNo=L.maps.nota.size,nPa=L.maps.pasta.size;
     const name=displayName(),email=(sess.user&&sess.user.email)||'';
-    body.innerHTML='<div class="conta-head"><span class="conta-avatar">'+esc((name||email||'?').trim().charAt(0).toUpperCase())+'</span><div><h2>'+esc(name||'Sua conta')+'</h2><p>'+esc(email)+'</p></div></div>'
+    body.innerHTML='<div class="conta-head"><button type="button" class="conta-photo-btn" id="contaPhoto" aria-label="Trocar foto">'+avatarHtml('conta-avatar')+'<i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg></i></button><div><h2>'+esc(name||'Sua conta')+'</h2><p>'+esc(email)+'</p>'+(profile&&profile.avatar_url?'<button type="button" class="conta-mini" id="contaPhotoDel">Remover foto</button>':'<button type="button" class="conta-mini" id="contaPhoto2">Colocar foto</button>')+'</div></div>'
+      +'<input type="file" id="contaPhotoFile" accept="image/*" hidden>'
       +'<div class="conta-card" id="contaStatus"></div>'
       +'<div class="conta-stats"><div><b>'+nHl+'</b><span>grifos</span></div><div><b>'+nNo+'</b><span>notas</span></div><div><b>'+nPa+'</b><span>pastas</span></div></div>'
       +'<label class="conta-field"><span>Seu nome</span><input id="contaName" maxlength="60" value="'+esc(name)+'" autocomplete="name"></label>'
@@ -257,11 +291,18 @@
       +'<button class="conta-link danger" id="contaDelete" type="button">Excluir minha conta</button>'
       +'<p class="conta-fine">Grifos, notas, pastas, Pão Diário e preferências ficam guardados na sua conta e voltam em qualquer celular. Tudo continua sendo salvo primeiro neste aparelho. <a href="'+SITE+'privacidade.html" target="_blank" rel="noopener">Política de privacidade</a></p>';
     paintStatus();
+    const pick=()=>$('contaPhotoFile').click();
+    $('contaPhoto').onclick=pick;if($('contaPhoto2'))$('contaPhoto2').onclick=pick;
+    $('contaPhotoFile').onchange=async e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
+      const btn=$('contaPhoto');btn.classList.add('busy');
+      try{await uploadAvatar(f);toast('Foto atualizada.');render();paintRow();document.dispatchEvent(new CustomEvent('doxa:perfil'))}
+      catch(err){toast(err.message);btn.classList.remove('busy')}};
+    if($('contaPhotoDel'))$('contaPhotoDel').onclick=async()=>{try{await removeAvatar();toast('Foto removida.');render();paintRow();document.dispatchEvent(new CustomEvent('doxa:perfil'))}catch(err){toast(err.message)}};
     $('contaSyncNow').onclick=async()=>{const r=await sync({interactive:true});if(r)toast(r.pushed||r.pulled?'Sincronizado.':'Tudo em dia.');render()};
     $('contaSaveName').onclick=async()=>{const v=$('contaName').value.trim();if(!v){toast('Escreva seu nome.');return}try{await saveProfile(v);profile=Object.assign(profile||{},{display_name:v});toast('Nome salvo.');render();paintRow()}catch(e){toast(e.message)}};
     $('contaOut').onclick=async()=>{
       if(isDirty())await sync();
-      await signOut();profile=null;toast('Você saiu da conta. Seus dados continuam neste celular.');render();paintRow();
+      await signOut();profile=null;toast('Você saiu da conta. Seus dados continuam neste celular.');render();paintRow();document.dispatchEvent(new CustomEvent('doxa:perfil'));
     };
     $('contaDelete').onclick=()=>renderDelete(body);
   }
@@ -307,9 +348,10 @@
     };
   }
   async function afterLogin(){
+    document.dispatchEvent(new CustomEvent('doxa:perfil'));
     const L=localState();const n=L.maps.hl.size+L.maps.nota.size;
     render();paintRow();
-    loadProfile().then(p=>{profile=p;render();paintRow()}).catch(()=>{});
+    loadProfile().then(p=>{profile=p;render();paintRow();document.dispatchEvent(new CustomEvent('doxa:perfil'))}).catch(()=>{});
     const r=await sync({interactive:true});
     if(r&&r.first&&n>0)toast('Encontramos '+L.maps.hl.size+' grifos e '+L.maps.nota.size+' notas neste celular. Agora estão guardados na sua conta.');
     else if(r)toast('Você entrou. Tudo sincronizado.');
@@ -339,5 +381,8 @@
     setInterval(paintRow,60000);
   }
   boot();
-  window.DoxaConta={sync,isDirty,signIn,signOut,open:openSheet,get user(){return sess&&sess.user||null}};
+  window.DoxaConta={sync,isDirty,signIn,signOut,open:openSheet,get user(){return sess&&sess.user||null},
+    async token(){if(!sess)return null;try{await ensureFresh()}catch(e){}return sess?sess.access_token:null},
+    get profile(){return profile?Object.assign({},profile,{display_name:displayName()}):null},
+    refreshProfile:()=>uid()?loadProfile().then(p=>{profile=p;paintAll();return p}):Promise.resolve(null)};
 })();
