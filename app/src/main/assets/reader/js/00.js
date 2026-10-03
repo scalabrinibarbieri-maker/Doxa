@@ -89,6 +89,7 @@ window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sa
     addCss('doxa-v50-study-premium-css','css/38.css');
     addCss('doxa-v51-chrono-css','css/40.css');
     addCss('doxa-v56-lupa-css','css/42.css');
+    addCss('doxa-v57-conta-css','css/43.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
@@ -120,7 +121,9 @@ window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sa
                                                   addScript('doxa-v50-study-premium-js','js/37.js',()=>{
                                                     addScript('doxa-v51-chrono-js','js/40.js',()=>{
                                                       addScript('doxa-v54-chrono-nt-js','js/41.js',()=>{
-                                                        addScript('doxa-v56-lupa-js','js/42.js');
+                                                        addScript('doxa-v56-lupa-js','js/42.js',()=>{
+                                                          addScript('doxa-v57-conta-js','js/43.js');
+                                                        });
                                                       });
                                                     });
                                                   });
