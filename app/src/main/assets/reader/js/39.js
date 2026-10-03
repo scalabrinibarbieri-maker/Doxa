@@ -51,7 +51,7 @@
     fetching=(async()=>{
       try{
         const fields='id,tipo,titulo,subtitulo,texto,conteudo_html,autor,imagem_url,link_url,meta,ordem,publicado_em,curtidas';
-        const path='/rest/v1/home_itens?select='+fields+'&publicado=eq.true&conteudo_html=not.is.null&order=ordem.asc,publicado_em.desc&limit=60';
+        const path='/rest/v1/home_itens?select='+fields+'&publicado=eq.true&conteudo_html=not.is.null&order=ordem.asc,publicado_em.desc&limit=250';
         const r=await fetch(SB_URL+path,{headers:{apikey:SB_KEY},cache:'no-store'});
         if(!r.ok)throw new Error('HTTP '+r.status);
         const rows=await r.json();
@@ -157,31 +157,30 @@
     return root.innerHTML;
   }
 
-  /* Quando o HTML trouxer alt="DOXA_ARTICLE_HERO", essa imagem é exclusiva
-     do artigo: ela sai do corpo e aparece inteira, abaixo do título.
-     A imagem_url continua sendo apenas a capa da Home.
-     Artigos antigos, sem esse marcador, mantêm o comportamento anterior. */
+  /* Se o HTML trouxer uma imagem com alt="DOXA_ARTICLE_HERO",
+     ela vira a imagem grande do topo interno e é retirada do corpo.
+     A imagem_url continua sendo a capa usada na Home. */
   function splitArticleHero(raw,fallback){
     try{
       const parser=new DOMParser();
       const doc=parser.parseFromString('<div id="doxa-rich-split">'+String(raw||'')+'</div>','text/html');
       const root=doc.getElementById('doxa-rich-split');
-      if(!root)return{hero:safeWebUrl(fallback),marked:false,html:String(raw||'')};
+      if(!root)return{hero:safeWebUrl(fallback),html:String(raw||'')};
 
       const img=[...root.querySelectorAll('img')].find(el=>
         String(el.getAttribute('alt')||'').trim()==='DOXA_ARTICLE_HERO'
       );
 
+      let hero=safeWebUrl(fallback);
       if(img){
         const marked=safeWebUrl(img.getAttribute('src'));
+        if(marked)hero=marked;
         const figure=img.closest('figure');
         (figure||img).remove();
-        return{hero:marked,marked:!!marked,html:root.innerHTML};
       }
-
-      return{hero:safeWebUrl(fallback),marked:false,html:root.innerHTML};
+      return{hero,html:root.innerHTML};
     }catch(e){
-      return{hero:safeWebUrl(fallback),marked:false,html:String(raw||'')};
+      return{hero:safeWebUrl(fallback),html:String(raw||'')};
     }
   }
 
@@ -229,12 +228,6 @@
         background-image:var(--home-image);background-size:cover;background-position:center;
         border:1px solid color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 9%,transparent);
         box-shadow:0 18px 55px color-mix(in srgb,#000 20%,transparent);
-      }
-      .doxa-rich-lead-image{
-        display:block;width:100%;height:auto;max-height:none;object-fit:contain;
-        margin:24px 0 4px;border-radius:18px;
-        border:1px solid color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 9%,transparent);
-        box-shadow:0 14px 42px color-mix(in srgb,#000 16%,transparent);
       }
       .doxa-rich-article{max-width:720px;margin:0 auto;padding:30px 8px 0}
       .doxa-rich-kicker{
@@ -309,7 +302,6 @@
       @media(max-width:680px){
         .doxa-rich-reader-shell{padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 52px)}
         .doxa-rich-reader-hero{border-radius:17px;aspect-ratio:16/9.4}
-        .doxa-rich-lead-image{margin-top:20px;border-radius:14px}
         .doxa-rich-article{padding:24px 5px 0}
         .doxa-rich-article>h1{font-size:36px}
         .doxa-rich-sub{font-size:16px}
@@ -371,12 +363,11 @@
     if(x.meta)kicker.push('<i></i><span>'+esc(x.meta)+'</span>');
 
     shell.innerHTML=
-      ((!split.marked&&hero)?'<div class="doxa-rich-reader-hero" style="--home-image:url(\''+cssUrl(hero)+'\')"></div>':'')
+      (hero?'<div class="doxa-rich-reader-hero" style="--home-image:url(\''+cssUrl(hero)+'\')"></div>':'')
       +'<article class="doxa-rich-article">'
       +(kicker.length?'<div class="doxa-rich-kicker">'+kicker.join('')+'</div>':'')
       +'<h1>'+esc(x.titulo||'')+'</h1>'
       +(x.subtitulo?'<p class="doxa-rich-sub">'+esc(x.subtitulo)+'</p>':'')
-      +((split.marked&&hero)?'<img class="doxa-rich-lead-image" src="'+esc(hero)+'" alt="">':'')
       +(source?'<div class="doxa-rich-source"><button type="button" data-rich-external="'+esc(source)+'">Abrir fonte original ›</button></div>':'')
       +'<div class="doxa-rich-content">'+html+'</div>'
       +'</article>';
@@ -422,3 +413,226 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
   else install();
 })();
+
+/* ============================================================
+   Doxa · Coleções de artigos
+   - Artigos agrupados deixam de ocupar a Home individualmente.
+   - A Home recebe um único card por coleção.
+   - Ao abrir a coleção, os artigos aparecem como módulos ordenados.
+   - Os módulos continuam abrindo no leitor rico acima.
+   ============================================================ */
+(()=>{
+  'use strict';
+  if(window.__doxaArticleCollectionsInstalled)return;
+  window.__doxaArticleCollectionsInstalled=true;
+
+  const SB_URL='https://fxruwzaaiecqsxkuxmsp.supabase.co';
+  const SB_KEY='sb_publishable_aDmA8htcNCaC0IfGLpT5Hg_lx7IOceG';
+  const HOME_KEY='doxa:home:content:v2';
+  const CACHE_KEY='doxa:home:collections:v1';
+  const REFRESH_MS=5*60*1000;
+  let lastFetch=0,fetching=null,scheduled=false;
+  const collections=new Map();
+  const modulesByCollection=new Map();
+
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const cssUrl=v=>String(v||'').replace(/["'()\\\s]/g,m=>encodeURIComponent(m));
+  const plural=(n,a,b)=>n+' '+(n===1?a:b);
+
+  function readJson(key,def){
+    try{const v=JSON.parse(localStorage.getItem(key)||'null');return v??def}catch(e){return def}
+  }
+  function writeJson(key,v){try{localStorage.setItem(key,JSON.stringify(v))}catch(e){}}
+
+  function hydrate(data){
+    collections.clear();modulesByCollection.clear();
+    for(const c of data?.collections||[]){
+      if(c?.id)collections.set(String(c.id),c);
+    }
+    for(const m of data?.modules||[]){
+      const cid=String(m?.colecao_id||'');if(!cid)continue;
+      if(!modulesByCollection.has(cid))modulesByCollection.set(cid,[]);
+      modulesByCollection.get(cid).push(m);
+    }
+    for(const list of modulesByCollection.values()){
+      list.sort((a,b)=>(Number(a.modulo_ordem)||9999)-(Number(b.modulo_ordem)||9999)||String(a.publicado_em||'').localeCompare(String(b.publicado_em||'')));
+    }
+  }
+
+  function readCache(){
+    const c=readJson(CACHE_KEY,null);
+    if(!c)return;
+    hydrate(c);lastFetch=Number(c.fetchedAt)||0;
+  }
+
+  async function sb(path){
+    const r=await fetch(SB_URL+path,{headers:{apikey:SB_KEY},cache:'no-store'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return r.json();
+  }
+
+  async function refresh(force=false){
+    if(fetching)return fetching;
+    if(!force&&lastFetch&&Date.now()-lastFetch<REFRESH_MS){scheduleApply();return}
+    fetching=(async()=>{
+      try{
+        const [cs,ms]=await Promise.all([
+          sb('/rest/v1/home_colecoes?select=id,slug,titulo,subtitulo,autor,imagem_url,ordem&publicado=eq.true&order=ordem.asc'),
+          sb('/rest/v1/home_itens?select=id,titulo,subtitulo,imagem_url,meta,publicado_em,colecao_id,modulo_ordem&publicado=eq.true&tipo=eq.artigo&colecao_id=not.is.null&order=colecao_id.asc,modulo_ordem.asc&limit=500')
+        ]);
+        const data={fetchedAt:Date.now(),collections:Array.isArray(cs)?cs:[],modules:Array.isArray(ms)?ms:[]};
+        hydrate(data);lastFetch=data.fetchedAt;writeJson(CACHE_KEY,data);
+        window.DoxaRichHome?.refresh?.();
+        scheduleApply();
+      }catch(e){scheduleApply()}
+      finally{fetching=null}
+    })();
+    return fetching;
+  }
+
+  function collectionCover(c,list){
+    if(c?.imagem_url)return c.imagem_url;
+    for(let i=list.length-1;i>=0;i--)if(list[i]?.imagem_url)return list[i].imagem_url;
+    return'';
+  }
+
+  function synthetic(c,list){
+    const n=list.length,latest=list[list.length-1]||{};
+    return{
+      id:'demo-collection:'+c.id,
+      type:'artigo',
+      title:c.titulo||'Coleção',
+      sub:c.subtitulo||'',
+      text:'',
+      image:collectionCover(c,list),
+      link:'',
+      meta:plural(n,'módulo','módulos'),
+      likes:0,
+      date:latest.publicado_em||'',
+      collectionId:c.id
+    };
+  }
+
+  function applyCollections(){
+    const home=readJson(HOME_KEY,null);
+    if(!home||!home.remote||!Array.isArray(home.articles)||!collections.size)return;
+
+    const moduleIds=new Set();
+    for(const list of modulesByCollection.values())for(const m of list)moduleIds.add(String(m.id));
+
+    const plain=home.articles.filter(x=>{
+      const id=String(x?.id||'');
+      return !moduleIds.has(id)&&!id.startsWith('demo-collection:');
+    });
+
+    const grouped=[...collections.values()]
+      .sort((a,b)=>(Number(a.ordem)||100)-(Number(b.ordem)||100))
+      .map(c=>synthetic(c,modulesByCollection.get(String(c.id))||[]))
+      .filter(x=>Number((modulesByCollection.get(String(x.collectionId))||[]).length)>0);
+
+    const next=[...grouped,...plain];
+    const sig=a=>JSON.stringify((a||[]).map(x=>[x.id,x.title,x.sub,x.image,x.meta,x.likes]));
+    if(sig(next)===sig(home.articles))return;
+
+    home.articles=next;
+    if(window.DoxaHome?.applyContent)window.DoxaHome.applyContent(home);
+    else writeJson(HOME_KEY,home);
+  }
+
+  function scheduleApply(){
+    if(scheduled)return;scheduled=true;
+    requestAnimationFrame(()=>{scheduled=false;applyCollections()});
+  }
+
+  function ensureStyles(){
+    if(document.getElementById('doxaCollectionStyles'))return;
+    const st=document.createElement('style');st.id='doxaCollectionStyles';st.textContent=`
+      .doxa-collection-reader{position:fixed;z-index:91;inset:0;visibility:hidden;opacity:0;pointer-events:none;background:var(--dh00,var(--d30-bg,#17130f));color:var(--dh01,var(--d30-text,#eee7dd));transform:translate3d(12px,0,0);transition:opacity .18s ease,transform .24s cubic-bezier(.2,.8,.2,1),visibility .18s}
+      .doxa-collection-reader.on{visibility:visible;opacity:1;pointer-events:auto;transform:none}
+      .doxa-collection-bar{position:absolute;z-index:3;left:0;right:0;top:0;min-height:calc(env(safe-area-inset-top,0px) + 58px);padding:env(safe-area-inset-top,0px) 16px 0;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;background:color-mix(in srgb,var(--dh00,var(--d30-bg,#17130f)) 92%,transparent);border-bottom:1px solid color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 9%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+      .doxa-collection-back{width:42px;height:42px;border:0;border-radius:50%;background:transparent;color:var(--dh01,var(--d30-text,#eee7dd));font:300 34px/1 Georgia,serif}
+      .doxa-collection-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;color:color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 72%,transparent);font:650 11px/1.2 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.11em;text-transform:uppercase}
+      .doxa-collection-scroll{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-top:calc(env(safe-area-inset-top,0px) + 58px);background:radial-gradient(circle at 50% -10%,color-mix(in srgb,var(--dh09,#bb8d58) 8%,transparent),transparent 29%),var(--dh00,var(--d30-bg,#17130f))}
+      .doxa-collection-shell{width:min(100%,860px);margin:0 auto;padding:18px 16px calc(env(safe-area-inset-bottom,0px) + 70px)}
+      .doxa-collection-hero{position:relative;min-height:265px;border-radius:24px;overflow:hidden;background-image:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.86)),var(--collection-image);background-size:cover;background-position:center;border:1px solid color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 10%,transparent);box-shadow:0 20px 56px rgba(0,0,0,.24);display:flex;align-items:flex-end}
+      .doxa-collection-hero-copy{width:100%;padding:24px 22px 22px;text-align:left}
+      .doxa-collection-hero-copy>small{display:block;margin-bottom:9px;color:#efbd79;font:750 10px/1.2 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.15em;text-transform:uppercase}
+      .doxa-collection-hero-copy h1{margin:0;color:#fff7ed;font:500 34px/1.04 Georgia,'Times New Roman',serif;letter-spacing:-.025em;text-shadow:0 2px 20px rgba(0,0,0,.3)}
+      .doxa-collection-hero-copy p{margin:10px 0 0;max-width:620px;color:rgba(255,244,230,.77);font:400 15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif}
+      .doxa-collection-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+      .doxa-collection-stats span{padding:7px 10px;border-radius:999px;border:1px solid rgba(255,220,175,.2);background:rgba(16,10,6,.42);color:rgba(255,239,218,.86);font:650 11px/1 system-ui,-apple-system,'Segoe UI',sans-serif;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+      .doxa-collection-modules{max-width:720px;margin:28px auto 0}
+      .doxa-collection-modules-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 4px 13px}
+      .doxa-collection-modules-head h2{margin:0;color:var(--dh13,var(--d30-text,#eee7dd));font:500 29px/1 Georgia,'Times New Roman',serif}
+      .doxa-collection-modules-head span{color:var(--dh74,var(--d30-muted,#a99e94));font:600 11px/1.2 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+      .doxa-collection-module{width:100%;border:1px solid color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 9%,transparent);border-radius:19px;background:color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 3.6%,transparent);padding:0;display:grid;grid-template-columns:104px minmax(0,1fr) 34px;align-items:stretch;overflow:hidden;color:inherit;text-align:left;margin:0 0 12px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+      .doxa-collection-module-img{min-height:104px;background-image:var(--module-image);background-size:cover;background-position:center;position:relative}
+      .doxa-collection-module-img b{position:absolute;left:9px;top:9px;min-width:30px;height:26px;padding:0 8px;border-radius:999px;display:grid;place-items:center;background:rgba(5,4,3,.72);border:1px solid rgba(255,219,168,.22);color:#f1c989;font:750 10px/1 system-ui,-apple-system,'Segoe UI',sans-serif;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+      .doxa-collection-module-copy{padding:15px 13px 14px;min-width:0}
+      .doxa-collection-module-copy small{display:block;margin:0 0 5px;color:var(--dh81,var(--d30-gold,#c6924e));font:750 9px/1.15 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.12em;text-transform:uppercase}
+      .doxa-collection-module-copy strong{display:block;color:var(--dh13,var(--d30-text,#eee7dd));font:500 20px/1.12 Georgia,'Times New Roman',serif}
+      .doxa-collection-module-copy em{display:block;margin-top:7px;color:var(--dh74,var(--d30-muted,#a99e94));font:500 11px/1.3 system-ui,-apple-system,'Segoe UI',sans-serif;font-style:normal}
+      .doxa-collection-module-go{display:grid;place-items:center;color:var(--dh68,var(--d30-gold,#c6924e));font:300 29px/1 Georgia,serif}
+      .doxa-collection-module:active{transform:scale(.992);background:color-mix(in srgb,var(--dh81,var(--d30-gold,#c6924e)) 7%,transparent)}
+      body.doxa-collection-open{overflow:hidden!important}
+      @media(max-width:520px){.doxa-collection-shell{padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 54px)}.doxa-collection-hero{min-height:245px;border-radius:19px}.doxa-collection-hero-copy{padding:21px 18px 19px}.doxa-collection-hero-copy h1{font-size:31px}.doxa-collection-module{grid-template-columns:92px minmax(0,1fr) 30px}.doxa-collection-module-img{min-height:100px}.doxa-collection-module-copy strong{font-size:18px}}
+      @media(prefers-reduced-motion:reduce){.doxa-collection-reader{transition:none}}
+    `;document.head.appendChild(st);
+  }
+
+  function ensureReader(){
+    ensureStyles();
+    let r=document.getElementById('doxaCollectionReader');if(r)return r;
+    r=document.createElement('section');r.id='doxaCollectionReader';r.className='doxa-collection-reader';r.setAttribute('aria-hidden','true');
+    r.innerHTML='<div class="doxa-collection-bar"><button class="doxa-collection-back" type="button" aria-label="Voltar">‹</button><span class="doxa-collection-label">Coleção</span><span></span></div><div class="doxa-collection-scroll"><div class="doxa-collection-shell"></div></div>';
+    document.body.appendChild(r);
+    r.querySelector('.doxa-collection-back').addEventListener('click',closeCollection);
+    return r;
+  }
+
+  function closeCollection(){
+    const r=document.getElementById('doxaCollectionReader');if(!r)return;
+    r.classList.remove('on');r.setAttribute('aria-hidden','true');document.body.classList.remove('doxa-collection-open');
+  }
+
+  function moduleHtml(m,idx){
+    const img=m.imagem_url||'';
+    const meta=m.meta||'';
+    return '<button class="doxa-collection-module" type="button" data-open-item="'+esc(m.id)+'">'
+      +'<span class="doxa-collection-module-img"'+(img?' style="--module-image:url(\''+cssUrl(img)+'\')"':'')+'><b>'+(Number(m.modulo_ordem)||idx+1)+'</b></span>'
+      +'<span class="doxa-collection-module-copy"><small>Módulo '+(Number(m.modulo_ordem)||idx+1)+'</small><strong>'+esc(m.titulo||'')+'</strong>'+(meta?'<em>◷ &nbsp;'+esc(meta)+'</em>':'')+'</span>'
+      +'<span class="doxa-collection-module-go">›</span></button>';
+  }
+
+  async function openCollection(id){
+    const c=collections.get(String(id));if(!c)return;
+    await window.DoxaRichHome?.refresh?.();
+    const list=modulesByCollection.get(String(id))||[];
+    const r=ensureReader(),shell=r.querySelector('.doxa-collection-shell'),cover=collectionCover(c,list),n=list.length;
+    r.querySelector('.doxa-collection-label').textContent=c.titulo||'Coleção';
+    shell.innerHTML='<div class="doxa-collection-hero"'+(cover?' style="--collection-image:url(\''+cssUrl(cover)+'\')"':'')+'><div class="doxa-collection-hero-copy"><small>Curso em módulos</small><h1>'+esc(c.titulo||'')+'</h1>'+(c.subtitulo?'<p>'+esc(c.subtitulo)+'</p>':'')+'<div class="doxa-collection-stats"><span>'+plural(n,'módulo','módulos')+'</span>'+(c.autor?'<span>'+esc(c.autor)+'</span>':'')+'</div></div></div>'
+      +'<div class="doxa-collection-modules"><div class="doxa-collection-modules-head"><h2>Módulos</h2><span>'+plural(n,'aula','aulas')+'</span></div>'+list.map(moduleHtml).join('')+'</div>';
+    const sc=r.querySelector('.doxa-collection-scroll');if(sc)sc.scrollTop=0;
+    r.classList.add('on');r.setAttribute('aria-hidden','false');document.body.classList.add('doxa-collection-open');
+  }
+
+  function intercept(e){
+    const el=e.target instanceof Element?e.target:null;if(!el)return;
+    const target=el.closest('[data-open-item^="demo-collection:"]');if(!target)return;
+    const raw=String(target.dataset.openItem||'');const id=raw.slice('demo-collection:'.length);if(!id)return;
+    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation?.();openCollection(id);
+  }
+
+  function install(){
+    readCache();ensureStyles();
+    document.addEventListener('click',intercept,true);
+    const mo=new MutationObserver(scheduleApply);mo.observe(document.documentElement,{subtree:true,childList:true});
+    window.addEventListener('online',()=>refresh(true));
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh(false)});
+    refresh(false);setTimeout(scheduleApply,300);setTimeout(()=>refresh(false),1800);
+  }
+
+  window.DoxaCollections={refresh:()=>refresh(true),open:openCollection,close:closeCollection};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+})();
+
