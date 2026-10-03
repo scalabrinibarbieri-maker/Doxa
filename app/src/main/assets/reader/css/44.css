@@ -235,3 +235,59 @@ body.doxa-lupa-on #p-marcar.doxa59-tools-refined #toolsLupaStart .tool-card-icon
 #p-marcar.doxa59-tools-refined #doxa31ParallelTool .doxa31-tool-copy{grid-column:2!important}
 #p-marcar.doxa59-tools-refined .doxa59-tools-stack .tool-card-icon,
 #p-marcar.doxa59-tools-refined .doxa59-tools-stack .doxa31-tool-icon{width:44px!important;height:44px!important;border-radius:14px!important;background:color-mix(in srgb,var(--d30-gold,#d9a25e) 9%,transparent)!important;color:var(--d30-gold2,#f1c989)!important}
+
+
+/* ============================================================
+   Doxa 60 · Curtidas e comentários em módulos / artigos ricos
+   ============================================================ */
+.doxa-module-social{
+  display:flex;align-items:center;gap:7px;margin-top:9px;min-height:28px;
+  position:relative;z-index:4;
+}
+.doxa-module-social .doxa-home-like,
+.doxa-rich-social-actions .doxa-home-like{
+  min-width:38px;height:30px;padding:0 9px;display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  border:1px solid color-mix(in srgb,var(--dh81,var(--d30-gold,#c6924e)) 23%,transparent);
+  border-radius:999px;background:color-mix(in srgb,var(--dh81,var(--d30-gold,#c6924e)) 5%,transparent);
+  color:var(--dh74,var(--d30-muted,#9e9286));font:700 10px/1 system-ui,sans-serif;
+  box-sizing:border-box;-webkit-tap-highlight-color:transparent;
+}
+.doxa-module-social .doxa-home-like svg,
+.doxa-rich-social-actions .doxa-home-like svg{
+  width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;
+}
+.doxa-module-social .doxa-home-like.on,
+.doxa-rich-social-actions .doxa-home-like.on{
+  color:var(--dh68,var(--d30-gold2,#f1c989));
+  border-color:color-mix(in srgb,var(--dh81,var(--d30-gold,#c6924e)) 42%,transparent);
+  background:color-mix(in srgb,var(--dh81,var(--d30-gold,#c6924e)) 10%,transparent);
+}
+.doxa-module-social .doxa-home-like.on:not(.doxa-cmt-pill) svg,
+.doxa-rich-social-actions .doxa-home-like.on:not(.doxa-cmt-pill) svg{fill:currentColor}
+.doxa-module-social .doxa-cmt-pill svg,
+.doxa-rich-social-actions .doxa-cmt-pill svg{fill:none!important}
+.doxa-module-social .doxa-home-like:active,
+.doxa-rich-social-actions .doxa-home-like:active{transform:scale(.94)}
+
+.doxa-collection-module-copy{position:relative}
+.doxa-collection-module-copy>em{margin-bottom:0!important}
+@media(max-width:520px){
+  .doxa-module-social{margin-top:7px;gap:5px}
+  .doxa-module-social .doxa-home-like{height:28px;min-width:36px;padding:0 8px}
+}
+
+.doxa-rich-social{
+  margin:14px 0 0;padding:14px 0 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  border-bottom:1px solid color-mix(in srgb,var(--dh01,var(--d30-text,#eee7dd)) 9%,transparent);
+}
+.doxa-rich-source + .doxa-rich-social{margin-top:0}
+.doxa-rich-social-label{
+  color:var(--dh74,var(--d30-muted,#9e9286));font:800 9px/1 system-ui,sans-serif;letter-spacing:.14em;
+}
+.doxa-rich-social-actions{display:flex;align-items:center;gap:7px;margin-left:auto}
+.doxa-rich-social-actions .doxa-home-like{height:34px;min-width:44px;padding:0 11px}
+
+/* O comentário que o decorador injeta ao lado da curtida deve permanecer na mesma linha. */
+.doxa-module-social .doxa-cmt-pill,
+.doxa-rich-social-actions .doxa-cmt-pill{display:inline-flex!important}
