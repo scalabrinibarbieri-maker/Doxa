@@ -257,7 +257,7 @@
     // acróstico: lê a primeira letra de cada versículo no hebraico (pulando o título do salmo e
     // compensando a numeração, onde o título conta como versículo 1) e segue a ordem do alfabeto
     let acro=null;
-    const AC={Ps:{25:{skip:1},34:{off:1},37:{skip:1},119:{},145:{skip:2}},Lam:{1:{},2:{},3:{},4:{}},Prov:{31:{from:10}}};
+    const AC={Ps:{25:{skip:1},34:{},37:{skip:1},119:{},145:{skip:2}},Lam:{1:{},2:{},3:{},4:{}},Prov:{31:{from:10}}};
     const cfg=!cp.nt&&AC[book]&&AC[book][c];
     if(cfg&&typeof WLC!=='undefined'){
       const chv=WLC.books.find(b=>b.book===book)?.chapters.find(x=>+x.chapter===c)?.verses||[];
@@ -313,9 +313,10 @@
   }
   function refOf(el){
     try{const v=Number(String(el.id||'').replace(/^v/,''));if(!v||mode==='hyper'||!CORPORA[mode])return null;const p=pos(),b=CORPORA[mode].books[p.b];
-      return{book:b.book,chapter:Number(p.c),verse:v,label:bookName(b)+' '+p.c+':'+v}}catch(e){return null}
+      return{book:b.book,chapter:Number(p.c),verse:v,label:bookName(b)+' '+p.c+':'+v,sourceMode:mode}}catch(e){return null}
   }
   function ptText(ref){
+    if(window.DoxaVersif&&ref.sourceMode){const t=window.DoxaVersif.ref(ref,'almeida');if(!t)return'';ref=t}
     const cp=(typeof CORPORA!=='undefined'&&(CORPORA.almeida||(['wlc','tr'].includes(mode)?null:CORPORA[mode])));if(!cp)return'';
     return cp.books.find(b=>b.book===ref.book)?.chapters.find(c=>+c.chapter===ref.chapter)?.verses.find(x=>+x.number===ref.verse)?.text||'';
   }
@@ -328,18 +329,19 @@
     rare:I0+'<path d="M6 3h12l3 6-9 12L3 9z"/><path d="M3 9h18M9 3l3 18 3-18"/></svg>',
     struct:I0+'<path d="M4 6h16M4 12h10M4 18h16"/><circle cx="18" cy="12" r="2"/></svg>',
     lupa:I0+'<circle cx="10.5" cy="10.5" r="6.3"/><path d="M15.3 15.3 20.5 20.5"/></svg>'};
+  function hebOf(ref){if(NT_BOOKS.includes(ref.book)||!window.DoxaVersif)return ref;return window.DoxaVersif.ref(Object.assign({sourceMode:'almeida'},ref),'wlc')||ref}
   function cardsFor(ref){
-    const cards=[];
-    const cp0=corpusFor(ref.book),vt0=cp0?verseTokens(cp0,ref.book,ref.chapter,ref.verse):null;
+    const cards=[];const H=hebOf(ref);
+    const cp0=corpusFor(ref.book),vt0=cp0?verseTokens(cp0,ref.book,H.chapter,H.verse):null;
     const ms=measures(ptText(ref),ref.book,new Set(vt0?vt0.toks.map(t=>t.s):[]),ref.chapter);
     for(const m of ms)cards.push('<article class="lupa-card k-'+m.k+'"><header><span class="ic">'+(ICON[m.k]||ICON.lupa)+'</span><small>'+(m.k==='time'?'TEMPO':m.k==='money'?'VALOR':'MEDIDA')+'</small></header>'
       +'<p class="lupa-q">'+esc(m.t)+'</p><p class="lupa-big">'+esc(m.big)+'</p>'+(m.cmp?'<p class="lupa-cmp">'+esc(m.cmp)+'</p>':'')+'<p class="lupa-sub">'+esc(m.sub)+'</p></article>');
     const cp=corpusFor(ref.book);
     if(cp){
-      const r=rarities(cp,ref.book,ref.chapter,ref.verse);
+      const r=rarities(cp,ref.book,H.chapter,H.verse);
       if(r.length)cards.push('<article class="lupa-card k-rare"><header><span class="ic">'+ICON.rare+'</span><small>RARIDADES</small></header>'
         +r.map(x=>'<div class="lupa-w"><b class="'+(cp.nt?'gr':'he')+'">'+esc(x.lem)+'</b><span>'+esc(x.tr)+' · '+esc(x.g)+'</span><em>'+esc(x.badge)+'</em></div>').join('')+'</article>');
-      const st=structure(cp,ref.book,ref.chapter,ref.verse);
+      const st=structure(cp,ref.book,H.chapter,H.verse);
       if(st)cards.push('<article class="lupa-card k-struct"><header><span class="ic">'+ICON.struct+'</span><small>ESTRUTURA</small></header>'
         +(st.acro?'<div class="lupa-acro"><b class="he">'+esc(st.acro.letter)+'</b><span>Acróstico: este versículo começa com <strong>'+st.acro.name+'</strong>, a '+st.acro.pos+'ª letra do alfabeto hebraico'+(st.acro.group>1?' ('+st.acro.group+' versículos por letra)':'')+'.</span></div>':'')
         +(st.words.length?'<p class="lupa-sub">Palavras que se repetem em '+esc(st.where)+':</p>'+st.words.map(w=>'<div class="lupa-w"><b class="'+(cp.nt?'gr':'he')+'">'+esc(w.lem)+'</b><span>'+esc(w.g)+'</span><em>'+w.n+' vezes'+(w.mark?' · '+esc(w.mark):'')+'</em></div>').join(''):'')
@@ -384,5 +386,5 @@
   window.addEventListener('scroll',()=>{if(on&&$('lupaFloat')&&Math.abs(window.scrollY-lastY)>30)closeCards();lastY=window.scrollY},{passive:true});
 
   ensureCard();setTimeout(ensureCard,1200);
-  window.DoxaLupa={setMode,measures:(t,b,st)=>measures(t,b,st),measuresAt:(b,c,v)=>{const cp=corpusFor(b),vt=cp?verseTokens(cp,b,c,v):null;const tx=(CORPORA.almeida.books.find(x=>x.book===b)?.chapters.find(x=>+x.chapter===c)?.verses.find(x=>+x.number===v)||{}).text||'';return measures(tx,b,new Set(vt?vt.toks.map(t=>t.s):[]),c)},rarities:(b,c,v)=>{const cp=corpusFor(b);return cp?rarities(cp,b,c,v):null},structure:(b,c,v)=>{const cp=corpusFor(b);return cp?structure(cp,b,c,v):null}};
+  window.DoxaLupa={setMode,measures:(t,b,st)=>measures(t,b,st),measuresAt:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v}),vt=cp?verseTokens(cp,b,H.chapter,H.verse):null;const tx=(CORPORA.almeida.books.find(x=>x.book===b)?.chapters.find(x=>+x.chapter===c)?.verses.find(x=>+x.number===v)||{}).text||'';return measures(tx,b,new Set(vt?vt.toks.map(t=>t.s):[]),c)},rarities:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v});return cp?rarities(cp,b,H.chapter,H.verse):null},structure:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v});return cp?structure(cp,b,H.chapter,H.verse):null}};
 })();

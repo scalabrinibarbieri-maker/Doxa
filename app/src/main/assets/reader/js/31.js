@@ -22,7 +22,8 @@
   function linhas(ref){
     const out=[];
     try{
-      const items=oshbVerse(ref.book,ref.chapter,ref.verse)||[];
+      const hr=window.DoxaVersif?window.DoxaVersif.ref(ref,'wlc'):ref;
+      let items=[];if(hr){const L=hr.hebAll&&hr.hebAll.length?hr.hebAll:[[hr.chapter,hr.verse]];for(const [c,v] of L)items=items.concat(oshbVerse(ref.book,c,v)||[])}
       const grego=typeof GREEK_STRONG!=='undefined'&&GREEK_STRONG.b.includes(ref.book);
       for(const tok of items){
         if(!Array.isArray(tok))continue;

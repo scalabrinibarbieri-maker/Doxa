@@ -92,7 +92,11 @@
 
     const a=anchor(src),tg=geometry(dst);
     if(!a||!tg)return;
-    const idx=tg.byVerse.get(String(a.v));
+    let tv=String(a.v);
+    try{const sm=parallelState[src]?.mode,dm=parallelState[dst]?.mode,V=window.DoxaVersif;
+      if(V&&sm&&dm&&V.sys(sm)!==V.sys(dm)){const cs=parallelCanonical(src),cd=parallelCanonical(dst);
+        const r=V.ref({book:cs.book,chapter:+cs.chapter,verse:+a.v,sourceMode:sm},dm);if(r&&+r.chapter===+cd.chapter)tv=String(r.verse)}}catch(e){}
+    const idx=tg.byVerse.get(tv);
     if(idx==null)return;
 
     const it=tg.items[idx];

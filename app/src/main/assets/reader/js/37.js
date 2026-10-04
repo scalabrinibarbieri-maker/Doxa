@@ -82,6 +82,8 @@
   function localVerse(version,r){
     try{
       if(typeof CORPORA==='undefined')return '';
+      if(window.DoxaVersif&&r&&!r.__vm){const rr=window.DoxaVersif.ref(r,version);if(!rr)return '';
+        if(rr!==r){if(version==='wlc'&&rr.hebAll&&rr.hebAll.length>1)return rr.hebAll.map(([c,v])=>localVerse(version,{...rr,chapter:c,verse:v,__vm:1})).filter(Boolean).join(' ');r={...rr,__vm:1}}}
       const cp=CORPORA[version]; if(!cp?.books)return '';
       const b=cp.books.find(x=>x.book===r.book);
       const c=b?.chapters?.find(x=>Number(x.chapter)===Number(r.chapter));
