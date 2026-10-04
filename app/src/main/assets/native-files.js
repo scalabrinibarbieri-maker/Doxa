@@ -120,11 +120,11 @@
     }
     .davi-camp-overlay.on{display:flex}
     .davi-camp-panel{
-      position:relative;width:min(100%,560px);min-height:100%;overflow:hidden;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:72px 24px 38px;color:var(--d30-text,#f4eadb);
+      position:relative;width:min(100%,560px);height:100%;min-height:100%;overflow:hidden;box-sizing:border-box;
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+      padding:82px 24px 34px;color:var(--d30-text,#f4eadb);
       background:
-        radial-gradient(circle at 50% 38%,rgba(216,165,91,.11),transparent 32%),
+        radial-gradient(circle at 50% 39%,rgba(216,165,91,.09),transparent 30%),
         linear-gradient(180deg,#15100c 0%,#0c0907 72%);
     }
     .davi-camp-close{
@@ -135,20 +135,23 @@
     .davi-camp-title{margin:0;color:#f4eadb;font:600 30px/1.05 Georgia,'Times New Roman',serif;text-align:center}
     .davi-camp-sub{max-width:330px;margin:8px 0 0;color:#b7a58d;font:400 13px/1.45 system-ui,sans-serif;text-align:center}
     .davi-camp-idle-wrap{
-      position:relative;width:min(82vw,320px);height:min(54vh,430px);margin:12px 0 2px;
-      display:grid;place-items:end center;
+      position:relative;z-index:1;width:min(72vw,270px);height:clamp(290px,43vh,385px);
+      margin:24px 0 18px;overflow:hidden;flex:0 0 auto;
+      display:flex;align-items:flex-end;justify-content:center;
+      contain:paint;isolation:isolate;
     }
     .davi-camp-idle{
-      width:100%;height:100%;object-fit:contain;object-position:center bottom;background:transparent;
-      filter:drop-shadow(0 22px 24px rgba(0,0,0,.34));
+      display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;background:transparent;
+      pointer-events:none;position:relative;z-index:1;
+      filter:drop-shadow(0 18px 20px rgba(0,0,0,.32));
     }
     .davi-camp-play{
-      width:min(100%,360px);height:58px;border:0;border-radius:18px;padding:0 22px;
+      position:relative;z-index:20;flex:0 0 auto;width:min(100%,360px);height:58px;border:0;border-radius:18px;padding:0 22px;
       background:linear-gradient(180deg,#e2b46f,#c98d3f);color:#2b1c0e;
       font:700 16px/1 system-ui,sans-serif;box-shadow:0 14px 34px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.24);
     }
     .davi-camp-play:active{transform:scale(.985)}
-    .davi-camp-note{margin:12px 0 0;color:#806f5d;font:500 11px/1.3 system-ui,sans-serif;text-align:center}
+    .davi-camp-note{position:relative;z-index:20;flex:0 0 auto;margin:12px 0 0;color:#806f5d;font:500 11px/1.3 system-ui,sans-serif;text-align:center}
     .davi-quiz-view{position:absolute;inset:0;z-index:5;display:none;overflow:auto;padding:72px 20px 34px;background:linear-gradient(180deg,#15100c,#0c0907 72%);color:#f4eadb}
     .davi-quiz-view.on{display:block}
     .davi-quiz-back{position:absolute;top:20px;left:18px;width:44px;height:44px;border:1px solid rgba(217,165,91,.22);border-radius:15px;background:rgba(255,255,255,.035);color:#ead8bc;font:300 30px/38px Georgia,serif}
@@ -169,8 +172,13 @@
     .davi-quiz-xp{margin-top:18px;padding:14px 18px;border:1px solid rgba(217,165,91,.24);border-radius:18px;background:rgba(217,165,91,.08);color:#e4b774;font:800 18px/1 system-ui,sans-serif}
     .davi-quiz-copy{max-width:330px;margin:12px auto 0;color:#a9957c;font:400 13px/1.45 system-ui,sans-serif}
     .davi-quiz-error{padding:16px;border:1px solid rgba(217,165,91,.18);border-radius:16px;background:#19130f;color:#c6b49d;font:500 13px/1.45 system-ui,sans-serif}
-    @media(max-height:660px){
-      .davi-camp-panel{padding-top:62px}.davi-camp-idle-wrap{height:330px;margin-top:5px}.davi-camp-title{font-size:27px}
+    @media(max-height:700px){
+      .davi-camp-panel{padding-top:66px;padding-bottom:24px}
+      .davi-camp-idle-wrap{width:min(64vw,235px);height:clamp(235px,38vh,300px);margin:14px 0 12px}
+      .davi-camp-title{font-size:27px}.davi-camp-sub{margin-top:6px}.davi-camp-play{height:54px}
+    }
+    @media(max-height:590px){
+      .davi-camp-panel{padding-top:60px}.davi-camp-idle-wrap{height:220px;margin:10px 0}.davi-camp-kicker{display:none}.davi-camp-sub{font-size:12px}
     }
   `;
   document.head.appendChild(style);
