@@ -164,6 +164,11 @@
     .davi-quiz-answer-v3.wrong>span:last-child{color:color-mix(in srgb,#c96a4a 72%,var(--dv-text))}
     .davi-quiz-answer-v3.correct>span:last-child{color:color-mix(in srgb,#3fae8c 72%,var(--dv-text))}
     .davi-quiz-explain-v3{margin:11px 0 0;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--dv-text) 8%,transparent);color:var(--dv-muted);font:400 11.5px/1.45 system-ui,sans-serif}
+    .davi-quiz-result-actions-v5{display:grid;gap:9px;margin-top:18px}
+    .davi-quiz-secondary-v5{background:color-mix(in srgb,var(--dv-panel) 88%,var(--dv-bg))!important;color:var(--dv-text)!important;border:1px solid color-mix(in srgb,var(--dv-accent) 18%,transparent)!important;box-shadow:none!important}
+    .davi-quiz-daily-lock-v5{max-width:430px;margin:20px auto 0;padding:16px;border:1px solid color-mix(in srgb,var(--dv-accent) 18%,transparent);border-radius:18px;background:color-mix(in srgb,var(--dv-panel) 91%,var(--dv-bg));text-align:left}
+    .davi-quiz-daily-lock-v5 strong{display:block;color:var(--dv-text);font:650 15px/1.25 Georgia,'Times New Roman',serif}
+    .davi-quiz-daily-lock-v5 span{display:block;margin-top:6px;color:var(--dv-muted);font:500 12px/1.45 system-ui,sans-serif}
 
     @media(max-height:700px){.davi-camp-panel-v3{padding-top:66px;padding-bottom:24px}.davi-camp-idle-wrap-v3{width:min(64vw,235px);height:clamp(235px,38vh,300px);margin:14px 0 12px}.davi-camp-title-v3{font-size:27px}.davi-camp-sub-v3{margin-top:6px}.davi-camp-play-v3{height:54px}}
     @media(max-height:590px){.davi-camp-panel-v3{padding-top:60px}.davi-camp-idle-wrap-v3{height:220px;margin:10px 0}.davi-camp-kicker-v3{display:none}.davi-camp-sub-v3{font-size:12px}}
@@ -214,10 +219,10 @@
     overlay.innerHTML='<div class="davi-camp-panel-v3" role="dialog" aria-modal="true" aria-label="Acampamento de Davi">'
       +'<button type="button" class="davi-camp-close-v3" data-davi-camp-close-v3 aria-label="Voltar">‹</button>'
       +'<p class="davi-camp-kicker-v3">PÃO DIÁRIO</p><h2 class="davi-camp-title-v3">Acampamento de Davi</h2>'
-      +'<p class="davi-camp-sub-v3">Um pequeno espaço para testar seus conhecimentos bíblicos com Davi.</p>'
+      +'<p class="davi-camp-sub-v3">Desafio Diário: faça 5/5 para avançar ao próximo round.</p>'
       +'<div class="davi-camp-idle-wrap-v3"><video class="davi-camp-idle-v3" muted autoplay loop playsinline preload="auto" disablepictureinpicture src="assets/davi_idle.webm"></video></div>'
-      +'<button type="button" class="davi-camp-play-v3" data-davi-camp-play-v3>Jogar Quiz Bíblico</button>'
-      +'<p class="davi-camp-note-v3">Online · requer Conta Doxa · XP do Acampamento</p></div>';
+      +'<button type="button" class="davi-camp-play-v3" data-davi-camp-play-v3>Jogar Desafio Diário</button>'
+      +'<p class="davi-camp-note-v3">Online · 1 tentativa por round/dia · 5/5 libera o próximo</p></div>';
     document.body.appendChild(overlay);syncTheme(overlay);
     const video=overlay.querySelector('video');if(video){video.defaultMuted=true;video.setAttribute('webkit-playsinline','');video.addEventListener('error',()=>{const img=document.createElement('img');img.className='davi-camp-idle-v3';img.src='assets/davi_mascote.png';img.alt='Davi';video.replaceWith(img)},{once:true})}
     return overlay;
@@ -233,7 +238,7 @@
   function closeCamp(){closeQuiz(false);const o=document.getElementById('daviCampOverlayV3');if(!o)return;o.classList.remove('on');o.setAttribute('aria-hidden','true');o.style.display='';const v=o.querySelector('video');if(v){try{v.pause()}catch(_){}}}
 
   function quizShell(){return document.querySelector('[data-davi-quiz-shell-v3]')}
-  function hideCampForQuiz(){const c=document.getElementById('daviCampOverlayV3');if(c){returnToCamp=c.classList.contains('on');c.classList.remove('on');c.setAttribute('aria-hidden','true');c.style.display='none'}}
+  function hideCampForQuiz(){const c=document.getElementById('daviCampOverlayV3');if(c){returnToCamp=returnToCamp||c.classList.contains('on');c.classList.remove('on');c.setAttribute('aria-hidden','true');c.style.display='none'}}
   function restoreCampAfterQuiz(){const c=document.getElementById('daviCampOverlayV3');if(c){c.style.display='';if(returnToCamp){syncTheme(c);c.classList.add('on');c.setAttribute('aria-hidden','false')}}returnToCamp=false}
   function closeQuiz(restore=true){const q=document.getElementById('daviQuizOverlayV3');if(q){q.classList.remove('on');q.setAttribute('aria-hidden','true')}if(restore)restoreCampAfterQuiz()}
 
@@ -243,7 +248,7 @@
     const history=[...body.querySelectorAll('h3')].find(h=>h.textContent.trim()==='Histórico');if(!history)return;
     const heading=document.createElement('h3');heading.className='davi-camp-heading-v3';heading.textContent='Davi';
     const card=document.createElement('button');card.type='button';card.className='dbs-card davi-camp-entry-v3';card.setAttribute('data-davi-camp-v3','');
-    card.innerHTML='<span class="davi-camp-mark-v3">D</span><span class="davi-camp-entry-copy-v3"><strong>Acampamento de Davi <em class="davi-camp-beta-v3">Em construção</em></strong><small>Entre para jogar o Quiz Bíblico.</small></span><i>›</i>';
+    card.innerHTML='<span class="davi-camp-mark-v3">D</span><span class="davi-camp-entry-copy-v3"><strong>Acampamento de Davi <em class="davi-camp-beta-v3">Em construção</em></strong><small>Entre para jogar o Desafio Diário.</small></span><i>›</i>';
     body.insertBefore(heading,history);body.insertBefore(card,history);
   }
   const uiObserver=new MutationObserver(()=>requestAnimationFrame(decorateBreadSheet));
@@ -260,13 +265,14 @@
   }
   function renderQuestion(){
     const shell=quizShell();if(!shell||!quiz?.questions?.length)return;const q=quiz.questions[quizIndex],sel=quizAnswers[quizIndex];
-    shell.innerHTML='<p class="davi-quiz-eyebrow-v3">'+esc(quiz.title||'Quiz Bíblico')+'</p><h3 class="davi-quiz-head-v3">Pergunta '+(quizIndex+1)+' de '+quiz.questions.length+'</h3>'
-      +'<p class="davi-quiz-meta-v3">Complete o round para ganhar +'+Number(quiz.xp_complete||100)+' XP'+(Number(quiz.xp_perfect_bonus||0)?' · perfeito: +'+Number(quiz.xp_perfect_bonus)+' XP extra':'')+'</p>'
+    const reward=Number(quiz.xp_reward||150);
+    shell.innerHTML='<p class="davi-quiz-eyebrow-v3">'+esc(quiz.title||'Desafio Diário')+'</p><h3 class="davi-quiz-head-v3">Pergunta '+(quizIndex+1)+' de '+quiz.questions.length+'</h3>'
+      +'<p class="davi-quiz-meta-v3">Faça 5/5 para concluir o round e ganhar +'+reward+' XP. Se errar, nova tentativa amanhã.</p>'
       +'<div class="davi-quiz-progress-v3"><i style="width:'+(((quizIndex+1)/quiz.questions.length)*100)+'%"></i></div><p class="davi-quiz-question-v3">'+esc(q.question)+'</p>'
       +'<div class="davi-quiz-options-v3">'+q.options.map((o,i)=>'<button type="button" class="davi-quiz-option-v3'+(sel===i?' on':'')+'" data-davi-answer-v3="'+i+'">'+esc(o)+'</button>').join('')+'</div>'
-      +'<button type="button" class="davi-quiz-next-v3" data-davi-next-v3 '+(sel==null?'disabled':'')+'>'+(quizIndex===quiz.questions.length-1?'Finalizar quiz':'Continuar')+'</button>';
+      +'<button type="button" class="davi-quiz-next-v3" data-davi-next-v3 '+(sel==null?'disabled':'')+'>'+(quizIndex===quiz.questions.length-1?'Finalizar desafio':'Continuar')+'</button>';
   }
-  function renderResult(r,existing=false){
+  function renderResult(r){
     const shell=quizShell();if(!shell)return;const perfect=Number(r.score)===Number(r.total);
     const review=Array.isArray(r.review)?r.review:[];
     const reviewHtml=(!perfect&&review.length)
@@ -279,21 +285,44 @@
           +'</div>').join('')
         +'</div>'
       :'';
-    shell.innerHTML='<div class="davi-quiz-result-v3"><div class="davi-quiz-result-head-v3"><p class="davi-quiz-eyebrow-v3">'+(existing?'ROUND CONCLUÍDO':'RESULTADO')+'</p><div class="davi-quiz-score-v3">'+Number(r.score||0)+'/'+Number(r.total||0)+'</div>'
-      +'<p class="davi-quiz-copy-v3">'+(perfect?'Perfeito. Você acertou todas.':'Round concluído. Confira abaixo as questões que você errou.')+'</p>'
-      +(existing?'':'<div class="davi-quiz-xp-v3">+'+Number(r.xp_awarded||0)+' XP</div>')+'<p class="davi-quiz-copy-v3">XP total do Acampamento: <b>'+Number(r.xp_total||0)+'</b></p></div>'
-      +reviewHtml
-      +'<button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar ao Acampamento</button></div>';
+    const message=perfect
+      ?'Perfeito. Round concluído. O próximo round foi liberado agora.'
+      :'Desafio de hoje encerrado. Para avançar é preciso fazer 5/5. Você poderá tentar este round novamente amanhã.';
+    const xpHtml=perfect
+      ?'<div class="davi-quiz-xp-v3">+'+Number(r.xp_awarded||0)+' XP</div>'
+      :'<p class="davi-quiz-copy-v3">Nenhum XP ganho nesta tentativa.</p>';
+    const actions=perfect
+      ?'<div class="davi-quiz-result-actions-v5"><button type="button" class="davi-quiz-next-v3" data-davi-next-round-v3>Jogar próximo round</button><button type="button" class="davi-quiz-next-v3 davi-quiz-secondary-v5" data-davi-quiz-back-v3>Voltar ao Acampamento</button></div>'
+      :'<div class="davi-quiz-result-actions-v5"><button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar ao Acampamento</button></div>';
+    shell.innerHTML='<div class="davi-quiz-result-v3"><div class="davi-quiz-result-head-v3"><p class="davi-quiz-eyebrow-v3">RESULTADO</p><div class="davi-quiz-score-v3">'+Number(r.score||0)+'/'+Number(r.total||0)+'</div>'
+      +'<p class="davi-quiz-copy-v3">'+message+'</p>'+xpHtml+'<p class="davi-quiz-copy-v3">XP total do Acampamento: <b>'+Number(r.xp_total||0)+'</b></p></div>'
+      +reviewHtml+actions+'</div>';
   }
   async function openQuiz(){
     const q=ensureQuiz(),shell=quizShell();if(!q||!shell)return;syncTheme(q);hideCampForQuiz();q.classList.add('on');q.setAttribute('aria-hidden','false');q.scrollTop=0;
-    shell.innerHTML='<div class="davi-quiz-center-v3"><p class="davi-quiz-eyebrow-v3">ACAMPAMENTO DE DAVI</p><h3 class="davi-quiz-head-v3">Carregando quiz…</h3></div>';
-    try{const data=await quizApi('davi_quiz_current',{});if(!data?.available){shell.innerHTML='<div class="davi-quiz-center-v3"><h3 class="davi-quiz-head-v3">Nenhum round disponível</h3><p class="davi-quiz-copy-v3">Você concluiu todos os rounds publicados até agora.</p><button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar</button></div>';return}quiz=data;quizIndex=0;quizAnswers=new Array(data.questions.length);renderQuestion()}
-    catch(e){shell.innerHTML='<div class="davi-quiz-center-v3"><div class="davi-quiz-error-v3">'+esc(e.message)+'</div><button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar</button></div>';if(e.login&&window.DoxaConta?.open)setTimeout(()=>{closeQuiz(false);closeCamp();window.DoxaConta.open()},450)}
+    shell.innerHTML='<div class="davi-quiz-center-v3"><p class="davi-quiz-eyebrow-v3">DESAFIO DIÁRIO</p><h3 class="davi-quiz-head-v3">Carregando round…</h3></div>';
+    try{
+      const data=await quizApi('davi_quiz_current',{});
+      if(!data?.available){
+        if(data?.reason==='retry_tomorrow'){
+          shell.innerHTML='<div class="davi-quiz-center-v3"><p class="davi-quiz-eyebrow-v3">DESAFIO DIÁRIO</p><h3 class="davi-quiz-head-v3">Nova tentativa amanhã</h3>'
+            +'<div class="davi-quiz-score-v3">'+Number(data.score||0)+'/'+Number(data.total||5)+'</div>'
+            +'<div class="davi-quiz-daily-lock-v5"><strong>'+esc(data.title||'Round atual')+'</strong><span>Você já fez sua tentativa deste round hoje. Como não foi 5/5, ele continua sendo o seu round atual e será liberado novamente amanhã.</span></div>'
+            +'<button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar ao Acampamento</button></div>';
+          return;
+        }
+        shell.innerHTML='<div class="davi-quiz-center-v3"><p class="davi-quiz-eyebrow-v3">DESAFIO DIÁRIO</p><h3 class="davi-quiz-head-v3">Todos os rounds concluídos</h3><p class="davi-quiz-copy-v3">Você fez 5/5 em todos os rounds publicados até agora.</p><button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar ao Acampamento</button></div>';
+        return;
+      }
+      quiz=data;quizIndex=0;quizAnswers=new Array(data.questions.length);renderQuestion();
+    }catch(e){
+      shell.innerHTML='<div class="davi-quiz-center-v3"><div class="davi-quiz-error-v3">'+esc(e.message)+'</div><button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar</button></div>';
+      if(e.login&&window.DoxaConta?.open)setTimeout(()=>{closeQuiz(false);closeCamp();window.DoxaConta.open()},450);
+    }
   }
   async function submitQuiz(){
     const shell=quizShell();if(!shell||!quiz)return;shell.innerHTML='<div class="davi-quiz-center-v3"><p class="davi-quiz-eyebrow-v3">QUIZ BÍBLICO</p><h3 class="davi-quiz-head-v3">Conferindo respostas…</h3></div>';
-    try{const r=await quizApi('davi_quiz_submit',{p_round_id:quiz.round_id,p_answers:quizAnswers});renderResult(r,!!r.already_completed)}
+    try{const r=await quizApi('davi_quiz_submit',{p_round_id:quiz.round_id,p_answers:quizAnswers});if(r?.already_attempted_today){await openQuiz();return}renderResult(r)}
     catch(e){shell.innerHTML='<div class="davi-quiz-center-v3"><div class="davi-quiz-error-v3">'+esc(e.message)+'</div><button type="button" class="davi-quiz-next-v3" data-davi-retry-v3>Tentar novamente</button><button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar</button></div>'}
   }
 
@@ -301,6 +330,7 @@
     if(event.target.closest?.('[data-davi-camp-v3]')){event.preventDefault();event.stopImmediatePropagation();openCamp();return}
     if(event.target.closest?.('[data-davi-camp-close-v3]')){event.preventDefault();event.stopImmediatePropagation();closeCamp();return}
     if(event.target.closest?.('[data-davi-camp-play-v3]')){event.preventDefault();event.stopImmediatePropagation();openQuiz();return}
+    if(event.target.closest?.('[data-davi-next-round-v3]')){event.preventDefault();event.stopImmediatePropagation();openQuiz();return}
     if(event.target.closest?.('[data-davi-quiz-back-v3]')){event.preventDefault();event.stopImmediatePropagation();closeQuiz(true);return}
     const a=event.target.closest?.('[data-davi-answer-v3]');if(a){event.preventDefault();event.stopImmediatePropagation();quizAnswers[quizIndex]=Number(a.dataset.daviAnswerV3);renderQuestion();return}
     if(event.target.closest?.('[data-davi-next-v3]')){event.preventDefault();event.stopImmediatePropagation();if(quizAnswers[quizIndex]==null)return;if(quizIndex<quiz.questions.length-1){quizIndex++;renderQuestion()}else submitQuiz();return}
