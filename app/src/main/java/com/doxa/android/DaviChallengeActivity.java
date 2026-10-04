@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 
 public final class DaviChallengeActivity extends Activity {
-    private static final String PREFS = DaviIntroActivity.PREFS;
+    private static final String PREFS = "doxa_davi";
     private static final String KEY_BREADS = "bread_total";
     private static final String KEY_REWARD_DAY = "last_reward_date";
     private static final String KEY_LAST_SCORE = "last_score";
