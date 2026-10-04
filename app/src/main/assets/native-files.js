@@ -93,11 +93,9 @@
   style.id = 'doxaDaviPhase1Style';
   style.textContent = `
     #doxaHomeBreadCard.davi-integrated .doxa-home-bread-art{overflow:visible;isolation:isolate}
-    #doxaHomeBreadCard.davi-integrated .doxa-home-bread-stage{position:absolute;z-index:3;left:-20px;bottom:-10px;width:88px!important;height:88px!important}
-    #doxaHomeBreadCard .davi-home-mascot{position:absolute;z-index:2;right:-24px;bottom:-28px;width:auto;height:205px;max-width:none;object-fit:contain;pointer-events:none;filter:drop-shadow(0 14px 18px rgba(0,0,0,.34));transform-origin:50% 100%;animation:daviHomeArrive .65s cubic-bezier(.2,.85,.25,1) both}
+    #doxaHomeBreadCard.davi-integrated .doxa-home-bread-stage{display:none!important}
+    #doxaHomeBreadCard .davi-home-mascot{position:absolute;z-index:2;right:-10px;bottom:-18px;width:auto;height:218px;max-width:none;object-fit:contain;pointer-events:none;filter:drop-shadow(0 14px 18px rgba(0,0,0,.28));transform-origin:50% 100%;animation:daviHomeArrive .65s cubic-bezier(.2,.85,.25,1) both}
     #doxaHomeBreadCard video.davi-home-mascot{background:transparent;object-fit:contain}
-    #doxaHomeBreadCard .davi-home-balance{position:absolute;z-index:5;right:0;top:2px;display:none;align-items:center;gap:5px;padding:7px 10px;border:1px solid color-mix(in srgb,var(--d30-gold,#d7a55b) 34%,transparent);border-radius:999px;background:color-mix(in srgb,var(--d30-panel,#18130f) 82%,transparent);backdrop-filter:blur(8px);color:var(--d30-gold,#e1b36e);font:700 11px/1 system-ui,sans-serif;box-shadow:0 8px 20px rgba(0,0,0,.18)}
-    #doxaHomeBreadCard .davi-home-balance.on{display:flex}
     @keyframes daviHomeArrive{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
 
     .davi-challenge-block{position:relative;overflow:hidden;min-height:116px;display:grid!important;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:13px;padding:12px 14px!important;text-align:left!important}
@@ -112,11 +110,9 @@
     @media(min-width:681px){
       #doxaHomeBreadCard.davi-integrated .doxa-home-bread-stage{left:-28px;bottom:6px;width:132px!important;height:132px!important}
       #doxaHomeBreadCard .davi-home-mascot{right:-26px;bottom:-52px;height:330px}
-      #doxaHomeBreadCard .davi-home-balance{right:8px;top:8px}
     }
     @media(max-width:370px){
-      #doxaHomeBreadCard.davi-integrated .doxa-home-bread-stage{left:-17px;width:74px!important;height:74px!important}
-      #doxaHomeBreadCard .davi-home-mascot{right:-27px;height:184px;bottom:-26px}
+      #doxaHomeBreadCard .davi-home-mascot{right:-12px;height:200px;bottom:-20px}
       .davi-challenge-block{grid-template-columns:62px minmax(0,1fr) auto;gap:9px;padding-left:10px!important;padding-right:10px!important}
       .davi-challenge-art{width:60px;height:90px}
       .davi-challenge-balance{padding:8px;font-size:11px}
@@ -128,7 +124,6 @@
   let state = {breadTotal:0,rewardedToday:false,lastScore:-1};
   function paintState(){
     document.querySelectorAll('[data-davi-balance]').forEach(el => el.textContent = String(Math.max(0,Number(state.breadTotal)||0)));
-    document.querySelectorAll('.davi-home-balance').forEach(el => el.classList.toggle('on',(Number(state.breadTotal)||0)>0));
   }
   function refreshState(){
     try { if (window.DoxaDavi) DoxaDavi.postMessage('state'); } catch (_) {}
@@ -175,12 +170,6 @@
       video.addEventListener('canplay', () => video.play().catch(()=>{}), {once:true});
       art.appendChild(video);
       video.play().catch(()=>{});
-    }
-    if (!art.querySelector('.davi-home-balance')) {
-      const pill = document.createElement('span');
-      pill.className = 'davi-home-balance';
-      pill.innerHTML = '🍞 <b data-davi-balance>0</b>';
-      art.appendChild(pill);
     }
     paintState();
   }
