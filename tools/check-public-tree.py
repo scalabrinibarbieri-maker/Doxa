@@ -3,25 +3,13 @@ from pathlib import Path
 import subprocess
 
 root = Path(__file__).resolve().parents[1]
-paths = subprocess.check_output(
-    ['git', 'ls-files', '--cached', '--others', '--exclude-standard'],
-    cwd=root,
-    text=True
-).splitlines()
-
+paths = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard'], cwd=root, text=True).splitlines()
 for name in paths:
     p = root / name
     assert p.suffix.lower() not in {'.apk', '.aab', '.jks'}, name
     assert p.suffix.lower() != '.keystore' or name == 'config/debug.keystore', name
     assert 'interlinear/genesis/' not in name and 'interlinear/exodus/' not in name, name
-
-    # Davi Fase 1: a intro é um asset oficial do app e precisa manter qualidade.
-    # Mantemos o limite de 1 MB para todo o restante da árvore pública.
-    if name == 'app/src/main/res/raw/davi_intro.mp4':
-        assert p.stat().st_size < 8_000_000, name
-    else:
-        assert p.stat().st_size < 1_000_000, name
-
+    assert p.stat().st_size < 1_000_000, name
 manifest = (root / 'app/src/main/assets/v29-manifest.tsv').read_text().splitlines()
 assert len(manifest) == 90
 names = {line.split('\t')[0] for line in manifest}
