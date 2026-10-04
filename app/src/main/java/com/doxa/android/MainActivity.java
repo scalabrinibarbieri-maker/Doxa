@@ -522,15 +522,15 @@ public final class MainActivity extends Activity {
                 } catch (PackageManager.NameNotFoundException e) { return; }
                 if (remoteVersionCode <= installedVersionCode) return;
 
-                String versionLabel = tag.replaceFirst("^v", "").replaceFirst("-\\d+$", "");
                 runOnUiThread(() -> {
                     if (destroyed || importing) return;
                     new AlertDialog.Builder(this)
                             .setTitle("Nova versão do Doxa")
-                            .setMessage("A versão " + versionLabel + " já está disponível na página oficial.\n\n" +
-                                    "Toque em Atualizar agora para abrir a página e instalar por cima da versão atual. " +
-                                    "Seus grifos, notas e o Pão Diário continuam no lugar.")
-                            .setNegativeButton("Depois", null)
+                            .setMessage("A versão 50 do Doxa já está disponível.\n\n" +
+                                    "Agora você pode criar uma Conta Doxa. Com a conta, seus dados pessoais ficam vinculados ao seu perfil — incluindo grifos, notas e o progresso do Pão Diário — para que você não dependa mais apenas deste aparelho e possa recuperar tudo ao entrar novamente.\n\n" +
+                                    "Também chegou o Quiz Bíblico no Acampamento de Davi. Ele fica dentro do Pão Diário: abra o card “Acampamento de Davi” para responder às perguntas e avançar no acampamento.\n\n" +
+                                    "Atualize agora para usar os novos recursos.")
+                            .setCancelable(false)
                             .setPositiveButton("Atualizar agora", (d, w) -> openExternal(Uri.parse(OFFICIAL_SITE_URL)))
                             .show();
                 });
