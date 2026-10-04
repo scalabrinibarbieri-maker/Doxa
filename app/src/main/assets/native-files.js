@@ -77,8 +77,8 @@
 })();
 
 /* Doxa · Acampamento de Davi
-   Mantém a Home/Pão Diário originais e adiciona apenas um acesso simples ao quiz
-   dentro da tela completa do Pão Diário, logo após os planos de leitura. */
+   Mantém a Home/Pão Diário originais e adiciona o Acampamento em construção
+   após os planos de leitura. O Quiz Bíblico é online, usa Conta Doxa e XP no Supabase. */
 (() => {
   if (window.__doxaDaviCamp) return;
   if (typeof document === 'undefined'
@@ -108,7 +108,8 @@
       color:var(--d30-gold,#d7a55b);font:500 25px/1 Georgia,'Times New Roman',serif;
     }
     .davi-camp-entry-copy{min-width:0;display:grid;gap:5px;position:relative;z-index:1}
-    .davi-camp-entry-copy strong{color:var(--d30-text,#f4eadb);font:600 18px/1.12 Georgia,'Times New Roman',serif}
+    .davi-camp-entry-copy strong{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--d30-text,#f4eadb);font:600 18px/1.12 Georgia,'Times New Roman',serif}
+    .davi-camp-beta{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:999px;border:1px solid color-mix(in srgb,var(--d30-gold,#d7a55b) 30%,transparent);background:color-mix(in srgb,var(--d30-gold,#d7a55b) 9%,transparent);color:var(--d30-gold,#d7a55b);font:800 8px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}
     .davi-camp-entry-copy small{color:var(--d30-muted,#b8a891);font:400 12.5px/1.35 system-ui,sans-serif}
     .davi-camp-entry>i{position:relative;z-index:1;color:var(--d30-gold,#d7a55b);font:300 28px/1 Georgia,serif;font-style:normal}
     .davi-camp-entry:active{transform:scale(.993)}
@@ -148,6 +149,26 @@
     }
     .davi-camp-play:active{transform:scale(.985)}
     .davi-camp-note{margin:12px 0 0;color:#806f5d;font:500 11px/1.3 system-ui,sans-serif;text-align:center}
+    .davi-quiz-view{position:absolute;inset:0;z-index:5;display:none;overflow:auto;padding:72px 20px 34px;background:linear-gradient(180deg,#15100c,#0c0907 72%);color:#f4eadb}
+    .davi-quiz-view.on{display:block}
+    .davi-quiz-back{position:absolute;top:20px;left:18px;width:44px;height:44px;border:1px solid rgba(217,165,91,.22);border-radius:15px;background:rgba(255,255,255,.035);color:#ead8bc;font:300 30px/38px Georgia,serif}
+    .davi-quiz-shell{width:min(100%,430px);margin:0 auto}
+    .davi-quiz-eyebrow{margin:0 0 7px;color:#d9a55b;font:800 10px/1 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+    .davi-quiz-head{margin:0;color:#f4eadb;font:600 27px/1.08 Georgia,'Times New Roman',serif}
+    .davi-quiz-meta{margin:8px 0 22px;color:#96836e;font:500 12px/1.4 system-ui,sans-serif}
+    .davi-quiz-progress{height:5px;margin:0 0 22px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.07)}
+    .davi-quiz-progress>i{display:block;height:100%;width:0;border-radius:99px;background:#d9a55b;transition:width .22s ease}
+    .davi-quiz-question{margin:0 0 18px;color:#f4eadb;font:500 23px/1.18 Georgia,'Times New Roman',serif}
+    .davi-quiz-options{display:grid;gap:10px}
+    .davi-quiz-option{width:100%;min-height:54px;padding:12px 15px;border:1px solid rgba(217,165,91,.18);border-radius:16px;background:#19130f;color:#e9dcc8;text-align:left;font:600 14px/1.25 system-ui,sans-serif}
+    .davi-quiz-option.on{border-color:#d9a55b;background:rgba(217,165,91,.12);box-shadow:0 0 0 1px rgba(217,165,91,.12)}
+    .davi-quiz-next{width:100%;height:56px;margin-top:18px;border:0;border-radius:17px;background:linear-gradient(180deg,#e2b46f,#c98d3f);color:#2b1c0e;font:800 15px/1 system-ui,sans-serif}
+    .davi-quiz-next:disabled{opacity:.35}
+    .davi-quiz-center{min-height:66vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    .davi-quiz-score{font:600 64px/.95 Georgia,'Times New Roman',serif;color:#f4eadb}
+    .davi-quiz-xp{margin-top:18px;padding:14px 18px;border:1px solid rgba(217,165,91,.24);border-radius:18px;background:rgba(217,165,91,.08);color:#e4b774;font:800 18px/1 system-ui,sans-serif}
+    .davi-quiz-copy{max-width:330px;margin:12px auto 0;color:#a9957c;font:400 13px/1.45 system-ui,sans-serif}
+    .davi-quiz-error{padding:16px;border:1px solid rgba(217,165,91,.18);border-radius:16px;background:#19130f;color:#c6b49d;font:500 13px/1.45 system-ui,sans-serif}
     @media(max-height:660px){
       .davi-camp-panel{padding-top:62px}.davi-camp-idle-wrap{height:330px;margin-top:5px}.davi-camp-title{font-size:27px}
     }
@@ -168,7 +189,8 @@
       +'<p class="davi-camp-sub">Um pequeno espaço para testar seus conhecimentos bíblicos com Davi.</p>'
       +'<div class="davi-camp-idle-wrap"><video class="davi-camp-idle" muted autoplay loop playsinline preload="auto" disablepictureinpicture src="assets/davi_idle.webm"></video></div>'
       +'<button type="button" class="davi-camp-play" data-davi-camp-play>Jogar Quiz Bíblico</button>'
-      +'<p class="davi-camp-note">5 perguntas · recompensa diária</p>'
+      +'<p class="davi-camp-note">Online · requer Conta Doxa · XP do Acampamento</p>'
+      +'<section class="davi-quiz-view" data-davi-quiz-view aria-hidden="true"><button type="button" class="davi-quiz-back" data-davi-quiz-back aria-label="Voltar">‹</button><div class="davi-quiz-shell" data-davi-quiz-shell></div></section>'
       +'</div>';
     document.body.appendChild(overlay);
     const video = overlay.querySelector('video');
@@ -192,6 +214,7 @@
     if (video) video.play().catch(()=>{});
   }
   function closeCamp(){
+    closeQuiz();
     const overlay = document.getElementById('daviCampOverlay');
     if (!overlay) return;
     overlay.classList.remove('on');
@@ -215,7 +238,7 @@
     card.className = 'dbs-card davi-camp-entry';
     card.setAttribute('data-davi-camp','');
     card.innerHTML = '<span class="davi-camp-mark">D</span>'
-      +'<span class="davi-camp-entry-copy"><strong>Acampamento de Davi</strong><small>Entre para jogar o Quiz Bíblico.</small></span>'
+      +'<span class="davi-camp-entry-copy"><strong>Acampamento de Davi <em class="davi-camp-beta">Em construção</em></strong><small>Entre para jogar o Quiz Bíblico.</small></span>'
       +'<i>›</i>';
 
     body.insertBefore(heading, history);
@@ -226,6 +249,68 @@
   const observer = new MutationObserver(() => requestAnimationFrame(decorate));
   observer.observe(document.documentElement, {subtree:true, childList:true});
 
+  const SB='https://fxruwzaaiecqsxkuxmsp.supabase.co';
+  const APIKEY='sb_publishable_aDmA8htcNCaC0IfGLpT5Hg_lx7IOceG';
+  let quiz=null,quizIndex=0,quizAnswers=[];
+
+  async function quizApi(name,body={}){
+    if(!navigator.onLine)throw new Error('O Quiz Bíblico funciona somente online.');
+    if(!window.DoxaConta?.user){const e=new Error('Entre na sua Conta Doxa para jogar e receber XP.');e.login=true;throw e}
+    const token=await window.DoxaConta.token();
+    if(!token){const e=new Error('Sua sessão expirou. Entre novamente na Conta Doxa.');e.login=true;throw e}
+    let r;
+    try{r=await fetch(SB+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:APIKEY,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store'})}
+    catch(e){throw new Error('Sem conexão com a internet.')}
+    const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
+    if(!r.ok){const raw=(j&&(j.message||j.details||j.hint))||'';throw new Error(raw.includes('authentication')?'Entre novamente na sua Conta Doxa.':'Não foi possível carregar o quiz agora.')}
+    return j;
+  }
+  function quizView(){return document.querySelector('[data-davi-quiz-view]')}
+  function quizShell(){return document.querySelector('[data-davi-quiz-shell]')}
+  function closeQuiz(){const v=quizView();if(v){v.classList.remove('on');v.setAttribute('aria-hidden','true')}}
+  function renderQuizQuestion(){
+    const shell=quizShell();if(!shell||!quiz?.questions?.length)return;
+    const q=quiz.questions[quizIndex],sel=quizAnswers[quizIndex];
+    shell.innerHTML='<p class="davi-quiz-eyebrow">'+escapeHtml(quiz.title||'Quiz Bíblico')+'</p>'
+      +'<h3 class="davi-quiz-head">Pergunta '+(quizIndex+1)+' de '+quiz.questions.length+'</h3>'
+      +'<p class="davi-quiz-meta">Complete o round para ganhar +'+Number(quiz.xp_complete||100)+' XP'+(Number(quiz.xp_perfect_bonus||0)?' · perfeito: +'+Number(quiz.xp_perfect_bonus)+' XP extra':'')+'</p>'
+      +'<div class="davi-quiz-progress"><i style="width:'+(((quizIndex+1)/quiz.questions.length)*100)+'%"></i></div>'
+      +'<p class="davi-quiz-question">'+escapeHtml(q.question)+'</p>'
+      +'<div class="davi-quiz-options">'+q.options.map((o,i)=>'<button type="button" class="davi-quiz-option'+(sel===i?' on':'')+'" data-davi-answer="'+i+'">'+escapeHtml(o)+'</button>').join('')+'</div>'
+      +'<button type="button" class="davi-quiz-next" data-davi-next '+(sel==null?'disabled':'')+'>'+(quizIndex===quiz.questions.length-1?'Finalizar quiz':'Continuar')+'</button>';
+  }
+  const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function renderQuizResult(r,existing=false){
+    const shell=quizShell();if(!shell)return;
+    const perfect=Number(r.score)===Number(r.total);
+    shell.innerHTML='<div class="davi-quiz-center"><p class="davi-quiz-eyebrow">'+(existing?'ROUND CONCLUÍDO':'RESULTADO')+'</p>'
+      +'<div class="davi-quiz-score">'+Number(r.score||0)+'/'+Number(r.total||0)+'</div>'
+      +'<p class="davi-quiz-copy">'+(perfect?'Perfeito. Você acertou todas.':'Round concluído. O próximo poderá ser liberado diretamente pelo Acampamento.')+'</p>'
+      +(existing?'':'<div class="davi-quiz-xp">+'+Number(r.xp_awarded||0)+' XP</div>')
+      +'<p class="davi-quiz-copy">XP total do Acampamento: <b>'+Number(r.xp_total||0)+'</b></p>'
+      +'<button type="button" class="davi-quiz-next" data-davi-quiz-back>Voltar ao Acampamento</button></div>';
+  }
+  async function openQuiz(){
+    const v=quizView(),shell=quizShell();if(!v||!shell)return;
+    v.classList.add('on');v.setAttribute('aria-hidden','false');
+    shell.innerHTML='<div class="davi-quiz-center"><p class="davi-quiz-eyebrow">ACAMPAMENTO DE DAVI</p><h3 class="davi-quiz-head">Carregando quiz…</h3></div>';
+    try{
+      const data=await quizApi('davi_quiz_current',{});
+      if(!data?.available){shell.innerHTML='<div class="davi-quiz-center"><h3 class="davi-quiz-head">Nenhum round disponível</h3><p class="davi-quiz-copy">Davi ainda está preparando o próximo Quiz Bíblico.</p><button type="button" class="davi-quiz-next" data-davi-quiz-back>Voltar</button></div>';return}
+      if(data.already_completed){renderQuizResult(data,true);return}
+      quiz=data;quizIndex=0;quizAnswers=new Array(data.questions.length);renderQuizQuestion();
+    }catch(e){
+      shell.innerHTML='<div class="davi-quiz-center"><div class="davi-quiz-error">'+escapeHtml(e.message)+'</div><button type="button" class="davi-quiz-next" data-davi-quiz-back>Voltar</button></div>';
+      if(e.login&&window.DoxaConta?.open)setTimeout(()=>{closeQuiz();closeCamp();window.DoxaConta.open()},500);
+    }
+  }
+  async function submitQuiz(){
+    const shell=quizShell();if(!shell||!quiz)return;
+    shell.innerHTML='<div class="davi-quiz-center"><p class="davi-quiz-eyebrow">QUIZ BÍBLICO</p><h3 class="davi-quiz-head">Conferindo respostas…</h3></div>';
+    try{const r=await quizApi('davi_quiz_submit',{p_round_id:quiz.round_id,p_answers:quizAnswers});renderQuizResult(r,!!r.already_completed)}
+    catch(e){shell.innerHTML='<div class="davi-quiz-center"><div class="davi-quiz-error">'+escapeHtml(e.message)+'</div><button type="button" class="davi-quiz-next" data-davi-retry> tentar novamente </button><button type="button" class="davi-quiz-next" data-davi-quiz-back>Voltar</button></div>'}
+  }
+
   document.addEventListener('click', event => {
     if (event.target.closest?.('[data-davi-camp]')) {
       event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation?.();
@@ -234,15 +319,12 @@
     if (event.target.closest?.('[data-davi-camp-close]')) {
       event.preventDefault(); closeCamp(); return;
     }
-    if (event.target.closest?.('[data-davi-camp-play]')) {
-      event.preventDefault();
-      try {
-        if (!window.DoxaDavi) throw new Error('bridge');
-        DoxaDavi.postMessage('openQuiz');
-      } catch (_) {
-        alert('Atualize o aplicativo para abrir o Quiz Bíblico.');
-      }
-    }
+    if (event.target.closest?.('[data-davi-camp-play]')) {event.preventDefault();openQuiz();return}
+    if (event.target.closest?.('[data-davi-quiz-back]')) {event.preventDefault();closeQuiz();return}
+    const a=event.target.closest?.('[data-davi-answer]');
+    if(a){event.preventDefault();quizAnswers[quizIndex]=Number(a.dataset.daviAnswer);renderQuizQuestion();return}
+    if(event.target.closest?.('[data-davi-next]')){event.preventDefault();if(quizAnswers[quizIndex]==null)return;if(quizIndex<quiz.questions.length-1){quizIndex++;renderQuizQuestion()}else submitQuiz();return}
+    if(event.target.closest?.('[data-davi-retry]')){event.preventDefault();submitQuiz();return}
   }, true);
 
   document.addEventListener('keydown', event => {
