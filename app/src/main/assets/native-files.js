@@ -76,152 +76,178 @@
   }, true);
 })();
 
-/* Doxa · Davi Fase 1
-   Integra o mascote ao Pão Diário e usa a ponte Android DoxaDavi para abrir o quiz nativo. */
+/* Doxa · Acampamento de Davi
+   Mantém a Home/Pão Diário originais e adiciona apenas um acesso simples ao quiz
+   dentro da tela completa do Pão Diário, logo após os planos de leitura. */
 (() => {
-  if (window.__doxaDaviPhase1) return;
-  /* O verificador do CI executa este arquivo em um sandbox Node sem DOM completo.
-     A integração do Davi só deve iniciar dentro de um WebView/navegador real. */
+  if (window.__doxaDaviCamp) return;
   if (typeof document === 'undefined'
       || typeof document.createElement !== 'function'
       || typeof document.querySelectorAll !== 'function'
       || typeof MutationObserver !== 'function'
       || typeof requestAnimationFrame !== 'function') return;
-  window.__doxaDaviPhase1 = true;
+  window.__doxaDaviCamp = true;
 
   const style = document.createElement('style');
-  style.id = 'doxaDaviPhase1Style';
+  style.id = 'doxaDaviCampStyle';
   style.textContent = `
-    #doxaHomeBreadCard.davi-integrated .doxa-home-bread-art{overflow:visible;isolation:isolate}
-    #doxaHomeBreadCard.davi-integrated .doxa-home-bread-stage{display:none!important}
-    #doxaHomeBreadCard .davi-home-mascot{position:absolute;z-index:2;right:-10px;bottom:-18px;width:auto;height:218px;max-width:none;object-fit:contain;pointer-events:none;filter:drop-shadow(0 14px 18px rgba(0,0,0,.28));transform-origin:50% 100%;animation:daviHomeArrive .65s cubic-bezier(.2,.85,.25,1) both}
-    #doxaHomeBreadCard video.davi-home-mascot{background:transparent;object-fit:contain}
-    @keyframes daviHomeArrive{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
-
-    .davi-challenge-block{position:relative;overflow:hidden;min-height:116px;display:grid!important;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:13px;padding:12px 14px!important;text-align:left!important}
-    .davi-challenge-art{align-self:end;width:72px;height:100px;object-fit:contain;filter:drop-shadow(0 10px 12px rgba(0,0,0,.28));margin-bottom:-13px}
-    .davi-challenge-copy{min-width:0}
-    .davi-challenge-copy strong{font:600 18px/1.15 Georgia,'Times New Roman',serif!important;color:var(--d30-text)!important}
-    .davi-challenge-copy small{margin-top:5px!important;font:400 12.5px/1.35 system-ui,sans-serif!important;color:var(--d30-muted)!important}
-    .davi-challenge-copy em{display:block;margin-top:8px;color:var(--d30-gold);font:700 10px/1 system-ui,sans-serif;letter-spacing:.06em;font-style:normal;text-transform:uppercase}
-    .davi-challenge-balance{align-self:center;white-space:nowrap;padding:9px 10px;border-radius:999px;background:color-mix(in srgb,var(--d30-gold) 10%,transparent);color:var(--d30-gold);font:700 12px/1 system-ui,sans-serif}
-    .davi-challenge-block:active{transform:scale(.992);background:color-mix(in srgb,var(--d30-gold) 10%,var(--d30-panel))}
-
-    @media(min-width:681px){
-      #doxaHomeBreadCard.davi-integrated .doxa-home-bread-stage{left:-28px;bottom:6px;width:132px!important;height:132px!important}
-      #doxaHomeBreadCard .davi-home-mascot{right:-26px;bottom:-52px;height:330px}
+    .davi-camp-entry{
+      position:relative;overflow:hidden;width:100%;min-height:96px;
+      display:grid!important;grid-template-columns:52px minmax(0,1fr) auto;
+      align-items:center;gap:14px;padding:15px 16px!important;text-align:left!important;
     }
-    @media(max-width:370px){
-      #doxaHomeBreadCard .davi-home-mascot{right:-12px;height:200px;bottom:-20px}
-      .davi-challenge-block{grid-template-columns:62px minmax(0,1fr) auto;gap:9px;padding-left:10px!important;padding-right:10px!important}
-      .davi-challenge-art{width:60px;height:90px}
-      .davi-challenge-balance{padding:8px;font-size:11px}
+    .davi-camp-entry::after{
+      content:'';position:absolute;right:-34px;top:-42px;width:130px;height:130px;border-radius:50%;
+      background:radial-gradient(circle,color-mix(in srgb,var(--d30-gold,#d7a55b) 14%,transparent),transparent 67%);
+      pointer-events:none;
     }
-    @media(prefers-reduced-motion:reduce){#doxaHomeBreadCard .davi-home-mascot{animation:none!important}}
+    .davi-camp-mark{
+      width:52px;height:52px;border-radius:17px;display:grid;place-items:center;
+      border:1px solid color-mix(in srgb,var(--d30-gold,#d7a55b) 26%,transparent);
+      background:color-mix(in srgb,var(--d30-gold,#d7a55b) 8%,var(--d30-panel,#18130f));
+      color:var(--d30-gold,#d7a55b);font:500 25px/1 Georgia,'Times New Roman',serif;
+    }
+    .davi-camp-entry-copy{min-width:0;display:grid;gap:5px;position:relative;z-index:1}
+    .davi-camp-entry-copy strong{color:var(--d30-text,#f4eadb);font:600 18px/1.12 Georgia,'Times New Roman',serif}
+    .davi-camp-entry-copy small{color:var(--d30-muted,#b8a891);font:400 12.5px/1.35 system-ui,sans-serif}
+    .davi-camp-entry>i{position:relative;z-index:1;color:var(--d30-gold,#d7a55b);font:300 28px/1 Georgia,serif;font-style:normal}
+    .davi-camp-entry:active{transform:scale(.993)}
+
+    .davi-camp-overlay{
+      position:fixed;inset:0;z-index:2147483000;display:none;align-items:stretch;justify-content:center;
+      background:rgba(4,3,2,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    }
+    .davi-camp-overlay.on{display:flex}
+    .davi-camp-panel{
+      position:relative;width:min(100%,560px);min-height:100%;overflow:hidden;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:72px 24px 38px;color:var(--d30-text,#f4eadb);
+      background:
+        radial-gradient(circle at 50% 38%,rgba(216,165,91,.11),transparent 32%),
+        linear-gradient(180deg,#15100c 0%,#0c0907 72%);
+    }
+    .davi-camp-close{
+      position:absolute;top:20px;left:18px;width:44px;height:44px;border:1px solid rgba(217,165,91,.22);
+      border-radius:15px;background:rgba(255,255,255,.035);color:#ead8bc;font:300 30px/38px Georgia,serif;
+    }
+    .davi-camp-kicker{margin:0 0 5px;color:#d9a55b;font:700 11px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase}
+    .davi-camp-title{margin:0;color:#f4eadb;font:600 30px/1.05 Georgia,'Times New Roman',serif;text-align:center}
+    .davi-camp-sub{max-width:330px;margin:8px 0 0;color:#b7a58d;font:400 13px/1.45 system-ui,sans-serif;text-align:center}
+    .davi-camp-idle-wrap{
+      position:relative;width:min(82vw,320px);height:min(54vh,430px);margin:12px 0 2px;
+      display:grid;place-items:end center;
+    }
+    .davi-camp-idle{
+      width:100%;height:100%;object-fit:contain;object-position:center bottom;background:transparent;
+      filter:drop-shadow(0 22px 24px rgba(0,0,0,.34));
+    }
+    .davi-camp-play{
+      width:min(100%,360px);height:58px;border:0;border-radius:18px;padding:0 22px;
+      background:linear-gradient(180deg,#e2b46f,#c98d3f);color:#2b1c0e;
+      font:700 16px/1 system-ui,sans-serif;box-shadow:0 14px 34px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.24);
+    }
+    .davi-camp-play:active{transform:scale(.985)}
+    .davi-camp-note{margin:12px 0 0;color:#806f5d;font:500 11px/1.3 system-ui,sans-serif;text-align:center}
+    @media(max-height:660px){
+      .davi-camp-panel{padding-top:62px}.davi-camp-idle-wrap{height:330px;margin-top:5px}.davi-camp-title{font-size:27px}
+    }
   `;
   document.head.appendChild(style);
 
-  let state = {breadTotal:0,rewardedToday:false,lastScore:-1};
-  function paintState(){
-    document.querySelectorAll('[data-davi-balance]').forEach(el => el.textContent = String(Math.max(0,Number(state.breadTotal)||0)));
-  }
-  function refreshState(){
-    try { if (window.DoxaDavi) DoxaDavi.postMessage('state'); } catch (_) {}
-  }
-  if (window.DoxaDavi) {
-    DoxaDavi.onmessage = event => {
-      try {
-        const parsed = JSON.parse(String(event.data||'{}'));
-        if (parsed && typeof parsed === 'object') state = Object.assign(state, parsed);
-        paintState();
-      } catch (_) {}
-    };
+  function ensureOverlay(){
+    let overlay = document.getElementById('daviCampOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('section');
+    overlay.id = 'daviCampOverlay';
+    overlay.className = 'davi-camp-overlay';
+    overlay.setAttribute('aria-hidden','true');
+    overlay.innerHTML = '<div class="davi-camp-panel" role="dialog" aria-modal="true" aria-label="Acampamento de Davi">'
+      +'<button type="button" class="davi-camp-close" data-davi-camp-close aria-label="Voltar">‹</button>'
+      +'<p class="davi-camp-kicker">PÃO DIÁRIO</p>'
+      +'<h2 class="davi-camp-title">Acampamento de Davi</h2>'
+      +'<p class="davi-camp-sub">Um pequeno espaço para testar seus conhecimentos bíblicos com Davi.</p>'
+      +'<div class="davi-camp-idle-wrap"><video class="davi-camp-idle" muted autoplay loop playsinline preload="auto" disablepictureinpicture src="assets/davi_idle.webm"></video></div>'
+      +'<button type="button" class="davi-camp-play" data-davi-camp-play>Jogar Quiz Bíblico</button>'
+      +'<p class="davi-camp-note">5 perguntas · recompensa diária</p>'
+      +'</div>';
+    document.body.appendChild(overlay);
+    const video = overlay.querySelector('video');
+    video.defaultMuted = true;
+    video.setAttribute('webkit-playsinline','');
+    video.addEventListener('error', () => {
+      const img = document.createElement('img');
+      img.className = 'davi-camp-idle';
+      img.src = 'assets/davi_mascote.png';
+      img.alt = 'Davi';
+      video.replaceWith(img);
+    }, {once:true});
+    return overlay;
   }
 
-  function decorateHome(){
-    const card = document.getElementById('doxaHomeBreadCard');
-    const art = card?.querySelector('.doxa-home-bread-art');
-    if (!card || !art) return;
-    card.classList.add('davi-integrated');
-    if (!art.querySelector('.davi-home-mascot')) {
-      const video = document.createElement('video');
-      video.className = 'davi-home-mascot davi-home-idle';
-      video.src = 'assets/davi_idle.webm';
-      video.autoplay = true;
-      video.loop = true;
-      video.muted = true;
-      video.defaultMuted = true;
-      video.playsInline = true;
-      video.preload = 'auto';
-      video.setAttribute('muted', '');
-      video.setAttribute('playsinline', '');
-      video.setAttribute('webkit-playsinline', '');
-      video.setAttribute('disablepictureinpicture', '');
-      video.setAttribute('aria-label', 'Davi');
-      const fallback = () => {
-        if (!video.isConnected) return;
-        const img = document.createElement('img');
-        img.className = 'davi-home-mascot';
-        img.src = 'assets/davi_mascote.png';
-        img.alt = 'Davi';
-        video.replaceWith(img);
-      };
-      video.addEventListener('error', fallback, {once:true});
-      video.addEventListener('canplay', () => video.play().catch(()=>{}), {once:true});
-      art.appendChild(video);
-      video.play().catch(()=>{});
-    }
-    paintState();
+  function openCamp(){
+    const overlay = ensureOverlay();
+    overlay.classList.add('on');
+    overlay.setAttribute('aria-hidden','false');
+    const video = overlay.querySelector('video');
+    if (video) video.play().catch(()=>{});
+  }
+  function closeCamp(){
+    const overlay = document.getElementById('daviCampOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('on');
+    overlay.setAttribute('aria-hidden','true');
+    const video = overlay.querySelector('video');
+    if (video) { try { video.pause(); } catch (_) {} }
   }
 
   function decorateBreadSheet(){
     const body = document.getElementById('dbsBody');
-    if (!body || body.querySelector('.davi-challenge-block')) return;
+    if (!body || body.querySelector('[data-davi-camp]')) return;
     const history = [...body.querySelectorAll('h3')].find(h => h.textContent.trim() === 'Histórico');
     if (!history) return;
 
     const heading = document.createElement('h3');
-    heading.className = 'davi-challenge-heading';
-    heading.textContent = 'Desafios';
+    heading.className = 'davi-camp-heading';
+    heading.textContent = 'Davi';
 
     const card = document.createElement('button');
     card.type = 'button';
-    card.className = 'dbs-card davi-challenge-block';
-    card.setAttribute('data-davi-challenge','');
-    card.innerHTML = '<img class="davi-challenge-art" src="assets/davi_mascote.png" alt="">'
-      +'<span class="davi-challenge-copy"><strong>Desafios do Davi</strong><small>Teste seus conhecimentos e ganhe pães.</small><em>Quiz do dia · +1 pão · bônus 5/5</em></span>'
-      +'<span class="davi-challenge-balance">🍞 <b data-davi-balance>0</b></span>';
+    card.className = 'dbs-card davi-camp-entry';
+    card.setAttribute('data-davi-camp','');
+    card.innerHTML = '<span class="davi-camp-mark">D</span>'
+      +'<span class="davi-camp-entry-copy"><strong>Acampamento de Davi</strong><small>Entre para jogar o Quiz Bíblico.</small></span>'
+      +'<i>›</i>';
 
     body.insertBefore(heading, history);
     body.insertBefore(card, history);
-    paintState();
   }
 
-  function decorate(){ decorateHome(); decorateBreadSheet(); }
+  function decorate(){ decorateBreadSheet(); }
   const observer = new MutationObserver(() => requestAnimationFrame(decorate));
   observer.observe(document.documentElement, {subtree:true, childList:true});
 
   document.addEventListener('click', event => {
-    const target = event.target.closest?.('[data-davi-challenge]');
-    if (!target) return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation?.();
-    try {
-      if (!window.DoxaDavi) throw new Error('bridge');
-      DoxaDavi.postMessage('openQuiz');
-    } catch (_) {
-      alert('Atualize o aplicativo para abrir os Desafios do Davi.');
+    if (event.target.closest?.('[data-davi-camp]')) {
+      event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation?.();
+      openCamp(); return;
+    }
+    if (event.target.closest?.('[data-davi-camp-close]')) {
+      event.preventDefault(); closeCamp(); return;
+    }
+    if (event.target.closest?.('[data-davi-camp-play]')) {
+      event.preventDefault();
+      try {
+        if (!window.DoxaDavi) throw new Error('bridge');
+        DoxaDavi.postMessage('openQuiz');
+      } catch (_) {
+        alert('Atualize o aplicativo para abrir o Quiz Bíblico.');
+      }
     }
   }, true);
 
-  function resumeIdle(){
-    const video = document.querySelector('video.davi-home-idle');
-    if (video && !document.hidden && video.paused) video.play().catch(()=>{});
-  }
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshState();resumeIdle()}});
-  window.addEventListener('focus', ()=>{refreshState();resumeIdle()});
-  setInterval(()=>{if(!document.hidden)refreshState()},5000);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.getElementById('daviCampOverlay')?.classList.contains('on')) closeCamp();
+  });
+
   decorate();
-  refreshState();
 })();
