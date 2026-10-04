@@ -373,6 +373,19 @@ public final class MainActivity extends Activity {
                         String data = msg.getData();
                         if (data != null && data.length() <= 400000) io.execute(() -> receiveExport(data, reply));
                     });
+            // Davi Fase 1: ponte estreita entre o Pão Diário (WebView) e o quiz Android nativo.
+            WebViewCompat.addWebMessageListener(web, "DoxaDavi", Collections.singleton(ORIGIN),
+                    (view, msg, origin, mainFrame, reply) -> {
+                        if (!mainFrame || !ORIGIN.equals(origin.toString())) return;
+                        String data = msg.getData();
+                        if ("openQuiz".equals(data)) {
+                            runOnUiThread(() -> {
+                                if (!destroyed) startActivity(new Intent(MainActivity.this, DaviChallengeActivity.class));
+                            });
+                        } else if ("state".equals(data)) {
+                            reply.postMessage(DaviChallengeActivity.stateJson(MainActivity.this));
+                        }
+                    });
         }
         web.setWebViewClient(new WebViewClient() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
