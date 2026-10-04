@@ -151,6 +151,19 @@
     .davi-quiz-xp-v3{margin-top:18px;padding:14px 18px;border:1px solid color-mix(in srgb,var(--dv-accent) 24%,transparent);border-radius:18px;background:color-mix(in srgb,var(--dv-accent) 10%,var(--dv-panel));color:var(--dv-accent2);font:800 18px/1 system-ui,sans-serif}
     .davi-quiz-copy-v3{max-width:330px;margin:12px auto 0;color:var(--dv-muted);font:400 13px/1.45 system-ui,sans-serif}
     .davi-quiz-error-v3{padding:16px;border:1px solid color-mix(in srgb,var(--dv-accent) 18%,transparent);border-radius:16px;background:color-mix(in srgb,var(--dv-panel) 90%,var(--dv-bg));color:var(--dv-muted);font:500 13px/1.45 system-ui,sans-serif}
+    .davi-quiz-result-v3{padding:8px 0 22px}
+    .davi-quiz-result-head-v3{text-align:center;padding:18px 0 6px}
+    .davi-quiz-review-v3{margin-top:28px;text-align:left}
+    .davi-quiz-review-title-v3{margin:0 0 12px;color:var(--dv-text);font:650 18px/1.2 Georgia,'Times New Roman',serif}
+    .davi-quiz-review-sub-v3{margin:-5px 0 14px;color:var(--dv-muted);font:500 12px/1.4 system-ui,sans-serif}
+    .davi-quiz-miss-v3{margin:0 0 12px;padding:15px;border:1px solid color-mix(in srgb,var(--dv-accent) 16%,transparent);border-radius:17px;background:color-mix(in srgb,var(--dv-panel) 91%,var(--dv-bg))}
+    .davi-quiz-miss-n-v3{display:block;margin-bottom:7px;color:var(--dv-accent);font:800 9.5px/1 system-ui,sans-serif;letter-spacing:.11em;text-transform:uppercase}
+    .davi-quiz-miss-q-v3{margin:0 0 12px;color:var(--dv-text);font:600 15px/1.35 Georgia,'Times New Roman',serif}
+    .davi-quiz-answer-v3{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px;align-items:start;margin-top:7px;font:600 12.5px/1.35 system-ui,sans-serif}
+    .davi-quiz-answer-v3>span:first-child{color:var(--dv-muted)}
+    .davi-quiz-answer-v3.wrong>span:last-child{color:color-mix(in srgb,#c96a4a 72%,var(--dv-text))}
+    .davi-quiz-answer-v3.correct>span:last-child{color:color-mix(in srgb,#3fae8c 72%,var(--dv-text))}
+    .davi-quiz-explain-v3{margin:11px 0 0;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--dv-text) 8%,transparent);color:var(--dv-muted);font:400 11.5px/1.45 system-ui,sans-serif}
 
     @media(max-height:700px){.davi-camp-panel-v3{padding-top:66px;padding-bottom:24px}.davi-camp-idle-wrap-v3{width:min(64vw,235px);height:clamp(235px,38vh,300px);margin:14px 0 12px}.davi-camp-title-v3{font-size:27px}.davi-camp-sub-v3{margin-top:6px}.davi-camp-play-v3{height:54px}}
     @media(max-height:590px){.davi-camp-panel-v3{padding-top:60px}.davi-camp-idle-wrap-v3{height:220px;margin:10px 0}.davi-camp-kicker-v3{display:none}.davi-camp-sub-v3{font-size:12px}}
@@ -255,9 +268,21 @@
   }
   function renderResult(r,existing=false){
     const shell=quizShell();if(!shell)return;const perfect=Number(r.score)===Number(r.total);
-    shell.innerHTML='<div class="davi-quiz-center-v3"><p class="davi-quiz-eyebrow-v3">'+(existing?'ROUND CONCLUÍDO':'RESULTADO')+'</p><div class="davi-quiz-score-v3">'+Number(r.score||0)+'/'+Number(r.total||0)+'</div>'
-      +'<p class="davi-quiz-copy-v3">'+(perfect?'Perfeito. Você acertou todas.':'Round concluído. Seu próximo round fica disponível na sequência do Acampamento.')+'</p>'
-      +(existing?'':'<div class="davi-quiz-xp-v3">+'+Number(r.xp_awarded||0)+' XP</div>')+'<p class="davi-quiz-copy-v3">XP total do Acampamento: <b>'+Number(r.xp_total||0)+'</b></p>'
+    const review=Array.isArray(r.review)?r.review:[];
+    const reviewHtml=(!perfect&&review.length)
+      ?'<div class="davi-quiz-review-v3"><h4 class="davi-quiz-review-title-v3">Revisão dos erros</h4><p class="davi-quiz-review-sub-v3">Veja o que você marcou e qual era a resposta correta.</p>'
+        +review.map(item=>'<div class="davi-quiz-miss-v3"><span class="davi-quiz-miss-n-v3">PERGUNTA '+Number(item.order||0)+'</span>'
+          +'<p class="davi-quiz-miss-q-v3">'+esc(item.question)+'</p>'
+          +'<div class="davi-quiz-answer-v3 wrong"><span>Sua resposta</span><span>'+esc(item.selected)+'</span></div>'
+          +'<div class="davi-quiz-answer-v3 correct"><span>Correta</span><span>'+esc(item.correct)+'</span></div>'
+          +(item.explanation?'<p class="davi-quiz-explain-v3">'+esc(item.explanation)+'</p>':'')
+          +'</div>').join('')
+        +'</div>'
+      :'';
+    shell.innerHTML='<div class="davi-quiz-result-v3"><div class="davi-quiz-result-head-v3"><p class="davi-quiz-eyebrow-v3">'+(existing?'ROUND CONCLUÍDO':'RESULTADO')+'</p><div class="davi-quiz-score-v3">'+Number(r.score||0)+'/'+Number(r.total||0)+'</div>'
+      +'<p class="davi-quiz-copy-v3">'+(perfect?'Perfeito. Você acertou todas.':'Round concluído. Confira abaixo as questões que você errou.')+'</p>'
+      +(existing?'':'<div class="davi-quiz-xp-v3">+'+Number(r.xp_awarded||0)+' XP</div>')+'<p class="davi-quiz-copy-v3">XP total do Acampamento: <b>'+Number(r.xp_total||0)+'</b></p></div>'
+      +reviewHtml
       +'<button type="button" class="davi-quiz-next-v3" data-davi-quiz-back-v3>Voltar ao Acampamento</button></div>';
   }
   async function openQuiz(){
