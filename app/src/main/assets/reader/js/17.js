@@ -363,3 +363,205 @@
   setTimeout(schedule,400);
   setTimeout(schedule,1400);
 })();
+
+/* Doxa 62 · Rosé + Lavanda + textura Mármore
+   Extensão não destrutiva do sistema 30.5/30.6: mantém os cinco temas atuais,
+   Pergaminho/Linho, as mesmas chaves de persistência e a mesma lógica tema + textura. */
+(()=>{
+  'use strict';
+
+  const THEME_KEY='doxa:30.5:theme';
+  const TEXTURE_KEY='doxa:30.6:texture';
+  const EXTRA_THEMES={
+    rose:{bg:'#F1DDD9',bg2:'#E7CBC5',panel:'#F8EAE6',text:'#412D31',muted:'#7B6264',gold:'#B77967',gold2:'#D39A87'},
+    lavender:{bg:'#E5DFEA',bg2:'#D6CDDD',panel:'#F0EBF3',text:'#332D3B',muted:'#6E6577',gold:'#927492',gold2:'#B398B4'}
+  };
+  const TEXTURE_BUTTONS={
+    doxa30PaperTexture:'paper',
+    doxa30LinenTexture:'linen',
+    doxa30MarbleTexture:'marble'
+  };
+
+  const read=(key,def='')=>{try{return localStorage.getItem(key)||def}catch(e){return def}};
+  const write=(key,value)=>{try{localStorage.setItem(key,value)}catch(e){}};
+
+  function setThemeVars(t){
+    const root=document.documentElement.style;
+    root.setProperty('--d30-bg',t.bg);
+    root.setProperty('--d30-bg2',t.bg2);
+    root.setProperty('--d30-panel',t.panel);
+    root.setProperty('--d30-text',t.text);
+    root.setProperty('--d30-muted',t.muted);
+    root.setProperty('--d30-gold',t.gold);
+    root.setProperty('--d30-gold2',t.gold2);
+  }
+
+  function applyExtraTheme(name,save=true){
+    const t=EXTRA_THEMES[name];if(!t)return;
+    document.body.dataset.doxa30Theme=name;
+    setThemeVars(t);
+
+    const vals={normalPageColor:t.bg,normalTextColor:t.text,normalAccentColor:t.gold,normalChromeColor:t.panel};
+    for(const [id,value] of Object.entries(vals)){
+      const el=document.getElementById(id);if(!el)continue;
+      el.value=value;
+      el.dispatchEvent(new Event('input',{bubbles:true}));
+    }
+
+    document.querySelectorAll('.doxa30-theme-option').forEach(b=>b.classList.toggle('on',b.dataset.theme===name));
+    const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=t.bg;
+    try{window.dispatchEvent(new CustomEvent('doxa:themechange',{detail:{name,theme:t}}))}catch(e){}
+    if(save)write(THEME_KEY,name);
+  }
+
+  function setTextureButtonState(name){
+    for(const [id,val] of Object.entries(TEXTURE_BUTTONS)){
+      const btn=document.getElementById(id);if(!btn)continue;
+      const on=name===val;
+      btn.classList.toggle('on',on);
+      btn.setAttribute('aria-pressed',on?'true':'false');
+      const state=btn.querySelector('.doxa30-paper-texture-state');
+      if(state)state.textContent=on?'Ativa':'Desativada';
+    }
+  }
+
+  function applyTexture(name,save=true){
+    name=(name==='paper'||name==='linen'||name==='marble')?name:'none';
+    document.body.dataset.doxa30Texture=name;
+    document.body.classList.remove('doxa-theme-texture-cream','doxa-theme-texture-temple','doxa30-paper-on');
+
+    // Mantém o mecanismo antigo explicitamente desligado, como o sistema atual já faz.
+    const native=document.getElementById('normalTexture');
+    if(native&&native.checked){
+      native.checked=false;
+      native.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+
+    setTextureButtonState(name);
+    if(save)write(TEXTURE_KEY,name);
+  }
+
+  function installStyle(){
+    if(document.getElementById('doxa62ThemesStyle'))return;
+    const st=document.createElement('style');
+    st.id='doxa62ThemesStyle';
+    st.textContent=`
+      /* Sete paletas: no celular ficam em 4 + 3, sem apertar os nomes. */
+      #doxa30ThemeOverlay .doxa30-theme-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+      #doxa30ThemeOverlay .doxa30-swatch.rose{
+        background:radial-gradient(circle at 33% 27%,rgba(255,255,255,.52),transparent 31%),linear-gradient(145deg,#f8eae6,#e7cbc5 58%,#d6afa8)!important;
+      }
+      #doxa30ThemeOverlay .doxa30-swatch.lavender{
+        background:radial-gradient(circle at 33% 27%,rgba(255,255,255,.54),transparent 31%),linear-gradient(145deg,#f0ebf3,#d6cddd 58%,#bcaec8)!important;
+      }
+
+      /* Mármore líquido: a imagem é neutra, então recebe a cor da paleta por blend. */
+      body[data-doxa30-texture="marble"]::after{
+        content:'';position:fixed;inset:0;z-index:19;pointer-events:none;
+        background:url('assets/marble_texture.webp') center/cover no-repeat;
+        mix-blend-mode:multiply;opacity:.28;
+      }
+      body[data-doxa30-theme="night"][data-doxa30-texture="marble"]::after{
+        mix-blend-mode:screen;filter:invert(1) brightness(.58) contrast(1.35);opacity:.34;
+      }
+      body.doxa-home-open[data-doxa30-texture="marble"]::after{display:none}
+      .doxa30-marble-preview{
+        background:var(--d30-bg) url('assets/marble_texture.webp') center/cover no-repeat!important;
+        background-blend-mode:multiply!important;
+      }
+      body[data-doxa30-theme="night"] .doxa30-marble-preview{
+        background-blend-mode:screen!important;filter:brightness(.78) contrast(1.12);
+      }
+      @media(max-width:420px){
+        #doxa30ThemeOverlay .doxa30-theme-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
+  function themeButton(name,label,swatchClass){
+    const b=document.createElement('button');
+    b.className='doxa30-theme-option';b.type='button';b.dataset.theme=name;
+    b.innerHTML='<span class="doxa30-swatch '+swatchClass+'"></span><span>'+label+'</span>';
+    return b;
+  }
+
+  function ensureUi(){
+    installStyle();
+    const overlay=document.getElementById('doxa30ThemeOverlay');
+    if(!overlay)return false;
+
+    const grid=overlay.querySelector('.doxa30-theme-grid');
+    if(grid){
+      if(!grid.querySelector('[data-theme="rose"]'))grid.appendChild(themeButton('rose','Rosé','rose'));
+      if(!grid.querySelector('[data-theme="lavender"]'))grid.appendChild(themeButton('lavender','Lavanda','lavender'));
+    }
+
+    const section=overlay.querySelector('.doxa30-paper-section');
+    if(section&&!document.getElementById('doxa30MarbleTexture')){
+      const b=document.createElement('button');
+      b.className='doxa30-paper-texture-toggle';b.id='doxa30MarbleTexture';b.type='button';b.setAttribute('aria-pressed','false');
+      b.innerHTML='<span class="doxa30-paper-preview doxa30-marble-preview"></span><span class="doxa30-paper-copy"><strong>Mármore</strong><small>Veios fluidos sobre qualquer paleta</small></span><span class="doxa30-paper-texture-state">Desativada</span>';
+      section.appendChild(b);
+    }
+
+    // Texto do menu principal passa a refletir que existem várias texturas.
+    const desc=document.querySelector('#doxa30OpenThemes .doxa30-more-copy small');
+    if(desc)desc.textContent='Paletas e texturas';
+
+    if(!overlay.dataset.doxa62Bound){
+      overlay.dataset.doxa62Bound='1';
+      // Captura antes dos handlers antigos apenas para as extensões de textura.
+      overlay.addEventListener('click',e=>{
+        const el=e.target instanceof Element?e.target:null;if(!el)return;
+
+        const theme=el.closest('.doxa30-theme-option[data-theme]');
+        if(theme&&EXTRA_THEMES[theme.dataset.theme]){
+          e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+          applyExtraTheme(theme.dataset.theme,true);
+          return;
+        }
+
+        const texture=el.closest('#doxa30PaperTexture,#doxa30LinenTexture,#doxa30MarbleTexture');
+        if(texture){
+          const val=TEXTURE_BUTTONS[texture.id];if(!val)return;
+          e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+          const current=document.body.dataset.doxa30Texture||'none';
+          applyTexture(current===val?'none':val,true);
+        }
+      },true);
+    }
+
+    return true;
+  }
+
+  function restoreExtras(){
+    if(!ensureUi())return;
+    const storedTheme=read(THEME_KEY,'night');
+    if(EXTRA_THEMES[storedTheme])applyExtraTheme(storedTheme,false);
+
+    const storedTexture=read(TEXTURE_KEY,'none');
+    if(storedTexture==='marble')applyTexture('marble',false);
+    else setTextureButtonState(document.body.dataset.doxa30Texture||'none');
+  }
+
+  let raf=0;
+  const schedule=()=>{
+    if(raf)return;
+    raf=requestAnimationFrame(()=>{raf=0;restoreExtras()});
+  };
+
+  const boot=()=>{
+    installStyle();schedule();
+    const obs=new MutationObserver(schedule);
+    obs.observe(document.body,{childList:true,subtree:true});
+    // O shell 30.5 reaplica Night/None em dois timeouts próprios; restauramos extras depois deles.
+    setTimeout(restoreExtras,650);
+    setTimeout(restoreExtras,1550);
+    setTimeout(restoreExtras,2300);
+  };
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+
