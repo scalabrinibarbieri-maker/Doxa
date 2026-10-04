@@ -80,6 +80,13 @@
    Integra o mascote ao Pão Diário e usa a ponte Android DoxaDavi para abrir o quiz nativo. */
 (() => {
   if (window.__doxaDaviPhase1) return;
+  /* O verificador do CI executa este arquivo em um sandbox Node sem DOM completo.
+     A integração do Davi só deve iniciar dentro de um WebView/navegador real. */
+  if (typeof document === 'undefined'
+      || typeof document.createElement !== 'function'
+      || typeof document.querySelectorAll !== 'function'
+      || typeof MutationObserver !== 'function'
+      || typeof requestAnimationFrame !== 'function') return;
   window.__doxaDaviPhase1 = true;
 
   const style = document.createElement('style');
