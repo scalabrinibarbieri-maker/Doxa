@@ -95,6 +95,7 @@
     #doxaHomeBreadCard.davi-integrated .doxa-home-bread-art{overflow:visible;isolation:isolate}
     #doxaHomeBreadCard.davi-integrated .doxa-home-bread-stage{position:absolute;z-index:3;left:-20px;bottom:-10px;width:88px!important;height:88px!important}
     #doxaHomeBreadCard .davi-home-mascot{position:absolute;z-index:2;right:-24px;bottom:-28px;width:auto;height:205px;max-width:none;object-fit:contain;pointer-events:none;filter:drop-shadow(0 14px 18px rgba(0,0,0,.34));transform-origin:50% 100%;animation:daviHomeArrive .65s cubic-bezier(.2,.85,.25,1) both}
+    #doxaHomeBreadCard video.davi-home-mascot{background:transparent;object-fit:contain}
     #doxaHomeBreadCard .davi-home-balance{position:absolute;z-index:5;right:0;top:2px;display:none;align-items:center;gap:5px;padding:7px 10px;border:1px solid color-mix(in srgb,var(--d30-gold,#d7a55b) 34%,transparent);border-radius:999px;background:color-mix(in srgb,var(--d30-panel,#18130f) 82%,transparent);backdrop-filter:blur(8px);color:var(--d30-gold,#e1b36e);font:700 11px/1 system-ui,sans-serif;box-shadow:0 8px 20px rgba(0,0,0,.18)}
     #doxaHomeBreadCard .davi-home-balance.on{display:flex}
     @keyframes daviHomeArrive{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
@@ -148,11 +149,32 @@
     if (!card || !art) return;
     card.classList.add('davi-integrated');
     if (!art.querySelector('.davi-home-mascot')) {
-      const img = document.createElement('img');
-      img.className = 'davi-home-mascot';
-      img.src = 'assets/davi_mascote.png';
-      img.alt = 'Davi';
-      art.appendChild(img);
+      const video = document.createElement('video');
+      video.className = 'davi-home-mascot davi-home-idle';
+      video.src = 'assets/davi_idle.webm';
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.preload = 'auto';
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.setAttribute('disablepictureinpicture', '');
+      video.setAttribute('aria-label', 'Davi');
+      const fallback = () => {
+        if (!video.isConnected) return;
+        const img = document.createElement('img');
+        img.className = 'davi-home-mascot';
+        img.src = 'assets/davi_mascote.png';
+        img.alt = 'Davi';
+        video.replaceWith(img);
+      };
+      video.addEventListener('error', fallback, {once:true});
+      video.addEventListener('canplay', () => video.play().catch(()=>{}), {once:true});
+      art.appendChild(video);
+      video.play().catch(()=>{});
     }
     if (!art.querySelector('.davi-home-balance')) {
       const pill = document.createElement('span');
@@ -204,8 +226,12 @@
     }
   }, true);
 
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshState()});
-  window.addEventListener('focus', refreshState);
+  function resumeIdle(){
+    const video = document.querySelector('video.davi-home-idle');
+    if (video && !document.hidden && video.paused) video.play().catch(()=>{});
+  }
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshState();resumeIdle()}});
+  window.addEventListener('focus', ()=>{refreshState();resumeIdle()});
   setInterval(()=>{if(!document.hidden)refreshState()},5000);
   decorate();
   refreshState();
