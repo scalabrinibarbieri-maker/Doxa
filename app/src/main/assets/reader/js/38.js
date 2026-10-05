@@ -7,9 +7,10 @@
   window.__doxa54ManuscriptQuotesInstalled=true;
 
   const STYLE_ID='doxa54ManuscriptQuoteStyles';
-  const ANCIENT_RE=/[\u0370-\u03ff\u1f00-\u1fff\u0590-\u05ff\u0700-\u074f]/;
+  const ANCIENT_RE=/[\u0370-\u03ff\u1f00-\u1fff\u0590-\u05ff\u0700-\u074f\u0800-\u083f]/;
   const HEBREW_RE=/[\u0590-\u05ff]/;
   const SYRIAC_RE=/[\u0700-\u074f]/;
+  const SAMARITAN_RE=/[\u0800-\u083f]/;
   const GREEK_RE=/[\u0370-\u03ff\u1f00-\u1fff]/;
   const QUOTED_RE=/^[\s“”„«»\"'‘’]+|[\s“”„«»\"'‘’]+$/g;
   const CUE_RE=/(l[eê]|traz|diz|preserva(?:m)?|traduz(?:em)?|segue(?:m)?|mant[eé]m|apresenta(?:m)?|usa(?:m)?|registra(?:m)?|conserva(?:m)?|testemunha(?:m)?|oferece(?:m)?)(?=\s|$|[:.,])/i;
@@ -115,6 +116,7 @@
     if(!t)return'';
     if(HEBREW_RE.test(t))return'original rtl he';
     if(SYRIAC_RE.test(t))return'original rtl syr';
+    if(SAMARITAN_RE.test(t))return'original rtl sam';
     if(GREEK_RE.test(t))return'original grc';
     if(/^[“«\"]/.test(t)||/[”»\"]$/.test(t))return'translation';
     if(/[→←↔]/.test(t)&&t.length<=110)return'comparison';
@@ -139,6 +141,7 @@
     el.textContent=norm(text).replace(QUOTED_RE,m=>m);
     if(kind.includes(' he'))el.lang='he';
     else if(kind.includes(' syr'))el.lang='syr';
+    else if(kind.includes(' sam'))el.lang='sam';
     else if(kind.includes(' grc'))el.lang='grc';
     if(kind.includes(' rtl'))el.dir='rtl';
     return el;
