@@ -58,7 +58,9 @@ jobs:
           open(p,'w',encoding='utf-8').write(s.replace('<head>',head,1))
           PY
           cp web/index.html web/desk.html web/manifest.webmanifest web/sw.js _site/app/
-          cp -r web/packages.js web/web-bridge.js web/icons _site/app/web/
+          cp web/packages.js web/web-bridge.js _site/app/web/
+          # a pasta dos ícones pode ter sido criada como "icons" ou "Icons" (o GitHub diferencia maiúsculas)
+          if [ -d web/icons ]; then cp -r web/icons _site/app/web/icons; elif [ -d web/Icons ]; then cp -r web/Icons _site/app/web/icons; else echo "Aviso: pasta de ícones não encontrada"; fi
           sed -i "s/__DOXA_BUILD__/${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}/" _site/app/sw.js
           cd _site/app
           find . -type f ! -name sw.js ! -name precache.json | sed 's#^\./##' | sort \
