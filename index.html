@@ -79,8 +79,18 @@
       <svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 19h14"/></svg>
       <span id="dlLabel">Baixar para Android</span>
     </a>
+    <a class="btn ghost" id="webApp" href="app/">
+      <svg viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>
+      <span>Usar no iPhone e no navegador</span>
+    </a>
     <a class="btn ghost" href="#instalar">Como instalar</a>
   </div>
+  <script>
+  /* no iPhone/iPad, o app no navegador é o caminho principal (o APK é só para Android) */
+  (function(){var ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    if(!ios)return;var w=document.getElementById('webApp'),d=document.getElementById('dl');if(!w||!d)return;
+    w.className='btn';d.className='btn ghost';d.parentNode.insertBefore(w,d);})();
+  </script>
   <p class="meta" id="meta">Carregando a versão mais recente…</p>
 </header>
 
