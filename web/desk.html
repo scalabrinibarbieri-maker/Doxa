@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doxa</title>
+<meta name="theme-color" content="#0b0805">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="web/icons/icon-192.png">
+<style>
+/* Doxa Web em telas grandes: o leitor (feito para celular) numa coluna central, como um livro aberto. */
+:root{--gold:#d9a25e;--gold2:#f1c989;--muted:#a3978a}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:radial-gradient(90% 70% at 50% 0%,#22180e 0%,#0b0805 60%,#060403 100%);color:#f3ebe0;font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+.stage{height:100%;display:grid;grid-template-columns:1fr minmax(380px,560px) 1fr;align-items:stretch}
+.side{display:flex;flex-direction:column;justify-content:center;padding:40px;gap:14px}
+.side.left{align-items:flex-end;text-align:right}.side.right{align-items:flex-start}
+.brand{display:flex;align-items:center;gap:14px}
+.brand img{width:54px;height:54px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.brand b{font:600 30px/1 Georgia,"Times New Roman",serif}
+.side p{max-width:260px;margin:0;color:var(--muted)}
+.frame{position:relative;margin:18px 0;border-radius:28px;overflow:hidden;border:1px solid rgba(217,162,94,.28);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 8px rgba(255,255,255,.02)}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0805}
+.links{display:flex;flex-direction:column;gap:9px}
+.links a,.links button{color:var(--gold2);font:600 13.5px system-ui,sans-serif;text-decoration:none;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.links a:hover,.links button:hover{text-decoration:underline}
+@media (max-width:1100px){.side{display:none}.stage{grid-template-columns:1fr minmax(380px,600px) 1fr}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="side left">
+    <div class="brand"><b>Doxa</b><img src="web/icons/icon-192.png" alt=""></div>
+    <p>A Escritura nas línguas originais, com ferramentas de estudo.</p>
+  </aside>
+  <div class="frame"><iframe src="reader.html" title="Doxa" allow="clipboard-write; web-share"></iframe></div>
+  <aside class="side right">
+    <div class="links">
+      <button type="button" id="full">Usar em tela cheia</button>
+      <a href="../" target="_top">Página do Doxa</a>
+      <a href="../" target="_top">Baixar para Android</a>
+    </div>
+    <p>Seus grifos e notas ficam neste navegador e, com a Conta Doxa, em todos os seus aparelhos.</p>
+  </aside>
+</div>
+<script>
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(()=>{});
+document.getElementById('full').onclick=()=>{try{localStorage.setItem('doxa:web:full','1')}catch(e){}location.replace('reader.html')};
+</script>
+</body>
+</html>
