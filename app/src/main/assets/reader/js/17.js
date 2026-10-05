@@ -579,3 +579,640 @@
 body[data-doxa30-theme="lavender"]{--dh00:#E7E0EC;--dh01:#383142;--dh02:rgba(170,146,171,.08);--dh03:rgba(235,230,240,.98);--dh04:rgba(230,224,235,.995);--dh05:rgba(152,122,153,.19);--dh06:rgba(231,224,236,.66);--dh07:rgba(53,46,62,.035);--dh08:#7D7784;--dh09:#A589A5;--dh10:#9E83A0;--dh11:#AC91AD;--dh12:#68596E;--dh13:#352E3E;--dh14:#746E7C;--dh15:#AD98B0;--dh16:#68606F;--dh17:#A992AC;--dh18:#373041;--dh19:rgba(149,119,149,.48);--dh20:rgba(172,149,174,.23);--dh21:rgba(202,190,208,.98);--dh22:rgba(239,234,244,.96);--dh23:rgba(229,223,234,.99);--dh24:rgba(94,81,100,.05);--dh25:rgba(231,224,236,.33);--dh26:rgba(151,121,152,.07);--dh27:#A48BA5;--dh28:#564E5E;--dh29:#8A768D;--dh30:rgba(231,224,236,.42);--dh31:rgba(165,137,165,0);--dh32:rgba(165,136,166,.28);--dh33:rgba(171,148,173,.1);--dh34:rgba(162,134,163,.54);--dh35:rgba(169,146,172,.32);--dh36:rgba(162,134,163,.42);--dh37:rgba(169,146,172,.24);--dh38:rgba(163,138,164,.75);--dh39:rgba(166,141,167,.43);--dh40:#5F5766;--dh41:rgba(53,46,62,.28);--dh42:#997C9B;--dh43:#AB8FAB;--dh44:#BAA2BC;--dh45:rgba(53,46,62,.06);--dh46:#7E7885;--dh47:rgba(53,46,62,.12);--dh48:rgba(53,46,62,.025);--dh49:rgba(160,134,161,.53);--dh50:rgba(184,166,187,.12);--dh51:rgba(159,133,162,.09);--dh52:#A386A4;--dh53:rgba(154,124,155,.1);--dh54:rgba(149,119,149,.18);--dh55:#4D4354;--dh56:#373140;--dh57:rgba(53,46,62,.16);--dh58:rgba(230,224,235,.98);--dh59:rgba(230,224,235,.85);--dh60:rgba(230,224,235,.22);--dh61:rgba(230,224,235,.12);--dh62:#9E839F;--dh63:#544C5C;--dh64:#957795;--dh65:#7D6B82;--dh66:rgba(230,224,235,.62);--dh67:#362F3F;--dh68:#977997;--dh69:#E3DDE7;--dh70:#352E3E;--dh71:rgba(231,224,236,.16);--dh72:rgba(230,224,235,.55);--dh73:#736D7B;--dh74:#948F9B;--dh75:#696170;--dh76:rgba(149,119,149,.22);--dh77:#362F3F;--dh78:rgba(160,134,161,.16);--dh79:#D4CAD8;--dh80:#E4DEE9;--dh81:#A288A3;--dh82:#827D8A}`;
   document.head.appendChild(st);
 })();
+
+
+/* ============================================================
+   Doxa 64 · Copiar versos
+   - remove "Copiar Verso" do menu contextual do toque longo;
+   - cria "Copiar versos" em Ferramentas > Marcar e guardar;
+   - entra no texto em modo de seleção;
+   - a aba "Ferramentas" vira "Copiar" enquanto o modo está ativo;
+   - permite selecionar um, vários ou o capítulo inteiro;
+   - ao copiar, encerra o modo automaticamente.
+   ============================================================ */
+(()=>{
+  'use strict';
+  if(window.__doxa64CopyVersesInstalled)return;
+  window.__doxa64CopyVersesInstalled=true;
+
+  const $=id=>document.getElementById(id);
+  const SVG_COPY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.3" y="7.2" width="10.2" height="11.3" rx="1.5"/><path d="M15.2 7.2V5.8A1.8 1.8 0 0 0 13.4 4H6.1a1.8 1.8 0 0 0-1.8 1.8v8.1a1.8 1.8 0 0 0 1.8 1.8h2.2"/></svg>';
+  const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 9.5 17 19 7.5"/></svg>';
+  const selected=new Set();
+  let active=false;
+  let chapterKey='';
+  let toolsPrevHtml='';
+  let toolsPrevAria='';
+  let hostBound=false;
+  let guardInstalled=false;
+  let uiRaf=0;
+  let observeRaf=0;
+
+  function installStyle(){
+    if($('doxa64CopyStyle'))return;
+    const st=document.createElement('style');
+    st.id='doxa64CopyStyle';
+    st.textContent=`
+      /* Card da ferramenta */
+      #toolsCopyVersesStart .tool-card-icon svg{width:23px;height:23px}
+      body.doxa-copy-mode #p-marcar.doxa59-tools-refined #toolsCopyVersesStart{
+        background:linear-gradient(90deg,color-mix(in srgb,var(--d30-gold) 9%,transparent),transparent)!important
+      }
+      body.doxa-copy-mode #p-marcar.doxa59-tools-refined #toolsCopyVersesStart .tool-card-icon{
+        box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--d30-gold2) 18%,transparent),0 0 18px color-mix(in srgb,var(--d30-gold2) 9%,transparent)!important
+      }
+
+      /* Mantém o HUD inferior visível durante a seleção. */
+      body.doxa-copy-mode .doxa30-bottom-wrap,
+      body.doxa-copy-mode #doxa30Bottom{
+        transform:none!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important
+      }
+
+      /* Seleção do versículo */
+      body.doxa-copy-mode #textBody .verse{
+        position:relative;
+        border-radius:15px;
+        cursor:pointer;
+        transition:background .22s ease,box-shadow .22s ease,transform .18s cubic-bezier(.2,.8,.2,1);
+        -webkit-tap-highlight-color:transparent
+      }
+      body.doxa-copy-mode #textBody .verse:active{transform:scale(.993)}
+      body.doxa-copy-mode #textBody .verse.doxa-copy-selected{
+        background:
+          linear-gradient(90deg,
+            color-mix(in srgb,var(--d30-gold) 13%,transparent),
+            color-mix(in srgb,var(--d30-gold2) 6%,transparent) 56%,
+            transparent)!important;
+        box-shadow:
+          inset 0 0 0 1px color-mix(in srgb,var(--d30-gold2) 28%,transparent),
+          0 7px 24px color-mix(in srgb,var(--d30-gold) 9%,transparent)!important;
+        animation:doxaCopyVerseIn .34s cubic-bezier(.18,.9,.22,1) both
+      }
+      body.doxa-copy-mode #textBody .verse.doxa-copy-selected .vnum,
+      body.doxa-copy-mode #textBody .verse.doxa-copy-selected sup.vnum{
+        color:var(--d30-gold2)!important
+      }
+      .doxa-copy-mark{
+        position:absolute;z-index:5;right:-7px;top:-7px;width:25px;height:25px;
+        display:grid;place-items:center;border-radius:999px;pointer-events:none;
+        color:var(--d30-bg);background:linear-gradient(145deg,var(--d30-gold2),var(--d30-gold));
+        border:2px solid var(--d30-panel);
+        box-shadow:0 5px 15px color-mix(in srgb,var(--d30-gold) 25%,transparent);
+        font:900 13px/1 system-ui,sans-serif;
+        animation:doxaCopyMarkIn .34s cubic-bezier(.18,.9,.22,1.25) both
+      }
+      .doxa-copy-ripple{
+        position:absolute;z-index:4;right:-9px;top:-9px;width:29px;height:29px;border-radius:999px;
+        pointer-events:none;border:1px solid color-mix(in srgb,var(--d30-gold2) 68%,transparent);
+        animation:doxaCopyRipple .55s ease-out both
+      }
+      @keyframes doxaCopyVerseIn{
+        0%{transform:scale(.986);filter:brightness(1)}
+        52%{transform:scale(1.006);filter:brightness(1.08)}
+        100%{transform:none;filter:none}
+      }
+      @keyframes doxaCopyMarkIn{
+        0%{opacity:0;transform:scale(.2) rotate(-24deg)}
+        70%{opacity:1;transform:scale(1.12) rotate(3deg)}
+        100%{opacity:1;transform:none}
+      }
+      @keyframes doxaCopyRipple{
+        0%{opacity:.85;transform:scale(.55)}
+        100%{opacity:0;transform:scale(1.75)}
+      }
+
+      /* Controle flutuante do capítulo */
+      .doxa-copy-console{
+        position:fixed;z-index:74;left:50%;
+        bottom:calc(env(safe-area-inset-bottom,0px) + 102px);
+        width:min(430px,calc(100vw - 28px));min-height:52px;
+        display:grid;grid-template-columns:minmax(0,1fr) auto 38px;align-items:center;gap:8px;
+        padding:7px;border-radius:19px;
+        color:var(--d30-text);
+        background:color-mix(in srgb,var(--d30-panel) 91%,transparent);
+        border:1px solid color-mix(in srgb,var(--d30-gold) 21%,transparent);
+        box-shadow:0 16px 38px rgba(0,0,0,.22),inset 0 1px 0 color-mix(in srgb,var(--d30-text) 5%,transparent);
+        -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+        opacity:0;transform:translate(-50%,18px) scale(.97);pointer-events:none;
+        transition:opacity .22s ease,transform .3s cubic-bezier(.18,.9,.22,1)
+      }
+      .doxa-copy-console.on{opacity:1;transform:translate(-50%,0) scale(1);pointer-events:auto}
+      .doxa-copy-all{
+        min-width:0;height:38px;border:0;border-radius:13px;padding:0 11px;
+        display:flex;align-items:center;gap:8px;text-align:left;
+        color:var(--d30-text);background:color-mix(in srgb,var(--d30-gold) 7%,transparent);
+        font:720 11px/1 system-ui,sans-serif
+      }
+      .doxa-copy-all svg{width:17px;height:17px;flex:0 0 17px;color:var(--d30-gold2)}
+      .doxa-copy-all span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .doxa-copy-all.all{
+        color:var(--d30-gold2);
+        background:color-mix(in srgb,var(--d30-gold) 12%,transparent)
+      }
+      .doxa-copy-count{
+        min-width:48px;height:38px;padding:0 8px;border-radius:13px;
+        display:flex;align-items:baseline;justify-content:center;gap:4px;
+        color:var(--d30-muted);background:color-mix(in srgb,var(--d30-text) 4%,transparent)
+      }
+      .doxa-copy-count b{color:var(--d30-gold2);font:850 14px/1 system-ui,sans-serif}
+      .doxa-copy-count small{font:650 8px/1 system-ui,sans-serif}
+      .doxa-copy-cancel{
+        width:38px;height:38px;border:0;border-radius:13px;display:grid;place-items:center;
+        color:var(--d30-muted);background:transparent;font:300 27px/1 system-ui,sans-serif
+      }
+      .doxa-copy-cancel:active,.doxa-copy-all:active{transform:scale(.95)}
+
+      /* A aba Ferramentas vira uma ação contextual. */
+      #doxa30Tools.doxa-copy-action{
+        position:relative!important;color:var(--d30-gold2)!important;
+        overflow:visible!important
+      }
+      #doxa30Tools.doxa-copy-action::after{
+        content:"";position:absolute;left:50%;top:50%;width:48px;height:48px;border-radius:50%;
+        transform:translate(-50%,-60%);pointer-events:none;z-index:-1;
+        background:radial-gradient(circle,color-mix(in srgb,var(--d30-gold) 15%,transparent),transparent 70%);
+        animation:doxaCopyNavAura 2.2s ease-in-out infinite
+      }
+      #doxa30Tools.doxa-copy-action>svg{
+        animation:doxaCopyNavIn .34s cubic-bezier(.18,.9,.22,1) both
+      }
+      #doxa30Tools.doxa-copy-action>span{
+        color:var(--d30-gold2)!important;
+        animation:doxaCopyLabelIn .3s cubic-bezier(.18,.9,.22,1) both
+      }
+      .doxa-copy-nav-count{
+        position:absolute;top:1px;left:calc(50% + 9px);
+        min-width:17px;height:17px;padding:0 4px;display:grid;place-items:center;border-radius:999px;
+        background:var(--d30-gold2);color:var(--d30-bg);
+        border:2px solid var(--d30-panel);
+        font:900 8px/1 system-ui,sans-serif;
+        transform:scale(0);opacity:0;transition:transform .22s cubic-bezier(.18,.9,.22,1.25),opacity .15s ease
+      }
+      #doxa30Tools.doxa-copy-ready .doxa-copy-nav-count{transform:scale(1);opacity:1}
+      #doxa30Tools.doxa-copy-ready>svg{
+        filter:drop-shadow(0 0 7px color-mix(in srgb,var(--d30-gold2) 42%,transparent))
+      }
+      #doxa30Tools.doxa-copy-nudge{animation:doxaCopyNudge .34s ease}
+      #doxa30Tools.doxa-copy-success>svg{animation:doxaCopySuccess .5s cubic-bezier(.18,.9,.22,1) both}
+      @keyframes doxaCopyNavAura{50%{transform:translate(-50%,-60%) scale(1.16);opacity:.58}}
+      @keyframes doxaCopyNavIn{0%{opacity:0;transform:scale(.5) rotate(-10deg)}100%{opacity:1;transform:none}}
+      @keyframes doxaCopyLabelIn{0%{opacity:0;transform:translateY(4px)}100%{opacity:1;transform:none}}
+      @keyframes doxaCopyNudge{25%{transform:translateX(-3px)}55%{transform:translateX(3px)}80%{transform:translateX(-1px)}}
+      @keyframes doxaCopySuccess{0%{transform:scale(.65)}55%{transform:scale(1.18)}100%{transform:none}}
+
+      /* Pequeno aviso de entrada/erro. */
+      .doxa-copy-toast{
+        position:fixed;z-index:130;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 172px);
+        max-width:calc(100vw - 36px);padding:10px 14px;border-radius:999px;
+        color:var(--d30-text);background:color-mix(in srgb,var(--d30-panel) 94%,transparent);
+        border:1px solid color-mix(in srgb,var(--d30-gold) 18%,transparent);
+        box-shadow:0 12px 30px rgba(0,0,0,.2);
+        font:700 11px/1.2 system-ui,sans-serif;white-space:nowrap;
+        opacity:0;transform:translate(-50%,10px) scale(.97);
+        transition:opacity .18s ease,transform .25s cubic-bezier(.18,.9,.22,1);
+        pointer-events:none
+      }
+      .doxa-copy-toast.on{opacity:1;transform:translate(-50%,0) scale(1)}
+
+      @media(max-width:380px){
+        .doxa-copy-console{width:calc(100vw - 20px);grid-template-columns:minmax(0,1fr) auto 36px;padding:6px}
+        .doxa-copy-all{padding:0 9px}.doxa-copy-count{min-width:44px}
+      }
+      @media(prefers-reduced-motion:reduce){
+        body.doxa-copy-mode #textBody .verse,
+        body.doxa-copy-mode #textBody .verse.doxa-copy-selected,
+        .doxa-copy-mark,.doxa-copy-ripple,.doxa-copy-console,
+        #doxa30Tools.doxa-copy-action::after,
+        #doxa30Tools.doxa-copy-action>svg,
+        #doxa30Tools.doxa-copy-action>span,
+        #doxa30Tools.doxa-copy-success>svg{animation:none!important;transition:none!important}
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
+  function removeOldContextCopy(){
+    document.querySelector('#verseActions [data-va="copy"]')?.remove();
+  }
+
+  function flashCopy(text){
+    let el=$('doxaCopyToast');
+    if(!el){
+      el=document.createElement('div');
+      el.id='doxaCopyToast';
+      el.className='doxa-copy-toast';
+      document.body.appendChild(el);
+    }
+    el.textContent=text;
+    el.classList.remove('on');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('on')));
+    clearTimeout(el.__timer);
+    el.__timer=setTimeout(()=>el.classList.remove('on'),1500);
+  }
+
+  function makeCard(){
+    let b=$('toolsCopyVersesStart');
+    if(b)return b;
+    b=document.createElement('button');
+    b.type='button';
+    b.id='toolsCopyVersesStart';
+    b.className='tool-card';
+    b.innerHTML='<span class="tool-card-icon">'+SVG_COPY+'</span><span class="tool-card-copy"><strong>Copiar versos</strong><small>Selecione um, vários ou todo o capítulo.</small></span><span class="tool-card-arrow" aria-hidden="true">›</span>';
+    b.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      startMode();
+    },true);
+    return b;
+  }
+
+  function placeCard(){
+    const panel=$('p-marcar');if(!panel)return false;
+    const b=makeCard();
+
+    if(panel.classList.contains('doxa59-tools-refined')){
+      const keep=[...panel.querySelectorAll('.doxa59-tools-group')].find(g=>
+        /Marcar e guardar/i.test(g.querySelector('.doxa59-tools-group-head')?.textContent||'')
+      );
+      const stack=keep?.querySelector('.doxa59-tools-stack');
+      if(stack){
+        const hi=$('toolsHighlightStart');
+        if(hi&&hi.parentElement===stack){
+          if(hi.nextElementSibling!==b)hi.insertAdjacentElement('afterend',b);
+        }else if(b.parentElement!==stack)stack.prepend(b);
+        return true;
+      }
+    }
+
+    const hi=$('toolsHighlightStart');
+    if(hi){
+      if(hi.nextElementSibling!==b)hi.insertAdjacentElement('afterend',b);
+      return true;
+    }
+    if(!b.isConnected)panel.appendChild(b);
+    return true;
+  }
+
+  function verseNo(el){
+    const n=Number(el?.dataset?.v||String(el?.id||'').replace(/^v/,''));
+    return Number.isFinite(n)?n:0;
+  }
+
+  function currentChapterLabel(){
+    return String($('doxa30Ref')?.textContent||$('hdrRef')?.textContent||'').trim().replace(/\s+∥.+$/,'');
+  }
+
+  function currentVersionLabel(){
+    try{
+      if(typeof mode!=='undefined'&&typeof VERSION_META!=='undefined'&&VERSION_META[mode]){
+        return VERSION_META[mode].label||VERSION_META[mode].short||String(mode);
+      }
+    }catch(e){}
+    return String($('doxa30VersionText')?.textContent||'').trim();
+  }
+
+  function keyNow(){
+    let m='';try{m=typeof mode!=='undefined'?String(mode):''}catch(e){}
+    return currentChapterLabel()+'|'+m+'|'+currentVersionLabel();
+  }
+
+  function currentVerses(){
+    const host=$('textBody');if(!host)return[];
+    return [...host.querySelectorAll('.verse')].filter(v=>verseNo(v)>0);
+  }
+
+  function cleanDisconnected(){
+    let changed=false;
+    for(const el of [...selected]){
+      if(!el?.isConnected||!el.closest('#textBody')){
+        selected.delete(el);changed=true;
+      }
+    }
+    return changed;
+  }
+
+  function addMark(el,animate=true){
+    if(!el)return;
+    el.classList.add('doxa-copy-selected');
+    if(!el.querySelector(':scope>.doxa-copy-mark')){
+      const mark=document.createElement('span');
+      mark.className='doxa-copy-mark';
+      mark.setAttribute('aria-hidden','true');
+      mark.textContent='✓';
+      el.appendChild(mark);
+    }
+    if(animate){
+      const old=el.querySelector(':scope>.doxa-copy-ripple');old?.remove();
+      const r=document.createElement('span');
+      r.className='doxa-copy-ripple';r.setAttribute('aria-hidden','true');
+      el.appendChild(r);setTimeout(()=>r.remove(),620);
+    }
+  }
+
+  function removeMark(el){
+    if(!el)return;
+    el.classList.remove('doxa-copy-selected');
+    el.querySelectorAll(':scope>.doxa-copy-mark,:scope>.doxa-copy-ripple').forEach(x=>x.remove());
+  }
+
+  function toggleVerse(el,force){
+    if(!active||!el)return;
+    const want=force===undefined?!selected.has(el):!!force;
+    if(want){
+      selected.add(el);addMark(el,true);
+      try{if(!window.__doxaLongPressActive)navigator.vibrate?.(8)}catch(e){}
+    }else{
+      selected.delete(el);removeMark(el);
+    }
+    updateUi();
+  }
+
+  function clearSelection(){
+    for(const el of [...selected])removeMark(el);
+    selected.clear();
+    updateUi();
+  }
+
+  function ensureConsole(){
+    let c=$('doxaCopyConsole');
+    if(c)return c;
+    c=document.createElement('div');
+    c.id='doxaCopyConsole';
+    c.className='doxa-copy-console';
+    c.setAttribute('aria-hidden','true');
+    c.innerHTML='<button class="doxa-copy-all" id="doxaCopyAll" type="button">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>'+
+      '<span>Capítulo inteiro</span></button>'+
+      '<span class="doxa-copy-count"><b id="doxaCopyCount">0</b><small>versos</small></span>'+
+      '<button class="doxa-copy-cancel" id="doxaCopyCancel" type="button" aria-label="Cancelar cópia">×</button>';
+    document.body.appendChild(c);
+
+    $('doxaCopyAll')?.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();
+      if(!active)return;
+      const verses=currentVerses();
+      const all=verses.length>0&&verses.every(v=>selected.has(v));
+      if(all){
+        clearSelection();
+      }else{
+        verses.forEach((v,i)=>{
+          selected.add(v);
+          addMark(v,false);
+          v.style.setProperty('--doxa-copy-delay',Math.min(i*10,320)+'ms');
+        });
+        try{navigator.vibrate?.(12)}catch(_){}
+        updateUi();
+      }
+    });
+
+    $('doxaCopyCancel')?.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();finishMode(false);
+    });
+    return c;
+  }
+
+  function updateUi(){
+    if(uiRaf)return;
+    uiRaf=requestAnimationFrame(()=>{
+      uiRaf=0;
+      cleanDisconnected();
+      const count=selected.size;
+      const verses=currentVerses();
+      const all=verses.length>0&&verses.every(v=>selected.has(v));
+
+      const countEl=$('doxaCopyCount');if(countEl)countEl.textContent=String(count);
+      const allBtn=$('doxaCopyAll');
+      if(allBtn){
+        allBtn.classList.toggle('all',all);
+        const s=allBtn.querySelector('span');
+        if(s)s.textContent=all?'Desmarcar capítulo':'Capítulo inteiro';
+      }
+
+      const tools=$('doxa30Tools');
+      if(tools&&active){
+        tools.classList.toggle('doxa-copy-ready',count>0);
+        const badge=tools.querySelector('.doxa-copy-nav-count');
+        if(badge)badge.textContent=count>99?'99+':String(count);
+      }
+    });
+  }
+
+  function showConsole(){
+    const c=ensureConsole();
+    c.setAttribute('aria-hidden','false');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>c.classList.add('on')));
+  }
+
+  function hideConsole(){
+    const c=$('doxaCopyConsole');if(!c)return;
+    c.classList.remove('on');c.setAttribute('aria-hidden','true');
+  }
+
+  function enterNavAction(){
+    const tools=$('doxa30Tools');if(!tools)return false;
+    toolsPrevHtml=tools.innerHTML;
+    toolsPrevAria=tools.getAttribute('aria-label')||'Ferramentas';
+    tools.innerHTML=SVG_COPY+'<span>Copiar</span><b class="doxa-copy-nav-count">0</b>';
+    tools.setAttribute('aria-label','Copiar versos selecionados');
+    tools.classList.add('doxa-copy-action');
+    tools.classList.remove('lupa-exit');
+    return true;
+  }
+
+  function restoreNav(success=false){
+    const tools=$('doxa30Tools');if(!tools)return;
+    const restore=()=>{
+      if(toolsPrevHtml)tools.innerHTML=toolsPrevHtml;
+      tools.setAttribute('aria-label',toolsPrevAria||'Ferramentas');
+      tools.classList.remove('doxa-copy-action','doxa-copy-ready','doxa-copy-nudge','doxa-copy-success');
+      toolsPrevHtml='';toolsPrevAria='';
+    };
+    if(!success){restore();return}
+    tools.innerHTML=SVG_CHECK+'<span>Copiado</span>';
+    tools.classList.remove('doxa-copy-ready');
+    tools.classList.add('doxa-copy-success');
+    setTimeout(restore,720);
+  }
+
+  function leaveOtherModes(){
+    try{window.DoxaLupa?.setMode?.(false)}catch(e){}
+    try{if(document.body.classList.contains('doxa-timeline-mode'))$('tlModeExit')?.click()}catch(e){}
+    try{
+      const bar=$('hlModeBar');
+      if(bar&&!bar.hidden)$('hlModeExit')?.click();
+    }catch(e){}
+    try{
+      if(document.body.classList.contains('parallel-mode')){
+        if(typeof setParallelMode==='function')setParallelMode(false);
+        else $('parallelExit')?.click();
+      }
+    }catch(e){}
+    try{window.DoxaVerseActions?.close?.()}catch(e){}
+  }
+
+  function startMode(){
+    if(active)return;
+    installStyle();removeOldContextCopy();placeCard();
+    leaveOtherModes();
+
+    const tools=$('doxa30Tools');
+    if(!tools){flashCopy('Abra a Bíblia e tente novamente.');return}
+
+    active=true;selected.clear();chapterKey=keyNow();
+    document.body.classList.add('doxa-copy-mode');
+    if(!enterNavAction()){active=false;document.body.classList.remove('doxa-copy-mode');return}
+    try{openPanel('ler')}catch(e){}
+    document.body.classList.remove('hud-hidden');
+    bindHost();installVerseGuard();showConsole();updateUi();
+    flashCopy('Toque nos versos que deseja copiar');
+    try{navigator.vibrate?.(10)}catch(_){}
+  }
+
+  function finishMode(success=false){
+    if(!active&&!success)return;
+    active=false;
+    document.body.classList.remove('doxa-copy-mode');
+    hideConsole();
+    clearSelection();
+    restoreNav(success);
+  }
+
+  function verseText(el){
+    const c=el.cloneNode(true);
+    c.querySelectorAll('.vnum,sup.vnum,.doxa-copy-mark,.doxa-copy-ripple,.verse-smoke,.verse-handle,.xref-trigger,.note-pin,.doxa-note-mark,button').forEach(x=>x.remove());
+    return String(c.textContent||'').replace(/\s+/g,' ').trim();
+  }
+
+  async function writeClipboard(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      return true;
+    }catch(e){
+      try{
+        const ta=document.createElement('textarea');
+        ta.value=text;ta.setAttribute('readonly','');
+        ta.style.position='fixed';ta.style.left='-9999px';ta.style.top='0';ta.style.opacity='0';
+        document.body.appendChild(ta);ta.focus();ta.select();
+        const ok=document.execCommand('copy');ta.remove();return !!ok;
+      }catch(_){return false}
+    }
+  }
+
+  async function copySelected(){
+    cleanDisconnected();
+    const list=[...selected].filter(x=>x.isConnected).sort((a,b)=>verseNo(a)-verseNo(b));
+    if(!list.length){
+      const tools=$('doxa30Tools');
+      tools?.classList.remove('doxa-copy-nudge');
+      void tools?.offsetWidth;
+      tools?.classList.add('doxa-copy-nudge');
+      flashCopy('Selecione ao menos um versículo');
+      try{navigator.vibrate?.([18,35,18])}catch(_){}
+      return;
+    }
+
+    const base=currentChapterLabel()||'Passagem';
+    const version=currentVersionLabel();
+    const lines=list.map(el=>base+':'+verseNo(el)+' — '+verseText(el));
+    const text=lines.join('\n')+(version?'\n\n'+version:'');
+    const n=list.length;
+    const ok=await writeClipboard(text);
+    if(!ok){flashCopy('Não foi possível copiar.');return}
+
+    finishMode(true);
+    flashCopy(n===1?'Verso copiado':n+' versos copiados');
+    try{navigator.vibrate?.(18)}catch(_){}
+  }
+
+  function bindHost(){
+    if(hostBound)return;
+    const host=$('textBody');if(!host)return;
+    hostBound=true;
+
+    host.addEventListener('click',e=>{
+      if(!active)return;
+      const el=e.target instanceof Element?e.target.closest('.verse'):null;
+      if(!el)return;
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      toggleVerse(el);
+    },true);
+
+    const obs=new MutationObserver(()=>{
+      if(!active)return;
+      const k=keyNow();
+      if(k!==chapterKey){
+        for(const el of [...selected])removeMark(el);
+        selected.clear();chapterKey=k;
+      }else cleanDisconnected();
+      updateUi();
+    });
+    obs.observe(host,{childList:true,subtree:true});
+  }
+
+  function installVerseGuard(){
+    if(guardInstalled||!window.DoxaVerseActions?.open)return;
+    const original=window.DoxaVerseActions.open;
+    if(original.__doxa64CopyGuard){guardInstalled=true;return}
+    const wrapped=function(el){
+      if(active){
+        toggleVerse(el);
+        return;
+      }
+      return original.apply(this,arguments);
+    };
+    wrapped.__doxa64CopyGuard=true;
+    window.DoxaVerseActions.open=wrapped;
+    guardInstalled=true;
+  }
+
+  function bindNavCapture(){
+    if(window.__doxa64CopyNavBound)return;
+    window.__doxa64CopyNavBound=true;
+    window.addEventListener('click',e=>{
+      if(!active)return;
+      const el=e.target instanceof Element?e.target:null;
+      if(!el?.closest('#doxa30Tools'))return;
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      copySelected();
+    },true);
+  }
+
+  function scheduleMaintenance(){
+    if(observeRaf)return;
+    observeRaf=requestAnimationFrame(()=>{
+      observeRaf=0;
+      installStyle();
+      removeOldContextCopy();
+      placeCard();
+      bindHost();
+      installVerseGuard();
+    });
+  }
+
+  function boot(){
+    installStyle();removeOldContextCopy();bindNavCapture();scheduleMaintenance();
+    const obs=new MutationObserver(scheduleMaintenance);
+    obs.observe(document.body,{childList:true,subtree:true});
+    setTimeout(scheduleMaintenance,500);
+    setTimeout(scheduleMaintenance,1300);
+    setTimeout(scheduleMaintenance,2600);
+
+    document.addEventListener('keydown',e=>{
+      if(active&&e.key==='Escape'){e.preventDefault();finishMode(false)}
+    });
+
+    window.DoxaCopyVerses={
+      start:startMode,
+      cancel:()=>finishMode(false),
+      copy:copySelected,
+      selectAll:()=>{
+        if(!active)return;
+        for(const v of currentVerses()){selected.add(v);addMark(v,false)}
+        updateUi();
+      },
+      active:()=>active
+    };
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
