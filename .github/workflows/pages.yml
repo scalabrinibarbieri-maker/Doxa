@@ -1,11 +1,12 @@
 name: Página oficial
 
-# Publica a página oficial (index.html) e as páginas da Conta Doxa (conta/) no GitHub Pages.
+# Publica no GitHub Pages: a página oficial (index.html), as páginas da Conta Doxa (conta/)
+# e o Doxa Web (app/), a versão do leitor para Safari/iPhone e navegadores.
 # Uma vez, em Settings → Pages, escolha Source: GitHub Actions.
 on:
   push:
     branches: [main]
-    paths: ['index.html', 'conta/**', '.github/workflows/pages.yml']
+    paths: ['index.html', 'conta/**', 'web/**', 'app/src/main/assets/reader/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -35,6 +36,35 @@ jobs:
           cp index.html _site/index.html
           if [ -d conta ]; then cp -r conta _site/conta; fi
           touch _site/.nojekyll
+      # Doxa Web: o mesmo leitor do Android, com a tela de preparação (web/index.html),
+      # o service worker (funciona sem internet) e a ponte do navegador (web/web-bridge.js).
+      - name: Montar o Doxa Web
+        run: |
+          mkdir -p _site/app/web
+          cp -r app/src/main/assets/reader/. _site/app/
+          mv _site/app/index.html _site/app/reader.html
+          python3 - <<'PY'
+          p='_site/app/reader.html'
+          s=open(p,encoding='utf-8').read()
+          head=('<head>\n<script src="web/web-bridge.js"></script>\n'
+                '<link rel="manifest" href="manifest.webmanifest">\n'
+                '<meta name="theme-color" content="#0b0805">\n'
+                '<meta name="apple-mobile-web-app-capable" content="yes">\n'
+                '<meta name="mobile-web-app-capable" content="yes">\n'
+                '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n'
+                '<meta name="apple-mobile-web-app-title" content="Doxa">\n'
+                '<link rel="apple-touch-icon" href="web/icons/apple-touch-icon.png">')
+          assert s.count('<head>')==1
+          open(p,'w',encoding='utf-8').write(s.replace('<head>',head,1))
+          PY
+          cp web/index.html web/desk.html web/manifest.webmanifest web/sw.js _site/app/
+          cp -r web/packages.js web/web-bridge.js web/icons _site/app/web/
+          sed -i "s/__DOXA_BUILD__/${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}/" _site/app/sw.js
+          cd _site/app
+          find . -type f ! -name sw.js ! -name precache.json | sed 's#^\./##' | sort \
+            | python3 -c "import sys,json;print(json.dumps({'files':[l.strip() for l in sys.stdin if l.strip()]}))" > precache.json
+          echo "Doxa Web: $(wc -c < precache.json) bytes de lista, $(find . -type f | wc -l) arquivos"
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
