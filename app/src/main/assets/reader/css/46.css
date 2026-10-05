@@ -1,0 +1,51 @@
+/* Doxa 60 · Busca Doxa */
+.bx-tools{margin:2px 0 6px}
+.bx-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;margin:4px 0 10px;border-radius:14px;background:color-mix(in srgb,var(--d30-text,#fff) 5%,transparent)}
+.bx-seg button{height:36px;border:0;border-radius:11px;background:none;color:var(--d30-muted,#9e9286);font:600 13px/1 system-ui,sans-serif}
+.bx-seg button.on{background:color-mix(in srgb,var(--d30-gold,#d9a25e) 20%,var(--d30-panel,#0d0a07));color:var(--d30-gold2,#f1c989);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--d30-gold,#d9a25e) 40%,transparent)}
+.bx-opts,.bx-groups{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 0 8px}
+.bx-opts::-webkit-scrollbar,.bx-groups::-webkit-scrollbar{display:none}
+.bx-opts button,.bx-groups button{flex:0 0 auto;height:30px;padding:0 12px;border-radius:999px;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 22%,transparent);
+  background:none;color:var(--d30-muted,#9e9286);font:600 12px/1 system-ui,sans-serif;white-space:nowrap}
+.bx-opts button.on,.bx-groups button.on{background:color-mix(in srgb,var(--d30-gold,#d9a25e) 18%,transparent);border-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 55%,transparent);color:var(--d30-gold2,#f1c989)}
+.bx-help{flex:0 0 auto;align-self:center;font:400 11.5px/1 system-ui,sans-serif;color:var(--d30-muted,#9e9286);white-space:nowrap;padding-left:4px}
+.bx-help b{color:var(--d30-gold2,#f1c989);font-weight:600}
+.bx-card{display:block;width:100%;text-align:left;margin:4px 0 10px;padding:13px 15px;border-radius:16px;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 26%,transparent);
+  background:color-mix(in srgb,var(--d30-gold,#d9a25e) 8%,transparent);color:inherit}
+.bx-card small{display:block;font:700 9.5px/1 system-ui,sans-serif;letter-spacing:.14em;color:var(--d30-gold,#d9a25e)}
+.bx-card b{display:block;margin-top:5px;font:600 17px/1.25 Georgia,'Times New Roman',serif}
+.bx-card span{display:block;margin-top:4px;font:400 13.5px/1.45 Georgia,serif;color:var(--d30-muted,#9e9286)}
+.bx-card em{display:block;margin-top:3px;font:italic 400 12px/1.35 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.bx-card.ent p{margin:6px 0 0;font:400 13.5px/1.5 Georgia,serif;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.bx-card.ent.open p{-webkit-line-clamp:unset;display:block}
+.bx-more{margin-top:6px;padding:0;border:0;background:none;color:var(--d30-gold2,#f1c989);font:600 12.5px/1 system-ui,sans-serif}
+.bx-also{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px;font:500 12.5px/1 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.bx-also button{height:28px;padding:0 11px;border-radius:999px;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 30%,transparent);background:none;color:var(--d30-gold2,#f1c989);font:600 12px/1 system-ui,sans-serif}
+.bx-dist{margin:2px 0 12px;padding:12px 14px;border-radius:16px;background:color-mix(in srgb,var(--d30-text,#fff) 4%,transparent);border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 14%,transparent)}
+.bx-dist-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.bx-dist-h b{font:600 13px/1.3 system-ui,sans-serif}.bx-dist-h span{font:500 11.5px/1 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.bx-bar{display:grid;grid-template-columns:42px 1fr 40px;align-items:center;gap:8px;width:100%;padding:3px 0;border:0;background:none;color:inherit}
+.bx-bar span{font:600 12px/1 system-ui,sans-serif;text-align:left;color:var(--d30-muted,#9e9286)}
+.bx-bar i{height:9px;border-radius:9px;background:linear-gradient(90deg,color-mix(in srgb,var(--d30-gold,#d9a25e) 55%,transparent),var(--d30-gold,#d9a25e))}
+.bx-bar b{font:600 12px/1 system-ui,sans-serif;text-align:right}
+.bx-bar.on span,.bx-bar.on b{color:var(--d30-gold2,#f1c989)}
+.bx-bar.on i{background:linear-gradient(90deg,#e4b06a,#f1c989);box-shadow:0 0 10px rgba(241,201,137,.35)}
+.bx-dist-more{margin:6px 0 0;font:400 11.5px/1.3 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.count b{color:var(--d30-gold2,#f1c989)}.bx-filt{color:var(--d30-gold2,#f1c989)}
+#hits .bx-he{direction:rtl;text-align:right;font-family:'SBL Hebrew','Ezra SIL','Times New Roman',serif;font-size:1.12em}
+#hits li.bx-lemma{padding:0;border:0;list-style:none}
+.bx-lemma-h{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"w m" "w n";column-gap:12px;row-gap:3px;width:100%;text-align:left;margin:8px 0 2px;padding:12px 14px;
+  border-radius:16px;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 20%,transparent);background:color-mix(in srgb,var(--d30-text,#fff) 3%,transparent);color:inherit}
+.bx-lemma.open .bx-lemma-h{border-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 55%,transparent);background:color-mix(in srgb,var(--d30-gold,#d9a25e) 9%,transparent)}
+.bx-lemma-h>b{grid-area:w;align-self:center;font:500 26px/1.15 'SBL Hebrew','Ezra SIL','Times New Roman',serif}
+.bx-lemma-h>b.bx-gr{font-family:'SBL Greek','Gentium Plus',Georgia,serif;font-size:22px}
+.bx-lemma-m{grid-area:m;font:500 13px/1.35 system-ui,sans-serif}.bx-lemma-m i{color:var(--d30-muted,#9e9286)}
+.bx-lemma-n{grid-area:n;font:500 11.5px/1.3 system-ui,sans-serif;color:var(--d30-muted,#9e9286)}
+.bx-lemma-n b{color:var(--d30-gold2,#f1c989);margin-right:6px}
+#hits li.bx-sub{margin-left:10px;padding-left:12px;border-left:2px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 30%,transparent)}
+.bx-ex{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:12px}
+.bx-ex button{height:32px;padding:0 13px;border-radius:999px;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 28%,transparent);background:none;color:var(--d30-gold2,#f1c989);font:600 13px/1 system-ui,sans-serif}
+.bx-link{padding:0;border:0;background:none;color:var(--d30-gold2,#f1c989);font:inherit;font-weight:600;text-decoration:underline}
+.bx-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#e9c46a;vertical-align:1px}
+.bx-dot[data-c="green"]{background:#7fb77e}.bx-dot[data-c="blue"]{background:#6b9bd1}.bx-dot[data-c="pink"],.bx-dot[data-c="red"]{background:#d98a9a}.bx-dot[data-c="purple"]{background:#a98bd1}
+body:not([data-doxa30-theme="night"]) .bx-bar.on i{box-shadow:none}
