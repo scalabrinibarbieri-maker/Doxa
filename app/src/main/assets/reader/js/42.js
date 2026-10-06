@@ -135,7 +135,7 @@
       const day=dm?numberBefore(dm[1]+' x',dm[1].length+1):null;
       let fest=M[3];
       if(day){const f={'1-14':'Páscoa','1-15':'começo dos Pães Asmos','7-1':'festa das Trombetas','7-10':'Dia da Expiação','7-15':'começo da festa dos Tabernáculos','9-25':'festa da Dedicação','12-14':'Purim'}[n+'-'+day];if(f)fest='Neste dia: '+f+'.'}
-      out.push({k:'time',t:(day?'dia '+day+' do ':'')+n+'º mês ('+M[0]+')',big:'≈ '+M[1],sub:M[2][0].toUpperCase()+M[2].slice(1)+(fest?'. '+fest:'')+'.'});
+      out.push({k:'time',t:(day?'dia '+day+' do ':'')+n+'º mês ('+M[0]+')',big:'≈ '+M[1],sub:M[2][0].toUpperCase()+M[2].slice(1)+(fest?'. '+fest:'')+'.',month:n,day:day||null});
     }
     if(nt){
       const qty=re=>{const m=re.exec(text);if(!m)return null;let i=m.index;const pre=text.slice(0,i).replace(/\s+(pequenas?|última|[\[\]]+)\s*$/i,' ');return numberBefore(pre,pre.length)};
@@ -176,10 +176,11 @@
   }
   function index(cp){
     const key=cp.nt?'nt':'ot';if(IDX[key])return IDX[key];
-    const C=cp.C,count=new Map(),first=new Map(),books=new Map();
+    const C=cp.C,count=new Map(),first=new Map(),books=new Map(),refs=new Map();
     C.d.forEach((bk,bi)=>bk.forEach((ch,ci)=>ch.forEach((vs,vi)=>{for(const t of vs){if(!Array.isArray(t)||t[3]==null||t[3]<0)continue;const L=C.l[t[3]];if(!L)continue;const s=L[1];
-      count.set(s,(count.get(s)||0)+1);if(!first.has(s))first.set(s,[bi,ci,vi]);let b=books.get(s);if(!b){b=new Set();books.set(s,b)}b.add(bi)}})));
-    return IDX[key]={count,first,books};
+      count.set(s,(count.get(s)||0)+1);if(!first.has(s))first.set(s,[bi,ci,vi]);let b=books.get(s);if(!b){b=new Set();books.set(s,b)}b.add(bi);
+      let r=refs.get(s);if(!r){r=[];refs.set(s,r)}const l=r[r.length-1];if(!l||l[0]!==bi||l[1]!==ci||l[2]!==vi)r.push([bi,ci,vi])}})));
+    return IDX[key]={count,first,books,refs};
   }
   const content=(pt,s)=>{const p=(pt[s]&&pt[s].p)||'';return /^(substantivo|verbo|adjetivo)/.test(p)};
   const gloss=(pt,s,L)=>{const e=pt[s];return e&&e.m&&e.m.length?e.m.slice(0,2).join(', '):(L&&L[7])||''};
@@ -328,33 +329,188 @@
     time:I0+'<path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/></svg>',
     rare:I0+'<path d="M6 3h12l3 6-9 12L3 9z"/><path d="M3 9h18M9 3l3 18 3-18"/></svg>',
     struct:I0+'<path d="M4 6h16M4 12h10M4 18h16"/><circle cx="18" cy="12" r="2"/></svg>',
-    lupa:I0+'<circle cx="10.5" cy="10.5" r="6.3"/><path d="M15.3 15.3 20.5 20.5"/></svg>'};
+    lupa:I0+'<circle cx="10.5" cy="10.5" r="6.3"/><path d="M15.3 15.3 20.5 20.5"/></svg>',
+    days:I0+'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3"/></svg>',
+    feast:I0+'<path d="M4 20 12 4l8 16z"/><path d="M12 4v16M8.5 13h7"/></svg>',
+    expr:I0+'<path d="M7 7h10M7 12h10M7 17h6"/><path d="M3.5 7h.01M3.5 12h.01M3.5 17h.01"/></svg>',
+    echo:I0+'<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.3 11l7.4-3.6M8.3 13l7.4 3.6"/></svg>',
+    save:I0+'<path d="M6 3.5h12v17l-6-4-6 4z"/></svg>'};
   function hebOf(ref){if(NT_BOOKS.includes(ref.book)||!window.DoxaVersif)return ref;return window.DoxaVersif.ref(Object.assign({sourceMode:'almeida'},ref),'wlc')||ref}
+
+  /* ================= NOVIDADES (Doxa 61) ================= */
+  const ABBR={Gen:'Gn',Exod:'Êx',Lev:'Lv',Num:'Nm',Deut:'Dt',Josh:'Js',Judg:'Jz',Ruth:'Rt','1Sam':'1Sm','2Sam':'2Sm','1Kgs':'1Rs','2Kgs':'2Rs','1Chr':'1Cr','2Chr':'2Cr',Ezra:'Ed',Neh:'Ne',Esth:'Et',Job:'Jó',Ps:'Sl',Prov:'Pv',Eccl:'Ec',Song:'Ct',Isa:'Is',Jer:'Jr',Lam:'Lm',Ezek:'Ez',Dan:'Dn',Hos:'Os',Joel:'Jl',Amos:'Am',Obad:'Ob',Jonah:'Jn',Mic:'Mq',Nah:'Na',Hab:'Hc',Zeph:'Sf',Hag:'Ag',Zech:'Zc',Mal:'Ml',
+    Matt:'Mt',Mark:'Mc',Luke:'Lc',John:'Jo',Acts:'At',Rom:'Rm','1Cor':'1Co','2Cor':'2Co',Gal:'Gl',Eph:'Ef',Phil:'Fp',Col:'Cl','1Thess':'1Ts','2Thess':'2Ts','1Tim':'1Tm','2Tim':'2Tm',Titus:'Tt',Phlm:'Fm',Heb:'Hb',Jas:'Tg','1Pet':'1Pe','2Pet':'2Pe','1John':'1Jo','2John':'2Jo','3John':'3Jo',Jude:'Jd',Rev:'Ap'};
+  const short=(b,c,v)=>(ABBR[b]||b)+' '+c+':'+v;
+  const almeida=()=>typeof CORPORA!=='undefined'&&(CORPORA.almeida||null);
+  function ptVerse(b,c,v){const A=almeida();const bk=A&&A.books.find(x=>x.book===b);const ch=bk&&bk.chapters.find(x=>+x.chapter===+c);const vs=ch&&ch.verses.find(x=>+x.number===+v);return vs?vs.text:''}
+  const N=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+
+  /* ---- 2. contagem de dias entre as datas do mesmo relato ---- */
+  const DAYORD={primeiro:1,segundo:2,terceiro:3,quarto:4,quinto:5,sexto:6,'sétimo':7,setimo:7,oitavo:8,nono:9,'décimo':10,decimo:10};
+  function parseDate(text){
+    const t=text;
+    const mm=/m[êe]s\s+(primeiro|segundo|terceiro|quarto|quinto|sexto|s[ée]timo|oitavo|nono|d[ée]cimo|und[ée]cimo|duod[ée]cimo)|(primeiro|segundo|terceiro|quarto|quinto|sexto|s[ée]timo|oitavo|nono|d[ée]cimo|und[ée]cimo|duod[ée]cimo)\s+m[êe]s/i.exec(t);
+    if(!mm)return null;
+    const m=ORD[(mm[1]||mm[2]).toLowerCase()];if(!m)return null;
+    let d=null;
+    // "dia dezessete do mês", "a dezessete dias do mês", "aos vinte e sete dias do mês", "ao primeiro dia do mês"
+    let dm=t.match(/(?:\bdia|\baos?|\ba)\s+([a-zà-ú]+(?:\s+e\s+[a-zà-ú]+)?)\s+(?:dias?\s+)?do\s+m[êe]s/i);
+    if(dm){const w=dm[1].toLowerCase();d=DAYORD[w]||numberBefore(w+' x',w.length+1)}
+    if(!d){const o=t.match(/\bao\s+(primeiro|segundo|terceiro|quarto|quinto|sexto|s[ée]timo|oitavo|nono|d[ée]cimo)\s+dia/i);if(o)d=DAYORD[o[1].toLowerCase()]}
+    if(!d)return null;
+    let y=null;const ym=t.match(/\bano\s+((?:[a-zà-ú]+)(?:\s+e\s+[a-zà-ú]+){0,3})/i);
+    if(ym){const n=numberBefore(ym[1]+' x',ym[1].length+1);if(n&&n>=1)y=n}
+    return{m,d,y};
+  }
+  function datedSequence(book,c){
+    const A=almeida();const bk=A&&A.books.find(x=>x.book===book);if(!bk)return[];
+    let lo=c-3,hi=c+3;const u=UNITS_LIT.find(x=>x.book===book&&c>=x.from[0]&&c<=x.to[0]);if(u){lo=u.from[0];hi=u.to[0]}
+    const seq=[];let year=null;
+    for(const ch of bk.chapters){const cc=+ch.chapter;if(cc<lo||cc>hi)continue;
+      for(const v of ch.verses){const dt=parseDate(v.text);if(!dt)continue;if(dt.y!=null)year=dt.y;seq.push({c:cc,v:+v.number,m:dt.m,d:dt.d,y:year})}}
+    const anyYear=seq.some(x=>x.y!=null);
+    for(const x of seq){x.idx=((anyYear?(x.y||0):0)*360)+(x.m-1)*30+(x.d-1)}
+    return seq;
+  }
+  function span(n){n=Math.abs(n);const y=Math.floor(n/360),r=n%360,mo=Math.floor(r/30),d=r%30;const parts=[];
+    if(y)parts.push(y+(y===1?' ano':' anos'));if(mo)parts.push(mo+(mo===1?' mês':' meses'));if(d)parts.push(d+(d===1?' dia':' dias'));
+    return(parts.length?parts.join(' e ').replace(/ e (?=[^e]* e )/,', '):'o mesmo dia')+(y||mo?' ('+n+' dias)':'')}
+  function datesCard(ref){
+    const seq=datedSequence(ref.book,ref.chapter);if(seq.length<2)return null;
+    const i=seq.findIndex(x=>x.c===+ref.chapter&&x.v===+ref.verse);if(i<0)return null;
+    const cur=seq[i],prev=seq[i-1],next=seq[i+1],first=seq[0],last=seq[seq.length-1];
+    const lines=[];
+    if(prev)lines.push({go:[ref.book,prev.c,prev.v],t:'Desde '+short(ref.book,prev.c,prev.v)+' (dia '+prev.d+' do '+prev.m+'º mês)',n:span(cur.idx-prev.idx)});
+    if(next)lines.push({go:[ref.book,next.c,next.v],t:'Até '+short(ref.book,next.c,next.v)+' (dia '+next.d+' do '+next.m+'º mês)',n:span(next.idx-cur.idx)});
+    if(seq.length>=3&&last.idx>first.idx)lines.push({go:null,t:'Do primeiro ao último dia datado ('+short(ref.book,first.c,first.v)+' → '+short(ref.book,last.c,last.v)+')',n:span(last.idx-first.idx)});
+    return{lines};
+  }
+
+  /* ---- 3. onde mais aparece (palavras de pouca ocorrência que ligam passagens) ---- */
+  function echoes(cp,book,c,v){
+    const vt=verseTokens(cp,book,c,v);if(!vt)return[];
+    const I=index(cp),C=cp.C,out=[],seen=new Set();
+    for(const t of vt.toks){
+      if(seen.has(t.s)||!content(cp.pt,t.s))continue;seen.add(t.s);
+      const n=I.count.get(t.s)||0,bks=I.books.get(t.s);if(n<2||n>60||!bks||bks.size>4||bks.size<2)continue;
+      const refs=(I.refs.get(t.s)||[]).map(([bi,ci,vi])=>{const b=C.b[bi];let cc=ci+1,vv=vi+1;if(!cp.nt&&window.DoxaVersif){const r=window.DoxaVersif.toPt(b,cc,vv);if(!r)return null;cc=r.chapter;vv=r.verse}return{b,c:cc,v:vv}}).filter(Boolean);
+      const other=refs.filter(r=>r.b!==book);if(!other.length)continue;
+      const per={};for(const r of refs)per[r.b]=(per[r.b]||0)+1;
+      out.push({lem:t.L[3],tr:t.L[4],g:gloss(cp.pt,t.s,t.L),n,vs:refs.length,per,other:other.slice(0,8),more:Math.max(0,other.length-8)});
+    }
+    return out.sort((a,b)=>a.n-b.n).slice(0,3);
+  }
+
+  /* ---- 4. festas: o que são na Lei e onde o Novo Testamento volta a elas ---- */
+  const FESTAS=[
+    {k:'pascoa',nome:'Páscoa',m:1,d1:14,d2:14,re:/p[áa]scoa(?!\s+tardia)/i,lei:'Êx 12; Lv 23:5',nt:[['1Cor',5,7],['John',1,29],['1Pet',1,19]],txt:'O cordeiro sem defeito, cujo sangue livrou Israel da morte no Egito.'},
+    {k:'asmos',nome:'Pães Asmos',m:1,d1:15,d2:21,re:/p[ãa]es\s+asmos|asmos/i,lei:'Êx 12:15–20; Lv 23:6–8',nt:[['1Cor',5,8]],txt:'Sete dias sem fermento, lembrando a saída às pressas do Egito.'},
+    {k:'primicias',nome:'Primícias',m:1,d1:16,d2:16,re:/prim[íi]cias/i,lei:'Lv 23:9–14',nt:[['1Cor',15,20],['1Cor',15,23]],txt:'O primeiro feixe da colheita, oferecido no dia seguinte ao sábado da Páscoa.'},
+    {k:'tardia',nome:'Páscoa tardia',m:2,d1:14,d2:14,re:/p[áa]scoa\s+tardia/i,lei:'Nm 9:9–14',nt:[],txt:'Uma segunda chance de celebrar a Páscoa, um mês depois, para quem estava impuro ou em viagem.'},
+    {k:'semanas',nome:'Pentecostes (Semanas)',m:3,d1:6,d2:6,re:/pentecostes|festa\s+das\s+semanas/i,lei:'Lv 23:15–21; Dt 16:9–12',nt:[['Acts',2,1],['Acts',2,4]],txt:'Cinquenta dias depois das Primícias: a festa da colheita do trigo.'},
+    {k:'trombetas',nome:'Trombetas',m:7,d1:1,d2:1,re:/festa\s+das\s+trombetas|dia\s+de\s+jubilo/i,lei:'Lv 23:23–25; Nm 29:1',nt:[['1Thess',4,16],['1Cor',15,52]],txt:'Um dia de descanso anunciado ao som das trombetas, no começo do 7º mês.'},
+    {k:'expiacao',nome:'Dia da Expiação',m:7,d1:10,d2:10,re:/expia[çc][ãa]o/i,lei:'Lv 16; 23:26–32',nt:[['Heb',9,7],['Heb',9,12],['Heb',9,24]],txt:'O único dia em que o sumo sacerdote entrava no Santo dos Santos, com sangue, pelos pecados do povo.'},
+    {k:'tabernaculos',nome:'Tabernáculos',m:7,d1:15,d2:22,re:/tabern[áa]culos|festa\s+das\s+cabanas|cabanas/i,lei:'Lv 23:33–43; Dt 16:13–15',nt:[['John',7,2],['John',7,37],['John',1,14],['Rev',21,3]],txt:'Sete dias morando em cabanas, lembrando o deserto, e alegria pela colheita; o 8º dia era de assembleia solene.'},
+    {k:'dedicacao',nome:'Dedicação',m:9,d1:25,d2:25,re:/festa\s+da\s+dedica[çc][ãa]o/i,lei:'(depois do Antigo Testamento)',nt:[['John',10,22]],txt:'A purificação do templo depois da profanação, celebrada no inverno.'},
+    {k:'purim',nome:'Purim',m:12,d1:14,d2:15,re:/purim/i,lei:'Et 9:20–32',nt:[],txt:'A memória do livramento dos judeus nos dias de Ester.'}];
+  function feastsFor(text,times){
+    const out=[],seen=new Set();
+    for(const f of FESTAS)if(f.re.test(text)&&!seen.has(f.k)){seen.add(f.k);out.push({f,rel:'citada neste versículo'})}
+    for(const tm of times||[]){if(!tm.month||!tm.day)continue;
+      for(const f of FESTAS){if(f.m!==tm.month||seen.has(f.k))continue;
+        if(tm.day>=f.d1&&tm.day<=f.d2){seen.add(f.k);out.push({f,rel:'esta data cai na festa'})}
+        else if(Math.abs(tm.day-f.d1)<=3||Math.abs(tm.day-f.d2)<=3){const dd=tm.day<f.d1?f.d1-tm.day:tm.day-f.d2;seen.add(f.k);out.push({f,rel:dd+(dd===1?' dia ':' dias ')+(tm.day<f.d1?'antes':'depois')+' da festa'})}}}
+    return out;
+  }
+
+  /* ---- 5. a mesma expressão em outros lugares ("quarenta dias", "sete anos"…) ---- */
+  let ALM=null;
+  function almNorm(){if(ALM)return ALM;const A=almeida();ALM=[];if(!A)return ALM;for(const b of A.books)for(const c of b.chapters)for(const v of c.verses)ALM.push({b:b.book,c:+c.chapter,v:+v.number,n:' '+N(v.text).replace(/[^a-z0-9]+/g,' ')+' '});return ALM}
+  const NUMW='um|uma|dois|duas|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|catorze|quatorze|quinze|vinte|trinta|quarenta|cinquenta|cincoenta|sessenta|setenta|oitenta|noventa|cem|cento|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos|mil';
+  function phrases(text){
+    const t=' '+N(text).replace(/[^a-z0-9]+/g,' ')+' ';const out=[];
+    // "quarenta dias e quarenta noites" é uma expressão só
+    const dn=t.match(new RegExp(' ((?:(?:'+NUMW+')(?: e )?)+) dias e \\1 noites '));
+    if(dn)out.push((dn[1].trim()+' dias e '+dn[1].trim()+' noites').replace(/\s+/g,' '));
+    const re=new RegExp(' ((?:(?:'+NUMW+')(?: e )?)+) (dias|noites|anos|meses|semanas|vezes|geracoes|tribos|anciaos|homens|reis|cidades|pedras|paes|portas|candeeiros|selos|trombetas|tacas|anjos|igrejas)(?= )','g');let m;
+    while((m=re.exec(t))){
+      const ph=(m[1].trim()+' '+m[2]).replace(/\s+/g,' ');
+      const after=t.slice(m.index+m[0].length,m.index+m[0].length+12);
+      const isDate=/^ (do|deste|desse|daquele) mes/.test(after);          // "aos vinte e sete dias do mês" é data, não expressão
+      const inside=dn&&(dn[0].includes(' '+ph+' '));
+      if(!isDate&&!inside&&!out.includes(ph))out.push(ph);
+      re.lastIndex=m.index+m[0].length;                                 // não reler pedaços ("sete dias" dentro de "vinte e sete dias")
+    }
+    return out.slice(0,2);
+  }
+  function sameExpression(ref){
+    const text=ptText(ref);if(!text)return[];
+    const res=[];
+    for(const ph of phrases(text)){
+      const key=' '+ph+' ',numEnd=new RegExp('(?:^| )(?:'+NUMW+') e $');
+      // conta só a expressão de verdade: não um pedaço de número maior ("vinte e sete dias") nem uma data ("…dias do mês")
+      const real=n=>{let i=n.indexOf(key);while(i>=0){const before=n.slice(Math.max(0,i-22),i+1),after=n.slice(i+key.length-1,i+key.length+12);
+        if(!numEnd.test(before)&&!/^ (do|deste|desse|daquele) mes/.test(after))return true;i=n.indexOf(key,i+1)}return false};
+      const hits=almNorm().filter(x=>x.n.includes(key)&&real(x.n)&&!(x.b===ref.book&&x.c===+ref.chapter&&x.v===+ref.verse));
+      if(hits.length<1)continue;
+      const books=new Set(hits.map(h=>h.b));
+      res.push({ph,total:hits.length+1,books:books.size,hits:hits.slice(0,12),more:Math.max(0,hits.length-12)});
+    }
+    return res;
+  }
+  const SAVE=[];
+  const saveBtn=(i)=>'<button type="button" class="lupa-save" data-save="'+i+'" aria-label="Guardar na nota">'+ICON.save+'<span>Guardar na nota</span></button>';
+  function card(kind,icon,title,html,plain){const i=SAVE.length;SAVE.push(title+': '+plain);return'<article class="lupa-card k-'+kind+'"><header><span class="ic">'+icon+'</span><small>'+title+'</small>'+saveBtn(i)+'</header>'+html+'</article>'}
   function cardsFor(ref){
-    const cards=[];const H=hebOf(ref);
+    const cards=[];const H=hebOf(ref);SAVE.length=0;
     const cp0=corpusFor(ref.book),vt0=cp0?verseTokens(cp0,ref.book,H.chapter,H.verse):null;
     const ms=measures(ptText(ref),ref.book,new Set(vt0?vt0.toks.map(t=>t.s):[]),ref.chapter);
-    for(const m of ms)cards.push('<article class="lupa-card k-'+m.k+'"><header><span class="ic">'+(ICON[m.k]||ICON.lupa)+'</span><small>'+(m.k==='time'?'TEMPO':m.k==='money'?'VALOR':'MEDIDA')+'</small></header>'
-      +'<p class="lupa-q">'+esc(m.t)+'</p><p class="lupa-big">'+esc(m.big)+'</p>'+(m.cmp?'<p class="lupa-cmp">'+esc(m.cmp)+'</p>':'')+'<p class="lupa-sub">'+esc(m.sub)+'</p></article>');
+    for(const m of ms)cards.push(card(m.k,ICON[m.k]||ICON.lupa,m.k==='time'?'TEMPO':m.k==='money'?'VALOR':'MEDIDA',
+      '<p class="lupa-q">'+esc(m.t)+'</p><p class="lupa-big">'+esc(m.big)+'</p>'+(m.cmp?'<p class="lupa-cmp">'+esc(m.cmp)+'</p>':'')+'<p class="lupa-sub">'+esc(m.sub)+'</p>',
+      m.t+' ≈ '+m.big.replace(/^≈\s*/,'')+(m.cmp?' ('+m.cmp+')':'')+'. '+m.sub));
+    // contagem de dias entre as datas do relato
+    const dc=datesCard(ref);
+    if(dc)cards.push(card('days',ICON.days,'DIAS ENTRE AS DATAS',
+      dc.lines.map(l=>'<div class="lupa-span">'+(l.go?'<button type="button" class="lupa-go" data-go="'+l.go.join('|')+'">'+esc(l.t)+'</button>':'<span>'+esc(l.t)+'</span>')+'<b>'+esc(l.n)+'</b></div>').join('')
+      +'<p class="lupa-sub">Contando meses de 30 dias, como o próprio relato faz (no dilúvio, 5 meses = 150 dias: Gn 7:11, 24; 8:3–4).</p>',
+      dc.lines.map(l=>l.t+': '+l.n).join('; ')+'.'));
+    // festas
+    const fs=feastsFor(ptText(ref),ms.filter(m=>m.k==='time'));
+    for(const {f,rel} of fs)cards.push(card('feast',ICON.feast,'FESTA',
+      '<p class="lupa-q">'+esc(rel)+'</p><p class="lupa-big">'+esc(f.nome)+'</p><p class="lupa-sub">'+esc(f.txt)+'</p>'
+      +'<p class="lupa-sub"><b>Na Lei:</b> '+esc(f.lei)+'</p>'+(f.nt.length?'<div class="lupa-chips"><span>No Novo Testamento:</span>'+f.nt.map(([b,c,v])=>'<button type="button" data-go="'+b+'|'+c+'|'+v+'">'+esc(short(b,c,v))+'</button>').join('')+'</div>':''),
+      f.nome+' ('+rel+'). '+f.txt+' Na Lei: '+f.lei+'.'+(f.nt.length?' No NT: '+f.nt.map(x=>short(...x)).join(', ')+'.':'')));
+    // a mesma expressão em outros lugares
+    for(const e of sameExpression(ref))cards.push(card('expr',ICON.expr,'MESMA EXPRESSÃO',
+      '<p class="lupa-q">“'+esc(e.ph)+'”</p><p class="lupa-big">'+e.total+' vezes</p><p class="lupa-sub">em '+e.books+(e.books===1?' livro':' livros')+' da Bíblia</p>'
+      +'<div class="lupa-chips">'+e.hits.map(h=>'<button type="button" data-go="'+h.b+'|'+h.c+'|'+h.v+'">'+esc(short(h.b,h.c,h.v))+'</button>').join('')+(e.more?'<button type="button" data-search="'+esc(e.ph)+'">+'+e.more+' na busca</button>':'')+'</div>',
+      '“'+e.ph+'” aparece '+e.total+' vezes: '+e.hits.map(h=>short(h.b,h.c,h.v)).join(', ')+(e.more?' e mais '+e.more:'')+'.'));
     const cp=corpusFor(ref.book);
     if(cp){
       const r=rarities(cp,ref.book,H.chapter,H.verse);
-      if(r.length)cards.push('<article class="lupa-card k-rare"><header><span class="ic">'+ICON.rare+'</span><small>RARIDADES</small></header>'
-        +r.map(x=>'<div class="lupa-w"><b class="'+(cp.nt?'gr':'he')+'">'+esc(x.lem)+'</b><span>'+esc(x.tr)+' · '+esc(x.g)+'</span><em>'+esc(x.badge)+'</em></div>').join('')+'</article>');
+      if(r.length)cards.push(card('rare',ICON.rare,'RARIDADES',
+        r.map(x=>'<div class="lupa-w"><b class="'+(cp.nt?'gr':'he')+'">'+esc(x.lem)+'</b><span>'+esc(x.tr)+' · '+esc(x.g)+'</span><em>'+esc(x.badge)+'</em></div>').join(''),
+        r.map(x=>x.lem+' ('+x.tr+', '+x.g+'): '+x.badge).join('; ')+'.'));
+      const ec=echoes(cp,ref.book,H.chapter,H.verse);
+      if(ec.length)cards.push(card('echo',ICON.echo,'ONDE MAIS APARECE',
+        ec.map(x=>'<div class="lupa-w"><b class="'+(cp.nt?'gr':'he')+'">'+esc(x.lem)+'</b><span>'+esc(x.tr)+' · '+esc(x.g)+'</span><em>'+x.n+' vezes, em '+x.vs+' versículos: '+Object.entries(x.per).map(([b,n])=>(ABBR[b]||b)+' '+n).join(' · ')+'</em></div>'
+          +'<div class="lupa-chips">'+x.other.map(o=>'<button type="button" data-go="'+o.b+'|'+o.c+'|'+o.v+'">'+esc(short(o.b,o.c,o.v))+'</button>').join('')+(x.more?'<span>+'+x.more+'</span>':'')+'</div>').join(''),
+        ec.map(x=>x.lem+' ('+x.tr+', '+x.g+') aparece '+x.n+' vezes; em outros livros: '+x.other.map(o=>short(o.b,o.c,o.v)).join(', ')).join('; ')+'.'));
       const st=structure(cp,ref.book,H.chapter,H.verse);
-      if(st)cards.push('<article class="lupa-card k-struct"><header><span class="ic">'+ICON.struct+'</span><small>ESTRUTURA</small></header>'
+      if(st)cards.push(card('struct',ICON.struct,'ESTRUTURA',''
         +(st.acro?'<div class="lupa-acro"><b class="he">'+esc(st.acro.letter)+'</b><span>Acróstico: este versículo começa com <strong>'+st.acro.name+'</strong>, a '+st.acro.pos+'ª letra do alfabeto hebraico'+(st.acro.group>1?' ('+st.acro.group+' versículos por letra)':'')+'.</span></div>':'')
         +(st.words.length?'<p class="lupa-sub">Palavras que se repetem em '+esc(st.where)+':</p>'+st.words.map(w=>'<div class="lupa-w"><b class="'+(cp.nt?'gr':'he')+'">'+esc(w.lem)+'</b><span>'+esc(w.g)+'</span><em>'+w.n+' vezes'+(w.mark?' · '+esc(w.mark):'')+'</em></div>').join(''):'')
-        +(st.refrain?'<div class="lupa-ref"><p class="lupa-sub">Frase que volta '+st.refrain.n+' vezes em '+esc(st.where)+':</p><b class="'+(cp.nt?'gr':'he')+'">'+esc(st.refrain.forms)+'</b><span>'+esc(st.refrain.pt)+'</span></div>':'')
-        +'</article>');
+        +(st.refrain?'<div class="lupa-ref"><p class="lupa-sub">Frase que volta '+st.refrain.n+' vezes em '+esc(st.where)+':</p><b class="'+(cp.nt?'gr':'he')+'">'+esc(st.refrain.forms)+'</b><span>'+esc(st.refrain.pt)+'</span></div>':''),
+        (st.acro?'Acróstico: começa com '+st.acro.name+' ('+st.acro.letter+'). ':'')+(st.words.length?'Palavras que se repetem em '+st.where+': '+st.words.map(w=>w.lem+' ('+w.g.split(',')[0]+') '+w.n+' vezes').join('; ')+'. ':'')+(st.refrain?'Frase que volta '+st.refrain.n+' vezes: '+st.refrain.pt+'.':'')));
     }else if(!NT_BOOKS.includes(ref.book)){
       cards.push('<article class="lupa-card k-wait"><header><span class="ic">'+ICON.time+'</span><small>CARREGANDO</small></header><p class="lupa-sub">Preparando o texto hebraico… toque de novo em um instante.</p></article>');
     }
     if(!cards.length)cards.push('<article class="lupa-card k-none"><header><span class="ic">'+ICON.lupa+'</span><small>LUPA</small></header><p class="lupa-sub">Nada escondido neste versículo. Tente outro, uma genealogia, um salmo ou uma passagem com medidas e datas.</p></article>');
     return cards;
   }
+  let lastRef=null;
   function show(el,ref){
-    closeCards();
+    closeCards();lastRef=ref;
     current=ref.label;el.classList.add('lupa-sel');
     const f=document.createElement('div');f.id='lupaFloat';f.className='lupa-float';
     f.innerHTML='<div class="lupa-track">'+cardsFor(ref).join('')+'</div>';
@@ -366,6 +522,23 @@
     f.querySelectorAll('.lupa-card').forEach((c,i)=>c.style.setProperty('--i',i));
     requestAnimationFrame(()=>f.classList.add('on'));
   }
+  function lupaToast(msg){let t=$('contaToast');if(!t){t=document.createElement('div');t.id='contaToast';t.className='conta-toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600)}
+  function goVerse(b,c,v){
+    try{let cc=+c,vv=+v;if(mode==='wlc'&&window.DoxaVersif){const h=window.DoxaVersif.toHeb(b,cc,vv);cc=h.chapter;vv=h.verse}
+      const md=CORPORA[mode]&&mode!=='hyper'?mode:'almeida';const bi=CORPORA[md].books.findIndex(x=>x.book===b);if(bi<0)return;
+      if(md!==mode)mode=md;positions[mode]={...(positions[mode]||{}),b:bi,c:cc};focusVerse=vv;closeCards();renderReader();
+      setTimeout(()=>document.getElementById('v'+vv)?.scrollIntoView({block:'center',behavior:'smooth'}),60)}catch(e){}
+  }
+  document.addEventListener('click',async e=>{
+    const f=e.target.closest&&e.target.closest('#lupaFloat');if(!f)return;
+    const go=e.target.closest('[data-go]');if(go){e.preventDefault();const [b,c,v]=go.dataset.go.split('|');goVerse(b,c,v);return}
+    const sr=e.target.closest('[data-search]');if(sr){e.preventDefault();setMode(false);try{openPanel('buscar');const q=$('q');q.value='"'+sr.dataset.search+'"';window.renderSearch&&window.renderSearch()}catch(err){}return}
+    const sv=e.target.closest('[data-save]');if(sv){e.preventDefault();
+      if(!window.DoxaNotes||!window.DoxaNotes.append||!lastRef){lupaToast('As notas ainda estão carregando. Tente de novo.');return}
+      const txt='Lupa · '+SAVE[+sv.dataset.save];
+      try{await window.DoxaNotes.append(lastRef,txt);sv.classList.add('done');sv.querySelector('span').textContent='Guardado';lupaToast('Guardado na nota de '+lastRef.label+'.')}catch(err){lupaToast('Não foi possível guardar agora.')}
+    }
+  },true);
   // toque nos versículos (antes dos outros modos), saída pela aba e fechamento ao rolar
   const host=$('textBody');
   if(host)host.addEventListener('click',e=>{
@@ -386,5 +559,5 @@
   window.addEventListener('scroll',()=>{if(on&&$('lupaFloat')&&Math.abs(window.scrollY-lastY)>30)closeCards();lastY=window.scrollY},{passive:true});
 
   ensureCard();setTimeout(ensureCard,1200);
-  window.DoxaLupa={setMode,measures:(t,b,st)=>measures(t,b,st),measuresAt:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v}),vt=cp?verseTokens(cp,b,H.chapter,H.verse):null;const tx=(CORPORA.almeida.books.find(x=>x.book===b)?.chapters.find(x=>+x.chapter===c)?.verses.find(x=>+x.number===v)||{}).text||'';return measures(tx,b,new Set(vt?vt.toks.map(t=>t.s):[]),c)},rarities:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v});return cp?rarities(cp,b,H.chapter,H.verse):null},structure:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v});return cp?structure(cp,b,H.chapter,H.verse):null}};
+  window.DoxaLupa={cardsAt:(b,c,v)=>{const r={book:b,chapter:c,verse:v,label:b+' '+c+':'+v,sourceMode:'almeida'};lastRef=r;return{html:cardsFor(r),save:SAVE.slice()}},datesCard:r=>datesCard(r),setMode,measures:(t,b,st)=>measures(t,b,st),measuresAt:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v}),vt=cp?verseTokens(cp,b,H.chapter,H.verse):null;const tx=(CORPORA.almeida.books.find(x=>x.book===b)?.chapters.find(x=>+x.chapter===c)?.verses.find(x=>+x.number===v)||{}).text||'';return measures(tx,b,new Set(vt?vt.toks.map(t=>t.s):[]),c)},rarities:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v});return cp?rarities(cp,b,H.chapter,H.verse):null},structure:(b,c,v)=>{const cp=corpusFor(b),H=hebOf({book:b,chapter:c,verse:v});return cp?structure(cp,b,H.chapter,H.verse):null}};
 })();

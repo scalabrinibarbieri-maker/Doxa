@@ -328,6 +328,17 @@
     applyFlags();installTools();installSettings();installMenu();installMarks();ensureSheet();load();
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editing)closeEditor()});
   }
-  window.DoxaNotes={open:openNote,openEdit,openView,list:()=>db.items.slice()};
+  /* Doxa 61 · outras ferramentas (a Lupa) podem acrescentar um texto à nota do versículo:
+     se o versículo já tem nota, o texto entra no fim dela; se não, cria uma nota nova. */
+  async function appendToVerse(ref,text){
+    if(!ref||!ref.book||!text)return null;
+    if(!loaded)await load();
+    const now=Date.now();
+    let n=db.items.filter(x=>x.book===ref.book&&Number(x.chapter)===Number(ref.chapter)&&Number(x.verse)===Number(ref.verse)).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0))[0];
+    if(n){n.text=(n.text?String(n.text).replace(/\s+$/,'')+'\n\n':'')+text;n.updatedAt=now}
+    else{n={id:'n_'+now.toString(36)+Math.random().toString(36).slice(2,6),book:ref.book,chapter:Number(ref.chapter),verse:Number(ref.verse),label:labelOf(ref),text,folderId:null,createdAt:now,updatedAt:now};db.items.push(n)}
+    await save();return n;
+  }
+  window.DoxaNotes={open:openNote,openEdit,openView,list:()=>db.items.slice(),append:appendToVerse};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
