@@ -1,0 +1,68 @@
+/* Doxa 61 · Leitura Cronológica */
+
+/* no texto: um fio dourado nos versos que têm paralelo; mais forte no verso que está sendo lido */
+body.doxa-crono-on #textBody .verse.crono-has{position:relative}
+body.doxa-crono-on #textBody .verse.crono-has::before{content:'';position:absolute;left:-11px;top:.42em;bottom:.42em;width:2px;border-radius:2px;
+  background:color-mix(in srgb,var(--d30-gold,#d9a25e) 32%,transparent);transition:background-color .25s,width .25s,left .25s}
+body.doxa-crono-on #textBody .verse.crono-has.crono-now::before{left:-12px;width:3px;background:var(--d30-gold,#d9a25e)}
+/* espaço no fim do capítulo para os últimos versos chegarem à linha de leitura */
+body.doxa-crono-on #textBody::after{content:'';display:block;height:40vh}
+
+/* o cartão: sobe de baixo, até meia tela */
+.crono-sheet{position:fixed;left:10px;right:10px;bottom:var(--cb,96px);z-index:60;
+  display:flex;flex-direction:column;max-height:50vh;max-width:760px;margin:0 auto;
+  border-radius:22px;overflow:hidden;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--d30-panel,#0d0a07) 92%,var(--d30-gold,#d9a25e) 8%),var(--d30-panel,#0d0a07) 64px),var(--d30-panel,#0d0a07);
+  color:var(--d30-text,#f3ebe0);
+  border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 26%,transparent);
+  box-shadow:0 -10px 40px rgba(0,0,0,.28),0 18px 40px rgba(0,0,0,.22);
+  transform:translate3d(0,calc(100% + var(--cb,96px) + 20px),0);visibility:hidden;
+  transition:transform .42s cubic-bezier(.22,1,.36,1),bottom .3s ease,visibility 0s linear .42s}
+.crono-sheet.on{transform:none;visibility:visible;transition:transform .42s cubic-bezier(.22,1,.36,1),bottom .3s ease,visibility 0s}
+body.hud-hidden .crono-sheet{bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
+body:not(.doxa-crono-on) .crono-sheet{display:none}
+
+.crono-grip{flex:0 0 auto;display:flex;justify-content:center;padding:7px 0 1px;cursor:grab;touch-action:none}
+.crono-grip i{width:38px;height:4px;border-radius:4px;background:color-mix(in srgb,var(--d30-text,#f3ebe0) 22%,transparent)}
+.crono-head{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:2px 8px 0 12px;touch-action:pan-x}
+.crono-tabs{flex:1 1 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:4px 0}
+.crono-tabs::-webkit-scrollbar{display:none}
+.crono-tabs button{flex:0 0 auto;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 26%,transparent);background:transparent;
+  color:var(--d30-muted,#b8ab98);font:600 12.5px/1 system-ui,-apple-system,sans-serif;padding:8px 12px;border-radius:999px;white-space:nowrap;cursor:pointer;
+  transition:background-color .2s,color .2s,border-color .2s}
+.crono-tabs button.soft{font-style:italic}
+.crono-tabs button.on{background:color-mix(in srgb,var(--d30-gold,#d9a25e) 20%,transparent);border-color:color-mix(in srgb,var(--d30-gold,#d9a25e) 60%,transparent);color:color-mix(in srgb,var(--d30-gold,#d9a25e) 72%,var(--d30-text,#f3ebe0))}
+.crono-min{flex:0 0 auto;width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:var(--d30-muted,#b8ab98);display:grid;place-items:center;cursor:pointer;transition:transform .3s}
+.crono-min svg{width:20px;height:20px}
+.crono-sheet.min .crono-min{transform:rotate(180deg)}
+
+.crono-meta{flex:0 0 auto;display:flex;align-items:baseline;gap:8px;padding:8px 16px 0;min-width:0}
+.crono-kind{flex:0 0 auto;font:700 10.5px/1.2 system-ui,-apple-system,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--d30-gold,#d9a25e)}
+.crono-where{flex:1 1 auto;min-width:0;text-align:right;font:500 11.5px/1.2 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crono-open{flex:0 0 auto;display:inline-flex;align-items:center;gap:2px;border:0;background:transparent;color:color-mix(in srgb,var(--d30-gold,#d9a25e) 72%,var(--d30-text,#f3ebe0));font:600 12.5px/1 system-ui,-apple-system,sans-serif;padding:4px 0 4px 6px;cursor:pointer}
+.crono-open svg{width:15px;height:15px}
+.crono-note{flex:0 0 auto;margin:7px 16px 0;padding:8px 11px;border-radius:12px;font:400 12.5px/1.45 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98);
+  background:color-mix(in srgb,var(--d30-gold,#d9a25e) 8%,transparent)}
+.crono-note[hidden]{display:none}
+
+.crono-text{position:relative;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  padding:10px 16px 18px;font-family:var(--doxa-font,Georgia,'Times New Roman',serif);font-size:calc(var(--reader-font-size,18.5px) * .95);line-height:1.55}
+.crono-text.hebrew{font-family:"SBL Hebrew","Taamey Frank CLM","Ezra SIL","Noto Serif Hebrew","Times New Roman",serif;font-size:calc(var(--reader-font-size,18.5px) * 1.2);line-height:1.75}
+.crono-v{margin:0 0 .55em;padding:4px 8px;margin-left:-8px;margin-right:-8px;border-radius:10px;color:color-mix(in srgb,var(--d30-text,#f3ebe0) 82%,transparent);
+  transition:background-color .35s,color .35s,box-shadow .35s}
+.crono-v sup{font:600 .6em/1 system-ui,-apple-system,sans-serif;color:var(--d30-gold,#d9a25e);margin-right:.4em;vertical-align:super}
+.crono-v.hit{color:var(--d30-text,#f3ebe0);background:color-mix(in srgb,var(--d30-gold,#d9a25e) 15%,transparent);box-shadow:inset 3px 0 0 var(--d30-gold,#d9a25e)}
+.crono-text.hebrew .crono-v.hit{box-shadow:inset -3px 0 0 var(--d30-gold,#d9a25e)}
+.crono-ch{font:700 10.5px/1 system-ui,-apple-system,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--d30-muted,#b8ab98);margin:6px 0 10px}
+.crono-ch:not(:first-child){margin-top:14px}
+.crono-gap{text-align:center;color:var(--d30-muted,#b8ab98);letter-spacing:.3em;margin:4px 0 12px;font-size:13px}
+
+/* recolhido: só a alça e as abas */
+.crono-sheet.min .crono-meta,.crono-sheet.min .crono-note,.crono-sheet.min .crono-text{display:none}
+.crono-sheet.min .crono-head{padding-bottom:8px}
+
+/* aba Ferramentas virando "Sair" */
+.doxa30-nav-item.crono-exit{color:var(--d30-gold2,#f1c989)!important}
+
+@media(min-width:900px){.crono-sheet{max-height:46vh}}
+@media(prefers-reduced-motion:reduce){.crono-sheet,.crono-sheet.on{transition:none}.crono-v{transition:none}}
