@@ -1,0 +1,628 @@
+(()=>{
+  'use strict';
+  /* Doxa 61 · LEITURA CRONOLÓGICA
+     Modo de leitura (entra por Ferramentas). Enquanto se rola o texto, quando outra parte da Escritura
+     narra o mesmo acontecimento — ou aconteceu ao mesmo tempo —, sobe um cartão de até meia tela com
+     esse outro texto, rolando junto. Em Reis × Crônicas, Isaías 36–39, Jeremias 52, os Evangelhos,
+     Atos × cartas, vira leitura paralela.
+
+     A tabela abaixo foi montada passagem por passagem (numeração da Almeida, a mesma da KJV).
+     Dentro de cada par, o alinhamento verso a verso foi calculado pelo léxico do original
+     (Strong hebraico / grego): versos muito parecidos ficam destacados no cartão; quando a
+     correspondência é fraca ou não existe, o cartão só acompanha a posição, sem destacar nada.
+     Salmos, Provérbios e Cantares ficam de fora.
+
+     Tipos: r = o mesmo acontecimento · l = a mesma lista · w = as mesmas palavras · g = outra genealogia
+            t = ao mesmo tempo (a 1ª passagem é a âncora) · T = ao mesmo tempo (todas ligadas)
+     Passagem: [referência, 1 se for "ao mesmo tempo", nota].
+     Pares "i-j": contas do alinhamento ("" = ligadas, mas sem alinhar verso a verso).
+       forte: . c d e f g  (1-1, 1-2, 2-1, 2-2, 1-3, 3-1) · fraco: , C D E F G · sem par: a (só i) b (só j) */
+  if(window.__doxa61CronoInstalled)return;
+  window.__doxa61CronoInstalled=true;
+
+  const ROWS=[
+    ["l","",[["Gen 5:1-32",0],["1Chr 1:1-4",0]],{"0-1":"a5.a5.a11da6."}],
+    ["l","",[["Gen 10:1-32",0],["1Chr 1:5-23",0]],{"0-1":"a.3a.3a4.6a3d.6a3"}],
+    ["l","",[["Gen 11:10-26",0],["1Chr 1:24-27",0]],{"0-1":"ada5.a4da,"}],
+    ["l","",[["Gen 25:12-16",0],["1Chr 1:28-31",0]],{"0-1":".4a"}],
+    ["l","",[["Gen 25:1-4",0],["1Chr 1:32-33",0]],{"0-1":"a.a."}],
+    ["l","",[["Gen 36:10-14",0],["1Chr 1:35-37",0]],{"0-1":".2a.a"}],
+    ["l","",[["Gen 36:20-28",0],["1Chr 1:38-42",0]],{"0-1":"d.2ad2"}],
+    ["l","",[["Gen 36:31-43",0],["1Chr 1:43-54",0]],{"0-1":"d.11"}],
+    ["l","",[["Gen 35:23-26",0],["1Chr 2:1-2",0]],{"0-1":".g"}],
+    ["l","",[["Ruth 4:18-22",0],["1Chr 2:5-15",0]],{"0-1":".b3.4b3"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Exod 18:13-27",0],["Deut 1:9-18",0]],{"0-1":"a,b4a2.a7.b2.a"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Num 13:1-14:45",0],["Deut 1:19-46",0]],{"0-1":"b3a16,ba6.a,b2a,a13,b2a,a2.a,a6.,ba5.2,a7,a.ba2.b2"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Num 20:14-21",0],["Deut 2:1-8",0]],{"0-1":"ba4,ba2,b4"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Num 21:21-32",0],["Deut 2:26-37",0]],{"0-1":".2b4.b4.a8"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Num 21:33-35",0],["Deut 3:1-11",0]],{"0-1":".3b8"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Num 32:1-42",0],["Deut 3:12-20",0]],{"0-1":"ba32.ba6.b5a2"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Num 27:12-23",0],["Deut 3:23-29",0]],{"0-1":"b2,a2,ba6,ba"}],
+    ["r","",[["Num 27:12-14",0],["Deut 32:48-52",0]],{"0-1":"b.3b"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Exod 20:1-21",0],["Deut 5:1-33",0]],{"0-1":"b2Cb.9,.6b5a.b6a2"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Exod 31:18-32:35",0],["Deut 9:8-29",0]],{"0-1":"b2.ba6d.ba5.ba3.b3.ba2,ba4,b4a7"}],
+    ["r","Em Deuteronômio, Moisés relembra o que aconteceu.",[["Exod 34:1-28",0],["Deut 10:1-5",0]],{"0-1":"ca2.a23.b"}],
+    ["r","",[["Num 20:22-29",0],["Num 33:37-39",0],["Deut 10:6-7",0]],{"0-1":".2a.a4","0-2":"a4.ba3","1-2":""}],
+    ["r","",[["Josh 15:13-19",0],["Judg 1:10-15",0]],{"0-1":"d.5"}],
+    ["r","",[["Josh 15:63",0],["Judg 1:21",0]],{"0-1":"."}],
+    ["r","",[["Josh 16:10",0],["Judg 1:29",0]],{"0-1":"."}],
+    ["r","",[["Josh 17:11-13",0],["Judg 1:27-28",0]],{"0-1":"d."}],
+    ["r","",[["Josh 19:47",0],["Judg 18:27-29",0]],{"0-1":"b2."}],
+    ["r","",[["Josh 24:28-31",0],["Judg 2:6-9",0]],{"0-1":".b.2a"}],
+    ["l","",[["Josh 19:2-8",0],["1Chr 4:28-33",0]],{"0-1":".2,2a.2"}],
+    ["l","",[["Josh 21:1-42",0],["1Chr 6:54-81",0]],{"0-1":"a9.3d.3b3a.b.3a.d.6a.a.4a3"}],
+    ["r","",[["1Sam 31:1-13",0],["1Chr 10:1-12",0]],{"0-1":".11a."}],
+    ["l","",[["2Sam 3:2-5",0],["1Chr 3:1-4",0]],{"0-1":".2db"}],
+    ["r","",[["2Sam 5:1-3",0],["1Chr 11:1-3",0]],{"0-1":".3"}],
+    ["r","",[["2Sam 5:6-10",0],["1Chr 11:4-9",0]],{"0-1":".2,c."}],
+    ["r","",[["2Sam 5:11-16",0],["1Chr 14:1-7",0]],{"0-1":".4c."}],
+    ["l","",[["2Sam 5:14-16",0],["1Chr 3:5-9",0]],{"0-1":".c.b"}],
+    ["r","",[["2Sam 5:17-25",0],["1Chr 14:8-17",0]],{"0-1":".9b"}],
+    ["r","",[["2Sam 6:1-11",0],["1Chr 13:1-14",0]],{"0-1":",b4.2a.7"}],
+    ["r","",[["2Sam 6:12-19",0],["1Chr 15:25-16:3",0]],{"0-1":".,2.5"}],
+    ["r","",[["2Sam 6:19-20",0],["1Chr 16:43",0]],{"0-1":"D"}],
+    ["r","",[["2Sam 7:1-29",0],["1Chr 17:1-27",0]],{"0-1":"a.12a.15"}],
+    ["r","",[["2Sam 8:1-18",0],["1Chr 18:1-17",0]],{"0-1":".10d.6"}],
+    ["r","",[["2Sam 10:1-19",0],["1Chr 19:1-19",0]],{"0-1":".6b.8d.3"}],
+    ["r","",[["2Sam 11:1",0],["1Chr 20:1",0]],{"0-1":"."}],
+    ["r","",[["2Sam 12:26-31",0],["1Chr 20:1-3",0]],{"0-1":".a3.2"}],
+    ["r","",[["2Sam 21:18-22",0],["1Chr 20:4-8",0]],{"0-1":".5"}],
+    ["l","",[["2Sam 23:8-39",0],["1Chr 11:10-47",0]],{"0-1":"b.2a.14badb.2d.b.ba.ba.3b6"}],
+    ["r","",[["2Sam 24:1-25",0],["1Chr 21:1-22:1",0]],{"0-1":".4a4.b2.3c.3b.3b,.2a.b.b5"}],
+    ["l","",[["1Chr 8:29-38",0],["1Chr 9:35-44",0]],{"0-1":".10"}],
+    ["l","",[["1Chr 9:2-17",0],["Neh 11:3-19",0]],{"0-1":".,b,a2.a,b.3b,.b,ba."}],
+    ["r","",[["1Kgs 2:10-12",0],["1Chr 29:26-30",0]],{"0-1":",.b2,"}],
+    ["r","",[["1Kgs 3:4-15",0],["2Chr 1:1-13",0]],{"0-1":"b5.4a.a.a.ba2"}],
+    ["r","",[["1Kgs 4:21-26",0],["2Chr 9:25-26",0]],{"0-1":"b.a5"}],
+    ["r","",[["1Kgs 10:26-29",0],["2Chr 1:14-17",0],["2Chr 9:25-28",0]],{"0-1":".4","0-2":".b.d","1-2":".b.d"}],
+    ["r","",[["1Kgs 5:1-18",0],["2Chr 2:1-18",0]],{"0-1":"b2.ba3.b2.a,a2.b6a,a.a3"}],
+    ["r","",[["1Kgs 6:1-38",0],["2Chr 3:1-14",0]],{"0-1":"b.3b2a,a14.ba.a.a.2,a10"}],
+    ["r","",[["1Kgs 7:13-14",0],["2Chr 2:13-14",0]],{"0-1":"ba,"}],
+    ["r","",[["1Kgs 7:15-22",0],["2Chr 3:15-17",0]],{"0-1":"a.da2.a"}],
+    ["r","",[["1Kgs 7:23-51",0],["2Chr 4:1-5:1",0]],{"0-1":"b.4a11,b3.10c.2"}],
+    ["r","",[["1Kgs 8:1-11",0],["2Chr 5:2-14",0]],{"0-1":".10b2."}],
+    ["r","",[["1Kgs 8:12-21",0],["2Chr 6:1-11",0]],{"0-1":".5b.5"}],
+    ["r","",[["1Kgs 8:22-53",0],["2Chr 6:12-42",0]],{"0-1":".b.18d.7b3a4"}],
+    ["r","",[["1Kgs 8:54-66",0],["2Chr 7:1-10",0]],{"0-1":",b2a7.2b.2b."}],
+    ["r","",[["1Kgs 9:1-9",0],["2Chr 7:11-22",0]],{"0-1":".,b3.7"}],
+    ["r","",[["1Kgs 9:10-28",0],["2Chr 8:1-18",0]],{"0-1":".a,b2a4.a.7b4.d"}],
+    ["r","",[["1Kgs 10:1-13",0],["2Chr 9:1-12",0]],{"0-1":"d.11"}],
+    ["r","",[["1Kgs 10:14-25",0],["2Chr 9:13-24",0]],{"0-1":".12"}],
+    ["r","",[["1Kgs 11:41-43",0],["2Chr 9:29-31",0]],{"0-1":",.2"}],
+    ["r","",[["1Kgs 12:1-19",0],["2Chr 10:1-19",0]],{"0-1":".19"}],
+    ["r","",[["1Kgs 12:21-24",0],["2Chr 11:1-4",0]],{"0-1":".4"}],
+    ["r","",[["1Kgs 14:21-24",0],["2Chr 12:13-14",0]],{"0-1":".,a2"}],
+    ["r","",[["1Kgs 14:25-28",0],["2Chr 12:2-11",0]],{"0-1":".b6.3"}],
+    ["r","",[["1Kgs 14:29-31",0],["2Chr 12:15-16",0]],{"0-1":"d."}],
+    ["r","",[["1Kgs 15:1-8",0],["2Chr 13:1-14:1",0]],{"0-1":".2b4a3,b14,."}],
+    ["r","",[["1Kgs 15:9-12",0],["2Chr 14:2-5",0]],{"0-1":"a2.b3a"}],
+    ["r","",[["1Kgs 15:13-15",0],["2Chr 15:16-18",0]],{"0-1":".3"}],
+    ["r","",[["1Kgs 15:16-22",0],["2Chr 16:1-6",0]],{"0-1":"a.6"}],
+    ["r","",[["1Kgs 15:23-24",0],["2Chr 16:11-17:1",0]],{"0-1":".b.b2"}],
+    ["r","",[["1Kgs 22:1-35",0],["2Chr 18:1-34",0]],{"0-1":"a,2.32"}],
+    ["r","",[["1Kgs 22:41-50",0],["2Chr 20:31-21:1",0]],{"0-1":"a.ca.ba2.3"}],
+    ["r","",[["2Kgs 8:16-24",0],["2Chr 21:1-20",0]],{"0-1":".b3.6b9a,"}],
+    ["r","",[["2Kgs 8:25-29",0],["2Chr 22:1-6",0]],{"0-1":".2c.2"}],
+    ["r","",[["2Kgs 9:21-29",0],["2Chr 22:7-9",0]],{"0-1":"a2.a5.b"}],
+    ["r","",[["2Kgs 10:12-14",0],["2Chr 22:8",0]],{"0-1":"a.a"}],
+    ["r","",[["2Kgs 11:1-3",0],["2Chr 22:10-12",0]],{"0-1":".3"}],
+    ["r","",[["2Kgs 11:4-20",0],["2Chr 23:1-21",0]],{"0-1":",b2.14b2.2"}],
+    ["r","",[["2Kgs 11:21-12:3",0],["2Chr 24:1-3",0]],{"0-1":"a.2ba"}],
+    ["r","",[["2Kgs 12:4-16",0],["2Chr 24:4-14",0]],{"0-1":"ba2,2ba,b2.2a2.a,"}],
+    ["r","",[["2Kgs 12:17-18",0],["2Chr 24:23-24",0]],{"0-1":"a,b"}],
+    ["r","",[["2Kgs 12:19-21",0],["2Chr 24:25-27",0]],{"0-1":"ba2c"}],
+    ["r","",[["2Kgs 14:1-6",0],["2Chr 25:1-4",0]],{"0-1":"a.2a.2"}],
+    ["r","",[["2Kgs 14:7",0],["2Chr 25:11-12",0]],{"0-1":".b"}],
+    ["r","",[["2Kgs 14:8-14",0],["2Chr 25:17-24",0]],{"0-1":".3b.4"}],
+    ["r","",[["2Kgs 14:17-20",0],["2Chr 25:25-28",0]],{"0-1":".4"}],
+    ["r","",[["2Kgs 14:21-22",0],["2Chr 26:1-2",0]],{"0-1":".2"}],
+    ["w","O mesmo resumo do reinado de Jeoás de Israel aparece duas vezes em 2 Reis.",[["2Kgs 13:12-13",0],["2Kgs 14:15-16",0]],{"0-1":".2"}],
+    ["t","Jonas profetizou nos dias de Jeroboão II (2 Rs 14:25); Amós e Oséias também (Am 1:1; 7:10; Os 1:1).",[["2Kgs 14:23-29",0],["Jonah 1:1-3",1],["Amos 1:1-2",1],["Amos 7:10-17",1],["Hos 1:1-2",1]],{"0-1":"","0-2":"","0-3":"","0-4":""}],
+    ["r","",[["2Kgs 15:1-4",0],["2Chr 26:3-5",0]],{"0-1":"a.2ba"}],
+    ["r","",[["2Kgs 15:5-7",0],["2Chr 26:16-23",0],["Isa 6:1-13",1,"Isaías viu o Senhor “no ano em que morreu o rei Uzias” (Is 6:1)."]],{"0-1":"b5.,.","0-2":"","1-2":""}],
+    ["r","",[["2Kgs 15:32-38",0],["2Chr 27:1-9",0]],{"0-1":"a.3b3.ba."}],
+    ["r","",[["2Kgs 15:19-20;15:29",0],["1Chr 5:26",0]],{"0-1":",a2"}],
+    ["r","",[["2Kgs 16:1-4",0],["2Chr 28:1-4",0]],{"0-1":"a.c."}],
+    ["r","",[["2Kgs 16:5-6",0],["2Chr 28:5-8",0],["Isa 7:1-9",0]],{"0-1":"b.b2a","0-2":".b6,b","1-2":"a.b8a2"}],
+    ["r","",[["2Kgs 16:7-9",0],["2Chr 28:16-21",0]],{"0-1":"b4.2a"}],
+    ["r","",[["2Kgs 16:19-20",0],["2Chr 28:26-27",0],["Isa 14:28-32",1,"Esta palavra veio “no ano em que morreu o rei Acaz” (Is 14:28)."]],{"0-1":".2","0-2":"","1-2":""}],
+    ["r","",[["2Kgs 17:5-6",0],["2Kgs 18:9-12",0]],{"0-1":".b.b"}],
+    ["r","",[["2Kgs 18:1-3",0],["2Chr 29:1-2",0]],{"0-1":"a.2"}],
+    ["r","",[["2Kgs 18:4",0],["2Chr 31:1",0]],{"0-1":","}],
+    ["r","",[["2Kgs 18:5-7",0],["2Chr 31:20-21",0]],{"0-1":",ba2"}],
+    ["r","",[["2Kgs 18:13-37",0],["Isa 36:1-22",0],["2Chr 32:1-19",0]],{"0-1":".a3.21","0-2":"cb6.a4.ba2.ba6.2ba2.ba.a2","1-2":"cb6.a.ba2.ba6.2ba2.ba.a2"}],
+    ["r","",[["2Kgs 19:1-37",0],["Isa 37:1-38",0],["2Chr 32:20-23",0]],{"0-1":".14c.22","0-2":"a19.a14,.ba","1-2":"a20.a14,.ba"}],
+    ["r","",[["2Kgs 20:1-11",0],["Isa 38:1-22",0],["2Chr 32:24-26",0]],{"0-1":".6b14.2a3","0-2":"dba5,a3","1-2":"dba19,"}],
+    ["r","",[["2Kgs 20:12-19",0],["Isa 39:1-8",0],["2Chr 32:27-31",0]],{"0-1":".8","0-2":"a.b2a2,ba3","1-2":"a.b2a2,ba3"}],
+    ["r","",[["2Kgs 20:20-21",0],["2Chr 32:32-33",0]],{"0-1":".2"}],
+    ["r","",[["2Kgs 21:1-9",0],["2Chr 33:1-9",0]],{"0-1":".9"}],
+    ["r","",[["2Kgs 21:10-16",0],["2Chr 33:10-17",0]],{"0-1":""}],
+    ["r","",[["2Kgs 21:17-18",0],["2Chr 33:18-20",0]],{"0-1":".b."}],
+    ["r","",[["2Kgs 21:19-26",0],["2Chr 33:21-25",0]],{"0-1":".2ba2.2a2"}],
+    ["r","",[["2Kgs 22:1-2",0],["2Chr 34:1-2",0],["Zeph 1:1",1,"Sofonias profetizou nos dias de Josias (Sf 1:1)."],["Jer 1:1-3",1,"Jeremias foi chamado no 13º ano de Josias (Jr 1:2)."]],{"0-1":".2","0-2":"","0-3":"","1-2":"","1-3":""}],
+    ["r","",[["2Kgs 22:3-20",0],["2Chr 34:8-28",0]],{"0-1":".4b3a.c.11"}],
+    ["r","",[["2Kgs 23:1-3",0],["2Chr 34:29-32",0]],{"0-1":".3b"}],
+    ["r","",[["2Kgs 23:4-20",0],["2Chr 34:3-7",0]],{"0-1":"ba11,a4.b2"}],
+    ["r","",[["2Kgs 23:21-23",0],["2Chr 35:1-19",0]],{"0-1":".b16.2"}],
+    ["r","",[["2Kgs 23:28-30",0],["2Chr 35:20-27",0]],{"0-1":"b6ca2"}],
+    ["r","",[["2Kgs 23:31-35",0],["2Chr 36:1-4",0]],{"0-1":"b.a.2a"}],
+    ["r","",[["2Kgs 23:36-24:7",0],["2Chr 36:5-8",0],["Dan 1:1-2",0]],{"0-1":"d.ba3da","0-2":"a2.a3,a2","1-2":"d,a"}],
+    ["t","Jeremias 26 aconteceu “no princípio do reinado de Jeoiaquim” (Jr 26:1).",[["Jer 26:1-24",0],["2Kgs 23:36-37",1],["2Chr 36:5",1]],{"0-1":"","0-2":""}],
+    ["r","",[["2Kgs 24:8-17",0],["2Chr 36:9-10",0]],{"0-1":"da.a6"}],
+    ["r","",[["2Kgs 24:18-20",0],["2Chr 36:11-16",0],["Jer 52:1-3",0],["Jer 37:1-2",0]],{"0-1":".,2b3","0-2":".3","0-3":"adb","1-2":".,2a3","1-3":".2a4","2-3":"adb"}],
+    ["r","",[["2Kgs 25:1-21",0],["Jer 52:4-27",0],["Jer 39:1-10",0],["2Chr 36:17-21",0]],{"0-1":".6c.9b.b.4","0-2":".db.4ad.a8.a","0-3":"b2a8.a11,b","1-2":".db.d.2ad.2a11","1-3":"ba7,a.a13,b","2-3":"ba2,a4.b2a2"}],
+    ["t","Ezequiel recebeu esta palavra no mesmo dia em que o cerco começou (Ez 24:2).",[["Ezek 24:1-2",0],["2Kgs 25:1",1],["Jer 52:4",1],["Jer 39:1",1]],{"0-1":"","0-2":"","0-3":""}],
+    ["t","Jeremias estava preso no pátio da guarda enquanto o exército da Babilônia cercava Jerusalém (Jr 32:2).",[["Jer 32:1-5",0],["2Kgs 25:1-2",1],["Jer 52:4-5",1]],{"0-1":"","0-2":""}],
+    ["t","Esta palavra veio enquanto Nabucodonosor lutava contra Jerusalém, quando só Laquis e Azeca resistiam (Jr 34:7).",[["Jer 34:1-7",0],["2Kgs 25:1-2",1],["Jer 52:4-5",1]],{"0-1":"","0-2":""}],
+    ["t","Durante o cerco, o exército do Faraó saiu do Egito e os caldeus se retiraram por um tempo (Jr 37:5, 11).",[["Jer 37:5-10",0],["2Kgs 25:1-2",1],["Jer 52:4-5",1]],{"0-1":"","0-2":""}],
+    ["r","",[["2Kgs 25:22-26",0],["Jer 40:7-43:7",0]],{"0-1":".3b7.b24.b21"}],
+    ["r","",[["2Kgs 25:27-30",0],["Jer 52:31-34",0]],{"0-1":".4"}],
+    ["r","",[["2Chr 36:22-23",0],["Ezra 1:1-3",0],["Dan 9:1-3",1,"O 1º ano de Dario, o medo, começa com a queda da Babilônia (539 a.C.); o decreto de Ciro é do 1º ano dele sobre a Babilônia (538 a.C.). Daniel lia em Jeremias os 70 anos que o decreto veio cumprir (Dn 9:2; Ed 1:1)."]],{"0-1":".2b","0-2":"","1-2":""}],
+    ["l","",[["Ezra 2:1-70",0],["Neh 7:6-73",0]],{"0-1":".16b.2a.d.7a.2a.b.11a.21ba.b."}],
+    ["T","Ageu e Zacarias profetizaram enquanto o templo era reconstruído (Ed 5:1; 6:14).",[["Ezra 4:24-5:2",0],["Hag 1:1-15",0],["Zech 1:1-6",0]],{"0-1":"","0-2":"","1-2":""}],
+    ["T","Ageu e Zacarias profetizaram enquanto o templo era reconstruído (Ed 5:1; 6:14).",[["Ezra 5:3-6:15",0],["Hag 2:1-23",0],["Zech 1:7-8:23",0]],{"0-1":"","0-2":"","1-2":""}],
+    ["w","Isaías e Miquéias profetizaram na mesma época (Is 1:1; Mq 1:1).",[["Isa 2:2-4",0],["Mic 4:1-3",0]],{"0-1":".3"}],
+    ["g","Duas genealogias: Mateus desce de Abraão pela linha de Salomão; Lucas sobe até Adão pela linha de Natã.",[["Matt 1:1-17",0],["Luke 3:23-38",0]],{"0-1":""}],
+    ["r","",[["Matt 3:1-6",0],["Mark 1:1-6",0],["Luke 3:1-6",0],["John 1:19-23",0]],{"0-1":"b2a2.b2.a2","0-2":"b,ba.b2a3","0-3":"b4a2.a3","1-2":"b3a2.b2a3","1-3":"b4a2.a3","2-3":"b4a3.a2"}],
+    ["r","",[["Matt 3:7-10",0],["Luke 3:7-9",0]],{"0-1":".d."}],
+    ["r","",[["Matt 3:11-12",0],["Mark 1:7-8",0],["Luke 3:15-18",0],["John 1:24-28",0]],{"0-1":"ca","0-2":"b.2b","0-3":"b2cba","1-2":"bdb2","1-3":"b3.,","2-3":"b2acba2"}],
+    ["r","",[["Matt 3:13-17",0],["Mark 1:9-11",0],["Luke 3:21-22",0],["John 1:29-34",0]],{"0-1":".a2.2","0-2":"a3.2","0-3":"b2a,ac,","1-2":",d","1-3":"b2,.b2a","2-3":"b2,.b2"}],
+    ["r","",[["Matt 4:1-11",0],["Mark 1:12-13",0],["Luke 4:1-13",0]],{"0-1":",Da8","0-2":",.3a3.b.2b4,","1-2":".2b11"}],
+    ["r","",[["Matt 4:12-17",0],["Mark 1:14-15",0],["Luke 4:14-15",0],["John 4:43-45",0]],{"0-1":".a4.","0-2":",ba5","0-3":",b2a5","1-2":"","1-3":",b2a","2-3":",b2a"}],
+    ["r","",[["Matt 4:18-22",0],["Mark 1:16-20",0],["Luke 5:1-11",0,"Lucas acrescenta a pesca maravilhosa."]],{"0-1":".5","0-2":"b,b3a,b3,.","1-2":"ba,b3,b3,2"}],
+    ["r","",[["Mark 1:21-28",0],["Luke 4:31-37",0]],{"0-1":".5a.,"}],
+    ["r","",[["Matt 8:14-15",0],["Mark 1:29-31",0],["Luke 4:38-39",0]],{"0-1":"b.2","0-2":",.","1-2":"d."}],
+    ["r","",[["Matt 8:16-17",0],["Mark 1:32-34",0],["Luke 4:40-41",0]],{"0-1":".b2a","0-2":"","1-2":".a."}],
+    ["r","",[["Matt 4:23-25",0],["Mark 1:35-39",0],["Luke 4:42-44",0]],{"0-1":"b4.a2","0-2":"b2.a2","1-2":",ba3."}],
+    ["r","",[["Matt 8:1-4",0],["Mark 1:40-45",0],["Luke 5:12-16",0]],{"0-1":"a.cb.b","0-2":"a.3b2","1-2":",da.b2a"}],
+    ["r","",[["Matt 9:1-8",0],["Mark 2:1-12",0],["Luke 5:17-26",0]],{"0-1":"b4a.,b2a.3ba","0-2":"b3a.,2.3ba","1-2":"b3a4.d.3,ba"}],
+    ["r","",[["Matt 9:9-13",0],["Mark 2:13-17",0],["Luke 5:27-32",0]],{"0-1":"b.4a","0-2":"c,.3","1-2":"a.b.2c"}],
+    ["r","",[["Matt 9:14-17",0],["Mark 2:18-22",0],["Luke 5:33-39",0]],{"0-1":".c.2","0-2":".c.cb","1-2":".5b2"}],
+    ["r","",[["Matt 12:1-8",0],["Mark 2:23-28",0],["Luke 6:1-5",0]],{"0-1":".5a2.","0-2":".4a3.","1-2":".4a."}],
+    ["r","",[["Matt 12:9-14",0],["Mark 3:1-6",0],["Luke 6:6-11",0]],{"0-1":",.,2.2","0-2":"acba,.ba","1-2":".5ba"}],
+    ["r","",[["Matt 12:15-21",0],["Mark 3:7-12",0],["Luke 6:17-19",0]],{"0-1":".b4.a5","0-2":"bCa6","1-2":"da2,ba"}],
+    ["r","",[["Matt 10:1-4",0],["Mark 3:13-19",0],["Luke 6:12-16",0]],{"0-1":"b2.c.2","0-2":"b2a.3","1-2":"b2a3d.2"}],
+    ["r","Muitos entendem o sermão de Lucas 6 como o mesmo do monte (Mt 5–7); outros, como uma pregação parecida.",[["Matt 5:1-12",0],["Luke 6:20-26",0]],{"0-1":"a2.a2.a4.2b3"}],
+    ["r","Muitos entendem o sermão de Lucas 6 como o mesmo do monte (Mt 5–7); outros, como uma pregação parecida.",[["Matt 5:38-48",0],["Luke 6:27-36",0]],{"0-1":"a5.2b3a.b4a2"}],
+    ["r","Muitos entendem o sermão de Lucas 6 como o mesmo do monte (Mt 5–7); outros, como uma pregação parecida.",[["Matt 7:1-5",0],["Luke 6:37-42",0]],{"0-1":".2b2.d"}],
+    ["r","Muitos entendem o sermão de Lucas 6 como o mesmo do monte (Mt 5–7); outros, como uma pregação parecida.",[["Matt 7:15-20",0],["Luke 6:43-45",0]],{"0-1":"a2.,ba2"}],
+    ["r","Muitos entendem o sermão de Lucas 6 como o mesmo do monte (Mt 5–7); outros, como uma pregação parecida.",[["Matt 7:21-29",0],["Luke 6:46-49",0]],{"0-1":".a2,.da2"}],
+    ["r","",[["Matt 8:5-13",0],["Luke 7:1-10",0]],{"0-1":".b4a2c.2ba3"}],
+    ["r","",[["Matt 11:2-19",0],["Luke 7:18-35",0]],{"0-1":"b.2bd.6b2a4.3c"}],
+    ["r","",[["Matt 12:22-30",0],["Mark 3:20-27",0],["Luke 11:14-23",0]],{"0-1":"ba,.bc.a2.a","0-2":".a.b,.3b2a.","1-2":"ba2.b2db5a3"}],
+    ["r","",[["Matt 12:31-37",0],["Mark 3:28-30",0]],{"0-1":".,ba5"}],
+    ["r","",[["Matt 12:38-45",0],["Luke 11:24-32",0]],{"0-1":"a5.3b6"}],
+    ["r","",[["Matt 12:46-50",0],["Mark 3:31-35",0],["Luke 8:19-21",0]],{"0-1":".3,.","0-2":",.2a2","1-2":",.2a2"}],
+    ["r","",[["Matt 13:1-9",0],["Mark 4:1-9",0],["Luke 8:4-8",0]],{"0-1":"db.7","0-2":"aD.a,.a.","1-2":"a,da,.a."}],
+    ["r","",[["Matt 13:10-17",0],["Mark 4:10-12",0],["Luke 8:9-10",0]],{"0-1":",.a.a4","0-2":".a2.a4","1-2":",d"}],
+    ["r","",[["Matt 13:18-23",0],["Mark 4:13-20",0],["Luke 8:11-15",0]],{"0-1":"c.3c.","0-2":",.,a.2","1-2":".a.,ad."}],
+    ["r","",[["Mark 4:21-25",0],["Luke 8:16-18",0]],{"0-1":".2a2."}],
+    ["r","",[["Matt 13:31-32",0],["Mark 4:30-32",0]],{"0-1":"b.2"}],
+    ["r","",[["Matt 13:34-35",0],["Mark 4:33-34",0]],{"0-1":"b.a"}],
+    ["r","",[["Matt 8:23-27",0],["Mark 4:35-41",0],["Luke 8:22-25",0]],{"0-1":"b,.bac.","0-2":".bad.","1-2":".a,a.a."}],
+    ["r","",[["Matt 8:28-34",0],["Mark 5:1-20",0],["Luke 8:26-39",0]],{"0-1":",b5.b3.4b2.b3","0-2":"b2a.b3d.2b5a","1-2":".ba5.,.,.a.4a,ba."}],
+    ["r","",[["Matt 9:18-26",0],["Mark 5:21-43",0],["Luke 8:40-56",0]],{"0-1":"b2,2b2.2b5.b4db.b2a","0-2":"bCba.b,b.b4a.2b2a","1-2":"ba.ba2.a.,a.a2.5a.,2E"}],
+    ["r","",[["Matt 13:53-58",0],["Mark 6:1-6",0],["Luke 4:16-30",0,"Lucas pode estar narrando uma visita anterior a Nazaré."]],{"0-1":"ac.a.c","0-2":"b7a,a2.b6a","1-2":"b7,a2.b6a2"}],
+    ["r","",[["Matt 10:5-15",0],["Mark 6:7-13",0],["Luke 9:1-6",0]],{"0-1":",a3dbdadb2","0-2":"ba2.a2.da.ba","1-2":",b.a.2ba2"}],
+    ["r","",[["Matt 14:1-2",0],["Mark 6:14-16",0],["Luke 9:7-9",0]],{"0-1":"a.b2","0-2":"db2","1-2":".3"}],
+    ["r","",[["Matt 14:3-12",0],["Mark 6:17-29",0],["Luke 3:19-20",0]],{"0-1":".2,b2.,c.3,","0-2":".a6.a2","1-2":".ba12"}],
+    ["r","",[["Matt 14:13-21",0],["Mark 6:30-44",0],["Luke 9:10-17",0],["John 6:1-15",0]],{"0-1":"b2.b.c.2b2a.c.","0-2":",ba.a.b2a.2a","0-3":"ba,b6a2.ba,b.b2a","1-2":"a2.ba3.da,b.da","1-3":"ba4,b2a,b.b,a5.b5","2-3":"ba,b2a,b4,b2a2.b2"}],
+    ["r","",[["Matt 14:22-33",0],["Mark 6:45-52",0],["John 6:16-21",0]],{"0-1":".cd.2a4.ba","0-2":"b.a,2a.a5,","1-2":"a2.bCa.,a"}],
+    ["r","",[["Matt 14:34-36",0],["Mark 6:53-56",0]],{"0-1":".c."}],
+    ["r","",[["Matt 15:1-20",0],["Mark 7:1-23",0]],{"0-1":".b.b5.3ca3.2ba3,2.3b."}],
+    ["r","",[["Matt 15:21-28",0],["Mark 7:24-30",0]],{"0-1":".b2a4.2,b"}],
+    ["r","",[["Matt 15:29-31",0],["Mark 7:31-37",0]],{"0-1":""}],
+    ["r","",[["Matt 15:32-39",0],["Mark 8:1-10",0]],{"0-1":"bc.2db.3"}],
+    ["r","",[["Matt 16:1-4",0],["Mark 8:11-13",0]],{"0-1":".a2.b"}],
+    ["r","",[["Matt 16:5-12",0],["Mark 8:14-21",0]],{"0-1":".4b.2a,"}],
+    ["r","",[["Matt 16:13-20",0],["Mark 8:27-30",0],["Luke 9:18-21",0]],{"0-1":".2da3,","0-2":"ba.da3,","1-2":",.3"}],
+    ["r","",[["Matt 16:21-23",0],["Mark 8:31-33",0],["Luke 9:22",0]],{"0-1":".3","0-2":".a2","1-2":".a2"}],
+    ["r","",[["Matt 16:24-28",0],["Mark 8:34-9:1",0],["Luke 9:23-27",0]],{"0-1":".2c,.","0-2":".3,.","1-2":".3a.2"}],
+    ["r","",[["Matt 17:1-9",0],["Mark 9:2-10",0],["Luke 9:28-36",0],["2Pet 1:16-18",0,"Pedro relembra a transfiguração que viu."]],{"0-1":".,.2b.a2,.b","0-2":".,.b2.ca2,a","0-3":"ba4,ba4","1-2":".ba.b2.acba3","1-3":"b2a5,a3","2-3":"b2a7,a"}],
+    ["r","",[["Matt 17:10-13",0],["Mark 9:11-13",0]],{"0-1":".3a"}],
+    ["r","",[["Matt 17:14-21",0],["Mark 9:14-29",0],["Luke 9:37-43",0]],{"0-1":",b4a2.b5,b2.a.","0-2":"b3a2.3ba3","1-2":"ba3,b,.a5,ba4"}],
+    ["r","",[["Matt 17:22-23",0],["Mark 9:30-32",0],["Luke 9:44-45",0]],{"0-1":"bdb","0-2":".ba","1-2":"a.2"}],
+    ["r","",[["Matt 18:1-5",0],["Mark 9:33-37",0],["Luke 9:46-48",0]],{"0-1":"b3a.a2.","0-2":",.a2.","1-2":"a,a,."}],
+    ["r","",[["Mark 9:38-41",0],["Luke 9:49-50",0]],{"0-1":".a.a"}],
+    ["r","",[["Matt 18:6-9",0],["Mark 9:42-50",0]],{"0-1":".b2a.b.b3"}],
+    ["r","",[["Matt 19:1-2",0],["Mark 10:1",0]],{"0-1":".a"}],
+    ["r","",[["Matt 19:3-12",0],["Mark 10:2-12",0]],{"0-1":".b3.2cba2.,a2"}],
+    ["r","",[["Matt 19:13-15",0],["Mark 10:13-16",0],["Luke 18:15-17",0]],{"0-1":".2b2a","0-2":".2ba","1-2":".3a"}],
+    ["r","",[["Matt 19:16-30",0],["Mark 10:17-31",0],["Luke 18:18-30",0]],{"0-1":".2d.4b.4ac.","0-2":".2d.2ba.5a.ba","1-2":".5ba.a.6a"}],
+    ["r","",[["Matt 20:17-19",0],["Mark 10:32-34",0],["Luke 18:31-34",0]],{"0-1":".3","0-2":".acb","1-2":"dcb"}],
+    ["r","",[["Matt 20:20-28",0],["Mark 10:35-45",0]],{"0-1":".c.c.5"}],
+    ["r","",[["Matt 20:29-34",0],["Mark 10:46-52",0],["Luke 18:35-43",0]],{"0-1":".4b2a.","0-2":",b2.2b.a,b","1-2":".bc.ba2.2b"}],
+    ["r","",[["Matt 21:1-11",0],["Mark 11:1-11",0],["Luke 19:28-40",0],["John 12:12-19",0]],{"0-1":".3ba,3.c,a","0-2":"b.3ba,ba,2b.a,b","0-3":",b2a3.,ba4,b","1-2":"b.3,.ba.,ba.b2a","1-3":"ba8.b6a2","2-3":",ba3,2b4a7"}],
+    ["r","",[["Matt 21:18-19",0],["Mark 11:12-14",0]],{"0-1":",c"}],
+    ["r","",[["Matt 21:12-17",0],["Mark 11:15-19",0],["Luke 19:45-48",0]],{"0-1":".b.ba3,","0-2":".2a,ba2","1-2":".a.2ba"}],
+    ["r","",[["Matt 21:20-22",0],["Mark 11:20-26",0]],{"0-1":"c2.b2"}],
+    ["r","",[["Matt 21:23-27",0],["Mark 11:27-33",0],["Luke 20:1-8",0]],{"0-1":"c.c.2","0-2":"c.c.b.","1-2":".6b."}],
+    ["r","",[["Matt 21:33-46",0],["Mark 12:1-12",0],["Luke 20:9-19",0]],{"0-1":".3c.4aca2d","0-2":".2,ba.3d.a.2a","1-2":".3ba2.5ba."}],
+    ["r","",[["Matt 22:15-22",0],["Mark 12:13-17",0],["Luke 20:20-26",0]],{"0-1":"badD.2a","0-2":"ba.2,a.2,","1-2":"bac,.2b"}],
+    ["r","",[["Matt 22:23-33",0],["Mark 12:18-27",0],["Luke 20:27-40",0]],{"0-1":".10a","0-2":".3b.3ba.,cb2a","1-2":".3c.2ba.b.2b2"}],
+    ["r","",[["Matt 22:34-40",0],["Mark 12:28-34",0]],{"0-1":"adb.db3a"}],
+    ["r","",[["Matt 22:41-46",0],["Mark 12:35-37",0],["Luke 20:41-44",0]],{"0-1":"ad.2a","0-2":"a.,.2a","1-2":".c."}],
+    ["r","",[["Matt 23:1-36",0],["Mark 12:38-40",0],["Luke 20:45-47",0]],{"0-1":"ba5.a7.a22","0-2":",a4.a7.a22","1-2":"bd."}],
+    ["r","",[["Mark 12:41-44",0],["Luke 21:1-4",0]],{"0-1":".4"}],
+    ["r","",[["Matt 24:1-44",0],["Mark 13:1-37",0],["Luke 21:5-36",0]],{"0-1":".2c.3db4a4.ad.9a3c.7b4a5.a2","0-2":",.,d.cb5a.b2a5,.ba2.ba9C.bac.3b3a9","1-2":",.a.a.3bcb2a2.2b2cba2.ba6,2.bac.3b2a,a4"}],
+    ["r","",[["Matt 26:1-5",0],["Mark 14:1-2",0],["Luke 22:1-2",0]],{"0-1":"ag.","0-2":"a,.a2","1-2":"e"}],
+    ["r","",[["Matt 26:6-13",0],["Mark 14:3-9",0],["John 12:1-8",0]],{"0-1":"d.4ba.","0-2":",b3a2.b2a.a2","1-2":"b2,ba.b,.a2"}],
+    ["r","",[["Matt 26:14-16",0],["Mark 14:10-11",0],["Luke 22:3-6",0]],{"0-1":".,a","0-2":".b,.","1-2":"c.b"}],
+    ["r","",[["Matt 26:17-19",0],["Mark 14:12-16",0],["Luke 22:7-13",0]],{"0-1":".cb.","0-2":"fb,b.","1-2":"f.4"}],
+    ["r","",[["Matt 26:20-25",0],["Mark 14:17-21",0],["Luke 22:21-23",0],["John 13:21-30",0]],{"0-1":".5a","0-2":"a3,.ba","0-3":"a.b4a,b4a2","1-2":"a,a2.b","1-3":"a.b4a,b4a","2-3":""}],
+    ["r","",[["Matt 26:26-29",0],["Mark 14:22-25",0],["Luke 22:14-20",0],["1Cor 11:23-26",0,"Paulo relembra a ceia: “recebi do Senhor o que também vos ensinei”."]],{"0-1":".4","0-2":"b3a.a.b2","0-3":"b.dba","1-2":"b3a.a.b2","1-3":"b.dba","2-3":"ba5.2b"}],
+    ["r","",[["Matt 26:30-35",0],["Mark 14:26-31",0],["Luke 22:31-34",0],["John 13:36-38",0]],{"0-1":".6","0-2":"b3a4.a","0-3":"b2a4.a","1-2":"b3a4.a","1-3":"b2a4.a","2-3":"b2a3."}],
+    ["r","",[["Matt 26:36-46",0],["Mark 14:32-42",0],["Luke 22:39-46",0],["John 18:1",0]],{"0-1":".4b.4a.2","0-2":"ba5.b,b3Da2","0-3":"","1-2":"b3a4.b3da4","1-3":"","2-3":""}],
+    ["r","",[["Matt 26:47-56",0],["Mark 14:43-52",0],["Luke 22:47-53",0],["John 18:2-12",0]],{"0-1":".5a3c.b2","0-2":"dba2cba3.ba","0-3":"b3Db4a2.,ba4","1-2":".b2a3.b.2a3","1-3":"b3,b4a3.Ca4","2-3":"b3a.b4aDb2a2"}],
+    ["r","",[["Matt 26:57-68",0],["Mark 14:53-65",0],["Luke 22:54-55;22:63-71",0],["John 18:13-14;18:19-24",0]],{"0-1":".3b2a.b.6a","0-2":"acb3,a3,b.b.a3","0-3":".b4a4,b2a6","1-2":"a,b4,b2a6.b.a2","1-3":",b3a6.a4.b2","2-3":"b4a3,b3a7"}],
+    ["r","",[["Matt 26:69-75",0],["Mark 14:66-72",0],["Luke 22:56-62",0],["John 18:15-18;18:25-27",0]],{"0-1":".b.bad.2","0-2":".2a2,b.c","0-3":"b2,b,ba3.a","1-2":",b,b.a3.b","1-3":".b2.a2,ba.","2-3":"b2,b.,a.a2"}],
+    ["r","",[["Matt 27:1-2",0],["Mark 15:1",0],["Luke 23:1",0],["John 18:28",0]],{"0-1":"d","0-2":"","0-3":",a","1-2":"","1-3":"","2-3":""}],
+    ["r","",[["Matt 27:3-10",0],["Acts 1:16-20",0]],{"0-1":""}],
+    ["r","",[["Matt 27:11-14",0],["Mark 15:2-5",0],["Luke 23:2-5",0],["John 18:29-38",0]],{"0-1":".4","0-2":"b.Dba","0-3":"b4,bDb3a","1-2":"b.Dba","1-3":"b4.b,b2,a","2-3":"b4a.b4.a"}],
+    ["r","",[["Matt 27:15-26",0],["Mark 15:6-15",0],["Luke 23:13-25",0],["John 18:39-40;19:4-16",0]],{"0-1":".,b.2adc.a2.","0-2":"b4.,b.a4.,b2a2,","0-3":"a2,a3.b2.ba,b7a.","1-2":"b4.b.a.a3.,b2,","1-3":"a3.a.,b.b8,2","2-3":"a3.a.a,b.b5,b2,ba2"}],
+    ["r","",[["Matt 27:27-31",0],["Mark 15:16-20",0],["John 19:1-3",0]],{"0-1":".ac.2","0-2":"ba2ca2","1-2":"ba,.a2"}],
+    ["r","",[["Matt 27:32",0],["Mark 15:21",0],["Luke 23:26-32",0],["John 19:17",0]],{"0-1":".","0-2":".b6","0-3":"","1-2":".b6","1-3":"","2-3":""}],
+    ["r","",[["Matt 27:33-44",0],["Mark 15:22-32",0],["Luke 23:33-43",0],["John 19:18-27",0]],{"0-1":".,.ba.2b.3g","0-2":".a.ba5,.b6a2","0-3":"b6a2.b3a9","1-2":".a.b3a.a3,b4a2","1-3":"b6a2.b3a8","2-3":"b6a.b3a9"}],
+    ["r","",[["Matt 27:45-56",0],["Mark 15:33-41",0],["Luke 23:44-49",0],["John 19:28-30",0]],{"0-1":".3d.2a2,a.b","0-2":".a5.ba2,b.a","0-3":"ba3.ba8","1-2":".ba3.b2a2,a","1-3":"ba3.ba5","2-3":""}],
+    ["r","",[["Matt 27:57-61",0],["Mark 15:42-47",0],["Luke 23:50-56",0],["John 19:38-42",0]],{"0-1":"bdb,.2","0-2":"b,.2b,ba","0-3":"db2a,ba","1-2":"afa2,b3a","1-3":"a.b4a4","2-3":"a2.b2,da"}],
+    ["r","",[["Matt 28:1-8",0],["Mark 16:1-8",0],["Luke 24:1-12",0],["John 20:1-10",0]],{"0-1":".b.b2a2d.2","0-2":"ba.b3a3Db2,b3","0-3":".ba6.b7","1-2":",a.b3a2Db6a","1-3":"a.,a3db7","2-3":"a.ba6,ba2.b5"}],
+    ["r","",[["Matt 28:9-10",0],["Mark 16:9-11",0],["John 20:11-18",0]],{"0-1":"b,ba","0-2":"b7,a","1-2":"b7da"}],
+    ["r","",[["Mark 16:12-13",0],["Luke 24:13-35",0]],{"0-1":""}],
+    ["r","",[["Mark 16:14",0],["Luke 24:36-43",0],["John 20:19-23",0]],{"0-1":"","0-2":"","1-2":".a3,b3a3"}],
+    ["r","",[["Matt 28:16-20",0],["Mark 16:15-18",0]],{"0-1":""}],
+    ["r","",[["Luke 24:44-53",0],["Mark 16:19-20",0],["Acts 1:1-11",0]],{"0-1":"","0-2":"b7a4,a,b2a3","1-2":"b10,a"}],
+    ["r","Paulo conta a própria conversão em Atos 22 e 26, e em Gálatas 1.",[["Acts 9:1-19",0],["Acts 22:3-16",0],["Acts 26:9-18",0],["Gal 1:13-17",0]],{"0-1":"bac.3b.a.a,a6.b3a2","0-2":"b3a2,b.2b3a14","0-3":"","1-2":"b3a2,ba.2a5db2a","1-3":"","2-3":""}],
+    ["r","",[["Acts 9:19-25",0],["2Cor 11:32-33",0]],{"0-1":"ba6."}],
+    ["r","",[["Acts 9:26-30",0],["Gal 1:18-24",0]],{"0-1":""}],
+    ["r","A maioria identifica Gálatas 2:1-10 com o concílio de Atos 15; outros, com a visita de Atos 11:30.",[["Acts 15:1-29",0],["Gal 2:1-10",0]],{"0-1":"a,b5a4,ba17,ba4"}],
+    ["r","Paulo relembra a visita a Tessalônica.",[["Acts 17:1-10",0],["1Thess 2:1-12",0]],{"0-1":""}],
+    ["r","",[["Acts 17:14-16",0],["1Thess 3:1-5",0]],{"0-1":"a2,b4"}],
+    ["t","1 Tessalonicenses foi escrita quando Timóteo chegou a Corinto (At 18:5; 1 Ts 3:6).",[["Acts 18:5",0],["1Thess 3:6-8",1]],{"0-1":""}],
+    ["t","1 Coríntios foi escrita de Éfeso nesse período (1 Co 16:8).",[["Acts 19:21-22",0],["1Cor 16:5-10",1]],{"0-1":""}],
+    ["r","",[["Acts 20:1-2",0],["2Cor 2:12-13",0],["2Cor 7:5-7",0]],{"0-1":"b,a","0-2":"","1-2":"acb"}],
+    ["t","Romanos foi escrita nesses três meses na Grécia, antes da viagem a Jerusalém (Rm 15:25-26; 16:1, 23).",[["Acts 20:2-3",0],["Rom 15:25-29",1]],{"0-1":""}]
+  ];
+
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const NT=new Set(['Matt','Mark','Luke','John','Acts','Rom','1Cor','2Cor','Gal','Eph','Phil','Col','1Thess','2Thess','1Tim','2Tim','Titus','Phlm','Heb','Jas','1Pet','2Pet','1John','2John','3John','Jude','Rev']);
+  const ABBR={Gen:'Gn',Exod:'Êx',Lev:'Lv',Num:'Nm',Deut:'Dt',Josh:'Js',Judg:'Jz',Ruth:'Rt','1Sam':'1Sm','2Sam':'2Sm','1Kgs':'1Rs','2Kgs':'2Rs','1Chr':'1Cr','2Chr':'2Cr',Ezra:'Ed',Neh:'Ne',Esth:'Et',Job:'Jó',Ps:'Sl',Prov:'Pv',Eccl:'Ec',Song:'Ct',Isa:'Is',Jer:'Jr',Lam:'Lm',Ezek:'Ez',Dan:'Dn',Hos:'Os',Joel:'Jl',Amos:'Am',Obad:'Ob',Jonah:'Jn',Mic:'Mq',Nah:'Na',Hab:'Hc',Zeph:'Sf',Hag:'Ag',Zech:'Zc',Mal:'Ml',Matt:'Mt',Mark:'Mc',Luke:'Lc',John:'Jo',Acts:'At',Rom:'Rm','1Cor':'1Co','2Cor':'2Co',Gal:'Gl',Eph:'Ef',Phil:'Fp',Col:'Cl','1Thess':'1Ts','2Thess':'2Ts','1Tim':'1Tm','2Tim':'2Tm',Titus:'Tt',Phlm:'Fm',Heb:'Hb',Jas:'Tg','1Pet':'1Pe','2Pet':'2Pe','1John':'1Jo','2John':'2Jo','3John':'3Jo',Jude:'Jd',Rev:'Ap'};
+  const KIND={r:'Mesmo acontecimento',l:'Mesma lista',w:'Mesmas palavras',g:'Outra genealogia',t:'Ao mesmo tempo',T:'Ao mesmo tempo'};
+  const SVG_CRONO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5h6.2a1.8 1.8 0 0 1 1.8 1.8v12.2a1.6 1.6 0 0 0-1.6-1.6H4.5z"/><path d="M19.5 5.5h-6.2a1.8 1.8 0 0 0-1.8 1.8v12.2a1.6 1.6 0 0 1 1.6-1.6h6.4z"/><path d="M7 9.2h2.6M7 12.2h2.6M14.4 9.2H17M14.4 12.2H17"/></svg>';
+
+  /* ================= TEXTOS ================= */
+  const chapCache=new Map();
+  function chapterOf(cm,book,c){
+    const k=cm+'|'+book;let m=chapCache.get(k);
+    if(!m){const cp=typeof CORPORA!=='undefined'&&CORPORA[cm];const b=cp&&cp.books.find(x=>x.book===book);if(!b)return null;
+      m=new Map();for(const ch of b.chapters)m.set(+ch.chapter,ch);chapCache.set(k,m)}
+    return m.get(+c)||null;
+  }
+  function verseText(cm,book,c,v){const ch=chapterOf(cm,book,c);const x=ch&&ch.verses.find(y=>+y.number===+v);return x?x.text:''}
+  const nv=(book,c)=>{const ch=chapterOf('almeida',book,c);return ch?Math.max(...ch.verses.map(x=>+x.number)):0};
+  const bookName=b=>(typeof BOOK_NAMES!=='undefined'&&BOOK_NAMES[b])||b;
+
+  /* ================= TABELA ================= */
+  function parseRef(s){
+    const m=String(s).trim().match(/^(\S+)\s+(.+)$/);const b=m[1],segs=[];let lastC=null;
+    for(let part of m[2].split(';')){
+      part=part.trim();const [a,z]=part.split('-');let c1,v1,c2,v2;
+      if(a.includes(':'))[c1,v1]=a.split(':').map(Number);else if(lastC!=null){c1=lastC;v1=+a}else{c1=+a;v1=1}
+      if(z==null){c2=c1;v2=a.includes(':')?v1:nv(b,c1)}
+      else if(z.includes(':'))[c2,v2]=z.split(':').map(Number);
+      else if(a.includes(':')){c2=c1;v2=+z}else{c2=+z;v2=nv(b,c2)}
+      lastC=c2;segs.push({c1,v1,c2,v2});
+    }
+    return{book:b,segs};
+  }
+  let IDX=null,HAS=null;
+  function build(){
+    if(IDX)return true;
+    if(typeof CORPORA==='undefined'||!CORPORA.almeida)return false;
+    const idx={},has={};
+    ROWS.forEach((r,ri)=>{
+      r.P=r[2].map(([ref,t,note])=>{
+        const {book,segs}=parseRef(ref);const list=[],seg=[];
+        segs.forEach((s,si)=>{for(let c=s.c1;c<=s.c2;c++){const n=nv(book,c);const a=c===s.c1?s.v1:1,z=c===s.c2?s.v2:n;for(let v=a;v<=z;v++){list.push([c,v]);seg.push(si)}}});
+        const pos=new Map(list.map((x,i)=>[x[0]+':'+x[1],i]));
+        return{ref,t:!!t,note:note||'',book,segs,list,seg,pos};
+      });
+      r.P.forEach((p,pi)=>{
+        const linked=r.P.some((q,qi)=>qi!==pi&&((Math.min(pi,qi)+'-'+Math.max(pi,qi)) in r[3]));
+        if(!linked)return;
+        (idx[p.book]||(idx[p.book]=[])).push([ri,pi]);
+        const h=has[p.book]||(has[p.book]=new Set());for(const [c,v] of p.list)h.add(c+':'+v);
+      });
+    });
+    IDX=idx;HAS=has;return true;
+  }
+  const BEAD={'.':[1,1,1],c:[1,2,1],d:[2,1,1],e:[2,2,1],f:[1,3,1],g:[3,1,1],',':[1,1,0],C:[1,2,0],D:[2,1,0],E:[2,2,0],F:[1,3,0],G:[3,1,0],a:[1,0,0],b:[0,1,0]};
+  const mapCache=new Map();
+  // para cada verso da passagem "de", onde ele cai na passagem "para": {y0,y1,strong} ou {near}
+  function mapper(ri,from,to){
+    const k=ri+':'+from+'>'+to;if(mapCache.has(k))return mapCache.get(k);
+    const r=ROWS[ri],key=Math.min(from,to)+'-'+Math.max(from,to),s=r[3][key];
+    const X=r.P[from],Y=r.P[to];let M=null;
+    if(s){
+      const swap=from>to;M=new Array(X.list.length).fill(null);let x=0,y=0;const re=/([.cdefg,CDEFGab])(\d*)/g;let m;
+      while((m=re.exec(s))){const n=m[2]?+m[2]:1;const [a,b,st]=BEAD[m[1]];const [ax,by]=swap?[b,a]:[a,b];
+        for(let t=0;t<n;t++){for(let q=0;q<ax;q++)M[x+q]=by?{y0:y,y1:y+by-1,strong:!!st,anchor:true}:null;x+=ax;y+=by}}
+      // versos sem par: posição interpolada entre os vizinhos que têm par
+      for(let i=0;i<M.length;i++){if(M[i])continue;
+        let p=i-1;while(p>=0&&!(M[p]&&M[p].anchor))p--;let n=i+1;while(n<M.length&&!(M[n]&&M[n].anchor))n++;
+        let near;if(p>=0&&n<M.length)near=Math.round(M[p].y1+(i-p)*(M[n].y0-M[p].y1)/(n-p));
+        else if(p>=0)near=Math.min(Y.list.length-1,M[p].y1+(i-p));else if(n<M.length)near=Math.max(0,M[n].y0-(n-i));else near=0;
+        M[i]={near:Math.max(0,Math.min(Y.list.length-1,near))};
+      }
+    }
+    mapCache.set(k,M);return M;
+  }
+  function overlaps(a,b){return a.book===b.book&&a.list.some(([c,v])=>b.pos.has(c+':'+v))}
+  const bookOrder=b=>{try{return CORPORA.almeida.books.findIndex(x=>x.book===b)}catch(e){return 0}};
+  // as passagens paralelas ao verso (numeração da Almeida)
+  function targets(book,c,v){
+    if(!build()||!IDX[book])return[];
+    const key=c+':'+v,out=[];
+    for(const [ri,pi] of IDX[book]){
+      const r=ROWS[ri],P=r.P[pi],ix=P.pos.get(key);if(ix==null)continue;
+      r.P.forEach((Q,qi)=>{if(qi===pi)return;const k=Math.min(pi,qi)+'-'+Math.max(pi,qi);if(!(k in r[3]))return;
+        out.push({ri,pi,qi,ix,P,Q,row:r,aligned:!!r[3][k],id:ri+':'+qi})});
+    }
+    // o mesmo trecho pode vir de duas linhas (uma maior, outra "ao mesmo tempo"): fica o alinhado / o maior
+    out.sort((a,b)=>(b.aligned-a.aligned)||(b.Q.list.length-a.Q.list.length));
+    const keep=[];for(const t of out)if(!keep.some(k=>overlaps(k.Q,t.Q)))keep.push(t);
+    keep.sort((a,b)=>(b.aligned-a.aligned)||(bookOrder(a.Q.book)-bookOrder(b.Q.book))||(a.Q.list[0][0]-b.Q.list[0][0])||(a.Q.list[0][1]-b.Q.list[0][1]));
+    return keep;
+  }
+
+  /* ================= VERSÕES ================= */
+  const versif=()=>window.DoxaVersif;
+  // o verso do leitor, na numeração da Almeida
+  function readerRef(el){
+    try{
+      if(typeof mode==='undefined'||mode==='hyper'||!CORPORA[mode])return null;
+      const v=Number(String(el.id||'').replace(/^v/,''));if(!v)return null;
+      const p=pos(),b=CORPORA[mode].books[p.b];let c=Number(p.c),vv=v;
+      if(mode==='wlc'&&versif()){const r=versif().toPt(b.book,c,vv);if(!r)return null;c=r.chapter;vv=r.verse}
+      return{book:b.book,c,v:vv};
+    }catch(e){return null}
+  }
+  // em que texto o cartão mostra uma passagem
+  function cardMode(book){
+    const m=typeof mode!=='undefined'?mode:'almeida';
+    if(m==='wlc'&&!NT.has(book)&&CORPORA.wlc)return'wlc';
+    if(m==='tr'&&NT.has(book)&&CORPORA.tr)return'tr';
+    return'almeida';
+  }
+  function shown(cm,book,c,v){
+    if(cm!=='wlc'||!versif())return{c,v,text:verseText(cm,book,c,v)};
+    const h=versif().toHeb(book,c,v);const all=h.all||[[h.chapter,h.verse]];
+    return{c:all[0][0],v:all[0][1],text:all.map(([hc,hv])=>verseText('wlc',book,hc,hv)).filter(Boolean).join(' ')};
+  }
+  function rangeLabel(Q,short){
+    const name=short?(ABBR[Q.book]||Q.book):bookName(Q.book);
+    return name+' '+Q.segs.map((s,i)=>{const pre=i>0&&s.c1===Q.segs[i-1].c2?'':s.c1+':';
+      return s.c1===s.c2?(pre+s.v1+(s.v2!==s.v1?'–'+s.v2:'')):(s.c1+':'+s.v1+'–'+s.c2+':'+s.v2)}).join('; ');
+  }
+  const VLABEL={almeida:'Almeida',wlc:'Hebraico',tr:'Grego'};
+
+  /* ================= O CARTÃO ================= */
+  let on=false,state={key:'',tabs:[],active:null,pref:'',min:false,userUntil:0,hideT:0,rendered:'',verseKey:''};
+  function sheet(){
+    let s=$('cronoSheet');if(s)return s;
+    s=document.createElement('section');s.id='cronoSheet';s.className='crono-sheet';s.setAttribute('aria-label','Leitura cronológica');
+    s.innerHTML='<div class="crono-grip" aria-hidden="true"><i></i></div>'
+      +'<div class="crono-head"><div class="crono-tabs" role="tablist"></div><button type="button" class="crono-min" aria-label="Recolher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button></div>'
+      +'<div class="crono-meta"><span class="crono-kind"></span><span class="crono-where"></span><button type="button" class="crono-open">Abrir<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button></div>'
+      +'<p class="crono-note" hidden></p><div class="crono-text" tabindex="0"></div>';
+    document.body.appendChild(s);
+    const txt=s.querySelector('.crono-text');
+    ['touchstart','wheel','pointerdown'].forEach(t=>txt.addEventListener(t,()=>{state.userUntil=Date.now()+5000},{passive:true}));
+    s.querySelector('.crono-min').addEventListener('click',()=>setMin(!state.min));
+    s.querySelector('.crono-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;
+      if(state.min)setMin(false);if(b.dataset.tab===state.active)return;state.active=b.dataset.tab;state.userUntil=0;
+      const t=tabFor();if(t)state.pref=t.Q.book;paint(true)});
+    s.querySelector('.crono-open').addEventListener('click',openTarget);
+    // arrastar a alça: para baixo recolhe, para cima abre
+    let y0=null,x0=0;const grip=s.querySelector('.crono-grip'),head=s.querySelector('.crono-head');
+    [grip,head].forEach(el=>{
+      el.addEventListener('touchstart',e=>{y0=e.touches[0].clientY;x0=e.touches[0].clientX},{passive:true});
+      el.addEventListener('touchend',e=>{if(y0==null)return;const dy=e.changedTouches[0].clientY-y0,dx=e.changedTouches[0].clientX-x0;y0=null;
+        if(Math.abs(dy)<Math.abs(dx)*1.5)return;if(dy>36)setMin(true);else if(dy<-36)setMin(false)},{passive:true});
+    });
+    grip.addEventListener('click',()=>setMin(!state.min));
+    return s;
+  }
+  function setMin(v){state.min=!!v;const s=$('cronoSheet');if(s)s.classList.toggle('min',state.min);if(!state.min){state.userUntil=0;sync(true)}}
+  function placeSheet(){
+    const s=$('cronoSheet');if(!s)return;
+    // a barra de baixo some ao rolar (body.hud-hidden); o CSS acompanha. Aqui só a altura dela.
+    const w=document.querySelector('.doxa30-bottom-wrap');const h=w&&w.offsetHeight?w.offsetHeight+4:96;
+    if(s._h!==h){s._h=h;s.style.setProperty('--cb',h+'px')}
+  }
+  function hideSheet(now){
+    clearTimeout(state.hideT);
+    const go=()=>{const s=$('cronoSheet');if(s)s.classList.remove('on');document.body.classList.remove('crono-sheet-on');state.key='';state.tabs=[];
+      document.querySelectorAll('#textBody .verse.crono-now').forEach(x=>x.classList.remove('crono-now'))};
+    if(now)go();else state.hideT=setTimeout(go,650);
+  }
+  function tabFor(){return state.tabs.find(x=>x.id===state.active)||state.tabs[0]}
+  function show(list,ref,el){
+    clearTimeout(state.hideT);
+    const s=sheet();placeSheet();
+    const key=list.map(t=>t.id).join(',')+'|'+(typeof mode!=='undefined'?mode:'');
+    if(key!==state.key){
+      // mantém o livro que estava aberto (ler 1 Reis seguido mantém 2 Crônicas na frente)
+      // a aba escolhida pelo leitor (o livro) vale enquanto existir nas próximas passagens
+      const prev=tabFor();const prevBook=prev&&prev.Q.book;
+      state.tabs=list;state.key=key;
+      if(!list.some(t=>t.id===state.active)){
+        const strongNow=t=>{if(!t.aligned)return false;const M=mapper(t.ri,t.pi,t.qi),m=M&&M[t.ix];return!!(m&&m.strong)};
+        const pick=(state.pref&&list.find(t=>t.Q.book===state.pref))||(prevBook&&list.find(t=>t.Q.book===prevBook))||list.find(strongNow);
+        state.active=(pick||list[0]).id}
+      const tabs=s.querySelector('.crono-tabs');
+      tabs.innerHTML=list.map(t=>'<button type="button" role="tab" data-tab="'+t.id+'"'+(t.aligned?'':' class="soft"')+'>'+esc(rangeLabel(t.Q,true))+'</button>').join('');state.rendered='';
+    }else state.tabs=list;
+    document.querySelectorAll('#textBody .verse.crono-now').forEach(x=>{if(x!==el)x.classList.remove('crono-now')});el&&el.classList.add('crono-now');
+    paint(false);
+    if(!s.classList.contains('on')){s.classList.add('on');document.body.classList.add('crono-sheet-on');s.classList.toggle('min',state.min)}
+  }
+  // desenha o texto da aba ativa (só quando muda) e sincroniza
+  function paint(force){
+    const s=$('cronoSheet');if(!s)return;const t=tabFor();if(!t)return;
+    const cm=cardMode(t.Q.book);const rk=t.id+'|'+cm+'|'+state.key;
+    if(force||state.rendered!==rk){
+      state.rendered=rk;
+      const tabs=s.querySelector('.crono-tabs');
+      tabs.querySelectorAll('[data-tab]').forEach(b=>{const a=b.dataset.tab===t.id;b.classList.toggle('on',a);b.setAttribute('aria-selected',String(a));
+        if(a){const L=b.offsetLeft-12,R=b.offsetLeft+b.offsetWidth-tabs.clientWidth+12;if(tabs.scrollLeft>L)tabs.scrollLeft=L;else if(tabs.scrollLeft<R)tabs.scrollLeft=R}});
+      const kind=t.Q.t||t.P.t?'t':t.row[0];
+      s.querySelector('.crono-kind').textContent=KIND[kind]||KIND.r;
+      
+      const notes=[t.row[1],t.P.note,t.Q.note].filter(Boolean);const np=s.querySelector('.crono-note');
+      np.hidden=!notes.length;np.textContent=notes.join(' ');
+      const txt=s.querySelector('.crono-text');txt.classList.toggle('hebrew',cm==='wlc');txt.setAttribute('dir',cm==='wlc'?'rtl':'ltr');
+      let h='',lastC=null,lastSeg=0;
+      const rows=t.Q.list.map(([c,v])=>shown(cm,t.Q.book,c,v));const multi=rows.some(x=>x.c!==rows[0].c);
+      rows.forEach((x,i)=>{
+        const seg=t.Q.seg[i];if(seg!==lastSeg){h+='<div class="crono-gap" aria-hidden="true">· · ·</div>';lastSeg=seg}
+        if(multi&&x.c!==lastC)h+='<div class="crono-ch">'+esc(bookName(t.Q.book))+' '+x.c+'</div>';lastC=x.c;
+        h+='<p class="crono-v" data-i="'+i+'"><sup>'+x.v+'</sup>'+esc(x.text)+'</p>';
+      });
+      txt.innerHTML=h;txt.scrollTop=0;state.verseKey='';
+    }
+    sync(true);
+  }
+  function sync(jump){
+    const s=$('cronoSheet');if(!s)return;const t=tabFor();if(!t)return;
+    const txt=s.querySelector('.crono-text');
+    const M=t.aligned?mapper(t.ri,t.pi,t.qi):null,m=M&&M[t.ix];
+    const vk=t.id+'@'+t.ix;if(vk===state.verseKey&&!jump)return;state.verseKey=vk;
+    txt.querySelectorAll('.crono-v.hit').forEach(x=>x.classList.remove('hit'));
+    const cm=cardMode(t.Q.book);s.querySelector('.crono-where').textContent=[m&&m.near!=null?'sem equivalente':'',cm!=='almeida'?VLABEL[cm]:''].filter(Boolean).join(' · ');
+    if(!m){s.classList.remove('nomatch');return}
+    let y=m.near!=null?m.near:m.y0;
+    if(m.strong)for(let i=m.y0;i<=m.y1;i++)txt.querySelector('.crono-v[data-i="'+i+'"]')?.classList.add('hit');
+    s.classList.toggle('nomatch',!m.strong);
+    if(state.min||Date.now()<state.userUntil)return;
+    const el=txt.querySelector('.crono-v[data-i="'+y+'"]');if(!el)return;
+    const top=el.offsetTop-10;
+    try{txt.scrollTo({top:Math.max(0,top),behavior:'smooth'})}catch(e){txt.scrollTop=Math.max(0,top)}
+  }
+
+  /* ================= ROLAGEM ================= */
+  const readingNow=()=>$('p-ler')?.classList.contains('on')&&!document.body.classList.contains('parallel-mode')&&!document.body.classList.contains('doxa-home-open');
+  function lineVerse(){
+    const host=$('textBody');if(!host)return null;
+    const vs=host.querySelectorAll('.verse[id^="v"]');if(!vs.length)return null;
+    const line=window.innerHeight*0.32;
+    let lo=0,hi=vs.length-1,best=-1;
+    while(lo<=hi){const mid=(lo+hi)>>1;if(vs[mid].getBoundingClientRect().top<=line){best=mid;lo=mid+1}else hi=mid-1}
+    if(best<0){const r=vs[0].getBoundingClientRect();return r.top<window.innerHeight*0.55?vs[0]:null}
+    const r=vs[best].getBoundingClientRect();if(r.bottom<0)return null;
+    return vs[best];
+  }
+  let raf=0;
+  function update(){
+    raf=0;
+    if(!on)return;
+    placeSheet();
+    if(!readingNow()){hideSheet(true);return}
+    const el=lineVerse();const ref=el&&readerRef(el);
+    const list=ref?targets(ref.book,ref.c,ref.v):[];
+    if(!list.length){hideSheet(false);return}
+    show(list,ref,el);
+  }
+  const queue=()=>{if(on&&!raf)raf=requestAnimationFrame(update)};
+  // marca, no capítulo aberto, os versos que têm paralelo
+  function mark(){
+    const host=$('textBody');if(!host)return;
+    host.querySelectorAll('.verse.crono-has').forEach(x=>x.classList.remove('crono-has'));
+    if(!on||!build())return 0;
+    let n=0;host.querySelectorAll('.verse[id^="v"]').forEach(el=>{const r=readerRef(el);if(r&&HAS[r.book]&&HAS[r.book].has(r.c+':'+r.v)){el.classList.add('crono-has');n++}});
+    return n;
+  }
+
+  /* ================= IR PARA A PASSAGEM ================= */
+  function openTarget(){
+    const t=tabFor();if(!t)return;
+    const M=t.aligned?mapper(t.ri,t.pi,t.qi):null,m=M&&M[t.ix];
+    const i=m?(m.near!=null?m.near:m.y0):0;const [c,v]=t.Q.list[i]||t.Q.list[0];
+    goVerse(t.Q.book,c,v);
+  }
+  function goVerse(book,c,v){
+    try{
+      let md=typeof mode!=='undefined'&&CORPORA[mode]&&mode!=='hyper'?mode:'almeida';
+      if(md==='wlc'&&NT.has(book))md='almeida';if(md==='tr'&&!NT.has(book))md='almeida';
+      let cc=+c,vv=+v;if(md==='wlc'&&versif()){const h=versif().toHeb(book,cc,vv);cc=h.chapter;vv=h.verse}
+      const bi=CORPORA[md].books.findIndex(x=>x.book===book);if(bi<0)return;
+      if(md!==mode)mode=md;positions[mode]={...(positions[mode]||{}),b:bi,c:cc};focusVerse=vv;
+      hideSheet(true);renderReader();try{savePrefs()}catch(e){}
+      const place=()=>{const el=document.getElementById('v'+vv);if(!el)return;const y=el.getBoundingClientRect().top+window.scrollY-window.innerHeight*0.26;
+        try{window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}catch(e){window.scrollTo(0,Math.max(0,y))}};
+      setTimeout(place,70);setTimeout(queue,700);
+    }catch(e){}
+  }
+
+  /* ================= MODO ================= */
+  // fica no grupo "Leitura", depois da Leitura paralela; antes de o painel ser organizado, depois da Lupa
+  function ensureCard(){
+    let b=$('toolsCronoStart');
+    if(!b){
+      b=document.createElement('button');b.className='tool-card';b.id='toolsCronoStart';b.type='button';
+      b.innerHTML='<span class="tool-card-icon">'+SVG_CRONO+'</span><span class="tool-card-copy"><strong>Leitura Cronológica</strong><small>Leia junto o que aconteceu ao mesmo tempo.</small></span><span class="tool-card-arrow" aria-hidden="true">›</span>';
+      b.addEventListener('click',()=>setMode(true));
+    }
+    const par=$('doxa31ParallelTool');
+    const ref=par&&par.closest('.doxa59-tools-stack')?par:($('toolsLupaStart')||$('toolsTimelineStart')||$('toolsHighlightStart'));
+    if(ref&&ref.nextElementSibling!==b)ref.after(b);
+  }
+  function toast(msg){let t=$('contaToast');if(!t){t=document.createElement('div');t.id='contaToast';t.className='conta-toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),3200)}
+  function leaveOthers(){
+    try{window.DoxaLupa?.setMode?.(false)}catch(e){}
+    try{if(document.body.classList.contains('doxa-timeline-mode'))$('tlModeExit')?.click()}catch(e){}
+    try{const bar=$('hlModeBar');if(bar&&!bar.hidden)$('hlModeExit')?.click()}catch(e){}
+  }
+  function setMode(v){
+    v=!!v;if(v===on&&v)return openPanelLer();
+    on=v;document.body.classList.toggle('doxa-crono-on',on);
+    const tools=$('doxa30Tools');
+    if(on){
+      leaveOthers();
+      if(tools){if(!tools.dataset.cronoPrev)tools.dataset.cronoPrev=tools.innerHTML;tools.innerHTML=SVG_CRONO+'<span>Sair</span>';tools.classList.add('lupa-exit','crono-exit');tools.setAttribute('aria-label','Sair da Leitura Cronológica')}
+      openPanelLer();
+      const s=document.createElement('div');s.className='lupa-sweep';s.innerHTML='<i></i><span>'+SVG_CRONO+' Leitura Cronológica · role o texto</span>';
+      document.body.appendChild(s);setTimeout(()=>s.remove(),2600);
+      setTimeout(()=>{const n=mark();queue();
+        if(n===0&&readingNow()&&build())toast('Este capítulo não tem paralelo. Experimente 1 e 2 Reis, Crônicas, Isaías 36–39 ou os Evangelhos.')},420);
+    }else{
+      if(tools&&tools.dataset.cronoPrev){tools.innerHTML=tools.dataset.cronoPrev;delete tools.dataset.cronoPrev;tools.classList.remove('lupa-exit','crono-exit');tools.setAttribute('aria-label','Ferramentas')}
+      hideSheet(true);mark();state.pref='';state.min=false;
+    }
+  }
+  function openPanelLer(){try{openPanel('ler')}catch(e){}}
+
+  // outros modos que usam a aba Ferramentas: sai da Leitura Cronológica antes
+  document.addEventListener('click',e=>{
+    if(!on)return;
+    if(e.target.closest?.('#toolsLupaStart,#toolsTimelineStart,#toolsHighlightStart,#toolsCopyVersesStart'))setMode(false);
+  },true);
+  window.addEventListener('click',e=>{
+    if(!on)return;
+    if(e.target.closest?.('#doxa30Tools.crono-exit:not(.doxa-copy-action)')){e.preventDefault();e.stopImmediatePropagation();setMode(false)}
+  },true);
+  window.addEventListener('scroll',queue,{passive:true});
+  window.addEventListener('resize',queue,{passive:true});
+  const host=$('textBody');
+  if(host&&'MutationObserver' in window){let t=0;new MutationObserver(()=>{if(!on)return;clearTimeout(t);t=setTimeout(()=>{mark();state.key='';queue()},90)}).observe(host,{childList:true})}
+  const origOpen=window.openPanel;
+  if(typeof origOpen==='function'&&!origOpen.__doxa61){
+    const w=function(name){const r=origOpen.apply(this,arguments);if(name==='marcar')ensureCard();if(on){setTimeout(queue,60);setTimeout(queue,400)}return r};
+    w.__doxa61=true;for(const k of Object.keys(origOpen))try{w[k]=origOpen[k]}catch(e){}window.openPanel=w;
+  }
+
+  ensureCard();setTimeout(ensureCard,1200);setTimeout(ensureCard,3000);
+  window.DoxaCrono={setMode,isOn:()=>on,targets:(b,c,v)=>targets(b,c,v).map(t=>({ref:rangeLabel(t.Q,false),kind:KIND[(t.Q.t||t.P.t)?'t':t.row[0]],aligned:t.aligned,
+    map:(()=>{const M=t.aligned?mapper(t.ri,t.pi,t.qi):null,m=M&&M[t.ix];if(!m)return null;return m.near!=null?{near:t.Q.list[m.near]}:{from:t.Q.list[m.y0],to:t.Q.list[m.y1],strong:m.strong}})()})),
+    rows:()=>ROWS.length,update:queue};
+})();
