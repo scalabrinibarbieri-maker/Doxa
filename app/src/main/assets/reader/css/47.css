@@ -27,6 +27,7 @@ body:not(.doxa-crono-on) .crono-sheet{display:none}
 .crono-head{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:2px 8px 0 12px;touch-action:pan-x}
 .crono-tabs{flex:1 1 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:4px 0}
 .crono-tabs::-webkit-scrollbar{display:none}
+.crono-tabs.more{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
 .crono-tabs button{flex:0 0 auto;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 26%,transparent);background:transparent;
   color:var(--d30-muted,#b8ab98);font:600 12.5px/1 system-ui,-apple-system,sans-serif;padding:8px 12px;border-radius:999px;white-space:nowrap;cursor:pointer;
   transition:background-color .2s,color .2s,border-color .2s}
