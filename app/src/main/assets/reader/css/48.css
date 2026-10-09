@@ -1,0 +1,180 @@
+/* Doxa 62 · Atlas (em teste: Êxodo) */
+
+/* espaço no fim do capítulo para os últimos versos chegarem à linha de leitura */
+body.doxa-atlas-on #textBody::after{content:'';display:block;height:46vh}
+
+/* o cartão: sobe de baixo, até meia tela */
+.atlas-sheet{position:fixed;left:10px;right:10px;bottom:var(--cb,96px);z-index:60;
+  display:flex;flex-direction:column;height:min(52vh,500px);max-width:760px;margin:0 auto;
+  border-radius:22px;overflow:hidden;
+  --a-sea:color-mix(in srgb,var(--d30-panel,#0d0a07) 74%,#3f7894 26%);
+  --a-land:color-mix(in srgb,var(--d30-panel,#0d0a07) 80%,var(--d30-gold,#d9a25e) 20%);
+  --a-coast:color-mix(in srgb,var(--d30-gold,#d9a25e) 46%,transparent);
+  --a-water:color-mix(in srgb,#5fa3c7 78%,var(--d30-text,#f3ebe0) 22%);
+  --a-route:var(--d30-gold,#d9a25e);
+  --a-route2:var(--d30-gold2,#f1c989);
+  --a-trad:#a996d6;
+  --a-army:#d8604c;
+  --a-moses:#f0dcae;
+  --a-aaron:#86cdb9;
+  --a-jethro:#a6d38c;
+  background:var(--d30-panel,#0d0a07);
+  color:var(--d30-text,#f3ebe0);
+  border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 26%,transparent);
+  box-shadow:0 -10px 40px rgba(0,0,0,.28),0 18px 40px rgba(0,0,0,.22);
+  transform:translate3d(0,calc(100% + var(--cb,96px) + 20px),0);visibility:hidden;
+  transition:transform .42s cubic-bezier(.22,1,.36,1),bottom .3s ease,visibility 0s linear .42s}
+.atlas-sheet.on{transform:none;visibility:visible;transition:transform .42s cubic-bezier(.22,1,.36,1),bottom .3s ease,visibility 0s}
+body.hud-hidden .atlas-sheet{bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
+body:not(.doxa-atlas-on) .atlas-sheet{display:none}
+
+.atlas-grip{flex:0 0 auto;display:flex;justify-content:center;padding:7px 0 1px;cursor:grab;touch-action:none}
+.atlas-grip i{width:38px;height:4px;border-radius:4px;background:color-mix(in srgb,var(--d30-text,#f3ebe0) 22%,transparent)}
+.atlas-head{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:2px 8px 0 16px;touch-action:none;min-width:0}
+.atlas-titles{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px;padding:2px 0}
+.atlas-ref{font:700 10.5px/1.2 system-ui,-apple-system,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--d30-gold,#d9a25e)}
+.atlas-title{font:600 16px/1.25 var(--doxa-font,Georgia,'Times New Roman',serif);color:var(--d30-text,#f3ebe0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.atlas-hbtn{flex:0 0 auto;height:34px;min-width:34px;border:0;border-radius:17px;background:transparent;color:var(--d30-muted,#b8ab98);
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 8px;cursor:pointer;font:600 12px/1 system-ui,-apple-system,sans-serif;transition:background-color .2s,color .2s,transform .3s}
+.atlas-hbtn svg{width:19px;height:19px}
+.atlas-rbtn{border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 26%,transparent);padding:0 11px 0 9px}
+.atlas-rbtn.on{background:color-mix(in srgb,var(--d30-gold,#d9a25e) 18%,transparent);color:color-mix(in srgb,var(--d30-gold,#d9a25e) 72%,var(--d30-text,#f3ebe0))}
+.atlas-min svg{width:20px;height:20px;transition:transform .3s}
+.atlas-sheet.min .atlas-min svg{transform:rotate(180deg)}
+
+.atlas-note{flex:0 0 auto;margin:6px 16px 8px;font:400 12.5px/1.45 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.atlas-note.open{display:block;max-height:30vh;overflow-y:auto}
+
+.atlas-map{position:relative;flex:1 1 auto;min-height:0;margin:0 8px 8px;border-radius:16px;overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent);background:var(--a-sea)}
+.atlas-svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.atlas-svg:active{cursor:grabbing}
+.atlas-sea{fill:var(--a-sea)}
+.atlas-land{fill:var(--a-land);stroke:var(--a-coast);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.atlas-green{opacity:.4;pointer-events:none}
+.atlas-lake{fill:var(--a-sea);stroke:var(--a-coast);stroke-width:.8;vector-effect:non-scaling-stroke}
+.atlas-river{fill:none;stroke:color-mix(in srgb,var(--a-water) 62%,transparent);stroke-width:1.3;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;transition:stroke .4s,stroke-width .4s}
+.atlas-pel{stroke-dasharray:3 3;stroke-width:1.1}
+.atlas-svg.hl-nile .atlas-nile,.atlas-svg.hl-nile .atlas-pel{stroke:#d24b3e;stroke-width:2.6}
+
+/* trajetos (desenhados em pixels de tela) */
+.r{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.r-main.next{stroke:color-mix(in srgb,var(--a-route) 62%,transparent);stroke-width:1.6;stroke-dasharray:1.5 5}
+.r-main.done{stroke:var(--a-route);stroke-width:2.6;opacity:.92}
+.r-main.base{stroke:color-mix(in srgb,var(--a-route) 50%,transparent);stroke-width:1.6;stroke-dasharray:1.5 5}
+.r-main.prog{stroke:var(--a-route2);stroke-width:3.6;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--a-route) 70%,transparent))}
+.r-trad{stroke:var(--a-trad)}
+.r-trad.next,.r-trad.base{stroke-width:1.4;stroke-dasharray:1.5 5;opacity:.75}
+.r-trad.done{stroke-width:2;stroke-dasharray:6 4;opacity:.85}
+.r-trad.prog{stroke-width:2.6;stroke-dasharray:6 4}
+.r-moses{stroke:var(--a-moses)}.r-aaron{stroke:var(--a-aaron)}.r-jethro{stroke:var(--a-jethro)}.r-army{stroke:var(--a-army)}
+.r-moses.base,.r-aaron.base,.r-jethro.base,.r-army.base{stroke-width:1.4;stroke-dasharray:1.5 5;opacity:.7}
+.r-moses.prog,.r-aaron.prog,.r-jethro.prog{stroke-width:3;stroke-dasharray:1 6.5;stroke-linecap:round}
+.r-moses.prog{stroke-width:3.4}
+.r-army.prog{stroke-width:3}
+.r-army.also{stroke-width:2.6;stroke-dasharray:5 4;opacity:.85}
+.r-phil.also{stroke:var(--a-army);stroke-width:2;stroke-dasharray:7 5;opacity:.7}
+.atlas-walker .core{fill:var(--a-route2);stroke:var(--a-land);stroke-width:2}
+.atlas-walker .halo{fill:color-mix(in srgb,var(--a-route) 30%,transparent);transform-box:fill-box;transform-origin:center;animation:atlasPulse 1.8s ease-out infinite}
+.atlas-walker.w-trad .core{fill:var(--a-trad)}.atlas-walker.w-trad .halo{fill:color-mix(in srgb,var(--a-trad) 28%,transparent)}
+.atlas-walker.w-army .core{fill:var(--a-army)}.atlas-walker.w-army .halo{fill:color-mix(in srgb,var(--a-army) 30%,transparent)}
+.atlas-walker.w-moses .core{fill:var(--a-moses)}.atlas-walker.w-aaron .core{fill:var(--a-aaron)}.atlas-walker.w-jethro .core{fill:var(--a-jethro)}
+@keyframes atlasPulse{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.5);opacity:0}}
+
+/* lugares */
+.pin .glyph{fill:color-mix(in srgb,var(--d30-text,#f3ebe0) 78%,transparent);stroke:var(--a-land);stroke-width:1.6}
+.pin.k-site .glyph{fill:var(--a-land);stroke:color-mix(in srgb,var(--d30-text,#f3ebe0) 78%,transparent);stroke-width:1.6}
+.pin.k-water .glyph{fill:var(--a-water)}
+.pin.k-mount .glyph{fill:color-mix(in srgb,var(--d30-gold,#d9a25e) 70%,var(--d30-text,#f3ebe0))}
+.pin.em .glyph{fill:var(--a-route2);stroke:var(--a-land);stroke-width:2}
+.pin.em .halo{fill:color-mix(in srgb,var(--a-route) 26%,transparent);transform-box:fill-box;transform-origin:center;animation:atlasPulse 2.2s ease-out infinite}
+.pin.trad .glyph{fill:var(--a-trad);stroke:var(--a-land)}
+.pin.trad.em .glyph{fill:var(--a-trad)}
+.pin.trad.em .halo{fill:color-mix(in srgb,var(--a-trad) 24%,transparent)}
+
+.lab{font:600 12px/1 system-ui,-apple-system,sans-serif;fill:var(--d30-text,#f3ebe0);paint-order:stroke;stroke:var(--a-land);stroke-width:3.2px;stroke-linejoin:round;pointer-events:none}
+.lab.place.em{font-size:13px;font-weight:700;fill:var(--a-route2)}
+.lab.trad{fill:color-mix(in srgb,var(--a-trad) 80%,var(--d30-text,#f3ebe0));font-style:italic;font-weight:500}
+.lab.region{font-size:11px;font-weight:700;letter-spacing:.17em;fill:color-mix(in srgb,var(--d30-text,#f3ebe0) 55%,transparent);stroke-width:2.6px}
+.lab.region.em{fill:var(--a-route2);font-size:13px}
+.lab.region.small{letter-spacing:.03em;font-style:italic;font-weight:600;font-size:11.5px}
+.lab .q{font-size:10.5px;font-weight:500;font-style:normal;fill:color-mix(in srgb,var(--d30-text,#f3ebe0) 66%,transparent)}
+.lab.region.sh{fill:color-mix(in srgb,var(--d30-text,#f3ebe0) 82%,transparent)}
+.lab.sea,.lab.river{font-style:italic;font-weight:500;font-size:12px;fill:color-mix(in srgb,var(--a-water) 85%,var(--d30-text,#f3ebe0));stroke:var(--a-sea);stroke-width:2.6px}
+.lab.river{stroke:var(--a-land)}
+.lab.sea.em,.lab.river.em,.lab.sea.sh,.lab.river.sh{font-weight:700;font-size:13px}
+.lab.note{font-style:italic;font-weight:500;font-size:11.5px;fill:color-mix(in srgb,var(--a-army) 80%,var(--d30-text,#f3ebe0))}
+
+/* controles */
+.atlas-ctrl{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
+.atlas-ctrl button{width:34px;height:34px;border-radius:12px;border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 22%,transparent);
+  background:color-mix(in srgb,var(--d30-panel,#0d0a07) 82%,transparent);color:var(--d30-text,#f3ebe0);font:500 20px/1 system-ui,sans-serif;display:grid;place-items:center;cursor:pointer;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.atlas-ctrl button svg{width:18px;height:18px}
+.atlas-scale{position:absolute;left:10px;bottom:9px;display:flex;align-items:center;gap:6px;pointer-events:none;font:600 10px/1 system-ui,sans-serif;color:var(--d30-text,#f3ebe0);
+  text-shadow:0 0 3px var(--a-land),0 0 3px var(--a-land)}
+.atlas-scale i{display:block;height:5px;border:1.5px solid currentColor;border-top:0;opacity:.8}
+.atlas-credit{position:absolute;right:8px;bottom:6px;font:500 8.5px/1 system-ui,sans-serif;color:color-mix(in srgb,var(--d30-text,#f3ebe0) 52%,transparent);pointer-events:none;text-shadow:0 0 3px var(--a-sea)}
+
+/* ficha do lugar */
+.atlas-pop{position:absolute;left:8px;right:50px;bottom:22px;max-height:calc(100% - 36px);overflow-y:auto;overscroll-behavior:contain;
+  padding:11px 13px 12px;border-radius:14px;background:color-mix(in srgb,var(--d30-panel,#0d0a07) 94%,var(--d30-gold,#d9a25e) 6%);
+  border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 30%,transparent);box-shadow:0 10px 28px rgba(0,0,0,.32);animation:atlasIn .22s ease-out}
+.atlas-pop[hidden]{display:none}
+@keyframes atlasIn{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:none}}
+.atlas-pop-h{display:flex;align-items:flex-start;gap:8px}
+.atlas-pop-h strong{flex:1 1 auto;font:600 15px/1.25 var(--doxa-font,Georgia,serif);color:var(--d30-text,#f3ebe0)}
+.atlas-pop-x{flex:0 0 auto;width:26px;height:26px;margin:-4px -5px 0 0;border:0;border-radius:50%;background:transparent;color:var(--d30-muted,#b8ab98);font:400 20px/1 system-ui,sans-serif;cursor:pointer}
+.atlas-pop-s{display:block;margin-top:3px;font:600 11px/1.35 system-ui,-apple-system,sans-serif;color:var(--d30-gold,#d9a25e)}
+.atlas-pop p{margin:7px 0 0;font:400 12.5px/1.5 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
+.atlas-pop-refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.atlas-pop-refs button{border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 30%,transparent);background:transparent;color:color-mix(in srgb,var(--d30-gold,#d9a25e) 72%,var(--d30-text,#f3ebe0));
+  font:600 11.5px/1 system-ui,-apple-system,sans-serif;padding:6px 9px;border-radius:999px;cursor:pointer}
+
+/* rotas */
+.atlas-layers{position:absolute;left:8px;right:50px;top:8px;padding:11px 12px 10px;border-radius:14px;max-height:calc(100% - 16px);overflow-y:auto;
+  background:color-mix(in srgb,var(--d30-panel,#0d0a07) 95%,var(--d30-gold,#d9a25e) 5%);border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 30%,transparent);
+  box-shadow:0 10px 28px rgba(0,0,0,.32);animation:atlasIn .22s ease-out}
+.atlas-layers[hidden]{display:none}
+.atlas-lh{font:700 10.5px/1.2 system-ui,-apple-system,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--d30-gold,#d9a25e);margin-bottom:8px}
+.atlas-lrow{display:flex;align-items:center;gap:10px;padding:7px 0}
+.atlas-lrow>i{flex:0 0 auto;width:22px;height:0;border-top:3px solid var(--a-route);border-radius:2px}
+.atlas-lrow.trad>i{border-top:2px dashed var(--a-trad)}
+.atlas-lrow span{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.atlas-lrow b{font:600 13px/1.25 system-ui,-apple-system,sans-serif;color:var(--d30-text,#f3ebe0)}
+.atlas-lrow small{font:400 11.5px/1.35 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
+.atlas-lrow.trad{cursor:pointer;border-top:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 12%,transparent)}
+.atlas-lrow input{position:absolute;opacity:0;pointer-events:none}
+.atlas-lrow em{flex:0 0 auto;position:relative;width:38px;height:22px;border-radius:11px;background:color-mix(in srgb,var(--d30-text,#f3ebe0) 18%,transparent);transition:background-color .2s}
+.atlas-lrow em::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--d30-text,#f3ebe0);transition:transform .2s}
+.atlas-lrow input:checked+em{background:var(--a-trad)}
+.atlas-lrow input:checked+em::after{transform:translateX(16px)}
+.atlas-lrow input:focus-visible+em{outline:2px solid var(--a-trad);outline-offset:2px}
+.atlas-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:6px;padding-top:9px;border-top:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 12%,transparent)}
+.atlas-legend .lg{display:inline-flex;align-items:center;gap:6px;font:500 11px/1.2 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
+.atlas-legend .lg::before{content:'';width:16px;height:0;border-top:2.5px solid var(--a-route);border-radius:2px}
+.atlas-legend .lg.next::before{border-top:2px dotted var(--a-route)}
+.atlas-legend .lg.moses::before{border-top:2.5px dotted var(--a-moses)}
+.atlas-legend .lg.army::before{border-top-color:var(--a-army)}
+.atlas-lfoot{margin:8px 0 0;font:400 11px/1.4 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
+
+/* fora de Êxodo */
+.atlas-away{display:none;align-items:center;gap:12px;padding:6px 14px 14px 16px;font:400 12.5px/1.45 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
+.atlas-away span{flex:1 1 auto}
+.atlas-go{flex:0 0 auto;border:0;border-radius:12px;padding:9px 13px;background:linear-gradient(180deg,#e4b06a,#c98f44);color:#1b1206;font:700 12.5px/1 system-ui,sans-serif;cursor:pointer}
+.atlas-sheet.away{height:auto}
+.atlas-sheet.away .atlas-away{display:flex}
+.atlas-sheet.away .atlas-note,.atlas-sheet.away .atlas-map,.atlas-sheet.away .atlas-rbtn{display:none}
+
+/* recolhido: só a alça e o título */
+.atlas-sheet.min{height:auto}
+.atlas-sheet.min .atlas-note,.atlas-sheet.min .atlas-map,.atlas-sheet.min .atlas-away{display:none}
+.atlas-sheet.min .atlas-head{padding-bottom:10px}
+
+/* aba Ferramentas virando "Sair" */
+.doxa30-nav-item.atlas-exit{color:var(--d30-gold2,#f1c989)!important}
+
+@media(min-width:900px){.atlas-sheet{height:min(48vh,520px)}}
+@media(max-height:620px){.atlas-sheet{height:56vh}.atlas-note{-webkit-line-clamp:1}}
+@media(prefers-reduced-motion:reduce){.atlas-sheet,.atlas-sheet.on{transition:none}.atlas-walker .halo,.pin.em .halo{animation:none;opacity:.5}}
