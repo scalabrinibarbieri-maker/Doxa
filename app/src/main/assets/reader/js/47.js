@@ -968,6 +968,7 @@
   }
   function toast(msg){let t=$('contaToast');if(!t){t=document.createElement('div');t.id='contaToast';t.className='conta-toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),3200)}
   function leaveOthers(){
+    try{if(window.DoxaAtlas?.isOn?.())window.DoxaAtlas.setMode(false)}catch(e){}
     try{window.DoxaLupa?.setMode?.(false)}catch(e){}
     try{if(document.body.classList.contains('doxa-timeline-mode'))$('tlModeExit')?.click()}catch(e){}
     try{const bar=$('hlModeBar');if(bar&&!bar.hidden)$('hlModeExit')?.click()}catch(e){}
@@ -994,7 +995,7 @@
   // outros modos que usam a aba Ferramentas: sai da Leitura Cronológica antes
   document.addEventListener('click',e=>{
     if(!on)return;
-    if(e.target.closest?.('#toolsLupaStart,#toolsTimelineStart,#toolsHighlightStart,#toolsCopyVersesStart'))setMode(false);
+    if(e.target.closest?.('#toolsLupaStart,#toolsTimelineStart,#toolsHighlightStart,#toolsCopyVersesStart,#toolsAtlasStart'))setMode(false);
   },true);
   window.addEventListener('click',e=>{
     if(!on)return;
