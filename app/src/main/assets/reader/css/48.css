@@ -1,4 +1,4 @@
-/* Doxa 62 · Atlas (em teste: Êxodo) */
+/* Doxa 62 · Atlas do Pentateuco */
 
 /* espaço no fim do capítulo para os últimos versos chegarem à linha de leitura */
 body.doxa-atlas-on #textBody::after{content:'';display:block;height:46vh}
@@ -18,12 +18,25 @@ body.doxa-atlas-on #textBody::after{content:'';display:block;height:46vh}
   --a-moses:#f0dcae;
   --a-aaron:#86cdb9;
   --a-jethro:#a6d38c;
+  --a-hit:color-mix(in srgb,#ffcf4a 70%,var(--d30-text,#f3ebe0) 30%);
   background:var(--d30-panel,#0d0a07);
   color:var(--d30-text,#f3ebe0);
   border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 26%,transparent);
   box-shadow:0 -10px 40px rgba(0,0,0,.28),0 18px 40px rgba(0,0,0,.22);
   transform:translate3d(0,calc(100% + var(--cb,96px) + 20px),0);visibility:hidden;
   transition:transform .42s cubic-bezier(.22,1,.36,1),bottom .3s ease,visibility 0s linear .42s}
+/* temas claros (papel, sépia, lavanda, rosa…): trajetos e destaques mais escuros para ter contraste */
+.atlas-sheet.light{
+  --a-route2:color-mix(in srgb,var(--d30-gold,#bf8333) 82%,var(--d30-text,#2e2018) 18%);
+  --a-trad:#6c55b0;
+  --a-army:#c03f2b;
+  --a-moses:color-mix(in srgb,var(--d30-gold,#bf8333) 55%,var(--d30-text,#2e2018) 45%);
+  --a-aaron:#2c7c67;
+  --a-jethro:#4c8733;
+  --a-hit:color-mix(in srgb,#c77d00 78%,var(--d30-text,#2e2018) 22%);
+  box-shadow:0 -10px 34px rgba(0,0,0,.14),0 14px 34px rgba(0,0,0,.10)}
+.atlas-sheet.light .atlas-base.hl-nile .rv-nile,.atlas-sheet.light .atlas-base.hl-nile .rv-pel,.atlas-sheet.light .atlas-base.hl-eufr .rv-eufr,.atlas-sheet.light .atlas-base.hl-tigre .rv-tigre,.atlas-sheet.light .atlas-base.hl-jordao .rv-jordao{stroke:#2f8cc4}
+.atlas-sheet.light .atlas-base.hl-sangue .rv-nile,.atlas-sheet.light .atlas-base.hl-sangue .rv-pel{stroke:#b8322a}
 .atlas-sheet.on{transform:none;visibility:visible;transition:transform .42s cubic-bezier(.22,1,.36,1),bottom .3s ease,visibility 0s}
 body.hud-hidden .atlas-sheet{bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
 body:not(.doxa-atlas-on) .atlas-sheet{display:none}
@@ -49,14 +62,19 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .atlas-map{position:relative;flex:1 1 auto;min-height:0;margin:0 8px 8px;border-radius:16px;overflow:hidden;
   border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 16%,transparent);background:var(--a-sea)}
 .atlas-svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.atlas-base{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;transform:translateZ(0)}
 .atlas-svg:active{cursor:grabbing}
 .atlas-sea{fill:var(--a-sea)}
-.atlas-land{fill:var(--a-land);stroke:var(--a-coast);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.atlas-land{fill:var(--a-land)}
+.atlas-coast{fill:none;stroke:var(--a-coast);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round}
 .atlas-green{opacity:.4;pointer-events:none}
 .atlas-lake{fill:var(--a-sea);stroke:var(--a-coast);stroke-width:.8;vector-effect:non-scaling-stroke}
 .atlas-river{fill:none;stroke:color-mix(in srgb,var(--a-water) 62%,transparent);stroke-width:1.3;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;transition:stroke .4s,stroke-width .4s}
-.atlas-pel{stroke-dasharray:3 3;stroke-width:1.1}
-.atlas-svg.hl-nile .atlas-nile,.atlas-svg.hl-nile .atlas-pel{stroke:#d24b3e;stroke-width:2.6}
+.rv-pel{stroke-dasharray:3 3;stroke-width:1.1}
+.rv-outro{stroke-width:1;opacity:.8}
+.rv-wadi{stroke-width:1;stroke-dasharray:4 2;opacity:.85}
+.atlas-base.hl-nile .rv-nile,.atlas-base.hl-nile .rv-pel,.atlas-base.hl-eufr .rv-eufr,.atlas-base.hl-tigre .rv-tigre,.atlas-base.hl-jordao .rv-jordao{stroke:#8fd3f7;stroke-width:2.8;opacity:1}
+.atlas-base.hl-sangue .rv-nile,.atlas-base.hl-sangue .rv-pel{stroke:#d24b3e;stroke-width:2.6}
 
 /* trajetos (desenhados em pixels de tela) */
 .r{fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -74,12 +92,30 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .r-moses.prog{stroke-width:3.4}
 .r-army.prog{stroke-width:3}
 .r-army.also{stroke-width:2.6;stroke-dasharray:5 4;opacity:.85}
+.r-army.done{stroke-width:2.2;stroke-dasharray:5 4;opacity:.7}
+.r-wander{stroke:var(--a-route)}
+.r-wander.done{stroke-width:1.6;stroke-dasharray:6 5;opacity:.6}
+.r-wander.next,.r-wander.base{stroke-width:1.3;stroke-dasharray:1.5 6;opacity:.5}
+.r-wander.prog{stroke:var(--a-route2);stroke-width:3;stroke-dasharray:6 5}
+.atlas-walker.w-wander .core{fill:var(--a-route2)}
+.r-pat{stroke:var(--a-moses)}.r-side{stroke:var(--a-aaron)}
+.r-pat.base,.r-side.base{stroke-width:1.4;stroke-dasharray:1.5 5;opacity:.7}
+.r-pat.prog{stroke-width:3.4;stroke-dasharray:1 6.5}
+.r-side.prog{stroke-width:3;stroke-dasharray:1 6.5}
+.r-pat.done{stroke-width:2.2;stroke-dasharray:1 5;opacity:.75}
+.r-side.done,.r-side.also{stroke-width:2;stroke-dasharray:1 5;opacity:.75}
+.r-main.also{stroke:var(--a-route);stroke-width:2.2;stroke-dasharray:5 4;opacity:.8}
+.r-view{stroke:color-mix(in srgb,var(--d30-text,#f3ebe0) 70%,transparent);stroke-width:1.2;stroke-dasharray:2 5;opacity:.85}
+.r-border{stroke:var(--a-route2);stroke-width:2.2;stroke-dasharray:8 5;fill:color-mix(in srgb,var(--a-route) 9%,transparent)}
+.r-road{stroke:color-mix(in srgb,#c8a36a 80%,var(--d30-text,#f3ebe0));stroke-width:1.8;stroke-dasharray:1 4;opacity:.85}
 .r-phil.also{stroke:var(--a-army);stroke-width:2;stroke-dasharray:7 5;opacity:.7}
 .atlas-walker .core{fill:var(--a-route2);stroke:var(--a-land);stroke-width:2}
 .atlas-walker .halo{fill:color-mix(in srgb,var(--a-route) 30%,transparent);transform-box:fill-box;transform-origin:center;animation:atlasPulse 1.8s ease-out infinite}
 .atlas-walker.w-trad .core{fill:var(--a-trad)}.atlas-walker.w-trad .halo{fill:color-mix(in srgb,var(--a-trad) 28%,transparent)}
 .atlas-walker.w-army .core{fill:var(--a-army)}.atlas-walker.w-army .halo{fill:color-mix(in srgb,var(--a-army) 30%,transparent)}
-.atlas-walker.w-moses .core{fill:var(--a-moses)}.atlas-walker.w-aaron .core{fill:var(--a-aaron)}.atlas-walker.w-jethro .core{fill:var(--a-jethro)}
+.atlas-walker.w-moses .core,.atlas-walker.w-pat .core{fill:var(--a-moses)}.atlas-walker.w-side .core{fill:var(--a-aaron)}
+.atlas-walker.w-moses .halo,.atlas-walker.w-pat .halo{fill:color-mix(in srgb,var(--a-moses) 30%,transparent)}.atlas-walker.w-side .halo{fill:color-mix(in srgb,var(--a-aaron) 30%,transparent)}
+.atlas-walker.w-x .core{fill:var(--a-moses)}.atlas-walker.w-aaron .core{fill:var(--a-aaron)}.atlas-walker.w-jethro .core{fill:var(--a-jethro)}
 @keyframes atlasPulse{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.5);opacity:0}}
 
 /* lugares */
@@ -92,6 +128,8 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .pin.trad .glyph{fill:var(--a-trad);stroke:var(--a-land)}
 .pin.trad.em .glyph{fill:var(--a-trad)}
 .pin.trad.em .halo{fill:color-mix(in srgb,var(--a-trad) 24%,transparent)}
+.pin.hit .glyph{fill:var(--a-hit);stroke:var(--a-land);stroke-width:2}
+.pin.hit:not(.em) .glyph{transform:scale(1.45);transform-box:fill-box;transform-origin:center}
 
 .lab{font:600 12px/1 system-ui,-apple-system,sans-serif;fill:var(--d30-text,#f3ebe0);paint-order:stroke;stroke:var(--a-land);stroke-width:3.2px;stroke-linejoin:round;pointer-events:none}
 .lab.place.em{font-size:13px;font-weight:700;fill:var(--a-route2)}
@@ -104,6 +142,11 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .lab.sea,.lab.river{font-style:italic;font-weight:500;font-size:12px;fill:color-mix(in srgb,var(--a-water) 85%,var(--d30-text,#f3ebe0));stroke:var(--a-sea);stroke-width:2.6px}
 .lab.river{stroke:var(--a-land)}
 .lab.sea.em,.lab.river.em,.lab.sea.sh,.lab.river.sh{font-weight:700;font-size:13px}
+.lab.people{font-style:italic;font-weight:600;font-size:11.5px;letter-spacing:.03em;fill:color-mix(in srgb,var(--d30-text,#f3ebe0) 72%,transparent)}
+.lab.tribe{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;fill:color-mix(in srgb,var(--d30-gold,#d9a25e) 70%,var(--d30-text,#f3ebe0))}
+.lab.road{font-style:italic;font-weight:500;font-size:11px;fill:color-mix(in srgb,#c8a36a 75%,var(--d30-text,#f3ebe0))}
+.lab.people.sh,.lab.tribe.sh{fill:var(--d30-text,#f3ebe0)}
+.lab.hit{fill:var(--a-hit)!important;font-weight:700}
 .lab.note{font-style:italic;font-weight:500;font-size:11.5px;fill:color-mix(in srgb,var(--a-army) 80%,var(--d30-text,#f3ebe0))}
 
 /* controles */
@@ -129,6 +172,7 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .atlas-pop-s{display:block;margin-top:3px;font:600 11px/1.35 system-ui,-apple-system,sans-serif;color:var(--d30-gold,#d9a25e)}
 .atlas-pop p{margin:7px 0 0;font:400 12.5px/1.5 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
 .atlas-pop-refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.atlas-pop-more{font-weight:700!important;background:color-mix(in srgb,var(--d30-gold,#d9a25e) 14%,transparent)!important}
 .atlas-pop-refs button{border:1px solid color-mix(in srgb,var(--d30-gold,#d9a25e) 30%,transparent);background:transparent;color:color-mix(in srgb,var(--d30-gold,#d9a25e) 72%,var(--d30-text,#f3ebe0));
   font:600 11.5px/1 system-ui,-apple-system,sans-serif;padding:6px 9px;border-radius:999px;cursor:pointer}
 
@@ -157,6 +201,9 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .atlas-legend .lg.next::before{border-top:2px dotted var(--a-route)}
 .atlas-legend .lg.moses::before{border-top:2.5px dotted var(--a-moses)}
 .atlas-legend .lg.army::before{border-top-color:var(--a-army)}
+.atlas-legend .lg.pat::before{border-top:2.5px dotted var(--a-moses)}
+.atlas-legend .lg.side::before{border-top:2.5px dotted var(--a-aaron)}
+.atlas-legend .lg.hit::before{width:9px;height:9px;border:0;border-radius:50%;background:var(--a-hit)}
 .atlas-lfoot{margin:8px 0 0;font:400 11px/1.4 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
 
 /* fora de Êxodo */
@@ -178,3 +225,13 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 @media(min-width:900px){.atlas-sheet{height:min(48vh,520px)}}
 @media(max-height:620px){.atlas-sheet{height:56vh}.atlas-note{-webkit-line-clamp:1}}
 @media(prefers-reduced-motion:reduce){.atlas-sheet,.atlas-sheet.on{transition:none}.atlas-walker .halo,.pin.em .halo{animation:none;opacity:.5}}
+
+/* os lugares citados no versículo da linha de leitura */
+.atlas-chips{position:absolute;left:8px;top:8px;max-width:calc(100% - 64px);display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none;
+  padding:3px;border-radius:14px;background:color-mix(in srgb,var(--d30-panel,#0d0a07) 78%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.atlas-chips::-webkit-scrollbar{display:none}
+.atlas-chips[hidden]{display:none}
+.atlas-chips-h{flex:0 0 auto;padding:0 4px 0 6px;font:700 10px/1 system-ui,-apple-system,sans-serif;letter-spacing:.06em;color:var(--d30-muted,#b8ab98)}
+.atlas-chips button{flex:0 0 auto;border:1px solid color-mix(in srgb,var(--a-hit) 50%,transparent);background:color-mix(in srgb,var(--a-hit) 14%,transparent);
+  color:color-mix(in srgb,var(--a-hit) 80%,var(--d30-text,#f3ebe0));font:600 11.5px/1 system-ui,-apple-system,sans-serif;padding:6px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.atlas-chips button.nl{border-style:dashed;background:transparent;color:var(--d30-muted,#b8ab98)}
