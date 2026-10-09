@@ -18,12 +18,13 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+# Duas etapas separadas (o modelo oficial do GitHub): "build" monta e envia o site, "deploy" publica.
+# Com tudo numa etapa só, a publicação às vezes procurava o pacote antes de o GitHub registrá-lo
+# ("No artifacts named github-pages were found"); e refazer a etapa criava um segundo pacote.
+# Assim, se a publicação falhar, "Re-run failed jobs" refaz só o deploy, com o mesmo pacote.
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
@@ -70,5 +71,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
       - id: deploy
         uses: actions/deploy-pages@v4
