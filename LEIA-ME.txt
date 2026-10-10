@@ -1,0 +1,26 @@
+DOXA · INTERLINEAR NOVO (GÊNESIS 1)
+
+Suba cada grupo de arquivos na pasta indicada do repositório (Add file > Upload files).
+Os arquivos já existentes serão substituídos.
+
+1) app/src/main/assets/reader/js/
+   00.js  (substitui: carrega o módulo novo)
+   09.js  (substitui: Gênesis 1 passa a usar o interlinear novo)
+   49.js  (novo: o interlinear)
+   49d.js (novo: banco de Gênesis 1)
+
+2) app/src/main/assets/reader/css/
+   49.css (novo: visual)
+
+3) Raiz do repositório
+   AGENTS.md (substitui)
+
+4) docs/
+   INTERLINEAR_DOXA.md (novo)
+
+5) tools/
+   interlinear_translit.py, interlinear_export.py, interlinear-gen-01-glosas.txt (novos)
+
+Os grupos 1 e 2 bastam para o app funcionar. Os grupos 3 a 5 guardam os critérios e
+as ferramentas para os próximos capítulos.
+Depois do envio, o GitHub Actions gera o APK de teste (Doxa-Teste) normalmente.
