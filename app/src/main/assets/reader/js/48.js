@@ -1,11 +1,14 @@
 (()=>{
   'use strict';
-  /* Doxa 62 · ATLAS do Pentateuco (Gênesis a Deuteronômio)
+  /* Doxa 62 · ATLAS (Gênesis a Josué)
      Modo de leitura (entra por Ferramentas › Explorar o texto). Enquanto se rola o texto, sobe um cartão
      de até meia tela com o mapa: onde a passagem acontece e o trajeto. Nos trechos de viagem, o ponto
      anda junto com a leitura ou percorre o trecho sozinho ao chegar. Os lugares citados no versículo da
      linha de leitura acendem no mapa e aparecem em botões no alto do mapa.
-     Os dados (mapa, ~300 lugares, ~260 cenas) ficam em js/48d.js e só são carregados ao ligar o Atlas.
+     Os dados (mapa, ~690 lugares, ~370 cenas) ficam em js/48d.js e só são carregados ao ligar o Atlas.
+     Em Josué: o ponto chega a cada lugar no versículo que o cita (as voltas em Jericó, a emboscada de Ai,
+     as campanhas do sul e do norte); as fronteiras das tribos são traçadas ponto a ponto, na ordem do texto;
+     as listas de cidades aparecem conforme a leitura; cidades tomadas e queimadas ficam marcadas.
 
      Rotas:
        • Pela Arábia (destaque): Paulo — “Agar é o monte Sinai, na Arábia” (Gl 4:25); Moisés chega ao
@@ -15,8 +18,8 @@
        • Tradicional (opcional, em Rotas): Jebel Musa, no sul da península do Sinai.
 
      Dados: litoral, lagos e rios de Natural Earth (domínio público); identificações dos lugares e os
-     traçados do Arnom, Zerede, Jaboque e ribeiro do Egito de OpenBible.info Bible Geocoding Data
-     (CC BY 4.0; traçados © OpenStreetMap); as da rota pela Arábia segundo seus defensores (Wyatt,
+     traçados do Jordão, Arnom, Zerede, Jaboque, Caná, Yarkon, Quisom e ribeiro do Egito de OpenBible.info
+     Bible Geocoding Data (CC BY 4.0; traçados © OpenStreetMap); as da rota pela Arábia segundo seus defensores (Wyatt,
      Cornuke, Möller, Fritz). Projeção: x = (lon−16)·cos31°·100, y = (45−lat)·100.
      Citações conferidas palavra por palavra com a Almeida 1819 (Bíblia Livre).
      Numeração da Almeida (a mesma da KJV); no hebraico, o verso é convertido por DoxaVersif. */
@@ -28,7 +31,7 @@
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const NT=new Set(['Matt','Mark','Luke','John','Acts','Rom','1Cor','2Cor','Gal','Eph','Phil','Col','1Thess','2Thess','1Tim','2Tim','Titus','Phlm','Heb','Jas','1Pet','2Pet','1John','2John','3John','Jude','Rev']);
   const ABBR={Gen:'Gn',Exod:'Êx',Lev:'Lv',Num:'Nm',Deut:'Dt',Josh:'Js','1Kgs':'1Rs','2Chr':'2Cr',Acts:'At',Gal:'Gl',Heb:'Hb'};
-  const BOOKS=['Gen','Exod','Lev','Num','Deut'];
+  const BOOKS=['Gen','Exod','Lev','Num','Deut','Josh'];
   const NS='http://www.w3.org/2000/svg';
   const SVG_ATLAS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.6 3.8 6.7v12.7L9 17.3l6 2.1 5.2-2.1V4.6L15 6.7z"/><path d="M9 4.6v12.7M15 6.7v12.7"/></svg>';
   const SVG_LAYERS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 8.5 4.6L12 13.2 3.5 8.6z"/><path d="m3.5 12.4 8.5 4.6 8.5-4.6"/><path d="m3.5 16.2 8.5 4.6 8.5-4.6"/></svg>';
@@ -47,24 +50,40 @@
   const B={};   // por livro: cenas, contagem corrida dos versos, lugares citados por verso
   function prep(raw){
     D=raw;PL=D.pl;MAIN=D.main;
-    // trechos: curva suave (Catmull-Rom) em pontos densos, com o comprimento acumulado
+    // trechos: curva suave (Catmull-Rom centrípeta: sem laços nem exageros nas curvas fechadas) em pontos densos
+    const mix=(p,q,u)=>[p[0]+(q[0]-p[0])*u,p[1]+(q[1]-p[1])*u];
+    const kd=(p,q)=>Math.max(1e-3,Math.sqrt(Math.hypot(q[0]-p[0],q[1]-p[1])));
     for(const id in D.rt){
       const p=D.rt[id].p,pts=[];
       for(let i=0;i<p.length-1;i++){
-        const a=p[i-1]||p[i],b=p[i],c=p[i+1],d=p[i+2]||c;const n=p.length===2?2:9;
-        for(let k=0;k<n;k++){const t=k/n,t2=t*t,t3=t2*t;
-          pts.push([0,1].map(j=>0.5*((2*b[j])+(-a[j]+c[j])*t+(2*a[j]-5*b[j]+4*c[j]-d[j])*t2+(-a[j]+3*b[j]-3*c[j]+d[j])*t3)))}
+        const b=p[i],c=p[i+1],a=p[i-1]||[2*b[0]-c[0],2*b[1]-c[1]],d=p[i+2]||[2*c[0]-b[0],2*c[1]-b[1]];const n=p.length===2?2:9;
+        const t1=kd(a,b),t2=t1+kd(b,c),t3=t2+kd(c,d);
+        for(let k=0;k<n;k++){const t=t1+(t2-t1)*k/n;
+          const A1=mix(a,b,t/t1),A2=mix(b,c,(t-t1)/(t2-t1)),A3=mix(c,d,(t-t2)/(t3-t2));
+          const B1=mix(A1,A2,t/t2),B2=mix(A2,A3,(t-t1)/(t3-t1));
+          pts.push(mix(B1,B2,(t-t1)/(t2-t1)))}
       }
       pts.push(p[p.length-1]);
       const len=[0];for(let i=1;i<pts.length;i++)len.push(len[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
-      LEG[id]={id,k:D.rt[id].k,pts,len,L:len[len.length-1]||1};
+      const L=len[len.length-1]||1,n=p.length===2?2:9;
+      LEG[id]={id,k:D.rt[id].k,pts,len,L,wf:p.map((_,i)=>len[Math.min(i*n,pts.length-1)]/L)};
     }
     for(const id in PL){const p=PL[id];p.id=id;p.r=p.r||[]}
     for(const bk of BOOKS){
       const bd=D.books[bk];if(!bd)continue;
       const ORD=[0];for(let c=1;c<bd.exl.length;c++)ORD[c]=ORD[c-1]+(bd.exl[c-1]||0);
       const ord=(c,v)=>(ORD[c]||0)+v;
-      bd.sc.forEach((s,i)=>{[s.c1,s.v1]=s.a.split(':').map(Number);[s.c2,s.v2]=s.b.split(':').map(Number);s.o1=ord(s.c1,s.v1);s.o2=ord(s.c2,s.v2);s.i=i;s.bk=bk});
+      const ov=x=>{if(x==='0:0')return 0;const q=x.split(':').map(Number);return ord(q[0],q[1])};
+      // versículos-chave: o ponto chega a cada lugar no versículo que o cita (vários no mesmo versículo dividem o tempo)
+      const kfs=(legid,kf)=>{const lg=LEG[legid];if(!kf||!lg)return null;const out=[];
+        for(let j=0;j<kf.length;){let m=1;while(j+m<kf.length&&kf[j+m][0]===kf[j][0]&&kf[j+m][1]===kf[j][1])m++;
+          const x0=ov(kf[j][0]),x1=ov(kf[j][1])+1;for(let u=0;u<m;u++)out.push({x0:x0+(x1-x0)*u/m,x1:x0+(x1-x0)*(u+1)/m,f:lg.wf[kf[j+u][2]]});j+=m}
+        return out};
+      bd.sc.forEach((s,i)=>{[s.c1,s.v1]=s.a.split(':').map(Number);[s.c2,s.v2]=s.b.split(':').map(Number);s.o1=ord(s.c1,s.v1);s.o2=ord(s.c2,s.v2);s.i=i;s.bk=bk;
+        if(s.kf)s._kf=kfs(s.leg,s.kf);
+        if(s.co)s._co=s.co.filter(c=>LEG[c.l]).map(c=>({leg:c.l,kf:kfs(c.l,c.kf)}));
+        for(const k of ['take','fire'])if(s[k])s['_'+k]=s[k].map(([v,id])=>({o:ov(v),id}));
+        if(s.tellfall)s._fall=ov(s.tellfall)});
       B[bk]={sc:bd.sc,ord,men:new Map()};
     }
     // índice: versículo → lugares citados
@@ -82,6 +101,7 @@
   }
   const tgt=id=>{const p=PL[id];return p&&p.al?PL[p.al]:p};   // nome do texto → lugar do mapa
   function sceneIdx(bk,c,v){const b=B[bk],o=b.ord(c,v),S=b.sc;let lo=0,hi=S.length-1,best=0;while(lo<=hi){const m=(lo+hi)>>1;if(S[m].o1<=o){best=m;lo=m+1}else hi=m-1}return best}
+  function kfFrac(K,x){let prev=0;for(const k of K){if(x<k.x0)return prev;if(x<k.x1)return prev+(k.f-prev)*(x-k.x0)/(k.x1-k.x0);prev=k.f}return prev}
   function cut(leg,f){
     const t=Math.max(0,Math.min(1,f))*leg.L;let i=1;while(i<leg.pts.length-1&&leg.len[i]<t)i++;
     const a=leg.pts[i-1],b=leg.pts[i],seg=(leg.len[i]-leg.len[i-1])||1,u=Math.max(0,Math.min(1,(t-leg.len[i-1])/seg));
@@ -107,7 +127,7 @@
 
   /* ================= ESTADO ================= */
   let on=false;
-  const st={S:null,min:false,trad:false,user:false,f:0,fT:0,autoT:0,away:false,hideT:0,pop:'',vo:-1,hits:new Set(),allRefs:''};
+  const st={S:null,min:false,trad:false,user:false,f:0,fT:0,coF:[],coT:[],o:0,autoT:0,away:false,hideT:0,pop:'',vo:-1,hits:new Set(),allRefs:''};
   try{st.trad=localStorage.getItem('doxa:atlas:trad')==='1'}catch(e){}
   const V={s:1,tx:0,ty:0,W:0,H:0};
   let anim=null,raf=0,drawRaf=0;
@@ -129,11 +149,11 @@
       +'<div class="atlas-scale" aria-hidden="true"><i></i><span></span></div>'
       +'<div class="atlas-credit">Natural Earth · OpenBible · OSM</div>'
       +'<div class="atlas-pop" hidden></div>'
-      +'<div class="atlas-layers" hidden><div class="atlas-lh">Rotas do Êxodo</div>'
+      +'<div class="atlas-layers" hidden><div class="atlas-lh lh-exo">Rotas do Êxodo</div><div class="atlas-lh lh-jos">Legenda</div>'
       +'<div class="atlas-lrow main"><i></i><span><b>Pela Arábia · em destaque</b><small>Monte Sinai em Midiã: “o monte Sinai, na Arábia” (Gl 4:25)</small></span></div>'
       +'<label class="atlas-lrow trad"><i></i><span><b>Tradicional</b><small>Jebel Musa, no sul da península do Sinai</small></span><input type="checkbox" class="atlas-trad" role="switch"><em aria-hidden="true"></em></label>'
-      +'<div class="atlas-legend"><span class="lg done">percorrido</span><span class="lg next">a seguir</span><span class="lg pat">patriarcas · Moisés</span><span class="lg side">outros caminhos</span><span class="lg army">exércitos inimigos</span><span class="lg hit">citado no versículo</span></div>'
-      +'<p class="atlas-lfoot">Lugares sem identificação firme aparecem como aproximados ou incertos. Mapa: Natural Earth. Lugares: OpenBible.info (CC BY 4.0); rios da Transjordânia © colaboradores do OpenStreetMap.</p></div>'
+      +'<div class="atlas-legend"><span class="lg done">percorrido</span><span class="lg next">a seguir</span><span class="lg pat">patriarcas · Moisés</span><span class="lg side">outros caminhos</span><span class="lg army">exércitos inimigos</span><span class="lg bord">fronteiras das tribos</span><span class="lg tk">cidade tomada · rei vencido</span><span class="lg fire">cidade queimada</span><span class="lg hit">citado no versículo</span></div>'
+      +'<p class="atlas-lfoot">Lugares sem identificação firme aparecem como aproximados ou incertos (anel vazio); os sem lugar conhecido ficam só nos botões do versículo. As fronteiras seguem os pontos que o texto cita. Mapa: Natural Earth. Lugares: OpenBible.info (CC BY 4.0); Jordão, ribeiros e vales © colaboradores do OpenStreetMap.</p></div>'
       +'</div>'
       +'<div class="atlas-away"><span></span><button type="button" class="atlas-go">Abrir Gênesis</button></div>';
     document.body.appendChild(s);
@@ -228,8 +248,9 @@
     if(!st.user&&st.S)fitScene(false);else dirty();
   }
   const sMin=()=>Math.max(V.W/D.w,V.H/D.h);
-  const S_MAX=16;
-  const clampS=s=>Math.max(sMin(),Math.min(S_MAX,s));
+  const S_MAX=40;
+  const sMax=()=>st.S&&st.S.zmax?Math.max(S_MAX,st.S.zmax):S_MAX;
+  const clampS=s=>Math.max(sMin(),Math.min(sMax(),s));
   function clampView(){
     V.s=clampS(V.s);
     V.tx=Math.min(0,Math.max(V.W-V.s*D.w,V.tx));
@@ -275,7 +296,7 @@
   }
   function focusPlace(id){
     const p=PL[id];if(!p)return;const t=tgt(id);
-    if(t&&!t.nl&&t.x!=null){st.user=true;const s=Math.max(V.s,Math.min(S_MAX,4));
+    if(t&&!t.nl&&t.x!=null){st.user=true;const s=Math.max(V.s,Math.min(sMax(),4));
       const visible=sx(t.x)>40&&sx(t.x)<V.W-60&&sy(t.y)>50&&sy(t.y)<V.H-40;
       if(!visible||V.s<2)flyTo(t.x,t.y,visible?V.s:s,520)}
     openPop(id);
@@ -318,30 +339,36 @@
     (S.trail||[]).forEach(id=>layers[2].push([id,LEG[id].k,'done']));
     if(cur&&!(done>=0&&MAIN.includes(cur)))layers[4].push([cur,LEG[cur].k,'cur']);
     (S.also||[]).forEach(id=>layers[3].push([id,LEG[id].k,'also']));
-    for(const L of layers)for(const [id,k,m] of L){
+    (S._co||[]).forEach((c,ci)=>layers[4].unshift([c.leg,LEG[c.leg].k,'cur',ci]));
+    st.tellEl=null;
+    for(const L of layers)for(const [id,k,m,ci] of L){
       const leg=LEG[id];if(!leg)continue;
       if(m==='cur'){
         const base=mk('path',{class:'r r-'+k+' base'},R.routes),prog=mk('path',{class:'r r-'+k+' prog'},R.routes);
         const w=mk('g',{class:'atlas-walker w-'+k},R.routes);mk('circle',{class:'halo',r:11,cx:0,cy:0},w);mk('circle',{class:'core',r:5.2,cx:0,cy:0},w);
-        items.routes.push({leg,el:base});items.walkers.push({leg,prog,w});
+        items.routes.push({leg,el:base});items.walkers.push({leg,prog,w,ci:ci??-1});
       }else{
-        const el=mk('path',{class:'r r-'+k+' '+m},R.routes);items.routes.push({leg,el});
+        const el=mk('path',{class:'r r-'+k+' '+m},R.routes);items.routes.push({leg,el});if(k==='tell')st.tellEl=el;
         if(k==='phil')items.labels.push(labelItem('phil',null,'caminho dos filisteus','note',1,leg.pts[Math.floor(leg.pts.length*0.55)]));
       }
     }
     // lugares
     const pins=new Set((S.pins||[]).map(id=>tgt(id)?.id)),show=new Set((S.show||[]).map(id=>tgt(id)?.id)),lbl=S.lbl||{};
+    // listas de cidades: cada uma aparece quando a leitura chega ao versículo que a cita
+    const fo=new Map();
+    if(S.rev){const always=new Set([...pins,...show]);const b=B[S.bk];
+      for(let o=S.o1;o<=S.o2;o++){const a=b.men.get(o);if(a)for(const x of a){const t=tgt(x);if(t&&!always.has(t.id)&&!fo.has(t.id))fo.set(t.id,o)}}}
     for(const id of visibleIds(S)){
       const p=PL[id];if(p.l==='t'&&!st.trad)continue;
       const em=pins.has(id),sh=show.has(id);
       let name=lbl[id]||p.n;if(TWIN_NAME.has(id))name+=' (trad.)';
-      if(AREA.has(p.k)){items.labels.push(labelItem(id,p,name,'area '+p.k+(em?' em':sh?' sh':'')+(p.l==='t'?' trad':'')+(p.k==='region'&&name!==name.toUpperCase()?' small':''),em?-1:sh?0.5:p.p,[p.x,p.y]));continue}
+      if(AREA.has(p.k)){const L=labelItem(id,p,name,'area '+p.k+(em?' em':sh?' sh':'')+(p.l==='t'?' trad':'')+(p.k==='region'&&name!==name.toUpperCase()?' small':''),em?-1:sh?0.5:p.p,[p.x,p.y]);L.rv=fo.get(id)||0;items.labels.push(L);continue}
       const g=mk('g',{class:'pin k-'+p.k+(em?' em':'')+(p.l==='t'?' trad':'')},R.pins);
       if(em)mk('circle',{class:'halo',r:12,cx:0,cy:0},g);
       if(p.k==='mount')mk('path',{class:'glyph',d:em?'M0 -8.5L8 5.5H-8z':'M0 -6L5.6 4H-5.6z'},g);
       else mk('circle',{class:'glyph',r:em?5.6:(p.k==='site'?3.6:3.4),cx:0,cy:0},g);
-      items.pins.push({id,p,g,em});
-      items.labels.push(labelItem(id,p,name,'place'+(em?' em':'')+(p.l==='t'?' trad':''),em?-1:(sh?0.5:p.p),[p.x,p.y],true,em&&p.q));
+      items.pins.push({id,p,g,em,rv:fo.get(id)||0});
+      const L=labelItem(id,p,name,'place'+(em?' em':'')+(p.l==='t'?' trad':''),em?-1:(sh?0.5:p.p),[p.x,p.y],true,em&&p.q);L.rv=fo.get(id)||0;items.labels.push(L);
     }
     for(const L of items.labels)R.labels.appendChild(L.el);
     ovDirty=true;applyHits(true);
@@ -371,7 +398,17 @@
       else{box.hidden=false;box.innerHTML='<span class="atlas-chips-h">'+(st.ref?st.ref.c+':'+st.ref.v:'')+'</span>'
         +ids.map(id=>'<button type="button" data-id="'+esc(id)+'"'+(PL[id].nl?' class="nl"':'')+'>'+esc(nice(PL[id].n))+'</button>').join('')}
     }
+    verseState(S,o);
     applyHits(false);
+  }
+  function verseState(S,o){
+    st.o=o;
+    const tk=new Set(),fi=new Set();
+    for(const t of S._take||[])if(t.o<=o){const q=tgt(t.id);if(q)tk.add(q.id)}
+    for(const t of S._fire||[])if(t.o<=o){const q=tgt(t.id);if(q)fi.add(q.id)}
+    for(const P of items.pins){P.hid=P.rv>o;P.g.classList.toggle('tk',tk.has(P.id));P.g.classList.toggle('fire',fi.has(P.id))}
+    for(const L of items.labels){L.hid=L.rv>o;L.el.classList.toggle('fire',fi.has(L.id))}
+    if(st.tellEl)st.tellEl.classList.toggle('fallen',!!S._fall&&o>=S._fall);
   }
   function applyHits(rebuilt){
     for(const P of items.pins)P.g.classList.toggle('hit',st.hits.has(P.id));
@@ -392,7 +429,8 @@
     const vk=V.s.toFixed(5)+','+V.tx.toFixed(2)+','+V.ty.toFixed(2)+','+V.W+','+V.H;
     const vch=vk!==lastView;lastView=vk;
     if(vch)R.world.setAttribute('transform','translate('+V.tx.toFixed(2)+' '+V.ty.toFixed(2)+') scale('+V.s.toFixed(5)+')');
-    for(const w of items.walkers){const c=cut(w.leg,st.f);w.prog.setAttribute('d',dPath(c.pts));
+    const fOf=w=>w.ci>=0?(st.coF[w.ci]??0):st.f;
+    for(const w of items.walkers){const c=cut(w.leg,fOf(w));w.prog.setAttribute('d',dPath(c.pts));
       w.w.setAttribute('transform','translate('+sx(c.head[0]).toFixed(1)+' '+sy(c.head[1]).toFixed(1)+')')}
     if(!vch&&!ovDirty)return;
     ovDirty=false;
@@ -402,16 +440,16 @@
     const placed=[[V.W-50,0,V.W,134],[0,V.H-22,112,V.H],[V.W-150,V.H-15,V.W,V.H]];
     if(chips&&!chips.hidden)placed.push([0,0,Math.min(V.W-56,chips.offsetWidth+8),chips.offsetHeight+8]);
     for(const P of items.pins){const X=sx(P.p.x),Y=sy(P.p.y);P.sx=X;P.sy=Y;
-      const inV=X>-30&&X<V.W+30&&Y>-30&&Y<V.H+30;P.g.style.display=inV?'':'none';
+      const inV=!P.hid&&X>-30&&X<V.W+30&&Y>-30&&Y<V.H+30;P.g.style.display=inV?'':'none';
       if(inV){P.g.setAttribute('transform','translate('+X.toFixed(1)+' '+Y.toFixed(1)+')');const r=P.em?7:4;placed.push([X-r,Y-r,X+r,Y+r])}}
-    for(const w of items.walkers){const c=cut(w.leg,st.f);const X=sx(c.head[0]),Y=sy(c.head[1]);placed.push([X-7,Y-7,X+7,Y+7])}
+    for(const w of items.walkers){const c=cut(w.leg,fOf(w));const X=sx(c.head[0]),Y=sy(c.head[1]);placed.push([X-7,Y-7,X+7,Y+7])}
     const hit=(a)=>a[0]<4||a[2]>V.W-4||a[1]<2||a[3]>V.H-4||placed.some(b=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1]);
     const cands=(L,X,Y,g)=>{const e=L.ex,b0=Y+L.fs*0.36-e/2;return L.pin?[['start',X+g,b0,[X+g-2,Y-L.h/2,X+g+L.w+2,Y+L.h/2]],['end',X-g,b0,[X-g-L.w-2,Y-L.h/2,X-g+2,Y+L.h/2]],
       ['middle',X,Y-g-2-e,[X-L.w/2-2,Y-g-L.h-2,X+L.w/2+2,Y-g]],['middle',X,Y+g+L.fs,[X-L.w/2-2,Y+g,X+L.w/2+2,Y+g+L.h+2]]]
       :[L.an==='end'?['end',X,Y+L.fs*0.36,[X-L.w-2,Y-L.h/2,X+2,Y+L.h/2]]:['middle',X,Y+L.fs*0.36,[X-L.w/2-2,Y-L.h/2,X+L.w/2+2,Y+L.h/2]]]};
     for(const L of items.labels){
       const X=sx(L.x),Y=sy(L.y);let ok=null;
-      if(X<-300||X>V.W+300||Y<-60||Y>V.H+60){L.el.style.display='none';L.box=null;continue}
+      if(L.hid||X<-300||X>V.W+300||Y<-60||Y>V.H+60){L.el.style.display='none';L.box=null;continue}
       for(const c of cands(L,X,Y,L.pri<0?10:8))if(!hit(c[3])){ok=c;break}
       // o que está em destaque (ou citado no versículo) aparece mesmo apertado: na posição que menos cobre os outros
       if(!ok&&L.base<0&&X>-20&&X<V.W+20&&Y>-20&&Y<V.H+20){
@@ -427,8 +465,8 @@
   }
   function scaleBar(){
     const el=document.querySelector('#atlasSheet .atlas-scale');if(!el)return;
-    const kmPx=1.112/V.s;let best=10;for(const k of [2,5,10,20,25,50,100,200,250,500,1000])if(k/kmPx<=92)best=k;
-    el.querySelector('i').style.width=(best/kmPx).toFixed(0)+'px';el.querySelector('span').textContent=best+' km';
+    const kmPx=1.112/V.s;let best=0.1;for(const k of [0.1,0.2,0.25,0.5,1,2,5,10,20,25,50,100,200,250,500,1000])if(k/kmPx<=92)best=k;
+    el.querySelector('i').style.width=(best/kmPx).toFixed(0)+'px';el.querySelector('span').textContent=best<1?Math.round(best*1000)+' m':best+' km';
   }
   // um só laço para o voo, o ponto que anda e a suavização
   function loop(){if(raf)return;raf=requestAnimationFrame(tick)}
@@ -445,6 +483,9 @@
         st.f=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;if(t<1)more=true}
       else{const d=st.fT-st.f;if(Math.abs(d)>0.0015){st.f+=d*0.16;more=true}else st.f=st.fT}
     }
+    if(S&&S._co)S._co.forEach((c,i)=>{
+      if(!c.kf&&S.walk==='a'){st.coF[i]=st.f;return}
+      const T=st.coT[i]??0,cur=st.coF[i]??0,d=T-cur;if(Math.abs(d)>0.0015){st.coF[i]=cur+d*0.16;more=true}else st.coF[i]=T});
     if(!st.min)render();
     if(more)loop();
   }
@@ -530,14 +571,17 @@
     if(!ref){hideSheet(false);return}
     if(!D){setAway(['Carregando o mapa…','Um instante.'],false);loadData().then(()=>{st.S=null;queue()}).catch(()=>setAway(['Não foi possível abrir o mapa','Tente sair e entrar de novo no Atlas.'],false));return}
     const s=sheet();buildSvg(s.querySelector('.atlas-svg'));
-    if(!B[ref.book]){setAway(['Por enquanto, o Pentateuco','O Atlas acompanha de Gênesis a Deuteronômio. Abra um desses livros e role a leitura.'],true);return}
+    if(!B[ref.book]){setAway(['Por enquanto, de Gênesis a Josué','O Atlas acompanha de Gênesis a Josué. Abra um desses livros e role a leitura.'],true);return}
     if(st.away){st.away=false;s.classList.remove('away')}
     const opened=openSheet();
     const b=B[ref.book],i=sceneIdx(ref.book,ref.c,ref.v),S=b.sc[i],o=b.ord(ref.c,ref.v);st.ref=ref;
     const r=el.getBoundingClientRect(),fr=Math.max(0,Math.min(1,(window.innerHeight*0.32-r.top)/Math.max(1,r.height)));
-    const fT=S.leg&&S.walk==='v'?Math.max(0,Math.min(1,(o-S.o1+fr)/(S.o2-S.o1+1))):1;
+    const x=o+fr;
+    const fT=S._kf?kfFrac(S._kf,x):(S.leg&&S.walk==='v'?Math.max(0,Math.min(1,(o-S.o1+fr)/(S.o2-S.o1+1))):1);
+    const coT=(S._co||[]).map(c=>c.kf?kfFrac(c.kf,x):fT);
     if(S!==st.S){
-      st.S=S;st.user=false;st.vo=-1;
+      st.S=S;st.user=false;st.vo=-1;s.dataset.bk=S.bk;
+      st.coT=coT;st.coF=S.walk==='v'?coT.slice():coT.map(()=>0);
       s.querySelector('.atlas-ref').textContent=scRef(S);s.querySelector('.atlas-title').textContent=S.t;
       const n=s.querySelector('.atlas-note');n.textContent=S.n;n.classList.remove('open');
       closePop();buildOverlay();setVerse(S,o);
@@ -545,7 +589,8 @@
       requestAnimationFrame(()=>{measure(false);fitScene(!opened);loop()});
     }else{
       setVerse(S,o);
-      if(S.leg&&S.walk==='v'&&Math.abs(fT-st.fT)>1e-4){st.fT=fT;loop()}
+      const coCh=coT.some((v,i)=>Math.abs(v-(st.coT[i]??0))>1e-4);st.coT=coT;
+      if(S.leg&&S.walk==='v'&&(Math.abs(fT-st.fT)>1e-4||coCh)){st.fT=fT;loop()}
     }
   }
   const queue=()=>{if(on&&!uRaf)uRaf=requestAnimationFrame(update)};
@@ -571,7 +616,7 @@
     let b=$('toolsAtlasStart');
     if(!b){
       b=document.createElement('button');b.className='tool-card';b.id='toolsAtlasStart';b.type='button';
-      b.innerHTML='<span class="tool-card-icon">'+SVG_ATLAS+'</span><span class="tool-card-copy"><strong>Atlas</strong><small>O mapa e o trajeto do texto, de Gênesis a Deuteronômio.</small></span><span class="tool-card-arrow" aria-hidden="true">›</span>';
+      b.innerHTML='<span class="tool-card-icon">'+SVG_ATLAS+'</span><span class="tool-card-copy"><strong>Atlas</strong><small>O mapa e o trajeto do texto, de Gênesis a Josué.</small></span><span class="tool-card-arrow" aria-hidden="true">›</span>';
       b.addEventListener('click',()=>setMode(true));
     }
     const tl=$('toolsTimelineStart');
