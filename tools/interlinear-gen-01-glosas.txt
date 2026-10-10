@@ -1,0 +1,434 @@
+1.0|Em princípio|em;princípio
+1.1|criou
+1.2|Deus
+1.3|obj
+1.4|os céus|os;céus
+1.5|e obj|e;obj
+1.6|a terra|a;terra
+2.0|E a terra|e;a;terra
+2.1|era
+2.2|sem forma
+2.3|e vazio|e;vazio
+2.4|e treva|e;treva
+2.5|sobre
+2.6|faces de
+2.7|abismo
+2.8|e espírito de|e;espírito de
+2.9|Deus
+2.10|pairando
+2.11|sobre
+2.12|faces de
+2.13|os águas|os;águas
+3.0|E disse|e;disse
+3.1|Deus
+3.2|haja
+3.3|luz
+3.4|e houve|e;houve
+3.5|luz
+4.0|E viu|e;viu
+4.1|Deus
+4.2|obj
+4.3|o luz|o;luz
+4.4|que
+4.5|bom
+4.6|e separou|e;separou
+4.7|Deus
+4.8|entre
+4.9|o luz|o;luz
+4.10|e entre|e;entre
+4.11|o treva|o;treva
+5.0|E chamou|e;chamou
+5.1|Deus
+5.2|ao luz|ao;luz
+5.3|dia
+5.4|e ao treva|e;ao;treva
+5.5|chamou
+5.6|noite
+5.7|e houve|e;houve
+5.8|tarde
+5.9|e houve|e;houve
+5.10|manhã
+5.11|dia
+5.12|um
+6.0|E disse|e;disse
+6.1|Deus
+6.2|haja
+6.3|firmamento
+6.4|no meio de|em;meio de
+6.5|os águas|os;águas
+6.6|e seja|e;seja
+6.7|separando
+6.8|entre
+6.9|águas
+6.10|e águas|e;águas
+7.0|E fez|e;fez
+7.1|Deus
+7.2|obj
+7.3|o firmamento|o;firmamento
+7.4|e separou|e;separou
+7.5|entre
+7.6|os águas|os;águas
+7.7|que
+7.8|de debaixo de|de;debaixo de
+7.9|ao firmamento|ao;firmamento
+7.10|e entre|e;entre
+7.11|os águas|os;águas
+7.12|que
+7.13|de sobre|de;sobre
+7.14|ao firmamento|ao;firmamento
+7.15|e foi|e;foi
+7.16|assim
+8.0|E chamou|e;chamou
+8.1|Deus
+8.2|ao firmamento|ao;firmamento
+8.3|céus
+8.4|e houve|e;houve
+8.5|tarde
+8.6|e houve|e;houve
+8.7|manhã
+8.8|dia
+8.9|segundo
+9.0|E disse|e;disse
+9.1|Deus
+9.2|ajuntem-se
+9.3|os águas|os;águas
+9.4|de debaixo de|de;debaixo de
+9.5|os céus|os;céus
+9.6|para
+9.7|lugar
+9.8|um
+9.9|e seja vista|e;seja vista
+9.10|a terra seca|a;terra seca
+9.11|e foi|e;foi
+9.12|assim
+10.0|E chamou|e;chamou
+10.1|Deus
+10.2|à terra seca|à;terra seca
+10.3|terra
+10.4|e ao ajuntamento de|e;a;ajuntamento de
+10.5|os águas|os;águas
+10.6|chamou
+10.7|mares
+10.8|e viu|e;viu
+10.9|Deus
+10.10|que
+10.11|bom
+11.0|E disse|e;disse
+11.1|Deus
+11.2|faça brotar
+11.3|a terra|a;terra
+11.4|relva
+11.5|erva
+11.6|produzindo semente
+11.7|semente
+11.8|árvore de
+11.9|fruto
+11.10|fazendo
+11.11|fruto
+11.12|segundo espécie dele|segundo;espécie;dele
+11.13|que
+11.14|semente dele|semente;dele
+11.15|nele|em;ele
+11.16|sobre
+11.17|a terra|a;terra
+11.18|e foi|e;foi
+11.19|assim
+12.0|E fez sair|e;fez sair
+12.1|a terra|a;terra
+12.2|relva
+12.3|erva
+12.4|produzindo semente
+12.5|semente
+12.6|segundo espécie dele|segundo;espécie;dele
+12.7|e árvore|e;árvore
+12.8|fazendo
+12.9|fruto
+12.10|que
+12.11|semente dele|semente;dele
+12.12|nele|em;ele
+12.13|segundo espécie dele|segundo;espécie;dele
+12.14|E viu|e;viu
+12.15|Deus
+12.16|que
+12.17|bom
+13.0|E houve|e;houve
+13.1|tarde
+13.2|e houve|e;houve
+13.3|manhã
+13.4|dia
+13.5|terceiro
+14.0|E disse|e;disse
+14.1|Deus
+14.2|haja
+14.3|luminares
+14.4|no firmamento de|em;firmamento de
+14.5|os céus|os;céus
+14.6|para separar|para;separar
+14.7|entre
+14.8|o dia|o;dia
+14.9|e entre|e;entre
+14.10|o noite|o;noite
+14.11|e sejam|e;sejam
+14.12|por sinais|por;sinais
+14.13|e por tempos fixados|e;por;tempos fixados
+14.14|e por dias|e;por;dias
+14.15|e anos|e;anos
+15.0|e sejam|e;sejam
+15.1|por luminares|por;luminares
+15.2|no firmamento de|em;firmamento de
+15.3|os céus|os;céus
+15.4|para iluminar|para;iluminar
+15.5|sobre
+15.6|a terra|a;terra
+15.7|e foi|e;foi
+15.8|assim
+16.0|E fez|e;fez
+16.1|Deus
+16.2|obj
+16.3|os dois de
+16.4|os luminares|os;luminares
+16.5|os grandes|os;grandes
+16.6|obj
+16.7|o luminar|o;luminar
+16.8|o grande|o;grande
+16.9|para domínio de|para;domínio de
+16.10|o dia|o;dia
+16.11|e obj|e;obj
+16.12|o luminar|o;luminar
+16.13|o pequeno|o;pequeno
+16.14|para domínio de|para;domínio de
+16.15|o noite|o;noite
+16.16|e obj|e;obj
+16.17|os estrelas|os;estrelas
+17.0|E pôs|e;pôs
+17.1|obj eles|obj;eles
+17.2|Deus
+17.3|no firmamento de|em;firmamento de
+17.4|os céus|os;céus
+17.5|para iluminar|para;iluminar
+17.6|sobre
+17.7|a terra|a;terra
+18.0|e para governar|e;para;governar
+18.1|no dia|no;dia
+18.2|e no noite|e;no;noite
+18.3|e para separar|e;para;separar
+18.4|entre
+18.5|o luz|o;luz
+18.6|e entre|e;entre
+18.7|o treva|o;treva
+18.8|E viu|e;viu
+18.9|Deus
+18.10|que
+18.11|bom
+19.0|E houve|e;houve
+19.1|tarde
+19.2|e houve|e;houve
+19.3|manhã
+19.4|dia
+19.5|quarto
+20.0|E disse|e;disse
+20.1|Deus
+20.2|pululem
+20.3|os águas|os;águas
+20.4|enxame de
+20.5|alma
+20.6|vivente
+20.7|e ave|e;ave
+20.8|voe
+20.9|sobre
+20.10|a terra|a;terra
+20.11|sobre
+20.12|faces de
+20.13|firmamento de
+20.14|os céus|os;céus
+21.0|E criou|e;criou
+21.1|Deus
+21.2|obj
+21.3|os monstros marinhos|os;monstros marinhos
+21.4|os grandes|os;grandes
+21.5|e obj|e;obj
+21.6|toda
+21.7|alma
+21.8|a vivente|a;vivente
+21.9|a que se move|a;que se move
+21.10|que
+21.11|pulularam
+21.12|os águas|os;águas
+21.13|segundo espécie deles|segundo;espécie;deles
+21.14|e obj|e;obj
+21.15|todo
+21.16|ave
+21.17|de asa
+21.18|segundo espécie dele|segundo;espécie;dele
+21.19|E viu|e;viu
+21.20|Deus
+21.21|que
+21.22|bom
+22.0|E abençoou|e;abençoou
+22.1|obj eles|obj;eles
+22.2|Deus
+22.3|dizendo|para;dizer
+22.4|frutificai
+22.5|e multiplicai-vos|e;multiplicai-vos
+22.6|e enchei|e;enchei
+22.7|obj
+22.8|os águas|os;águas
+22.9|nos mares|nos;mares
+22.10|e o ave|e;o;ave
+22.11|multiplique-se
+22.12|na terra|na;terra
+23.0|E houve|e;houve
+23.1|tarde
+23.2|e houve|e;houve
+23.3|manhã
+23.4|dia
+23.5|quinto
+24.0|E disse|e;disse
+24.1|Deus
+24.2|faça sair
+24.3|a terra|a;terra
+24.4|alma
+24.5|vivente
+24.6|segundo espécie dela|segundo;espécie;dela
+24.7|gado
+24.8|e réptil|e;réptil
+24.9|e fera de|e;fera de
+24.10|terra
+24.11|segundo espécie dela|segundo;espécie;dela
+24.12|e foi|e;foi
+24.13|assim
+25.0|E fez|e;fez
+25.1|Deus
+25.2|obj
+25.3|fera de
+25.4|a terra|a;terra
+25.5|segundo espécie dela|segundo;espécie;dela
+25.6|e obj|e;obj
+25.7|a gado|a;gado
+25.8|segundo espécie dele|segundo;espécie;dele
+25.9|e obj|e;obj
+25.10|todo
+25.11|réptil de
+25.12|a solo|a;solo
+25.13|segundo espécie dele|segundo;espécie;dele
+25.14|E viu|e;viu
+25.15|Deus
+25.16|que
+25.17|bom
+26.0|E disse|e;disse
+26.1|Deus
+26.2|façamos
+26.3|homem
+26.4|em imagem de nós|em;imagem;de nós
+26.5|conforme semelhança de nós|conforme;semelhança;de nós
+26.6|e dominem|e;dominem
+26.7|sobre peixe de|sobre;peixe de
+26.8|o mar|o;mar
+26.9|e sobre ave de|e;sobre;ave de
+26.10|os céus|os;céus
+26.11|e sobre a gado|e;sobre a;gado
+26.12|e sobre toda|e;sobre;toda
+26.13|a terra|a;terra
+26.14|e sobre todo|e;sobre;todo
+26.15|o réptil|o;réptil
+26.16|o que se move|o;que se move
+26.17|sobre
+26.18|a terra|a;terra
+27.0|E criou|e;criou
+27.1|Deus
+27.2|obj
+27.3|o homem|o;homem
+27.4|em imagem dele|em;imagem;dele
+27.5|em imagem de|em;imagem de
+27.6|Deus
+27.7|criou
+27.8|obj ele|obj;ele
+27.9|macho
+27.10|e fêmea|e;fêmea
+27.11|criou
+27.12|obj eles|obj;eles
+28.0|E abençoou|e;abençoou
+28.1|obj eles|obj;eles
+28.2|Deus
+28.3|e disse|e;disse
+28.4|a eles|a;eles
+28.5|Deus
+28.6|frutificai
+28.7|e multiplicai-vos|e;multiplicai-vos
+28.8|e enchei|e;enchei
+28.9|obj
+28.10|a terra|a;terra
+28.11|e subjugai-a|e;subjugai;a
+28.12|e dominai|e;dominai
+28.13|sobre peixe de|sobre;peixe de
+28.14|o mar|o;mar
+28.15|e sobre ave de|e;sobre;ave de
+28.16|os céus|os;céus
+28.17|e sobre toda|e;sobre;toda
+28.18|vivente
+28.19|a que se move|a;que se move
+28.20|sobre
+28.21|a terra|a;terra
+29.0|E disse|e;disse
+29.1|Deus
+29.2|eis
+29.3|dei
+29.4|a vós|a;vós
+29.5|obj
+29.6|todo
+29.7|erva
+29.8|produzindo
+29.9|semente
+29.10|que
+29.11|sobre
+29.12|faces de
+29.13|toda
+29.14|a terra|a;terra
+29.15|e obj|e;obj
+29.16|todo
+29.17|o árvore|o;árvore
+29.18|que
+29.19|nela|em;ela
+29.20|fruto de
+29.21|árvore
+29.22|produzindo
+29.23|semente
+29.24|a vós|a;vós
+29.25|será
+29.26|para alimento|para;alimento
+30.0|e para toda|e;para;toda
+30.1|fera de
+30.2|a terra|a;terra
+30.3|e para todo|e;para;todo
+30.4|ave de
+30.5|os céus|os;céus
+30.6|e para todo|e;para;todo
+30.7|que se move
+30.8|sobre
+30.9|a terra|a;terra
+30.10|que
+30.11|nele|em;ele
+30.12|alma
+30.13|vivente
+30.14|obj
+30.15|todo
+30.16|verdura
+30.17|erva
+30.18|para alimento|para;alimento
+30.19|e foi|e;foi
+30.20|assim
+31.0|E viu|e;viu
+31.1|Deus
+31.2|obj
+31.3|tudo
+31.4|que
+31.5|fez
+31.6|e eis|e;eis
+31.7|bom
+31.8|muito
+31.9|e houve|e;houve
+31.10|tarde
+31.11|e houve|e;houve
+31.12|manhã
+31.13|dia
+31.14|o sexto|o;sexto
