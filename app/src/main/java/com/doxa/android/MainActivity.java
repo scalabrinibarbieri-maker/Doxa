@@ -755,6 +755,9 @@ public final class MainActivity extends Activity {
                 "const on=id=>document.getElementById(id)?.classList.contains('on');" +
                 "const click=id=>{const e=document.getElementById(id);if(!e)return false;e.click();return true};" +
 
+                // Telas que tratam o Voltar por conta própria (ex.: Ferramentas › Interlinear).
+                "try{if(typeof window.doxaHandleBack==='function'&&window.doxaHandleBack())return true}catch(e){}" +
+
                 "if(on('verseActions')||on('studyScreen')||on('v20Advanced')){" +
                 "document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));return true}" +
 
