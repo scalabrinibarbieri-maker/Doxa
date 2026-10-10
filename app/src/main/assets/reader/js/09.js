@@ -273,6 +273,11 @@
     if(activeRef.book==='Gen'){
       const c=Number(activeRef.chapter),v=Number(activeRef.verse);
       if(c===1){
+        if(window.DoxaInterlinear2&&window.DoxaInterlinear2.has('Gen',1)){
+          refEl.textContent='Gênesis 1:'+v+' · interlinear';
+          const requestedV=v,still=()=>studyMode==='interlinear'&&screen.classList.contains('on')&&activeRef.book==='Gen'&&Number(activeRef.chapter)===1&&Number(activeRef.verse)===requestedV;
+          try{await window.DoxaInterlinear2.render(body,activeRef,still);return}catch(e){if(!still())return}
+        }
         refEl.textContent='Gênesis 1 · interlinear morfológico';body.innerHTML=renderGen1Interlinear(v);setTimeout(()=>{const el=body.querySelector('.il27-verse.current');if(el)el.scrollIntoView({block:'center',behavior:'auto'})},25);return;
       }
       if(c>=2&&c<=50){

@@ -92,6 +92,7 @@ window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sa
     addCss('doxa-v57-conta-css','css/43.css');
     addCss('doxa-v58-comments-css','css/44.css');
     addCss('doxa-v60-busca-css','css/46.css');
+    addCss('doxa-v63-interlinear-css','css/49.css');
 
     document.addEventListener('DOMContentLoaded',()=>{
       addScript('doxa-v30-shell-js','js/18.js',()=>{
@@ -128,7 +129,7 @@ window.OSHB_STRONG={b:["Gen","Exod","Lev","Num","Deut","Josh","Judg","Ruth","1Sa
                                                             addScript('doxa-v58-comments-js','js/44.js',()=>{
                                                               addScript('doxa-v59-versif-js','js/45.js',()=>{
                                                                 addScript('doxa-v60-busca-js','js/46.js',()=>{
-                                                                  addScript('doxa-v61-crono-js','js/47.js',()=>{ addScript('doxa-v62-atlas-js','js/48.js'); });
+                                                                  addScript('doxa-v61-crono-js','js/47.js',()=>{ addScript('doxa-v62-atlas-js','js/48.js',()=>{ addScript('doxa-v63-interlinear-js','js/49.js'); }); });
                                                                 });
                                                               });
                                                             });
