@@ -5,7 +5,7 @@
 - Não reescrever o leitor inteiro. Mudanças incrementais e verificáveis.
 - Almeida 1819 é padrão; hebraico WLC corrigido do OSHB v2.2; grego local TR Stephanus 1550.
 - Gênesis deve permanecer como está até pedido explícito de revisão.
-- Interlinear v2 (js/49.js, docs/INTERLINEAR_DOXA.md): Gênesis 1 pedido explicitamente pelo usuário. Seguir os critérios de glosa e transliteração do documento ao estender.
+- Ferramenta Interlinear (Ferramentas › Explorar o texto; js/49.js, docs/INTERLINEAR_DOXA.md): pedida explicitamente pelo usuário, começando por Gênesis 1. Abre o capítulo em leitura, não pelo menu do versículo. Seguir os critérios de glosa e transliteração do documento ao estender.
 - Preservar morfologia hiperliteral; corrigir escolha lexical contextual somente no escopo solicitado.
 - Preservar remapeamento de Êxodo 7–8 e 21–22 e a exceção ao ler WLC.
 - Não afirmar alinhamento editorial perfeito da base grega marcada com o TR1550 local.
