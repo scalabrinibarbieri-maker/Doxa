@@ -1,18 +1,20 @@
 # Interlinear Doxa (v2)
 
-Tela do modo **Interlinear** na tela de estudo, versículo por versículo. Nesta etapa: **Gênesis 1**.
-Gênesis 2–50 e Êxodo continuam no interlinear anterior até receberem o banco novo.
+Ferramenta **Interlinear** em Ferramentas › Explorar o texto. Ao tocar, abre o capítulo em que o leitor está,
+rolando até o versículo que estava no topo da tela. Nesta etapa só **Gênesis 1** tem banco; nos demais capítulos
+a tela avisa e oferece atalho para os capítulos prontos. O interlinear antigo do menu do versículo não foi alterado.
 
 ## Arquivos
 
-- `app/src/main/assets/reader/js/49.js` — módulo (`window.DoxaInterlinear2`), painel da palavra e camadas.
+- `app/src/main/assets/reader/js/49.js` — cartão em Ferramentas, tela do capítulo, camadas e painel da palavra (`window.DoxaInterlinear2`).
 - `app/src/main/assets/reader/css/49.css` — visual, usando as cores do tema ativo (`--d30-*`).
-- `app/src/main/assets/reader/js/49d.js` — banco de Gênesis 1 (glosas + transliteração), carregado só ao abrir o interlinear.
-- `js/09.js` — em `renderInterlinear`, Gênesis 1 usa o módulo novo; se o banco falhar, volta ao protótipo antigo.
+- `app/src/main/assets/reader/js/49d.js` — banco de Gênesis 1 (glosas + transliteração), carregado só ao abrir a ferramenta.
+- `app/src/main/assets/reader/js/00.js` — carrega `css/49.css` e `js/49.js`.
+- `app/src/main/java/com/doxa/android/MainActivity.java` — o botão Voltar do Android chama `window.doxaHandleBack()` antes das outras telas.
 - `tools/interlinear_translit.py` (transliteração), `tools/interlinear_export.py` (gera o banco) e `tools/interlinear-gen-01-glosas.txt` (glosas).
 
 O texto hebraico, a morfologia e o léxico vêm do OSHB do pacote `core-texts`. O banco só guarda o que é do Doxa.
-Se o hebraico instalado não bater palavra por palavra com o banco, a tela antiga é usada.
+Se o hebraico instalado não bater palavra por palavra com o banco, a tela mostra o aviso em vez de glosas desalinhadas.
 
 ## Critérios das glosas
 
