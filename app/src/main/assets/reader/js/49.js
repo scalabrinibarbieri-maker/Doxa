@@ -1,9 +1,9 @@
-/* Doxa · Interlinear hebraico v2
-   Versículo por versículo: hebraico, transliteração para leitor brasileiro,
+/* Doxa · Ferramenta Interlinear (Ferramentas › Explorar o texto)
+   Abre o capítulo em leitura: hebraico, transliteração para leitor brasileiro,
    glosa literal (gênero e número do hebraico), morfologia e partes da palavra.
    Texto, morfologia e léxico vêm do OSHB já instalado (core-texts);
-   glosas e transliteração vêm do banco js/49d.js (carregado só ao abrir o interlinear).
-   Disponível nesta etapa: Gênesis 1. Os demais capítulos seguem no interlinear anterior. */
+   glosas e transliteração vêm do banco js/49d.js (carregado só ao abrir a ferramenta).
+   Capítulos com banco nesta etapa: Gênesis 1. */
 (()=>{
   'use strict';
 
@@ -104,8 +104,6 @@
       if(e.target.closest('.il2-close'))closeSheet();
       else if(e.target.closest('.il2-occ'))openOccurrences();
     });
-    const screen=document.getElementById('studyScreen');
-    if(screen&&'MutationObserver' in window)new MutationObserver(()=>{if(!screen.classList.contains('on'))closeSheet()}).observe(screen,{attributes:true,attributeFilter:['class']});
   }
   function closeSheet(){
     if(!sheet)return;sheet.classList.remove('on');scrim.classList.remove('on');sheet.setAttribute('aria-hidden','true');
@@ -154,7 +152,7 @@
     openStrong(el);
   }
 
-  /* ---------- tela do versículo ---------- */
+  /* ---------- tela da ferramenta ---------- */
   const LEGEND=[
     ['בּ ב','b · v','com ponto é b, sem ponto é v'],
     ['כּ כ','k · rr','com ponto é k, sem ponto é rr'],
@@ -169,9 +167,12 @@
     ['א ע','’','sem som próprio; o apóstrofo só separa as sílabas'],
     ['בְ','e · mudo','shevá: “e” breve no começo da sílaba, mudo no fim']
   ];
-  function chips(){
-    const c=(k,label,on)=>'<button type="button" class="il2-chip" data-layer="'+k+'" aria-pressed="'+(on?'true':'false')+'">'+label+'</button>';
-    return '<div class="il2-chips" role="group" aria-label="Camadas">'+c('tr','Transliteração',layers.tr)+c('gl','Glosa',layers.gl)+c('mo','Morfologia',layers.mo)+c('parts','Partes da palavra',layers.parts)+'</div>';
+  const SVG_IL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5.5H9.5M20 9H13"/><path d="M4 14.5h10.5M4 18h7"/><path d="M6.5 5.5 4 7.3l2.5 1.8M17.5 14.7l2.5 1.8-2.5 1.8"/></svg>';
+  let screen=null,scroller=null,state=null;
+
+  function chipsHtml(){
+    const c=(k,label)=>'<button type="button" class="il2-chip" data-layer="'+k+'" aria-pressed="'+(layers[k]?'true':'false')+'">'+label+'</button>';
+    return c('tr','Transliteração')+c('gl','Glosa')+c('mo','Morfologia')+c('parts','Partes da palavra');
   }
   function verseHtml(book,c,v,data){
     const items=oshbVerseItems(book,c,v),dv=data.verses?.[v-1];
@@ -189,38 +190,123 @@
         +'<span class="il2-parts" dir="rtl">'+partHtml+'</span>'
         +'<span class="il2-mo">'+esc(shortMorph(OSHB_STRONG.m[t[2]]||''))+'</span></button>';
     }).join('');
-    const lit=dv.map(x=>x[2]).join(' '),trline=dv.map(x=>x[1]).join(' ');
-    return '<div class="il2 '+layerClasses()+'">'
-      +'<header class="il2-hero"><span class="il2-kicker">INTERLINEAR · HEBRAICO</span><h2>'+esc(BOOK_PT[book]||book)+' '+c+':'+v+'</h2>'
-      +'<p>Palavra por palavra, na ordem do hebraico. A glosa segue o gênero, o número e a forma do original, mesmo quando o português soa estranho.</p><div class="il2-goldline"></div></header>'
-      +chips()
-      +'<section class="il2-card"><div class="il2-flow" dir="rtl">'+words+'</div></section>'
-      +'<section class="il2-read"><span class="il2-label">Leitura literal</span><p class="il2-lit">'+glossHtml(lit)+'</p>'
-      +'<span class="il2-label">Em voz alta</span><p class="il2-trline">'+esc(trline)+'</p></section>'
+    return '<section class="il2-verse" data-v="'+v+'"><span class="il2-vnum">'+v+'</span>'
+      +'<div class="il2-flow" dir="rtl">'+words+'</div>'
+      +'<p class="il2-lit">'+glossHtml(dv.map(x=>x[2]).join(' '))+'</p></section>';
+  }
+  function chapterHtml(book,c,data){
+    let out='<div class="il2 '+layerClasses()+'">'
+      +'<header class="il2-hero"><span class="il2-kicker">INTERLINEAR · HEBRAICO</span><h2>'+esc(BOOK_PT[book]||book)+' '+c+'</h2>'
+      +'<p>Palavra por palavra, na ordem do hebraico. A glosa segue o gênero, o número e a forma do original, mesmo quando o português soa estranho. Toque numa palavra para a análise completa.</p><div class="il2-goldline"></div></header>'
+      +'<div class="il2-chapter">';
+    data.verses.forEach((_,i)=>{out+=verseHtml(book,c,i+1,data)});
+    return out+'</div>'
       +'<details class="il2-howto"><summary>Como ler a transliteração</summary><p>Escrita para ser lida por brasileiro, na pronúncia do hebraico falado hoje. A sílaba forte sempre leva acento.</p><div class="il2-keys">'
       +LEGEND.map(r=>'<span class="hk" dir="rtl">'+r[0]+'</span><span class="tk">'+r[1]+'</span><span class="dk">'+r[2]+'</span>').join('')+'</div></details>'
-      +'<p class="il2-source">Texto e morfologia: WLC / OSHB. Glosas e transliteração: Doxa. Toque numa palavra para a análise completa.</p>'
-      +'</div>';
+      +'<p class="il2-source">Texto e morfologia: WLC / OSHB. Glosas e transliteração: Doxa.</p></div>';
   }
-  function bind(root){
-    const box=root.querySelector('.il2');if(!box)return;
-    box.addEventListener('click',e=>{
-      const chip=e.target.closest('.il2-chip');
-      if(chip){const k=chip.dataset.layer;layers[k]=!layers[k];saveLayers();chip.setAttribute('aria-pressed',layers[k]?'true':'false');
-        box.classList.toggle(k==='parts'?'il2-mode-parts':'il2-no-'+k,k==='parts'?layers[k]:!layers[k]);return}
-      const w=e.target.closest('.il2-word');if(w){e.preventDefault();e.stopPropagation();openWord(w)}
-    });
+  function unavailableHtml(label){
+    const ready=Object.keys(FILES).map(k=>{const [b,c]=k.split('.');return '<button type="button" class="il2-goto" data-goto="'+k+'">'+esc((BOOK_PT[b]||b)+' '+c)+'</button>'}).join('');
+    return '<div class="il2"><div class="il2-empty"><span class="il2-kicker">INTERLINEAR · HEBRAICO</span><h2>'+esc(label||'Este capítulo')+'</h2>'
+      +'<p>O interlinear ainda não chegou a este capítulo. Os capítulos entram um a um, conforme as glosas são revisadas.</p>'
+      +'<span class="il2-label">Já disponível</span><div class="il2-gotos">'+ready+'</div></div></div>';
   }
 
-  window.DoxaInterlinear2={
-    has:(book,c)=>!!FILES[book+'.'+Number(c)]&&typeof OSHB_STRONG!=='undefined',
-    async render(body,ref,stillCurrent){
-      const book=ref.book,c=Number(ref.chapter),v=Number(ref.verse),key=book+'.'+c;
-      body.innerHTML='<div class="study-loading">Abrindo interlinear de '+esc(BOOK_PT[book]||book)+' '+c+'…</div>';
-      const data=await load(key);
-      if(stillCurrent&&!stillCurrent())return;
-      body.innerHTML=verseHtml(book,c,v,data);
-      bind(body);body.scrollTop=0;
+  /* posição do leitor: livro, capítulo e o versículo que está no topo da tela */
+  function readerPlace(){
+    try{
+      const cp=CORPORA[mode]||null,p=positions[mode];if(!cp||!p)return null;
+      const b=cp.books[p.b];if(!b)return null;
+      let book=b.book,c=Number(p.c),v=1;
+      const verses=[...document.querySelectorAll('#textBody [id^="v"]')];
+      const top=verses.find(el=>el.getBoundingClientRect().bottom>110);
+      if(top){const n=Number(top.dataset.v||String(top.id).replace(/^v/,''));if(n>0)v=n}
+      if(mode==='wlc'&&window.DoxaVersif){/* o WLC já está na numeração hebraica */}
+      return {book,c,v,label:(typeof bookName==='function'?bookName(b):book)+' '+c};
+    }catch(e){return null}
+  }
+
+  function ensureScreen(){
+    if(screen)return;
+    screen=document.createElement('section');screen.className='il2-screen';screen.id='il2Screen';screen.setAttribute('aria-hidden','true');
+    screen.innerHTML='<div class="il2-top"><div class="il2-topbar"><button type="button" class="il2-back" aria-label="Voltar">‹</button>'
+      +'<div class="il2-topcopy"><strong>Interlinear</strong><small class="il2-topref">—</small></div></div>'
+      +'<div class="il2-chips" role="group" aria-label="Camadas">'+chipsHtml()+'</div></div>'
+      +'<div class="il2-scroll"></div>';
+    document.body.appendChild(screen);
+    scroller=screen.querySelector('.il2-scroll');
+    screen.addEventListener('click',e=>{
+      if(e.target.closest('.il2-back')){closeTool();return}
+      const chip=e.target.closest('.il2-chip');
+      if(chip){const k=chip.dataset.layer;layers[k]=!layers[k];saveLayers();chip.setAttribute('aria-pressed',layers[k]?'true':'false');
+        const box=scroller.querySelector('.il2');if(box)box.classList.toggle(k==='parts'?'il2-mode-parts':'il2-no-'+k,k==='parts'?layers[k]:!layers[k]);return}
+      const go=e.target.closest('.il2-goto');
+      if(go){const [b,c]=go.dataset.goto.split('.');show(b,Number(c),1,(BOOK_PT[b]||b)+' '+c);return}
+      const w=e.target.closest('.il2-word');if(w){e.preventDefault();openWord(w)}
+    });
+  }
+  async function show(book,c,v,label){
+    ensureScreen();
+    const key=book+'.'+c,token={};state=token;
+    screen.querySelector('.il2-topref').textContent=label||((BOOK_PT[book]||book)+' '+c);
+    screen.querySelector('.il2-chips').hidden=!FILES[key];
+    if(!FILES[key]||typeof OSHB_STRONG==='undefined'){scroller.innerHTML=unavailableHtml(label);scroller.scrollTop=0;return}
+    scroller.innerHTML='<div class="il2-loading">Abrindo interlinear…</div>';
+    try{
+      const data=await load(key);if(state!==token)return;
+      scroller.innerHTML=chapterHtml(book,c,data);scroller.scrollTop=0;
+      if(v>1){const el=scroller.querySelector('.il2-verse[data-v="'+v+'"]');if(el)requestAnimationFrame(()=>{scroller.scrollTop=Math.max(0,el.offsetTop-8)})}
+    }catch(e){
+      if(state!==token)return;
+      scroller.innerHTML='<div class="il2"><div class="il2-empty"><h2>Interlinear indisponível</h2><p>'+esc(e?.message||'Não foi possível abrir o banco deste capítulo.')+'</p></div></div>';
     }
+  }
+  function openTool(){
+    ensureScreen();
+    const place=readerPlace()||{book:'Gen',c:1,v:1,label:'Gênesis 1'};
+    screen.classList.add('on');screen.setAttribute('aria-hidden','false');document.body.classList.add('il2-open');
+    show(place.book,place.c,place.v,place.label);
+  }
+  function closeTool(){
+    closeSheet();if(!screen)return;
+    screen.classList.remove('on');screen.setAttribute('aria-hidden','true');document.body.classList.remove('il2-open');state=null;
+  }
+  const isOpen=()=>!!screen&&screen.classList.contains('on');
+
+  /* botão Voltar do Android (MainActivity chama window.doxaHandleBack antes das demais telas) */
+  const prevBack=window.doxaHandleBack;
+  window.doxaHandleBack=function(){
+    if(document.getElementById('strongSheet')?.classList.contains('on'))return typeof prevBack==='function'?prevBack():false;
+    if(sheet&&sheet.classList.contains('on')){closeSheet();return true}
+    if(isOpen()){closeTool();return true}
+    return typeof prevBack==='function'?prevBack():false;
   };
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Escape'||!isOpen())return;
+    if(document.getElementById('strongSheet')?.classList.contains('on'))return;
+    if(sheet&&sheet.classList.contains('on'))closeSheet();else closeTool();
+  });
+
+  /* cartão em Ferramentas › Explorar o texto */
+  function ensureCard(){
+    let b=document.getElementById('toolsInterlinearStart');
+    if(!b){
+      b=document.createElement('button');b.className='tool-card';b.id='toolsInterlinearStart';b.type='button';
+      b.innerHTML='<span class="tool-card-icon">'+SVG_IL+'</span><span class="tool-card-copy"><strong>Interlinear</strong><small>O hebraico palavra por palavra, no capítulo em que você está.</small></span><span class="tool-card-arrow" aria-hidden="true">›</span>';
+      b.addEventListener('click',openTool);
+    }
+    const lupa=document.getElementById('toolsLupaStart');
+    const stack=lupa&&lupa.closest('.doxa59-tools-stack');
+    if(stack){if(stack.firstElementChild!==b)stack.prepend(b);return true}
+    if(lupa&&lupa.previousElementSibling!==b){lupa.before(b);return true}
+    return !!lupa;
+  }
+  const origOpen=window.openPanel;
+  if(typeof origOpen==='function'&&!origOpen.__doxa63){
+    const w=function(name){const r=origOpen.apply(this,arguments);if(name==='marcar')ensureCard();return r};
+    w.__doxa63=true;for(const k of Object.keys(origOpen))try{w[k]=origOpen[k]}catch(e){}window.openPanel=w;
+  }
+  ensureCard();setTimeout(ensureCard,1200);setTimeout(ensureCard,3000);
+
+  window.DoxaInterlinear2={open:openTool,close:closeTool,show,isOpen,has:(book,c)=>!!FILES[book+'.'+Number(c)]};
 })();
