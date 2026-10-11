@@ -3,11 +3,11 @@
    glosa literal (gênero e número do hebraico), morfologia e partes da palavra.
    Texto, morfologia e léxico vêm do OSHB já instalado (core-texts);
    glosas e transliteração vêm do banco js/49d.js (carregado só ao abrir a ferramenta).
-   Capítulos com banco nesta etapa: Gênesis 1. */
+   Capítulos com banco nesta etapa: Gênesis 1–11. */
 (()=>{
   'use strict';
 
-  const FILES={'Gen.1':'js/49d.js'};
+  const FILES={'Gen.1':'js/49d.js','Gen.2':'js/49-gen-02.js','Gen.3':'js/49-gen-03.js','Gen.4':'js/49-gen-04.js','Gen.5':'js/49-gen-05.js','Gen.6':'js/49-gen-06.js','Gen.7':'js/49-gen-07.js','Gen.8':'js/49-gen-08.js','Gen.9':'js/49-gen-09.js','Gen.10':'js/49-gen-10.js','Gen.11':'js/49-gen-11.js'};
   const BOOK_PT={Gen:'Gênesis'};
   const LAYERS_KEY='doxa-il2-layers';
   const loading={};
@@ -116,7 +116,7 @@
     current={book,c,v,ti};
     document.querySelectorAll('.il2-word.on').forEach(x=>x.classList.remove('on'));btn.classList.add('on');
     const [surface,tr,gloss,parts]=data.verses[v-1][w];
-    const code=OSHB_STRONG.m[tok[2]]||'',ds=decode(code),segs=String(tok[4]||tok[0]).split('/');
+    const orig=OSHB_STRONG.m[tok[2]]||'',code=data.morphFix?.[v+'.'+w]||orig,ds=decode(code),segs=String(tok[4]||tok[0]).split('/');
     const li=tok[3],lex=li>=0?OSHB_STRONG.l[li]:null;
     const senses=lex?(data.senses?.[li]||(typeof doxaStrongPtEntry==='function'?doxaStrongPtEntry(lex).m:[])||[]):[];
     const occ=lex?Number(lex[12])||0:0;
@@ -135,7 +135,7 @@
       +'<div class="il2-sh-head"><div class="il2-sh-copy"><div class="il2-sh-gloss">'+glossHtml(gloss)+'</div><div class="il2-sh-tr">'+esc(tr)+'</div></div>'
       +'<div class="il2-sh-heb" dir="rtl">'+esc(surface)+'</div><button type="button" class="il2-close" aria-label="Fechar">×</button></div>'
       +'<div class="il2-sec"><h4>Partes</h4><div class="il2-segs" dir="rtl">'+segHtml+'</div></div>'
-      +'<div class="il2-sec"><h4>Morfologia</h4><div class="il2-tags">'+tags+'</div><div class="il2-code">'+esc(code)+'</div></div>'
+      +'<div class="il2-sec"><h4>Morfologia</h4><div class="il2-tags">'+tags+'</div><div class="il2-code">'+esc(code)+(code!==orig?' · o OSHB marca '+esc(orig)+'; corrigido pelo contexto':'')+'</div></div>'
       +'<div class="il2-sec"><h4>Léxico</h4>'+lexHtml+'</div>';
     sheet.scrollTop=0;sheet.classList.add('on');scrim.classList.add('on');sheet.setAttribute('aria-hidden','false');
   }
@@ -180,15 +180,15 @@
     const toks=[];items.forEach((t,i)=>{if(Array.isArray(t))toks.push([t,i]);else if(t==='־'&&toks.length)toks[toks.length-1].push(true)});
     if(toks.length!==dv.length||toks.some(([t],k)=>t[0]!==dv[k][0]))throw new Error('O texto hebraico instalado difere do banco interlinear.');
     const words=toks.map(([t,ti,mq],k)=>{
-      const [surface,tr,gloss,parts]=dv[k],segs=String(t[4]||t[0]).split('/'),ds=decode(OSHB_STRONG.m[t[2]]||'');
+      const [surface,tr,gloss,parts]=dv[k],code=data.morphFix?.[v+'.'+k]||OSHB_STRONG.m[t[2]]||'',segs=String(t[4]||t[0]).split('/'),ds=decode(code);
       const heb=segs.length>1?segs.map((s,j)=>'<span class="s'+j+'">'+esc(s)+'</span>').join(''):esc(surface);
       const partHtml=segs.map((s,j)=>'<span class="il2-part"><b>'+esc(SHORT_POS[ds[j]?.pos]||ds[j]?.pos||'')+'</b><i>'+glossHtml(parts[j]||'')+'</i></span>').join('');
-      return '<button type="button" class="il2-word" data-il2=\''+esc(JSON.stringify({book,c,v,ti,w:k}))+'\' aria-label="'+esc(surface+' — '+gloss)+'">'
+      return '<button type="button" class="il2-word" data-il2=\''+esc(JSON.stringify({book,c,v,ti,w:k}))+'\' aria-label="'+esc(surface+': '+gloss)+'">'
         +'<span class="il2-heb'+(mq?' mq':'')+'" dir="rtl">'+heb+'</span>'
         +'<span class="il2-tr">'+esc(tr)+'</span>'
         +'<span class="il2-gl">'+glossHtml(gloss)+'</span>'
         +'<span class="il2-parts" dir="rtl">'+partHtml+'</span>'
-        +'<span class="il2-mo">'+esc(shortMorph(OSHB_STRONG.m[t[2]]||''))+'</span></button>';
+        +'<span class="il2-mo">'+esc(shortMorph(code))+'</span></button>';
     }).join('');
     return '<section class="il2-verse" data-v="'+v+'"><span class="il2-vnum">'+v+'</span>'
       +'<div class="il2-flow" dir="rtl">'+words+'</div>'
@@ -203,7 +203,14 @@
     return out+'</div>'
       +'<details class="il2-howto"><summary>Como ler a transliteração</summary><p>Escrita para ser lida por brasileiro, na pronúncia do hebraico falado hoje. A sílaba forte sempre leva acento.</p><div class="il2-keys">'
       +LEGEND.map(r=>'<span class="hk" dir="rtl">'+r[0]+'</span><span class="tk">'+r[1]+'</span><span class="dk">'+r[2]+'</span>').join('')+'</div></details>'
+      +navHtml(book,c)
       +'<p class="il2-source">Texto e morfologia: WLC / OSHB. Glosas e transliteração: Doxa.</p></div>';
+  }
+  function navHtml(book,c){
+    const has=k=>!!FILES[book+'.'+k],name=BOOK_PT[book]||book;
+    const prev=has(c-1)?'<button type="button" class="il2-goto il2-nav-prev" data-goto="'+book+'.'+(c-1)+'">‹ '+esc(name+' '+(c-1))+'</button>':'<span></span>';
+    const next=has(c+1)?'<button type="button" class="il2-goto il2-nav-next" data-goto="'+book+'.'+(c+1)+'">'+esc(name+' '+(c+1))+' ›</button>':'<span></span>';
+    return (has(c-1)||has(c+1))?'<nav class="il2-nav">'+prev+next+'</nav>':'';
   }
   function unavailableHtml(label){
     const ready=Object.keys(FILES).map(k=>{const [b,c]=k.split('.');return '<button type="button" class="il2-goto" data-goto="'+k+'">'+esc((BOOK_PT[b]||b)+' '+c)+'</button>'}).join('');
