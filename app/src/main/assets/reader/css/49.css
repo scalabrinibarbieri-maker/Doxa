@@ -139,3 +139,5 @@ body.il2-open{overflow:hidden}
 .il2-goto{border:1px solid color-mix(in srgb,var(--d30-gold) 45%,transparent);border-radius:999px;padding:9px 14px;background:var(--il2-soft);color:var(--il2-accent);font:600 15px/1 var(--il2-serif)}
 @media(prefers-reduced-motion:reduce){.il2-screen{transition:none}}
 .il2-chips[hidden]{display:none}
+.il2-nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.il2-nav .il2-goto{font-size:14px}
