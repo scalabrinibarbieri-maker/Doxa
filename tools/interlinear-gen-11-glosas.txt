@@ -1,0 +1,392 @@
+1.0|E foi|e;foi
+1.1|toda
+1.2|a terra|a;terra
+1.3|lábio
+1.4|uma
+1.5|e palavras|e;palavras
+1.6|uns
+2.0|E foi|e;foi
+2.1|em partir deles|em;partir;deles
+2.2|desde oriente|desde;oriente
+2.3|e acharam|e;acharam
+2.4|planície
+2.5|em terra de|em;terra de
+2.6|Shinar
+2.7|e habitaram|e;habitaram
+2.8|ali
+3.0|E disseram|e;disseram
+3.1|varão
+3.2|para
+3.3|companheiro dele|companheiro;dele
+3.4|dá|dá;(ênfase)
+3.5|façamos tijolos
+3.6|tijolos
+3.7|e queimemos|e;queimemos
+3.8|para queima|para;queima
+3.9|e foi|e;foi
+3.10|a eles|a;eles
+3.11|a tijolo|a;tijolo
+3.12|por pedra|por;pedra
+3.13|e o betume|e;o;betume
+3.14|era
+3.15|a eles|a;eles
+3.16|pelo barro|pelo;barro
+4.0|E disseram|e;disseram
+4.1|dá|dá;(ênfase)
+4.2|edifiquemos
+4.3|para nós|para;nós
+4.4|cidade
+4.5|e torre|e;torre
+4.6|e cabeça dele|e;cabeça;dele
+4.7|nos céus|nos;céus
+4.8|e façamos|e;façamos
+4.9|para nós|para;nós
+4.10|nome
+4.11|para que não
+4.12|nos espalhemos
+4.13|sobre
+4.14|faces de
+4.15|toda
+4.16|a terra|a;terra
+5.0|E desceu|e;desceu
+5.1|YHWH
+5.2|para ver|para;ver
+5.3|obj
+5.4|a cidade|a;cidade
+5.5|e obj|e;obj
+5.6|o torre|o;torre
+5.7|que
+5.8|edificaram
+5.9|filhos de
+5.10|o homem|o;homem
+6.0|E disse|e;disse
+6.1|YHWH
+6.2|eis
+6.3|povo
+6.4|um
+6.5|e lábio|e;lábio
+6.6|uma
+6.7|para todos eles|para;todos;eles
+6.8|e este|e;este
+6.9|começar deles|começar;deles
+6.10|para fazer|para;fazer
+6.11|e agora|e;agora
+6.12|não
+6.13|será impedido
+6.14|deles|de;eles
+6.15|tudo
+6.16|que
+6.17|planejarão
+6.18|para fazer|para;fazer
+7.0|dá|dá;(ênfase)
+7.1|desçamos
+7.2|e confundamos|e;confundamos
+7.3|ali
+7.4|lábio deles|lábio;deles
+7.5|que
+7.6|não
+7.7|ouvirão
+7.8|varão
+7.9|lábio de
+7.10|companheiro dele|companheiro;dele
+8.0|E espalhou|e;espalhou
+8.1|YHWH
+8.2|obj eles|obj;eles
+8.3|de ali|de;ali
+8.4|sobre
+8.5|faces de
+8.6|toda
+8.7|a terra|a;terra
+8.8|e cessaram|e;cessaram
+8.9|para edificar|para;edificar
+8.10|a cidade|a;cidade
+9.0|sobre
+9.1|assim
+9.2|chamou
+9.3|nome dela|nome;dela
+9.4|Bavel
+9.5|porque
+9.6|ali
+9.7|confundiu
+9.8|YHWH
+9.9|lábio de
+9.10|toda
+9.11|a terra|a;terra
+9.12|e de ali|e;de;ali
+9.13|espalhou eles|espalhou;eles
+9.14|YHWH
+9.15|sobre
+9.16|faces de
+9.17|toda
+9.18|a terra|a;terra
+10.0|estas
+10.1|gerações de
+10.2|Shem
+10.3|Shem
+10.4|filho de
+10.5|cem de
+10.6|ano
+10.7|e gerou|e;gerou
+10.8|obj
+10.9|Arpakhshad
+10.10|dois anos
+10.11|depois de
+10.12|o dilúvio|o;dilúvio
+11.0|E viveu|e;viveu
+11.1|Shem
+11.2|depois de
+11.3|gerar dele|gerar;dele
+11.4|obj
+11.5|Arpakhshad
+11.6|cinco
+11.7|centenas
+11.8|ano
+11.9|e gerou|e;gerou
+11.10|filhos
+11.11|e filhas|e;filhas
+12.0|E Arpakhshad|e;Arpakhshad
+12.1|viveu
+12.2|cinco
+12.3|e trinta|e;trinta
+12.4|ano
+12.5|e gerou|e;gerou
+12.6|obj
+12.7|Shelah
+13.0|E viveu|e;viveu
+13.1|Arpakhshad
+13.2|depois de
+13.3|gerar dele|gerar;dele
+13.4|obj
+13.5|Shelah
+13.6|três
+13.7|anos
+13.8|e quatro|e;quatro
+13.9|centenas
+13.10|ano
+13.11|e gerou|e;gerou
+13.12|filhos
+13.13|e filhas|e;filhas
+14.0|E Shelah|e;Shelah
+14.1|viveu
+14.2|trinta
+14.3|ano
+14.4|e gerou|e;gerou
+14.5|obj
+14.6|Ever
+15.0|E viveu|e;viveu
+15.1|Shelah
+15.2|depois de
+15.3|gerar dele|gerar;dele
+15.4|obj
+15.5|Ever
+15.6|três
+15.7|anos
+15.8|e quatro|e;quatro
+15.9|centenas
+15.10|ano
+15.11|e gerou|e;gerou
+15.12|filhos
+15.13|e filhas|e;filhas
+16.0|E viveu|e;viveu
+16.1|Ever
+16.2|quatro
+16.3|e trinta|e;trinta
+16.4|ano
+16.5|e gerou|e;gerou
+16.6|obj
+16.7|Peleg
+17.0|E viveu|e;viveu
+17.1|Ever
+17.2|depois de
+17.3|gerar dele|gerar;dele
+17.4|obj
+17.5|Peleg
+17.6|trinta
+17.7|ano
+17.8|e quatro|e;quatro
+17.9|centenas
+17.10|ano
+17.11|e gerou|e;gerou
+17.12|filhos
+17.13|e filhas|e;filhas
+18.0|E viveu|e;viveu
+18.1|Peleg
+18.2|trinta
+18.3|ano
+18.4|e gerou|e;gerou
+18.5|obj
+18.6|Reú
+19.0|E viveu|e;viveu
+19.1|Peleg
+19.2|depois de
+19.3|gerar dele|gerar;dele
+19.4|obj
+19.5|Reú
+19.6|nove
+19.7|anos
+19.8|e duzentos|e;duzentos
+19.9|ano
+19.10|e gerou|e;gerou
+19.11|filhos
+19.12|e filhas|e;filhas
+20.0|E viveu|e;viveu
+20.1|Reú
+20.2|duas
+20.3|e trinta|e;trinta
+20.4|ano
+20.5|e gerou|e;gerou
+20.6|obj
+20.7|Serug
+21.0|E viveu|e;viveu
+21.1|Reú
+21.2|depois de
+21.3|gerar dele|gerar;dele
+21.4|obj
+21.5|Serug
+21.6|sete
+21.7|anos
+21.8|e duzentos|e;duzentos
+21.9|ano
+21.10|e gerou|e;gerou
+21.11|filhos
+21.12|e filhas|e;filhas
+22.0|E viveu|e;viveu
+22.1|Serug
+22.2|trinta
+22.3|ano
+22.4|e gerou|e;gerou
+22.5|obj
+22.6|Nahor
+23.0|E viveu|e;viveu
+23.1|Serug
+23.2|depois de
+23.3|gerar dele|gerar;dele
+23.4|obj
+23.5|Nahor
+23.6|duzentos
+23.7|ano
+23.8|e gerou|e;gerou
+23.9|filhos
+23.10|e filhas|e;filhas
+24.0|E viveu|e;viveu
+24.1|Nahor
+24.2|nove
+24.3|e vinte|e;vinte
+24.4|ano
+24.5|e gerou|e;gerou
+24.6|obj
+24.7|Terah
+25.0|E viveu|e;viveu
+25.1|Nahor
+25.2|depois de
+25.3|gerar dele|gerar;dele
+25.4|obj
+25.5|Terah
+25.6|nove
+25.7|dez
+25.8|ano
+25.9|e cem de|e;cem de
+25.10|ano
+25.11|e gerou|e;gerou
+25.12|filhos
+25.13|e filhas|e;filhas
+26.0|E viveu|e;viveu
+26.1|Terah
+26.2|setenta
+26.3|ano
+26.4|e gerou|e;gerou
+26.5|obj
+26.6|Avram
+26.7|obj
+26.8|Nahor
+26.9|e obj|e;obj
+26.10|Haran
+27.0|E estas|e;estas
+27.1|gerações de
+27.2|Terah
+27.3|Terah
+27.4|gerou
+27.5|obj
+27.6|Avram
+27.7|obj
+27.8|Nahor
+27.9|e obj|e;obj
+27.10|Haran
+27.11|e Haran|e;Haran
+27.12|gerou
+27.13|obj
+27.14|Lot
+28.0|E morreu|e;morreu
+28.1|Haran
+28.2|sobre
+28.3|faces de
+28.4|Terah
+28.5|pai dele|pai;dele
+28.6|em terra de|em;terra de
+28.7|parentela dele|parentela;dele
+28.8|em Ur|em;Ur
+28.9|Kasdim
+29.0|E tomou|e;tomou
+29.1|Avram
+29.2|e Nahor|e;Nahor
+29.3|para eles|para;eles
+29.4|mulheres
+29.5|nome de
+29.6|mulher de
+29.7|Avram
+29.8|Sarai
+29.9|e nome de|e;nome de
+29.10|mulher de
+29.11|Nahor
+29.12|Milká
+29.13|filha de
+29.14|Haran
+29.15|pai de
+29.16|Milká
+29.17|e pai de|e;pai de
+29.18|Yiská
+30.0|E foi|e;foi
+30.1|Sarai
+30.2|estéril
+30.3|não há
+30.4|para ela|para;ela
+30.5|filho
+31.0|E tomou|e;tomou
+31.1|Terah
+31.2|obj
+31.3|Avram
+31.4|filho dele|filho;dele
+31.5|e obj|e;obj
+31.6|Lot
+31.7|filho de
+31.8|Haran
+31.9|filho de
+31.10|filho dele|filho;dele
+31.11|e obj|e;obj
+31.12|Sarai
+31.13|nora dele|nora;dele
+31.14|mulher de
+31.15|Avram
+31.16|filho dele|filho;dele
+31.17|e saíram|e;saíram
+31.18|com eles|com;eles
+31.19|de Ur|de;Ur
+31.20|Kasdim
+31.21|para ir|para;ir
+31.22|para terra de|terra de;(direção)
+31.23|Kenaan
+31.24|e vieram|e;vieram
+31.25|até
+31.26|Haran
+31.27|e habitaram|e;habitaram
+31.28|ali
+32.0|E foram|e;foram
+32.1|dias de
+32.2|Terah
+32.3|cinco
+32.4|anos
+32.5|e duzentos|e;duzentos
+32.6|ano
+32.7|e morreu|e;morreu
+32.8|Terah
+32.9|em Haran|em;Haran

@@ -1,0 +1,353 @@
+1.0|E abençoou|e;abençoou
+1.1|Deus
+1.2|obj
+1.3|Noah
+1.4|e obj|e;obj
+1.5|filhos dele|filhos;dele
+1.6|e disse|e;disse
+1.7|a eles|a;eles
+1.8|frutificai
+1.9|e multiplicai-vos|e;multiplicai-vos
+1.10|e enchei|e;enchei
+1.11|obj
+1.12|a terra|a;terra
+2.0|E temor de vós|e;temor;de vós
+2.1|e pavor de vós|e;pavor;de vós
+2.2|será
+2.3|sobre
+2.4|toda
+2.5|fera de
+2.6|a terra|a;terra
+2.7|e sobre|e;sobre
+2.8|todo
+2.9|ave de
+2.10|os céus|os;céus
+2.11|em tudo|em;tudo
+2.12|que
+2.13|move-se
+2.14|a solo|a;solo
+2.15|e em todos|e;em;todos
+2.16|peixes de
+2.17|o mar|o;mar
+2.18|em mão de vós|em;mão;de vós
+2.19|foram dados
+3.0|todo
+3.1|réptil
+3.2|que
+3.3|ele
+3.4|vivente
+3.5|a vós|a;vós
+3.6|será
+3.7|para alimento|para;alimento
+3.8|como verdura de|como;verdura de
+3.9|erva
+3.10|dei
+3.11|a vós|a;vós
+3.12|obj
+3.13|tudo
+4.0|somente
+4.1|carne
+4.2|em alma dele|em;alma;dele
+4.3|sangue dele|sangue;dele
+4.4|não
+4.5|comereis
+5.0|E certamente|e;certamente
+5.1|obj
+5.2|sangue de vós|sangue;de vós
+5.3|para almas de vós|para;almas;de vós
+5.4|requererei
+5.5|de mão de|de;mão de
+5.6|toda
+5.7|fera
+5.8|requererei ele|requererei;ele
+5.9|e de mão de|e;de;mão de
+5.10|o homem|o;homem
+5.11|de mão de|de;mão de
+5.12|varão de
+5.13|irmão dele|irmão;dele
+5.14|requererei
+5.15|obj
+5.16|alma de
+5.17|o homem|o;homem
+6.0|derramador de
+6.1|sangue de
+6.2|o homem|o;homem
+6.3|no homem|no;homem
+6.4|sangue dele|sangue;dele
+6.5|será derramado
+6.6|porque
+6.7|em imagem de|em;imagem de
+6.8|Deus
+6.9|fez
+6.10|obj
+6.11|o homem|o;homem
+7.0|E vós|e;vós
+7.1|frutificai
+7.2|e multiplicai-vos|e;multiplicai-vos
+7.3|pululai
+7.4|na terra|na;terra
+7.5|e multiplicai-vos|e;multiplicai-vos
+7.6|nela|em;ela
+8.0|E disse|e;disse
+8.1|Deus
+8.2|para
+8.3|Noah
+8.4|e para|e;para
+8.5|filhos dele|filhos;dele
+8.6|com ele|com;ele
+8.7|dizendo|para;dizer
+9.0|E eu|e;eu
+9.1|eis eu|eis;eu
+9.2|levantando
+9.3|obj
+9.4|aliança de mim|aliança;de mim
+9.5|convosco|com;vós
+9.6|e com|e;com
+9.7|semente de vós|semente;de vós
+9.8|depois de vós|depois de;vós
+10.0|e com|e;com
+10.1|toda
+10.2|alma de
+10.3|a vivente|a;vivente
+10.4|que
+10.5|convosco|com;vós
+10.6|no ave|no;ave
+10.7|na gado|na;gado
+10.8|e em toda|e;em;toda
+10.9|fera de
+10.10|a terra|a;terra
+10.11|convosco|com;vós
+10.12|de todos|de;todos
+10.13|que saem de
+10.14|a arca|a;arca
+10.15|para toda|para;toda
+10.16|fera de
+10.17|a terra|a;terra
+11.0|E levantarei|e;levantarei
+11.1|obj
+11.2|aliança de mim|aliança;de mim
+11.3|convosco|com;vós
+11.4|e não|e;não
+11.5|será cortado
+11.6|todo
+11.7|carne
+11.8|ainda
+11.9|de águas de|de;águas de
+11.10|o dilúvio|o;dilúvio
+11.11|e não|e;não
+11.12|será
+11.13|ainda
+11.14|dilúvio
+11.15|para destruir|para;destruir
+11.16|a terra|a;terra
+12.0|E disse|e;disse
+12.1|Deus
+12.2|esta
+12.3|sinal de
+12.4|a aliança|a;aliança
+12.5|que
+12.6|eu
+12.7|dando
+12.8|entre mim|entre;mim
+12.9|e entre vós|e;entre;vós
+12.10|e entre|e;entre
+12.11|toda
+12.12|alma
+12.13|vivente
+12.14|que
+12.15|convosco|com;vós
+12.16|para gerações de|para;gerações de
+12.17|eternidade
+13.0|obj
+13.1|arco de mim|arco;de mim
+13.2|dei
+13.3|no nuvem|no;nuvem
+13.4|e será|e;será
+13.5|por sinal de|por;sinal de
+13.6|aliança
+13.7|entre mim|entre;mim
+13.8|e entre|e;entre
+13.9|a terra|a;terra
+14.0|E será|e;será
+14.1|em anuviar meu|em;anuviar;meu
+14.2|nuvem
+14.3|sobre
+14.4|a terra|a;terra
+14.5|e será vista|e;será vista
+14.6|a arco|a;arco
+14.7|no nuvem|no;nuvem
+15.0|E lembrarei|e;lembrarei
+15.1|obj
+15.2|aliança de mim|aliança;de mim
+15.3|que
+15.4|entre mim|entre;mim
+15.5|e entre vós|e;entre;vós
+15.6|e entre|e;entre
+15.7|toda
+15.8|alma
+15.9|vivente
+15.10|em todo|em;todo
+15.11|carne
+15.12|e não|e;não
+15.13|será
+15.14|ainda
+15.15|os águas|os;águas
+15.16|por dilúvio|por;dilúvio
+15.17|para destruir|para;destruir
+15.18|todo
+15.19|carne
+16.0|E será|e;será
+16.1|a arco|a;arco
+16.2|no nuvem|no;nuvem
+16.3|e verei ela|e;verei;ela
+16.4|para lembrar|para;lembrar
+16.5|aliança de
+16.6|eternidade
+16.7|entre
+16.8|Deus
+16.9|e entre|e;entre
+16.10|toda
+16.11|alma
+16.12|vivente
+16.13|em todo|em;todo
+16.14|carne
+16.15|que
+16.16|sobre
+16.17|a terra|a;terra
+17.0|E disse|e;disse
+17.1|Deus
+17.2|para
+17.3|Noah
+17.4|esta
+17.5|sinal de
+17.6|a aliança|a;aliança
+17.7|que
+17.8|levantei
+17.9|entre mim|entre;mim
+17.10|e entre|e;entre
+17.11|todo
+17.12|carne
+17.13|que
+17.14|sobre
+17.15|a terra|a;terra
+18.0|E foram|e;foram
+18.1|filhos de
+18.2|Noah
+18.3|os que saíam|os;que saíam
+18.4|de
+18.5|a arca|a;arca
+18.6|Shem
+18.7|e Ham|e;Ham
+18.8|e Yafet|e;Yafet
+18.9|e Ham|e;Ham
+18.10|ele
+18.11|pai de
+18.12|Kenaan
+19.0|três
+19.1|estes
+19.2|filhos de
+19.3|Noah
+19.4|e destes|e;de;estes
+19.5|espalhou-se
+19.6|toda
+19.7|a terra|a;terra
+20.0|E começou|e;começou
+20.1|Noah
+20.2|varão de
+20.3|a solo|a;solo
+20.4|e plantou|e;plantou
+20.5|vinha
+21.0|E bebeu|e;bebeu
+21.1|de
+21.2|o vinho|o;vinho
+21.3|e embriagou-se|e;embriagou-se
+21.4|e descobriu-se|e;descobriu-se
+21.5|no meio de|em;meio de
+21.6|tenda dele|tenda;dele
+22.0|E viu|e;viu
+22.1|Ham
+22.2|pai de
+22.3|Kenaan
+22.4|obj
+22.5|nudez de
+22.6|pai dele|pai;dele
+22.7|e contou|e;contou
+22.8|a dois de|a;dois de
+22.9|irmãos dele|irmãos;dele
+22.10|no fora|no;fora
+23.0|E tomou|e;tomou
+23.1|Shem
+23.2|e Yafet|e;Yafet
+23.3|obj
+23.4|a capa|a;capa
+23.5|e puseram|e;puseram
+23.6|sobre
+23.7|ombro de
+23.8|dois deles|dois;deles
+23.9|e andaram|e;andaram
+23.10|para trás
+23.11|e cobriram|e;cobriram
+23.12|obj
+23.13|nudez de
+23.14|pai deles|pai;deles
+23.15|e faces deles|e;faces;deles
+23.16|para trás
+23.17|e nudez de|e;nudez de
+23.18|pai deles|pai;deles
+23.19|não
+23.20|viram
+24.0|E despertou|e;despertou
+24.1|Noah
+24.2|de vinho dele|de;vinho;dele
+24.3|e conheceu|e;conheceu
+24.4|obj
+24.5|que
+24.6|fez
+24.7|a ele|a;ele
+24.8|filho dele|filho;dele
+24.9|o pequeno|o;pequeno
+25.0|E disse|e;disse
+25.1|maldito
+25.2|Kenaan
+25.3|servo de
+25.4|servos
+25.5|será
+25.6|para irmãos dele|para;irmãos;dele
+26.0|E disse|e;disse
+26.1|bendito
+26.2|YHWH
+26.3|Deus de
+26.4|Shem
+26.5|e seja|e;seja
+26.6|Kenaan
+26.7|servo
+26.8|para eles|para;eles
+27.0|alargue
+27.1|Deus
+27.2|a Yafet|a;Yafet
+27.3|e habite|e;habite
+27.4|em tendas de|em;tendas de
+27.5|Shem
+27.6|e seja|e;seja
+27.7|Kenaan
+27.8|servo
+27.9|para eles|para;eles
+28.0|E viveu|e;viveu
+28.1|Noah
+28.2|depois de
+28.3|o dilúvio|o;dilúvio
+28.4|três
+28.5|centenas
+28.6|ano
+28.7|e cinquenta|e;cinquenta
+28.8|ano
+29.0|E foram|e;foram
+29.1|todos
+29.2|dias de
+29.3|Noah
+29.4|nove
+29.5|centenas
+29.6|ano
+29.7|e cinquenta|e;cinquenta
+29.8|ano
+29.9|e morreu|e;morreu

@@ -388,7 +388,7 @@
 29.16|todo
 29.17|o árvore|o;árvore
 29.18|que
-29.19|nela|em;ela
+29.19|nele|em;ele
 29.20|fruto de
 29.21|árvore
 29.22|produzindo

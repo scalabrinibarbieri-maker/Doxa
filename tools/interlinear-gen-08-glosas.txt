@@ -1,0 +1,308 @@
+1.0|E lembrou|e;lembrou
+1.1|Deus
+1.2|obj
+1.3|Noah
+1.4|e obj|e;obj
+1.5|toda
+1.6|a fera|a;fera
+1.7|e obj|e;obj
+1.8|toda
+1.9|a gado|a;gado
+1.10|que
+1.11|com ele|com;ele
+1.12|na arca|na;arca
+1.13|e fez passar|e;fez passar
+1.14|Deus
+1.15|vento
+1.16|sobre
+1.17|a terra|a;terra
+1.18|e baixaram|e;baixaram
+1.19|os águas|os;águas
+2.0|E foram fechadas|e;foram fechadas
+2.1|fontes de
+2.2|abismo
+2.3|e janelas de|e;janelas de
+2.4|os céus|os;céus
+2.5|e foi detida|e;foi detida
+2.6|a chuva|a;chuva
+2.7|de
+2.8|os céus|os;céus
+3.0|E voltaram|e;voltaram
+3.1|os águas|os;águas
+3.2|de sobre|de;sobre
+3.3|a terra|a;terra
+3.4|indo
+3.5|e voltando|e;voltando
+3.6|e minguaram|e;minguaram
+3.7|os águas|os;águas
+3.8|de fim de|de;fim de
+3.9|cinquenta
+3.10|e cem de|e;cem de
+3.11|dia
+4.0|E repousou|e;repousou
+4.1|a arca|a;arca
+4.2|no mês|no;mês
+4.3|o sétimo|o;sétimo
+4.4|em sete|em;sete
+4.5|dez
+4.6|dia
+4.7|ao mês|ao;mês
+4.8|sobre
+4.9|montes de
+4.10|Ararat
+5.0|E os águas|e;os;águas
+5.1|eram
+5.2|indo
+5.3|e minguando|e;minguando
+5.4|até
+5.5|o mês|o;mês
+5.6|o décimo|o;décimo
+5.7|no décimo|no;décimo
+5.8|em um|em;um
+5.9|ao mês|ao;mês
+5.10|foram vistas
+5.11|cabeças de
+5.12|os montes|os;montes
+6.0|E foi|e;foi
+6.1|de fim de|de;fim de
+6.2|quarenta
+6.3|dia
+6.4|e abriu|e;abriu
+6.5|Noah
+6.6|obj
+6.7|janela de
+6.8|a arca|a;arca
+6.9|que
+6.10|fez
+7.0|E enviou|e;enviou
+7.1|obj
+7.2|o corvo|o;corvo
+7.3|e saiu|e;saiu
+7.4|saindo
+7.5|e voltando|e;voltando
+7.6|até
+7.7|secar
+7.8|os águas|os;águas
+7.9|de sobre|de;sobre
+7.10|a terra|a;terra
+8.0|E enviou|e;enviou
+8.1|obj
+8.2|a pomba|a;pomba
+8.3|de com ele|de;com;ele
+8.4|para ver|para;ver
+8.5|acaso diminuíram|acaso;diminuíram
+8.6|os águas|os;águas
+8.7|de sobre|de;sobre
+8.8|faces de
+8.9|a solo|a;solo
+9.0|E não|e;não
+9.1|achou
+9.2|a pomba|a;pomba
+9.3|repouso
+9.4|para palma de|para;palma de
+9.5|pé dela|pé;dela
+9.6|e voltou|e;voltou
+9.7|para ele|para;ele
+9.8|para
+9.9|a arca|a;arca
+9.10|porque
+9.11|águas
+9.12|sobre
+9.13|faces de
+9.14|toda
+9.15|a terra|a;terra
+9.16|e estendeu|e;estendeu
+9.17|mão dele|mão;dele
+9.18|e tomou ela|e;tomou;ela
+9.19|e trouxe|e;trouxe
+9.20|obj ela|obj;ela
+9.21|para ele|para;ele
+9.22|para
+9.23|a arca|a;arca
+10.0|E esperou|e;esperou
+10.1|ainda
+10.2|sete de
+10.3|dias
+10.4|outros
+10.5|e acrescentou|e;acrescentou
+10.6|enviar
+10.7|obj
+10.8|a pomba|a;pomba
+10.9|de
+10.10|a arca|a;arca
+11.0|E veio|e;veio
+11.1|para ele|para;ele
+11.2|a pomba|a;pomba
+11.3|para tempo de|para;tempo de
+11.4|tarde
+11.5|e eis|e;eis
+11.6|folha de
+11.7|oliveira
+11.8|arrancada
+11.9|em boca dela|em;boca;dela
+11.10|e conheceu|e;conheceu
+11.11|Noah
+11.12|que
+11.13|diminuíram
+11.14|os águas|os;águas
+11.15|de sobre|de;sobre
+11.16|a terra|a;terra
+12.0|E esperou|e;esperou
+12.1|ainda
+12.2|sete de
+12.3|dias
+12.4|outros
+12.5|e enviou|e;enviou
+12.6|obj
+12.7|a pomba|a;pomba
+12.8|e não|e;não
+12.9|acrescentou
+12.10|voltar
+12.11|para ele|para;ele
+12.12|ainda
+13.0|E foi|e;foi
+13.1|em uma|em;uma
+13.2|e seis|e;seis
+13.3|centenas
+13.4|ano
+13.5|no primeiro|no;primeiro
+13.6|em um|em;um
+13.7|ao mês|ao;mês
+13.8|secaram
+13.9|os águas|os;águas
+13.10|de sobre|de;sobre
+13.11|a terra|a;terra
+13.12|e removeu|e;removeu
+13.13|Noah
+13.14|obj
+13.15|cobertura de
+13.16|a arca|a;arca
+13.17|e viu|e;viu
+13.18|e eis|e;eis
+13.19|secaram
+13.20|faces de
+13.21|a solo|a;solo
+14.0|E no mês|e;no;mês
+14.1|o segundo|o;segundo
+14.2|em sete|em;sete
+14.3|e vinte|e;vinte
+14.4|dia
+14.5|ao mês|ao;mês
+14.6|secou
+14.7|a terra|a;terra
+15.0|E falou|e;falou
+15.1|Deus
+15.2|para
+15.3|Noah
+15.4|dizendo|para;dizer
+16.0|sai
+16.1|de
+16.2|a arca|a;arca
+16.3|tu
+16.4|e mulher de ti|e;mulher;de ti
+16.5|e filhos de ti|e;filhos;de ti
+16.6|e mulheres de|e;mulheres de
+16.7|filhos de ti|filhos;de ti
+16.8|contigo|com;ti
+17.0|toda
+17.1|a fera|a;fera
+17.2|que
+17.3|contigo|com;ti
+17.4|de todo|de;todo
+17.5|carne
+17.6|no ave|no;ave
+17.7|e na gado|e;na;gado
+17.8|e em todo|e;em;todo
+17.9|o réptil|o;réptil
+17.10|o que se move|o;que se move
+17.11|sobre
+17.12|a terra|a;terra
+17.13|faze sair
+17.14|contigo|com;ti
+17.15|e pululem|e;pululem
+17.16|na terra|na;terra
+17.17|e frutifiquem|e;frutifiquem
+17.18|e multipliquem-se|e;multipliquem-se
+17.19|sobre
+17.20|a terra|a;terra
+18.0|E saiu|e;saiu
+18.1|Noah
+18.2|e filhos dele|e;filhos;dele
+18.3|e mulher dele|e;mulher;dele
+18.4|e mulheres de|e;mulheres de
+18.5|filhos dele|filhos;dele
+18.6|com ele|com;ele
+19.0|toda
+19.1|a fera|a;fera
+19.2|todo
+19.3|o réptil|o;réptil
+19.4|e todo|e;todo
+19.5|o ave|o;ave
+19.6|tudo
+19.7|que se move
+19.8|sobre
+19.9|a terra|a;terra
+19.10|para famílias deles|para;famílias;deles
+19.11|saíram
+19.12|de
+19.13|a arca|a;arca
+20.0|E edificou|e;edificou
+20.1|Noah
+20.2|altar
+20.3|a YHWH|a;YHWH
+20.4|e tomou|e;tomou
+20.5|de toda|de;toda
+20.6|a gado|a;gado
+20.7|a pura|a;pura
+20.8|e de todo|e;de;todo
+20.9|o ave|o;ave
+20.10|o puro|o;puro
+20.11|e fez subir|e;fez subir
+20.12|holocaustos
+20.13|no altar|no;altar
+21.0|E cheirou|e;cheirou
+21.1|YHWH
+21.2|obj
+21.3|cheiro de
+21.4|o aroma|o;aroma
+21.5|e disse|e;disse
+21.6|YHWH
+21.7|para
+21.8|coração dele|coração;dele
+21.9|não
+21.10|acrescentarei
+21.11|para amaldiçoar|para;amaldiçoar
+21.12|ainda
+21.13|obj
+21.14|a solo|a;solo
+21.15|por causa de|por;causa de
+21.16|o homem|o;homem
+21.17|porque
+21.18|forma de
+21.19|coração de
+21.20|o homem|o;homem
+21.21|mau
+21.22|desde mocidades dele|desde;mocidades;dele
+21.23|e não|e;não
+21.24|acrescentarei
+21.25|ainda
+21.26|para ferir|para;ferir
+21.27|obj
+21.28|todo
+21.29|vivente
+21.30|conforme que|conforme;que
+21.31|fiz
+22.0|ainda
+22.1|todos
+22.2|dias de
+22.3|a terra|a;terra
+22.4|semente
+22.5|e colheita|e;colheita
+22.6|e frio|e;frio
+22.7|e calor|e;calor
+22.8|e verão|e;verão
+22.9|e inverno|e;inverno
+22.10|e dia|e;dia
+22.11|e noite|e;noite
+22.12|não
+22.13|cessarão

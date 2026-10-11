@@ -1,0 +1,347 @@
+1.0|E o serpente|e;o;serpente
+1.1|era
+1.2|astuto
+1.3|de todo|de;todo
+1.4|fera de
+1.5|o campo|o;campo
+1.6|que
+1.7|fez
+1.8|YHWH
+1.9|Deus
+1.10|e disse|e;disse
+1.11|para
+1.12|a mulher|a;mulher
+1.13|também
+1.14|que
+1.15|disse
+1.16|Deus
+1.17|não
+1.18|comereis
+1.19|de todo|de;todo
+1.20|árvore de
+1.21|o jardim|o;jardim
+2.0|E disse|e;disse
+2.1|a mulher|a;mulher
+2.2|para
+2.3|o serpente|o;serpente
+2.4|de fruto de|de;fruto de
+2.5|árvore de
+2.6|o jardim|o;jardim
+2.7|comeremos
+3.0|e de fruto de|e;de;fruto de
+3.1|o árvore|o;árvore
+3.2|que
+3.3|no meio de|em;meio de
+3.4|o jardim|o;jardim
+3.5|disse
+3.6|Deus
+3.7|não
+3.8|comereis
+3.9|dele|de;ele
+3.10|e não|e;não
+3.11|tocareis
+3.12|nele|em;ele
+3.13|para que não
+3.14|morrereis|morrereis;(nun)
+4.0|E disse|e;disse
+4.1|o serpente|o;serpente
+4.2|para
+4.3|a mulher|a;mulher
+4.4|não
+4.5|morrendo
+4.6|morrereis|morrereis;(nun)
+5.0|porque
+5.1|sabendo
+5.2|Deus
+5.3|que
+5.4|em dia de|em;dia de
+5.5|comer vosso|comer;vosso
+5.6|dele|de;ele
+5.7|e serão abertas|e;serão abertas
+5.8|olhos de vós|olhos;de vós
+5.9|e sereis|e;sereis
+5.10|como Deus|como;Deus
+5.11|conhecedores de
+5.12|bom
+5.13|e mau|e;mau
+6.0|E viu|e;viu
+6.1|a mulher|a;mulher
+6.2|que
+6.3|bom
+6.4|o árvore|o;árvore
+6.5|para alimento|para;alimento
+6.6|e que|e;que
+6.7|desejo
+6.8|ele
+6.9|às olhos|às;olhos
+6.10|e desejável|e;desejável
+6.11|o árvore|o;árvore
+6.12|para dar entendimento|para;dar entendimento
+6.13|e tomou|e;tomou
+6.14|de fruto dele|de;fruto;dele
+6.15|e comeu|e;comeu
+6.16|e deu|e;deu
+6.17|também
+6.18|a varão dela|a;varão;dela
+6.19|com ela|com;ela
+6.20|e comeu|e;comeu
+7.0|E foram abertas|e;foram abertas
+7.1|olhos de
+7.2|dois deles|dois;deles
+7.3|e conheceram|e;conheceram
+7.4|que
+7.5|nus
+7.6|eles
+7.7|e coseram|e;coseram
+7.8|folha de
+7.9|figueira
+7.10|e fizeram|e;fizeram
+7.11|para eles|para;eles
+7.12|cintas
+8.0|E ouviram|e;ouviram
+8.1|obj
+8.2|voz de
+8.3|YHWH
+8.4|Deus
+8.5|andando
+8.6|no jardim|no;jardim
+8.7|por vento de|por;vento de
+8.8|o dia|o;dia
+8.9|e escondeu-se|e;escondeu-se
+8.10|o homem|o;homem
+8.11|e mulher dele|e;mulher;dele
+8.12|de faces de|de;faces de
+8.13|YHWH
+8.14|Deus
+8.15|no meio de|em;meio de
+8.16|árvore de
+8.17|o jardim|o;jardim
+9.0|E chamou|e;chamou
+9.1|YHWH
+9.2|Deus
+9.3|para
+9.4|o homem|o;homem
+9.5|e disse|e;disse
+9.6|a ele|a;ele
+9.7|onde tu|onde;tu
+10.0|E disse|e;disse
+10.1|obj
+10.2|voz de ti|voz;de ti
+10.3|ouvi
+10.4|no jardim|no;jardim
+10.5|e temi|e;temi
+10.6|porque
+10.7|nu
+10.8|eu
+10.9|e escondi-me|e;escondi-me
+11.0|E disse|e;disse
+11.1|quem
+11.2|contou
+11.3|a ti|a;ti
+11.4|que
+11.5|nu
+11.6|tu
+11.7|acaso de|acaso;de
+11.8|o árvore|o;árvore
+11.9|que
+11.10|ordenei a ti|ordenei;a ti
+11.11|para não|para;não
+11.12|comer
+11.13|dele|de;ele
+11.14|comeste
+12.0|E disse|e;disse
+12.1|o homem|o;homem
+12.2|a mulher|a;mulher
+12.3|que
+12.4|deste
+12.5|comigo|com;mim
+12.6|ela
+12.7|deu
+12.8|a mim|a;mim
+12.9|de
+12.10|o árvore|o;árvore
+12.11|e comi|e;comi
+13.0|E disse|e;disse
+13.1|YHWH
+13.2|Deus
+13.3|à mulher|à;mulher
+13.4|que
+13.5|esta
+13.6|fizeste
+13.7|e disse|e;disse
+13.8|a mulher|a;mulher
+13.9|o serpente|o;serpente
+13.10|enganou-me|enganou;me
+13.11|e comi|e;comi
+14.0|E disse|e;disse
+14.1|YHWH
+14.2|Deus
+14.3|para
+14.4|o serpente|o;serpente
+14.5|porque
+14.6|fizeste
+14.7|esta
+14.8|maldito
+14.9|tu
+14.10|de toda|de;toda
+14.11|a gado|a;gado
+14.12|e de toda|e;de;toda
+14.13|fera de
+14.14|o campo|o;campo
+14.15|sobre
+14.16|ventre de ti|ventre;de ti
+14.17|andarás
+14.18|e pó|e;pó
+14.19|comerás
+14.20|todos
+14.21|dias de
+14.22|vidas de ti|vidas;de ti
+15.0|e inimizade|e;inimizade
+15.1|porei
+15.2|entre ti|entre;ti
+15.3|e entre|e;entre
+15.4|a mulher|a;mulher
+15.5|e entre|e;entre
+15.6|semente de ti|semente;de ti
+15.7|e entre|e;entre
+15.8|semente dela|semente;dela
+15.9|ele
+15.10|ferirá a ti|ferirá;a ti
+15.11|cabeça
+15.12|e tu|e;tu
+15.13|ferirás a ele|ferirás;a ele
+15.14|calcanhar
+16.0|para
+16.1|a mulher|a;mulher
+16.2|disse
+16.3|multiplicando
+16.4|multiplicarei
+16.5|dor de ti|dor;de ti
+16.6|e gravidez de ti|e;gravidez;de ti
+16.7|em dor|em;dor
+16.8|gerarás
+16.9|filhos
+16.10|e para|e;para
+16.11|varão de ti|varão;de ti
+16.12|desejo de ti|desejo;de ti
+16.13|e ele|e;ele
+16.14|dominará
+16.15|em ti|em;ti
+17.0|e a Adam|e;a;Adam
+17.1|disse
+17.2|porque
+17.3|ouviste
+17.4|a voz de|a;voz de
+17.5|mulher de ti|mulher;de ti
+17.6|e comeste|e;comeste
+17.7|de
+17.8|o árvore|o;árvore
+17.9|que
+17.10|ordenei a ti|ordenei;a ti
+17.11|dizendo|para;dizer
+17.12|não
+17.13|comerás
+17.14|dele|de;ele
+17.15|maldita
+17.16|a solo|a;solo
+17.17|por causa de ti|por;causa;de ti
+17.18|em dor|em;dor
+17.19|comerás ela|comerás;ela
+17.20|todos
+17.21|dias de
+17.22|vidas de ti|vidas;de ti
+18.0|e espinho|e;espinho
+18.1|e cardo|e;cardo
+18.2|fará brotar
+18.3|a ti|a;ti
+18.4|e comerás|e;comerás
+18.5|obj
+18.6|erva de
+18.7|o campo|o;campo
+19.0|em suor de|em;suor de
+19.1|narinas de ti|narinas;de ti
+19.2|comerás
+19.3|pão
+19.4|até
+19.5|voltar teu|voltar;teu
+19.6|para
+19.7|a solo|a;solo
+19.8|porque
+19.9|dela|de;ela
+19.10|foste tomado
+19.11|porque
+19.12|pó
+19.13|tu
+19.14|e para|e;para
+19.15|pó
+19.16|voltarás
+20.0|E chamou|e;chamou
+20.1|o homem|o;homem
+20.2|nome de
+20.3|mulher dele|mulher;dele
+20.4|Havá
+20.5|porque
+20.6|ela
+20.7|era
+20.8|mãe de
+20.9|todo
+20.10|vivente
+21.0|E fez|e;fez
+21.1|YHWH
+21.2|Deus
+21.3|para homem|para;homem
+21.4|e para mulher dele|e;para;mulher;dele
+21.5|túnicas de
+21.6|pele
+21.7|e vestiu eles|e;vestiu;eles
+22.0|E disse|e;disse
+22.1|YHWH
+22.2|Deus
+22.3|eis
+22.4|o homem|o;homem
+22.5|tornou-se
+22.6|como um de|como;um de
+22.7|de nós|de;nós
+22.8|para conhecer|para;conhecer
+22.9|bom
+22.10|e mau|e;mau
+22.11|e agora|e;agora
+22.12|para que não
+22.13|estenda
+22.14|mão dele|mão;dele
+22.15|e tome|e;tome
+22.16|também
+22.17|de árvore de|de;árvore de
+22.18|os vidas|os;vidas
+22.19|e coma|e;coma
+22.20|e viva|e;viva
+22.21|para eternidade|para;eternidade
+23.0|E enviou ele|e;enviou;ele
+23.1|YHWH
+23.2|Deus
+23.3|de jardim de|de;jardim de
+23.4|Éden
+23.5|para servir|para;servir
+23.6|obj
+23.7|a solo|a;solo
+23.8|que
+23.9|foi tomado
+23.10|de ali|de;ali
+24.0|E expulsou|e;expulsou
+24.1|obj
+24.2|o homem|o;homem
+24.3|e fez habitar|e;fez habitar
+24.4|desde oriente|desde;oriente
+24.5|a jardim de|a;jardim de
+24.6|Éden
+24.7|obj
+24.8|os querubins|os;querubins
+24.9|e obj|e;obj
+24.10|chama de
+24.11|a espada|a;espada
+24.12|a que se revolve|a;que se revolve
+24.13|para guardar|para;guardar
+24.14|obj
+24.15|caminho de
+24.16|árvore de
+24.17|os vidas|os;vidas

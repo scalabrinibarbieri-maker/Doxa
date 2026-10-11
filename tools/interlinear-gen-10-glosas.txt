@@ -1,0 +1,287 @@
+1.0|E estas|e;estas
+1.1|gerações de
+1.2|filhos de
+1.3|Noah
+1.4|Shem
+1.5|Ham
+1.6|e Yafet|e;Yafet
+1.7|e foram gerados|e;foram gerados
+1.8|a eles|a;eles
+1.9|filhos
+1.10|depois de
+1.11|o dilúvio|o;dilúvio
+2.0|filhos de
+2.1|Yafet
+2.2|Gomer
+2.3|e Magog|e;Magog
+2.4|e Madai|e;Madai
+2.5|e Yavan|e;Yavan
+2.6|e Tuval|e;Tuval
+2.7|e Meshekh|e;Meshekh
+2.8|e Tiras|e;Tiras
+3.0|E filhos de|e;filhos de
+3.1|Gomer
+3.2|Ashkenaz
+3.3|e Rifat|e;Rifat
+3.4|e Togarmá|e;Togarmá
+4.0|E filhos de|e;filhos de
+4.1|Yavan
+4.2|Elishá
+4.3|e Tarshish|e;Tarshish
+4.4|Kitim
+4.5|e Dodanim|e;Dodanim
+5.0|de estes|de;estes
+5.1|foram separadas
+5.2|ilhas de
+5.3|as nações|as;nações
+5.4|em terras deles|em;terras;deles
+5.5|varão
+5.6|para língua dele|para;língua;dele
+5.7|para famílias deles|para;famílias;deles
+5.8|em nações deles|em;nações;deles
+6.0|E filhos de|e;filhos de
+6.1|Ham
+6.2|Cush
+6.3|e Mitsrayim|e;Mitsrayim
+6.4|e Put|e;Put
+6.5|e Kenaan|e;Kenaan
+7.0|E filhos de|e;filhos de
+7.1|Cush
+7.2|Sevá
+7.3|e Havilá|e;Havilá
+7.4|e Savtá|e;Savtá
+7.5|e Ramá|e;Ramá
+7.6|e Savtekhá|e;Savtekhá
+7.7|e filhos de|e;filhos de
+7.8|Ramá
+7.9|Shevá
+7.10|e Dedan|e;Dedan
+8.0|E Cush|e;Cush
+8.1|gerou
+8.2|obj
+8.3|Nimrod
+8.4|ele
+8.5|começou
+8.6|para ser|para;ser
+8.7|valente
+8.8|na terra|na;terra
+9.0|ele
+9.1|era
+9.2|valente de
+9.3|caça
+9.4|para faces de|para;faces de
+9.5|YHWH
+9.6|sobre
+9.7|assim
+9.8|é dito
+9.9|como Nimrod|como;Nimrod
+9.10|valente de
+9.11|caça
+9.12|para faces de|para;faces de
+9.13|YHWH
+10.0|E foi|e;foi
+10.1|princípio de
+10.2|reino dele|reino;dele
+10.3|Bavel
+10.4|e Erekh|e;Erekh
+10.5|e Akad|e;Akad
+10.6|e Kalné|e;Kalné
+10.7|em terra de|em;terra de
+10.8|Shinar
+11.0|de
+11.1|a terra|a;terra
+11.2|a aquela|a;aquela
+11.3|saiu
+11.4|Ashur
+11.5|e edificou|e;edificou
+11.6|obj
+11.7|Ninvé
+11.8|e obj|e;obj
+11.9|Rehovot
+11.10|Ir
+11.11|e obj|e;obj
+11.12|Kalah
+12.0|e obj|e;obj
+12.1|Resen
+12.2|entre
+12.3|Ninvé
+12.4|e entre|e;entre
+12.5|Kalah
+12.6|ela
+12.7|a cidade|a;cidade
+12.8|a grande|a;grande
+13.0|E Mitsrayim|e;Mitsrayim
+13.1|gerou
+13.2|obj
+13.3|Ludim
+13.4|e obj|e;obj
+13.5|Anamim
+13.6|e obj|e;obj
+13.7|Lehavim
+13.8|e obj|e;obj
+13.9|Naftuhim
+14.0|e obj|e;obj
+14.1|Patrusim
+14.2|e obj|e;obj
+14.3|Kasluhim
+14.4|que
+14.5|saíram
+14.6|de ali|de;ali
+14.7|Pelishtim
+14.8|e obj|e;obj
+14.9|Kaftorim
+15.0|E Kenaan|e;Kenaan
+15.1|gerou
+15.2|obj
+15.3|Tsidon
+15.4|primogênito dele|primogênito;dele
+15.5|e obj|e;obj
+15.6|Het
+16.0|e obj|e;obj
+16.1|o Yevusi|o;Yevusi
+16.2|e obj|e;obj
+16.3|o Emori|o;Emori
+16.4|e obj|e;obj
+16.5|o Girgashi|o;Girgashi
+17.0|e obj|e;obj
+17.1|o Hivi|o;Hivi
+17.2|e obj|e;obj
+17.3|o Arqi|o;Arqi
+17.4|e obj|e;obj
+17.5|o Sini|o;Sini
+18.0|e obj|e;obj
+18.1|o Arvadi|o;Arvadi
+18.2|e obj|e;obj
+18.3|o Tsemari|o;Tsemari
+18.4|e obj|e;obj
+18.5|o Hamati|o;Hamati
+18.6|e depois|e;depois
+18.7|espalharam-se
+18.8|famílias de
+18.9|o Kenaani|o;Kenaani
+19.0|E foi|e;foi
+19.1|fronteira de
+19.2|o Kenaani|o;Kenaani
+19.3|de Tsidon|de;Tsidon
+19.4|vir teu|vir;teu
+19.5|para Guerar|Guerar;(direção)
+19.6|até
+19.7|Azá
+19.8|vir teu|vir;teu
+19.9|para Sedom|Sedom;(direção)
+19.10|e Amorá|e;Amorá
+19.11|e Admá|e;Admá
+19.12|e Tsevoyim|e;Tsevoyim
+19.13|até
+19.14|Lasha
+20.0|estes
+20.1|filhos de
+20.2|Ham
+20.3|para famílias deles|para;famílias;deles
+20.4|para línguas deles|para;línguas;deles
+20.5|em terras deles|em;terras;deles
+20.6|em nações deles|em;nações;deles
+21.0|E a Shem|e;a;Shem
+21.1|foi gerado
+21.2|também
+21.3|ele
+21.4|pai de
+21.5|todos
+21.6|filhos de
+21.7|Ever
+21.8|irmão de
+21.9|Yafet
+21.10|o grande|o;grande
+22.0|filhos de
+22.1|Shem
+22.2|Elam
+22.3|e Ashur|e;Ashur
+22.4|e Arpakhshad|e;Arpakhshad
+22.5|e Lud|e;Lud
+22.6|e Aram|e;Aram
+23.0|E filhos de|e;filhos de
+23.1|Aram
+23.2|Uts
+23.3|e Hul|e;Hul
+23.4|e Geter|e;Geter
+23.5|e Mash|e;Mash
+24.0|E Arpakhshad|e;Arpakhshad
+24.1|gerou
+24.2|obj
+24.3|Shelah
+24.4|e Shelah|e;Shelah
+24.5|gerou
+24.6|obj
+24.7|Ever
+25.0|E a Ever|e;a;Ever
+25.1|foi gerado
+25.2|dois de
+25.3|filhos
+25.4|nome de
+25.5|o um|o;um
+25.6|Peleg
+25.7|porque
+25.8|em dias dele|em;dias;dele
+25.9|foi dividida
+25.10|a terra|a;terra
+25.11|e nome de|e;nome de
+25.12|irmão dele|irmão;dele
+25.13|Yoqtan
+26.0|E Yoqtan|e;Yoqtan
+26.1|gerou
+26.2|obj
+26.3|Almodad
+26.4|e obj|e;obj
+26.5|Shelef
+26.6|e obj|e;obj
+26.7|Hatsarmávet
+26.8|e obj|e;obj
+26.9|Yerah
+27.0|e obj|e;obj
+27.1|Hadoram
+27.2|e obj|e;obj
+27.3|Uzal
+27.4|e obj|e;obj
+27.5|Diqlá
+28.0|e obj|e;obj
+28.1|Oval
+28.2|e obj|e;obj
+28.3|Avimael
+28.4|e obj|e;obj
+28.5|Shevá
+29.0|e obj|e;obj
+29.1|Ofir
+29.2|e obj|e;obj
+29.3|Havilá
+29.4|e obj|e;obj
+29.5|Yovav
+29.6|todos
+29.7|estes
+29.8|filhos de
+29.9|Yoqtan
+30.0|E foi|e;foi
+30.1|habitação deles|habitação;deles
+30.2|de Meshá|de;Meshá
+30.3|vir teu|vir;teu
+30.4|para Sefar|Sefar;(direção)
+30.5|monte de
+30.6|o oriente|o;oriente
+31.0|estes
+31.1|filhos de
+31.2|Shem
+31.3|para famílias deles|para;famílias;deles
+31.4|para línguas deles|para;línguas;deles
+31.5|em terras deles|em;terras;deles
+31.6|para nações deles|para;nações;deles
+32.0|estas
+32.1|famílias de
+32.2|filhos de
+32.3|Noah
+32.4|para gerações deles|para;gerações;deles
+32.5|em nações deles|em;nações;deles
+32.6|e destes|e;de;estes
+32.7|foram separadas
+32.8|as nações|as;nações
+32.9|na terra|na;terra
+32.10|depois de
+32.11|o dilúvio|o;dilúvio

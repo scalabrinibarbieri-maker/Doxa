@@ -1,0 +1,365 @@
+1.0|este
+1.1|livro de
+1.2|gerações de
+1.3|Adam
+1.4|em dia de|em;dia de
+1.5|criar
+1.6|Deus
+1.7|homem
+1.8|em semelhança de|em;semelhança de
+1.9|Deus
+1.10|fez
+1.11|obj ele|obj;ele
+2.0|macho
+2.1|e fêmea|e;fêmea
+2.2|criou eles|criou;eles
+2.3|e abençoou|e;abençoou
+2.4|obj eles|obj;eles
+2.5|e chamou|e;chamou
+2.6|obj
+2.7|nome deles|nome;deles
+2.8|homem
+2.9|em dia de|em;dia de
+2.10|serem criados eles|serem criados;eles
+3.0|E viveu|e;viveu
+3.1|Adam
+3.2|trinta
+3.3|e cem de|e;cem de
+3.4|ano
+3.5|e gerou|e;gerou
+3.6|em semelhança dele|em;semelhança;dele
+3.7|como imagem dele|como;imagem;dele
+3.8|e chamou|e;chamou
+3.9|obj
+3.10|nome dele|nome;dele
+3.11|Shet
+4.0|E foram|e;foram
+4.1|dias de
+4.2|Adam
+4.3|depois de
+4.4|gerar dele|gerar;dele
+4.5|obj
+4.6|Shet
+4.7|oito
+4.8|centenas
+4.9|ano
+4.10|e gerou|e;gerou
+4.11|filhos
+4.12|e filhas|e;filhas
+5.0|E foram|e;foram
+5.1|todos
+5.2|dias de
+5.3|Adam
+5.4|que
+5.5|viveu
+5.6|nove
+5.7|centenas
+5.8|ano
+5.9|e trinta|e;trinta
+5.10|ano
+5.11|e morreu|e;morreu
+6.0|E viveu|e;viveu
+6.1|Shet
+6.2|cinco
+6.3|anos
+6.4|e cem de|e;cem de
+6.5|ano
+6.6|e gerou|e;gerou
+6.7|obj
+6.8|Enosh
+7.0|E viveu|e;viveu
+7.1|Shet
+7.2|depois de
+7.3|gerar dele|gerar;dele
+7.4|obj
+7.5|Enosh
+7.6|sete
+7.7|anos
+7.8|e oito|e;oito
+7.9|centenas
+7.10|ano
+7.11|e gerou|e;gerou
+7.12|filhos
+7.13|e filhas|e;filhas
+8.0|E foram|e;foram
+8.1|todos
+8.2|dias de
+8.3|Shet
+8.4|duas
+8.5|dez
+8.6|ano
+8.7|e nove|e;nove
+8.8|centenas
+8.9|ano
+8.10|e morreu|e;morreu
+9.0|E viveu|e;viveu
+9.1|Enosh
+9.2|noventa
+9.3|ano
+9.4|e gerou|e;gerou
+9.5|obj
+9.6|Qenan
+10.0|E viveu|e;viveu
+10.1|Enosh
+10.2|depois de
+10.3|gerar dele|gerar;dele
+10.4|obj
+10.5|Qenan
+10.6|cinco
+10.7|dez
+10.8|ano
+10.9|e oito|e;oito
+10.10|centenas
+10.11|ano
+10.12|e gerou|e;gerou
+10.13|filhos
+10.14|e filhas|e;filhas
+11.0|E foram|e;foram
+11.1|todos
+11.2|dias de
+11.3|Enosh
+11.4|cinco
+11.5|anos
+11.6|e nove|e;nove
+11.7|centenas
+11.8|ano
+11.9|e morreu|e;morreu
+12.0|E viveu|e;viveu
+12.1|Qenan
+12.2|setenta
+12.3|ano
+12.4|e gerou|e;gerou
+12.5|obj
+12.6|Mahalalel
+13.0|E viveu|e;viveu
+13.1|Qenan
+13.2|depois de
+13.3|gerar dele|gerar;dele
+13.4|obj
+13.5|Mahalalel
+13.6|quarenta
+13.7|ano
+13.8|e oito|e;oito
+13.9|centenas
+13.10|ano
+13.11|e gerou|e;gerou
+13.12|filhos
+13.13|e filhas|e;filhas
+14.0|E foram|e;foram
+14.1|todos
+14.2|dias de
+14.3|Qenan
+14.4|dez
+14.5|anos
+14.6|e nove|e;nove
+14.7|centenas
+14.8|ano
+14.9|e morreu|e;morreu
+15.0|E viveu|e;viveu
+15.1|Mahalalel
+15.2|cinco
+15.3|anos
+15.4|e sessenta|e;sessenta
+15.5|ano
+15.6|e gerou|e;gerou
+15.7|obj
+15.8|Yered
+16.0|E viveu|e;viveu
+16.1|Mahalalel
+16.2|depois de
+16.3|gerar dele|gerar;dele
+16.4|obj
+16.5|Yered
+16.6|trinta
+16.7|ano
+16.8|e oito|e;oito
+16.9|centenas
+16.10|ano
+16.11|e gerou|e;gerou
+16.12|filhos
+16.13|e filhas|e;filhas
+17.0|E foram|e;foram
+17.1|todos
+17.2|dias de
+17.3|Mahalalel
+17.4|cinco
+17.5|e noventa|e;noventa
+17.6|ano
+17.7|e oito|e;oito
+17.8|centenas
+17.9|ano
+17.10|e morreu|e;morreu
+18.0|E viveu|e;viveu
+18.1|Yered
+18.2|duas
+18.3|e sessenta|e;sessenta
+18.4|ano
+18.5|e cem de|e;cem de
+18.6|ano
+18.7|e gerou|e;gerou
+18.8|obj
+18.9|Hanokh
+19.0|E viveu|e;viveu
+19.1|Yered
+19.2|depois de
+19.3|gerar dele|gerar;dele
+19.4|obj
+19.5|Hanokh
+19.6|oito
+19.7|centenas
+19.8|ano
+19.9|e gerou|e;gerou
+19.10|filhos
+19.11|e filhas|e;filhas
+20.0|E foram|e;foram
+20.1|todos
+20.2|dias de
+20.3|Yered
+20.4|duas
+20.5|e sessenta|e;sessenta
+20.6|ano
+20.7|e nove|e;nove
+20.8|centenas
+20.9|ano
+20.10|e morreu|e;morreu
+21.0|E viveu|e;viveu
+21.1|Hanokh
+21.2|cinco
+21.3|e sessenta|e;sessenta
+21.4|ano
+21.5|e gerou|e;gerou
+21.6|obj
+21.7|Metushelah
+22.0|E andou|e;andou
+22.1|Hanokh
+22.2|obj
+22.3|o Deus|o;Deus
+22.4|depois de
+22.5|gerar dele|gerar;dele
+22.6|obj
+22.7|Metushelah
+22.8|três
+22.9|centenas
+22.10|ano
+22.11|e gerou|e;gerou
+22.12|filhos
+22.13|e filhas|e;filhas
+23.0|E foi|e;foi
+23.1|todos
+23.2|dias de
+23.3|Hanokh
+23.4|cinco
+23.5|e sessenta|e;sessenta
+23.6|ano
+23.7|e três|e;três
+23.8|centenas
+23.9|ano
+24.0|E andou|e;andou
+24.1|Hanokh
+24.2|obj
+24.3|o Deus|o;Deus
+24.4|e não há ele|e;não há;ele
+24.5|porque
+24.6|tomou
+24.7|obj ele|obj;ele
+24.8|Deus
+25.0|E viveu|e;viveu
+25.1|Metushelah
+25.2|sete
+25.3|e oitenta|e;oitenta
+25.4|ano
+25.5|e cem de|e;cem de
+25.6|ano
+25.7|e gerou|e;gerou
+25.8|obj
+25.9|Lemekh
+26.0|E viveu|e;viveu
+26.1|Metushelah
+26.2|depois de
+26.3|gerar dele|gerar;dele
+26.4|obj
+26.5|Lemekh
+26.6|duas
+26.7|e oitenta|e;oitenta
+26.8|ano
+26.9|e sete|e;sete
+26.10|centenas
+26.11|ano
+26.12|e gerou|e;gerou
+26.13|filhos
+26.14|e filhas|e;filhas
+27.0|E foram|e;foram
+27.1|todos
+27.2|dias de
+27.3|Metushelah
+27.4|nove
+27.5|e sessenta|e;sessenta
+27.6|ano
+27.7|e nove|e;nove
+27.8|centenas
+27.9|ano
+27.10|e morreu|e;morreu
+28.0|E viveu|e;viveu
+28.1|Lemekh
+28.2|duas
+28.3|e oitenta|e;oitenta
+28.4|ano
+28.5|e cem de|e;cem de
+28.6|ano
+28.7|e gerou|e;gerou
+28.8|filho
+29.0|E chamou|e;chamou
+29.1|obj
+29.2|nome dele|nome;dele
+29.3|Noah
+29.4|dizendo|para;dizer
+29.5|este
+29.6|consolará a nós|consolará;a nós
+29.7|de obra de nós|de;obra;de nós
+29.8|e de dor de|e;de;dor de
+29.9|mãos de nós|mãos;de nós
+29.10|de
+29.11|a solo|a;solo
+29.12|que
+29.13|amaldiçoou ela|amaldiçoou;ela
+29.14|YHWH
+30.0|E viveu|e;viveu
+30.1|Lemekh
+30.2|depois de
+30.3|gerar dele|gerar;dele
+30.4|obj
+30.5|Noah
+30.6|cinco
+30.7|e noventa|e;noventa
+30.8|ano
+30.9|e cinco|e;cinco
+30.10|centenas
+30.11|ano
+30.12|e gerou|e;gerou
+30.13|filhos
+30.14|e filhas|e;filhas
+31.0|E foi|e;foi
+31.1|todos
+31.2|dias de
+31.3|Lemekh
+31.4|sete
+31.5|e setenta|e;setenta
+31.6|ano
+31.7|e sete|e;sete
+31.8|centenas
+31.9|ano
+31.10|e morreu|e;morreu
+32.0|E foi|e;foi
+32.1|Noah
+32.2|filho de
+32.3|cinco
+32.4|centenas
+32.5|ano
+32.6|e gerou|e;gerou
+32.7|Noah
+32.8|obj
+32.9|Shem
+32.10|obj
+32.11|Ham
+32.12|e obj|e;obj
+32.13|Yafet

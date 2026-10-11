@@ -1,0 +1,328 @@
+1.0|E foram acabados|e;foram acabados
+1.1|os céus|os;céus
+1.2|e a terra|e;a;terra
+1.3|e todo|e;todo
+1.4|exército deles|exército;deles
+2.0|E acabou|e;acabou
+2.1|Deus
+2.2|no dia|no;dia
+2.3|o sétimo|o;sétimo
+2.4|obra dele|obra;dele
+2.5|que
+2.6|fez
+2.7|e cessou|e;cessou
+2.8|no dia|no;dia
+2.9|o sétimo|o;sétimo
+2.10|de toda|de;toda
+2.11|obra dele|obra;dele
+2.12|que
+2.13|fez
+3.0|E abençoou|e;abençoou
+3.1|Deus
+3.2|obj
+3.3|dia de
+3.4|o sétimo|o;sétimo
+3.5|e santificou|e;santificou
+3.6|obj ele|obj;ele
+3.7|porque
+3.8|nele|em;ele
+3.9|cessou
+3.10|de toda|de;toda
+3.11|obra dele|obra;dele
+3.12|que
+3.13|criou
+3.14|Deus
+3.15|para fazer|para;fazer
+4.0|estas
+4.1|gerações de
+4.2|os céus|os;céus
+4.3|e a terra|e;a;terra
+4.4|em serem criados eles|em;serem criados;eles
+4.5|em dia de|em;dia de
+4.6|fazer
+4.7|YHWH
+4.8|Deus
+4.9|terra
+4.10|e céus|e;céus
+5.0|e todo|e;todo
+5.1|arbusto de
+5.2|o campo|o;campo
+5.3|ainda não
+5.4|havia
+5.5|na terra|na;terra
+5.6|e todo|e;todo
+5.7|erva de
+5.8|o campo|o;campo
+5.9|ainda não
+5.10|brotava
+5.11|porque
+5.12|não
+5.13|fizera chover
+5.14|YHWH
+5.15|Deus
+5.16|sobre
+5.17|a terra|a;terra
+5.18|e homem|e;homem
+5.19|não havia
+5.20|para servir|para;servir
+5.21|obj
+5.22|a solo|a;solo
+6.0|e vapor|e;vapor
+6.1|subia
+6.2|de
+6.3|a terra|a;terra
+6.4|e regava|e;regava
+6.5|obj
+6.6|todo
+6.7|faces de
+6.8|a solo|a;solo
+7.0|E formou|e;formou
+7.1|YHWH
+7.2|Deus
+7.3|obj
+7.4|o homem|o;homem
+7.5|pó
+7.6|de
+7.7|a solo|a;solo
+7.8|e soprou|e;soprou
+7.9|em narinas dele|em;narinas;dele
+7.10|fôlego de
+7.11|vidas
+7.12|e foi|e;foi
+7.13|o homem|o;homem
+7.14|por alma|por;alma
+7.15|vivente
+8.0|E plantou|e;plantou
+8.1|YHWH
+8.2|Deus
+8.3|jardim
+8.4|em Éden|em;Éden
+8.5|desde oriente|desde;oriente
+8.6|e pôs|e;pôs
+8.7|ali
+8.8|obj
+8.9|o homem|o;homem
+8.10|que
+8.11|formou
+9.0|E fez brotar|e;fez brotar
+9.1|YHWH
+9.2|Deus
+9.3|de
+9.4|a solo|a;solo
+9.5|todo
+9.6|árvore
+9.7|desejável
+9.8|para vista|para;vista
+9.9|e bom|e;bom
+9.10|para alimento|para;alimento
+9.11|e árvore de|e;árvore de
+9.12|os vidas|os;vidas
+9.13|no meio de|em;meio de
+9.14|o jardim|o;jardim
+9.15|e árvore de|e;árvore de
+9.16|a conhecimento|a;conhecimento
+9.17|bom
+9.18|e mau|e;mau
+10.0|e rio|e;rio
+10.1|saindo
+10.2|de Éden|de;Éden
+10.3|para regar|para;regar
+10.4|obj
+10.5|o jardim|o;jardim
+10.6|e de ali|e;de;ali
+10.7|separava-se
+10.8|e era|e;era
+10.9|por quatro|por;quatro
+10.10|cabeças
+11.0|nome de
+11.1|o um|o;um
+11.2|Pishon
+11.3|ele
+11.4|o que rodeia|o;que rodeia
+11.5|obj
+11.6|toda
+11.7|terra de
+11.8|a Havilá|a;Havilá
+11.9|que
+11.10|ali
+11.11|o ouro|o;ouro
+12.0|e ouro de|e;ouro de
+12.1|a terra|a;terra
+12.2|a aquela|a;aquela
+12.3|bom
+12.4|ali
+12.5|o bdélio|o;bdélio
+12.6|e pedra de|e;pedra de
+12.7|o ônix|o;ônix
+13.0|e nome de|e;nome de
+13.1|o rio|o;rio
+13.2|o segundo|o;segundo
+13.3|Guihon
+13.4|ele
+13.5|o que rodeia|o;que rodeia
+13.6|obj
+13.7|toda
+13.8|terra de
+13.9|Cush
+14.0|e nome de|e;nome de
+14.1|o rio|o;rio
+14.2|o terceiro|o;terceiro
+14.3|Hiddeqel
+14.4|ele
+14.5|o que anda|o;que anda
+14.6|oriente de
+14.7|Ashur
+14.8|e o rio|e;o;rio
+14.9|o quarto|o;quarto
+14.10|ele
+14.11|Perat
+15.0|E tomou|e;tomou
+15.1|YHWH
+15.2|Deus
+15.3|obj
+15.4|o homem|o;homem
+15.5|e fez repousar ele|e;fez repousar;ele
+15.6|em jardim de|em;jardim de
+15.7|Éden
+15.8|para servir ela|para;servir;ela
+15.9|e para guardar ela|e;para;guardar;ela
+16.0|E ordenou|e;ordenou
+16.1|YHWH
+16.2|Deus
+16.3|sobre
+16.4|o homem|o;homem
+16.5|dizendo|para;dizer
+16.6|de todo|de;todo
+16.7|árvore de
+16.8|o jardim|o;jardim
+16.9|comendo
+16.10|comerás
+17.0|e de árvore de|e;de;árvore de
+17.1|a conhecimento|a;conhecimento
+17.2|bom
+17.3|e mau|e;mau
+17.4|não
+17.5|comerás
+17.6|dele|de;ele
+17.7|porque
+17.8|em dia de|em;dia de
+17.9|comer teu|comer;teu
+17.10|dele|de;ele
+17.11|morrendo
+17.12|morrerás
+18.0|E disse|e;disse
+18.1|YHWH
+18.2|Deus
+18.3|não
+18.4|bom
+18.5|ser
+18.6|o homem|o;homem
+18.7|à parte dele|a;parte;dele
+18.8|farei
+18.9|para ele|para;ele
+18.10|auxílio
+18.11|como diante dele|como;diante;dele
+19.0|E formou|e;formou
+19.1|YHWH
+19.2|Deus
+19.3|de
+19.4|a solo|a;solo
+19.5|toda
+19.6|fera de
+19.7|o campo|o;campo
+19.8|e obj|e;obj
+19.9|todo
+19.10|ave de
+19.11|os céus|os;céus
+19.12|e trouxe|e;trouxe
+19.13|para
+19.14|o homem|o;homem
+19.15|para ver|para;ver
+19.16|que
+19.17|chamaria
+19.18|a ele|a;ele
+19.19|e tudo|e;tudo
+19.20|que
+19.21|chamasse
+19.22|a ele|a;ele
+19.23|o homem|o;homem
+19.24|alma
+19.25|vivente
+19.26|ele
+19.27|nome dele|nome;dele
+20.0|E chamou|e;chamou
+20.1|o homem|o;homem
+20.2|nomes
+20.3|para toda|para;toda
+20.4|a gado|a;gado
+20.5|e para ave de|e;para;ave de
+20.6|os céus|os;céus
+20.7|e para toda|e;para;toda
+20.8|fera de
+20.9|o campo|o;campo
+20.10|e para homem|e;para;homem
+20.11|não
+20.12|achou
+20.13|auxílio
+20.14|como diante dele|como;diante;dele
+21.0|E fez cair|e;fez cair
+21.1|YHWH
+21.2|Deus
+21.3|sono profundo
+21.4|sobre
+21.5|o homem|o;homem
+21.6|e dormiu|e;dormiu
+21.7|e tomou|e;tomou
+21.8|uma
+21.9|de costelas dele|de;costelas;dele
+21.10|e fechou|e;fechou
+21.11|carne
+21.12|debaixo dela|debaixo de;ela
+22.0|E edificou|e;edificou
+22.1|YHWH
+22.2|Deus
+22.3|obj
+22.4|a costela|a;costela
+22.5|que
+22.6|tomou
+22.7|de
+22.8|o homem|o;homem
+22.9|por mulher|por;mulher
+22.10|e trouxe ela|e;trouxe;ela
+22.11|para
+22.12|o homem|o;homem
+23.0|E disse|e;disse
+23.1|o homem|o;homem
+23.2|esta
+23.3|a vez|a;vez
+23.4|osso
+23.5|de ossos de mim|de;ossos;de mim
+23.6|e carne|e;carne
+23.7|de carne de mim|de;carne;de mim
+23.8|a esta|a;esta
+23.9|será chamado
+23.10|mulher
+23.11|porque
+23.12|de varão|de;varão
+23.13|foi tomada
+23.14|esta
+24.0|sobre
+24.1|assim
+24.2|deixará
+24.3|varão
+24.4|obj
+24.5|pai dele|pai;dele
+24.6|e obj|e;obj
+24.7|mãe dele|mãe;dele
+24.8|e se apegará|e;se apegará
+24.9|em mulher dele|em;mulher;dele
+24.10|e serão|e;serão
+24.11|por carne|por;carne
+24.12|um
+25.0|E eram|e;eram
+25.1|dois deles|dois;deles
+25.2|nus
+25.3|o homem|o;homem
+25.4|e mulher dele|e;mulher;dele
+25.5|e não|e;não
+25.6|se envergonhavam

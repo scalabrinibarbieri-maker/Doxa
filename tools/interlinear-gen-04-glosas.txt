@@ -1,0 +1,341 @@
+1.0|E o homem|e;o;homem
+1.1|conheceu
+1.2|obj
+1.3|Havá
+1.4|mulher dele|mulher;dele
+1.5|e concebeu|e;concebeu
+1.6|e gerou|e;gerou
+1.7|obj
+1.8|Qayin
+1.9|e disse|e;disse
+1.10|adquiri
+1.11|varão
+1.12|com
+1.13|YHWH
+2.0|E acrescentou|e;acrescentou
+2.1|a gerar|a;gerar
+2.2|obj
+2.3|irmão dele|irmão;dele
+2.4|obj
+2.5|Hevel
+2.6|e foi|e;foi
+2.7|Hevel
+2.8|apascentador de
+2.9|rebanho
+2.10|e Qayin|e;Qayin
+2.11|era
+2.12|servidor de
+2.13|solo
+3.0|E foi|e;foi
+3.1|de fim de|de;fim de
+3.2|dias
+3.3|e trouxe|e;trouxe
+3.4|Qayin
+3.5|de fruto de|de;fruto de
+3.6|a solo|a;solo
+3.7|oferta
+3.8|a YHWH|a;YHWH
+4.0|e Hevel|e;Hevel
+4.1|trouxe
+4.2|também
+4.3|ele
+4.4|de primogênitos de|de;primogênitos de
+4.5|rebanho dele|rebanho;dele
+4.6|e de gorduras delas|e;de;gorduras;delas
+4.7|e atentou|e;atentou
+4.8|YHWH
+4.9|para
+4.10|Hevel
+4.11|e para|e;para
+4.12|oferta dele|oferta;dele
+5.0|e para|e;para
+5.1|Qayin
+5.2|e para|e;para
+5.3|oferta dele|oferta;dele
+5.4|não
+5.5|atentou
+5.6|e ardeu|e;ardeu
+5.7|a Qayin|a;Qayin
+5.8|muito
+5.9|e caíram|e;caíram
+5.10|faces dele|faces;dele
+6.0|E disse|e;disse
+6.1|YHWH
+6.2|para
+6.3|Qayin
+6.4|por que|para;quê
+6.5|ardeu
+6.6|a ti|a;ti
+6.7|e por que|e;para;quê
+6.8|caíram
+6.9|faces de ti|faces;de ti
+7.0|acaso não|acaso;não
+7.1|se
+7.2|fizeres bem
+7.3|elevação
+7.4|e se|e;se
+7.5|não
+7.6|fizeres bem
+7.7|ao entrada|ao;entrada
+7.8|pecado
+7.9|deitado
+7.10|e para ti|e;para;ti
+7.11|desejo dele|desejo;dele
+7.12|e tu|e;tu
+7.13|dominarás
+7.14|nele|em;ele
+8.0|E disse|e;disse
+8.1|Qayin
+8.2|para
+8.3|Hevel
+8.4|irmão dele|irmão;dele
+8.5|e foi|e;foi
+8.6|em serem eles|em;serem;eles
+8.7|no campo|no;campo
+8.8|e levantou-se|e;levantou-se
+8.9|Qayin
+8.10|para
+8.11|Hevel
+8.12|irmão dele|irmão;dele
+8.13|e matou ele|e;matou;ele
+9.0|E disse|e;disse
+9.1|YHWH
+9.2|para
+9.3|Qayin
+9.4|onde
+9.5|Hevel
+9.6|irmão de ti|irmão;de ti
+9.7|e disse|e;disse
+9.8|não
+9.9|conheci
+9.10|acaso guardador de|acaso;guardador de
+9.11|irmão de mim|irmão;de mim
+9.12|eu
+10.0|E disse|e;disse
+10.1|que
+10.2|fizeste
+10.3|voz de
+10.4|sangues de
+10.5|irmão de ti|irmão;de ti
+10.6|clamando
+10.7|para mim|para;mim
+10.8|de
+10.9|a solo|a;solo
+11.0|e agora|e;agora
+11.1|maldito
+11.2|tu
+11.3|de
+11.4|a solo|a;solo
+11.5|que
+11.6|abriu
+11.7|obj
+11.8|boca dela|boca;dela
+11.9|para tomar|para;tomar
+11.10|obj
+11.11|sangues de
+11.12|irmão de ti|irmão;de ti
+11.13|de mão de ti|de;mão;de ti
+12.0|quando
+12.1|servires
+12.2|obj
+12.3|a solo|a;solo
+12.4|não
+12.5|acrescentará
+12.6|dar
+12.7|força dela|força;dela
+12.8|a ti|a;ti
+12.9|errante
+12.10|e fugitivo|e;fugitivo
+12.11|serás
+12.12|na terra|na;terra
+13.0|E disse|e;disse
+13.1|Qayin
+13.2|para
+13.3|YHWH
+13.4|grande
+13.5|iniquidade de mim|iniquidade;de mim
+13.6|de levar|de;levar
+14.0|eis
+14.1|expulsaste
+14.2|obj mim|obj;mim
+14.3|o dia|o;dia
+14.4|de sobre|de;sobre
+14.5|faces de
+14.6|a solo|a;solo
+14.7|e de faces de ti|e;de;faces;de ti
+14.8|serei escondido
+14.9|e serei|e;serei
+14.10|errante
+14.11|e fugitivo|e;fugitivo
+14.12|na terra|na;terra
+14.13|e será|e;será
+14.14|todo
+14.15|achador de mim|achador;de mim
+14.16|matará a mim|matará;a mim
+15.0|E disse|e;disse
+15.1|a ele|a;ele
+15.2|YHWH
+15.3|por isso|por;isso
+15.4|todo
+15.5|matador de
+15.6|Qayin
+15.7|sete vezes
+15.8|será vingado
+15.9|e pôs|e;pôs
+15.10|YHWH
+15.11|para Qayin|para;Qayin
+15.12|sinal
+15.13|para não|para;não
+15.14|ferir
+15.15|obj ele|obj;ele
+15.16|todo
+15.17|achador dele|achador;dele
+16.0|E saiu|e;saiu
+16.1|Qayin
+16.2|de para faces de|de;para;faces de
+16.3|YHWH
+16.4|e habitou|e;habitou
+16.5|em terra de|em;terra de
+16.6|Nod
+16.7|oriente de
+16.8|Éden
+17.0|E conheceu|e;conheceu
+17.1|Qayin
+17.2|obj
+17.3|mulher dele|mulher;dele
+17.4|e concebeu|e;concebeu
+17.5|e gerou|e;gerou
+17.6|obj
+17.7|Hanokh
+17.8|e foi|e;foi
+17.9|edificando
+17.10|cidade
+17.11|e chamou|e;chamou
+17.12|nome de
+17.13|a cidade|a;cidade
+17.14|como nome de|como;nome de
+17.15|filho dele|filho;dele
+17.16|Hanokh
+18.0|E foi gerado|e;foi gerado
+18.1|a Hanokh|a;Hanokh
+18.2|obj
+18.3|Irad
+18.4|e Irad|e;Irad
+18.5|gerou
+18.6|obj
+18.7|Mehuyael
+18.8|e Mehiyael|e;Mehiyael
+18.9|gerou
+18.10|obj
+18.11|Metushael
+18.12|e Metushael|e;Metushael
+18.13|gerou
+18.14|obj
+18.15|Lemekh
+19.0|E tomou|e;tomou
+19.1|para ele|para;ele
+19.2|Lemekh
+19.3|duas de
+19.4|mulheres
+19.5|nome de
+19.6|a uma|a;uma
+19.7|Adá
+19.8|e nome de|e;nome de
+19.9|a segunda|a;segunda
+19.10|Tsilá
+20.0|E gerou|e;gerou
+20.1|Adá
+20.2|obj
+20.3|Yaval
+20.4|ele
+20.5|era
+20.6|pai de
+20.7|habitante de
+20.8|tenda
+20.9|e gado|e;gado
+21.0|e nome de|e;nome de
+21.1|irmão dele|irmão;dele
+21.2|Yuval
+21.3|ele
+21.4|era
+21.5|pai de
+21.6|todo
+21.7|manejador de
+21.8|harpa
+21.9|e flauta|e;flauta
+22.0|E Tsilá|e;Tsilá
+22.1|também
+22.2|ela
+22.3|gerou
+22.4|obj
+22.5|Tuval
+22.6|Qayin
+22.7|forjador de
+22.8|todo
+22.9|artífice de
+22.10|bronze
+22.11|e ferro|e;ferro
+22.12|e irmã de|e;irmã de
+22.13|Tuval
+22.14|Qayin
+22.15|Naamá
+23.0|E disse|e;disse
+23.1|Lemekh
+23.2|a mulheres dele|a;mulheres;dele
+23.3|Adá
+23.4|e Tsilá|e;Tsilá
+23.5|ouvi
+23.6|voz de mim|voz;de mim
+23.7|mulheres de
+23.8|Lemekh
+23.9|escutai
+23.10|dito de mim|dito;de mim
+23.11|porque
+23.12|varão
+23.13|matei
+23.14|por ferida de mim|por;ferida;de mim
+23.15|e menino|e;menino
+23.16|por contusão de mim|por;contusão;de mim
+24.0|se
+24.1|sete vezes
+24.2|será vingado
+24.3|Qayin
+24.4|e Lemekh|e;Lemekh
+24.5|setenta
+24.6|e sete|e;sete
+25.0|E conheceu|e;conheceu
+25.1|Adam
+25.2|ainda
+25.3|obj
+25.4|mulher dele|mulher;dele
+25.5|e gerou|e;gerou
+25.6|filho
+25.7|e chamou|e;chamou
+25.8|obj
+25.9|nome dele|nome;dele
+25.10|Shet
+25.11|porque
+25.12|pôs
+25.13|a mim|a;mim
+25.14|Deus
+25.15|semente
+25.16|outro
+25.17|em lugar de
+25.18|Hevel
+25.19|porque
+25.20|matou ele|matou;ele
+25.21|Qayin
+26.0|E a Shet|e;a;Shet
+26.1|também
+26.2|ele
+26.3|foi gerado
+26.4|filho
+26.5|e chamou|e;chamou
+26.6|obj
+26.7|nome dele|nome;dele
+26.8|Enosh
+26.9|então
+26.10|foi começado
+26.11|para chamar|para;chamar
+26.12|em nome de|em;nome de
+26.13|YHWH

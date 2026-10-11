@@ -1,0 +1,305 @@
+1.0|E foi|e;foi
+1.1|quando
+1.2|começou
+1.3|o homem|o;homem
+1.4|a multiplicar-se|a;multiplicar-se
+1.5|sobre
+1.6|faces de
+1.7|a solo|a;solo
+1.8|e filhas|e;filhas
+1.9|foram geradas
+1.10|a eles|a;eles
+2.0|E viram|e;viram
+2.1|filhos de
+2.2|o Deus|o;Deus
+2.3|obj
+2.4|filhas de
+2.5|o homem|o;homem
+2.6|que
+2.7|boas
+2.8|elas
+2.9|e tomaram|e;tomaram
+2.10|para eles|para;eles
+2.11|mulheres
+2.12|de tudo|de;tudo
+2.13|que
+2.14|escolheram
+3.0|E disse|e;disse
+3.1|YHWH
+3.2|não
+3.3|julgará
+3.4|espírito de mim|espírito;de mim
+3.5|no homem|no;homem
+3.6|para eternidade|para;eternidade
+3.7|em que também|em;que;também
+3.8|ele
+3.9|carne
+3.10|e serão|e;serão
+3.11|dias dele|dias;dele
+3.12|cem
+3.13|e vinte|e;vinte
+3.14|ano
+4.0|os nefilim|os;nefilim
+4.1|eram
+4.2|na terra|na;terra
+4.3|nos dias|nos;dias
+4.4|os aqueles|os;aqueles
+4.5|e também|e;também
+4.6|depois de
+4.7|assim
+4.8|que
+4.9|vinham
+4.10|filhos de
+4.11|o Deus|o;Deus
+4.12|para
+4.13|filhas de
+4.14|o homem|o;homem
+4.15|e geravam|e;geravam
+4.16|a eles|a;eles
+4.17|eles
+4.18|os valentes|os;valentes
+4.19|que
+4.20|desde eternidade|desde;eternidade
+4.21|varões de
+4.22|o nome|o;nome
+5.0|E viu|e;viu
+5.1|YHWH
+5.2|que
+5.3|muita
+5.4|maldade de
+5.5|o homem|o;homem
+5.6|na terra|na;terra
+5.7|e todo|e;todo
+5.8|forma de
+5.9|pensamentos de
+5.10|coração dele|coração;dele
+5.11|somente
+5.12|mau
+5.13|todo
+5.14|o dia|o;dia
+6.0|E arrependeu-se|e;arrependeu-se
+6.1|YHWH
+6.2|que
+6.3|fez
+6.4|obj
+6.5|o homem|o;homem
+6.6|na terra|na;terra
+6.7|e entristeceu-se|e;entristeceu-se
+6.8|para
+6.9|coração dele|coração;dele
+7.0|E disse|e;disse
+7.1|YHWH
+7.2|apagarei
+7.3|obj
+7.4|o homem|o;homem
+7.5|que
+7.6|criei
+7.7|de sobre|de;sobre
+7.8|faces de
+7.9|a solo|a;solo
+7.10|de homem|de;homem
+7.11|até
+7.12|gado
+7.13|até
+7.14|réptil
+7.15|e até|e;até
+7.16|ave de
+7.17|os céus|os;céus
+7.18|porque
+7.19|arrependi-me
+7.20|que
+7.21|fiz eles|fiz;eles
+8.0|E Noah|e;Noah
+8.1|achou
+8.2|graça
+8.3|em olhos de|em;olhos de
+8.4|YHWH
+9.0|estas
+9.1|gerações de
+9.2|Noah
+9.3|Noah
+9.4|varão
+9.5|justo
+9.6|íntegro
+9.7|era
+9.8|em gerações dele|em;gerações;dele
+9.9|com
+9.10|o Deus|o;Deus
+9.11|andou
+9.12|Noah
+10.0|E gerou|e;gerou
+10.1|Noah
+10.2|três
+10.3|filhos
+10.4|obj
+10.5|Shem
+10.6|obj
+10.7|Ham
+10.8|e obj|e;obj
+10.9|Yafet
+11.0|E corrompeu-se|e;corrompeu-se
+11.1|a terra|a;terra
+11.2|para faces de|para;faces de
+11.3|o Deus|o;Deus
+11.4|e encheu-se|e;encheu-se
+11.5|a terra|a;terra
+11.6|violência
+12.0|E viu|e;viu
+12.1|Deus
+12.2|obj
+12.3|a terra|a;terra
+12.4|e eis|e;eis
+12.5|corrompeu-se
+12.6|porque
+12.7|corrompeu
+12.8|todo
+12.9|carne
+12.10|obj
+12.11|caminho dele|caminho;dele
+12.12|sobre
+12.13|a terra|a;terra
+13.0|E disse|e;disse
+13.1|Deus
+13.2|a Noah|a;Noah
+13.3|fim de
+13.4|todo
+13.5|carne
+13.6|veio
+13.7|para faces de mim|para;faces;de mim
+13.8|porque
+13.9|encheu-se
+13.10|a terra|a;terra
+13.11|violência
+13.12|de faces deles|de;faces;deles
+13.13|e eis eu|e;eis;eu
+13.14|destruindo eles|destruindo;eles
+13.15|com
+13.16|a terra|a;terra
+14.0|faze
+14.1|para ti|para;ti
+14.2|arca de
+14.3|madeiras de
+14.4|gofer
+14.5|ninhos
+14.6|farás
+14.7|obj
+14.8|a arca|a;arca
+14.9|e cobrirás|e;cobrirás
+14.10|obj ela|obj;ela
+14.11|de casa|de;casa
+14.12|e de fora|e;de;fora
+14.13|no betume|no;betume
+15.0|e este|e;este
+15.1|que
+15.2|farás
+15.3|obj ela|obj;ela
+15.4|três
+15.5|centenas
+15.6|côvado
+15.7|comprimento de
+15.8|a arca|a;arca
+15.9|cinquenta
+15.10|côvado
+15.11|largura dela|largura;dela
+15.12|e trinta|e;trinta
+15.13|côvado
+15.14|altura dela|altura;dela
+16.0|janela
+16.1|farás
+16.2|à arca|à;arca
+16.3|e para|e;para
+16.4|côvado
+16.5|acabarás ela|acabarás;ela
+16.6|de para cima|de;para;cima;(direção)
+16.7|e entrada de|e;entrada de
+16.8|a arca|a;arca
+16.9|em lado dela|em;lado;dela
+16.10|porás
+16.11|inferiores
+16.12|segundos
+16.13|e terceiros|e;terceiros
+16.14|farás ela|farás;ela
+17.0|E eu|e;eu
+17.1|eis eu|eis;eu
+17.2|trazendo
+17.3|obj
+17.4|o dilúvio|o;dilúvio
+17.5|águas
+17.6|sobre
+17.7|a terra|a;terra
+17.8|para destruir|para;destruir
+17.9|todo
+17.10|carne
+17.11|que
+17.12|nele|em;ele
+17.13|espírito de
+17.14|vidas
+17.15|de debaixo de|de;debaixo de
+17.16|os céus|os;céus
+17.17|tudo
+17.18|que
+17.19|na terra|na;terra
+17.20|expirará
+18.0|e levantarei|e;levantarei
+18.1|obj
+18.2|aliança de mim|aliança;de mim
+18.3|contigo|com;ti
+18.4|e entrarás|e;entrarás
+18.5|para
+18.6|a arca|a;arca
+18.7|tu
+18.8|e filhos de ti|e;filhos;de ti
+18.9|e mulher de ti|e;mulher;de ti
+18.10|e mulheres de|e;mulheres de
+18.11|filhos de ti|filhos;de ti
+18.12|contigo|com;ti
+19.0|e de todo|e;de;todo
+19.1|o vivente|o;vivente
+19.2|de todo|de;todo
+19.3|carne
+19.4|dois
+19.5|de tudo|de;tudo
+19.6|trarás
+19.7|para
+19.8|a arca|a;arca
+19.9|para fazer viver|para;fazer viver
+19.10|contigo|com;ti
+19.11|macho
+19.12|e fêmea|e;fêmea
+19.13|serão
+20.0|de o ave|de;o;ave
+20.1|segundo espécie dele|segundo;espécie;dele
+20.2|e de|e;de
+20.3|a gado|a;gado
+20.4|segundo espécie dela|segundo;espécie;dela
+20.5|de todo|de;todo
+20.6|réptil de
+20.7|a solo|a;solo
+20.8|segundo espécie dele|segundo;espécie;dele
+20.9|dois
+20.10|de tudo|de;tudo
+20.11|virão
+20.12|para ti|para;ti
+20.13|para fazer viver|para;fazer viver
+21.0|e tu|e;tu
+21.1|toma
+21.2|para ti|para;ti
+21.3|de todo|de;todo
+21.4|alimento
+21.5|que
+21.6|será comido
+21.7|e ajuntarás|e;ajuntarás
+21.8|para ti|para;ti
+21.9|e será|e;será
+21.10|para ti|para;ti
+21.11|e para eles|e;para;eles
+21.12|para alimento|para;alimento
+22.0|E fez|e;fez
+22.1|Noah
+22.2|conforme tudo|conforme;tudo
+22.3|que
+22.4|ordenou
+22.5|obj ele|obj;ele
+22.6|Deus
+22.7|assim
+22.8|fez

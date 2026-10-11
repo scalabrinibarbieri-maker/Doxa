@@ -1,0 +1,332 @@
+1.0|E disse|e;disse
+1.1|YHWH
+1.2|a Noah|a;Noah
+1.3|entra
+1.4|tu
+1.5|e todo|e;todo
+1.6|casa de ti|casa;de ti
+1.7|para
+1.8|a arca|a;arca
+1.9|porque
+1.10|obj ti|obj;ti
+1.11|vi
+1.12|justo
+1.13|para faces de mim|para;faces;de mim
+1.14|no geração|no;geração
+1.15|o este|o;este
+2.0|de toda|de;toda
+2.1|a gado|a;gado
+2.2|a pura|a;pura
+2.3|tomarás
+2.4|para ti|para;ti
+2.5|sete
+2.6|sete
+2.7|varão
+2.8|e mulher dele|e;mulher;dele
+2.9|e de|e;de
+2.10|a gado|a;gado
+2.11|que
+2.12|não
+2.13|pura
+2.14|ela
+2.15|dois
+2.16|varão
+2.17|e mulher dele|e;mulher;dele
+3.0|também
+3.1|de ave de|de;ave de
+3.2|os céus|os;céus
+3.3|sete
+3.4|sete
+3.5|macho
+3.6|e fêmea|e;fêmea
+3.7|para fazer viver|para;fazer viver
+3.8|semente
+3.9|sobre
+3.10|faces de
+3.11|toda
+3.12|a terra|a;terra
+4.0|porque
+4.1|para dias|para;dias
+4.2|ainda
+4.3|sete
+4.4|eu
+4.5|fazendo chover
+4.6|sobre
+4.7|a terra|a;terra
+4.8|quarenta
+4.9|dia
+4.10|e quarenta|e;quarenta
+4.11|noite
+4.12|e apagarei|e;apagarei
+4.13|obj
+4.14|todo
+4.15|o ser vivente|o;ser vivente
+4.16|que
+4.17|fiz
+4.18|de sobre|de;sobre
+4.19|faces de
+4.20|a solo|a;solo
+5.0|E fez|e;fez
+5.1|Noah
+5.2|conforme tudo|conforme;tudo
+5.3|que
+5.4|ordenou a ele|ordenou;a ele
+5.5|YHWH
+6.0|E Noah|e;Noah
+6.1|filho de
+6.2|seis
+6.3|centenas
+6.4|ano
+6.5|e o dilúvio|e;o;dilúvio
+6.6|foi
+6.7|águas
+6.8|sobre
+6.9|a terra|a;terra
+7.0|E entrou|e;entrou
+7.1|Noah
+7.2|e filhos dele|e;filhos;dele
+7.3|e mulher dele|e;mulher;dele
+7.4|e mulheres de|e;mulheres de
+7.5|filhos dele|filhos;dele
+7.6|com ele|com;ele
+7.7|para
+7.8|a arca|a;arca
+7.9|de faces de|de;faces de
+7.10|águas de
+7.11|o dilúvio|o;dilúvio
+8.0|de
+8.1|a gado|a;gado
+8.2|a pura|a;pura
+8.3|e de|e;de
+8.4|a gado|a;gado
+8.5|que
+8.6|não há ela|não há;ela
+8.7|pura
+8.8|e de|e;de
+8.9|o ave|o;ave
+8.10|e tudo|e;tudo
+8.11|que
+8.12|move-se
+8.13|sobre
+8.14|a solo|a;solo
+9.0|dois
+9.1|dois
+9.2|entraram
+9.3|para
+9.4|Noah
+9.5|para
+9.6|a arca|a;arca
+9.7|macho
+9.8|e fêmea|e;fêmea
+9.9|conforme que|conforme;que
+9.10|ordenou
+9.11|Deus
+9.12|obj
+9.13|Noah
+10.0|E foi|e;foi
+10.1|para sete de|para;sete de
+10.2|os dias|os;dias
+10.3|e águas de|e;águas de
+10.4|o dilúvio|o;dilúvio
+10.5|foram
+10.6|sobre
+10.7|a terra|a;terra
+11.0|em ano de|em;ano de
+11.1|seis
+11.2|centenas
+11.3|ano
+11.4|para vidas de|para;vidas de
+11.5|Noah
+11.6|no mês|no;mês
+11.7|o segundo|o;segundo
+11.8|em sete|em;sete
+11.9|dez
+11.10|dia
+11.11|ao mês|ao;mês
+11.12|no dia|no;dia
+11.13|o este|o;este
+11.14|foram rompidas
+11.15|todos
+11.16|fontes de
+11.17|abismo
+11.18|muita
+11.19|e janelas de|e;janelas de
+11.20|os céus|os;céus
+11.21|foram abertas
+12.0|E foi|e;foi
+12.1|a chuva|a;chuva
+12.2|sobre
+12.3|a terra|a;terra
+12.4|quarenta
+12.5|dia
+12.6|e quarenta|e;quarenta
+12.7|noite
+13.0|em osso de|em;osso de
+13.1|o dia|o;dia
+13.2|o este|o;este
+13.3|entrou
+13.4|Noah
+13.5|e Shem|e;Shem
+13.6|e Ham|e;Ham
+13.7|e Yafet|e;Yafet
+13.8|filhos de
+13.9|Noah
+13.10|e mulher de|e;mulher de
+13.11|Noah
+13.12|e três de|e;três de
+13.13|mulheres de
+13.14|filhos dele|filhos;dele
+13.15|com eles|com;eles
+13.16|para
+13.17|a arca|a;arca
+14.0|eles
+14.1|e toda|e;toda
+14.2|a fera|a;fera
+14.3|segundo espécie dela|segundo;espécie;dela
+14.4|e toda|e;toda
+14.5|a gado|a;gado
+14.6|segundo espécie dela|segundo;espécie;dela
+14.7|e todo|e;todo
+14.8|o réptil|o;réptil
+14.9|o que se move|o;que se move
+14.10|sobre
+14.11|a terra|a;terra
+14.12|segundo espécie dele|segundo;espécie;dele
+14.13|e todo|e;todo
+14.14|o ave|o;ave
+14.15|segundo espécie dele|segundo;espécie;dele
+14.16|toda
+14.17|pássaro de
+14.18|toda
+14.19|asa
+15.0|E entraram|e;entraram
+15.1|para
+15.2|Noah
+15.3|para
+15.4|a arca|a;arca
+15.5|dois
+15.6|dois
+15.7|de todo|de;todo
+15.8|a carne|a;carne
+15.9|que
+15.10|nele|em;ele
+15.11|espírito de
+15.12|vidas
+16.0|E os que entravam|e;os;que entravam
+16.1|macho
+16.2|e fêmea|e;fêmea
+16.3|de todo|de;todo
+16.4|carne
+16.5|entraram
+16.6|conforme que|conforme;que
+16.7|ordenou
+16.8|obj ele|obj;ele
+16.9|Deus
+16.10|e fechou|e;fechou
+16.11|YHWH
+16.12|por trás dele|por trás de;ele
+17.0|E foi|e;foi
+17.1|o dilúvio|o;dilúvio
+17.2|quarenta
+17.3|dia
+17.4|sobre
+17.5|a terra|a;terra
+17.6|e multiplicaram-se|e;multiplicaram-se
+17.7|os águas|os;águas
+17.8|e levantaram|e;levantaram
+17.9|obj
+17.10|a arca|a;arca
+17.11|e elevou-se|e;elevou-se
+17.12|de sobre|de;sobre
+17.13|a terra|a;terra
+18.0|E prevaleceram|e;prevaleceram
+18.1|os águas|os;águas
+18.2|e multiplicaram-se|e;multiplicaram-se
+18.3|muito
+18.4|sobre
+18.5|a terra|a;terra
+18.6|e andava|e;andava
+18.7|a arca|a;arca
+18.8|sobre
+18.9|faces de
+18.10|os águas|os;águas
+19.0|E os águas|e;os;águas
+19.1|prevaleceram
+19.2|muito
+19.3|muito
+19.4|sobre
+19.5|a terra|a;terra
+19.6|e foram cobertos|e;foram cobertos
+19.7|todos
+19.8|os montes|os;montes
+19.9|os altos|os;altos
+19.10|que
+19.11|debaixo de
+19.12|todos
+19.13|os céus|os;céus
+20.0|cinco
+20.1|dez
+20.2|côvado
+20.3|de para cima|de;para;cima;(direção)
+20.4|prevaleceram
+20.5|os águas|os;águas
+20.6|e foram cobertos|e;foram cobertos
+20.7|os montes|os;montes
+21.0|E expirou|e;expirou
+21.1|todo
+21.2|carne
+21.3|o que se move|o;que se move
+21.4|sobre
+21.5|a terra|a;terra
+21.6|no ave|no;ave
+21.7|e na gado|e;na;gado
+21.8|e na fera|e;na;fera
+21.9|e em todo|e;em;todo
+21.10|o enxame|o;enxame
+21.11|o que pulula|o;que pulula
+21.12|sobre
+21.13|a terra|a;terra
+21.14|e todo|e;todo
+21.15|o homem|o;homem
+22.0|tudo
+22.1|que
+22.2|fôlego de
+22.3|espírito de
+22.4|vidas
+22.5|em narinas dele|em;narinas;dele
+22.6|de tudo|de;tudo
+22.7|que
+22.8|na terra seca|na;terra seca
+22.9|morreram
+23.0|E apagou|e;apagou
+23.1|obj
+23.2|todo
+23.3|o ser vivente|o;ser vivente
+23.4|que
+23.5|sobre
+23.6|faces de
+23.7|a solo|a;solo
+23.8|de homem|de;homem
+23.9|até
+23.10|gado
+23.11|até
+23.12|réptil
+23.13|e até|e;até
+23.14|ave de
+23.15|os céus|os;céus
+23.16|e foram apagados|e;foram apagados
+23.17|de
+23.18|a terra|a;terra
+23.19|e restou|e;restou
+23.20|somente
+23.21|Noah
+23.22|e que|e;que
+23.23|com ele|com;ele
+23.24|na arca|na;arca
+24.0|E prevaleceram|e;prevaleceram
+24.1|os águas|os;águas
+24.2|sobre
+24.3|a terra|a;terra
+24.4|cinquenta
+24.5|e cem de|e;cem de
+24.6|dia
