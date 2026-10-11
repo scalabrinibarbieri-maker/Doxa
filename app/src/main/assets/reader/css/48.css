@@ -115,8 +115,8 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .r-bord.prog{stroke-width:2.6;stroke-dasharray:7 4;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--a-route) 60%,transparent))}
 .r-bord.done,.r-bord.also{stroke-width:1.5;stroke-dasharray:6 4;opacity:.6}
 .atlas-walker.w-bord .core{fill:var(--a-route2)}
-.atlas-sheet[data-bk="Josh"] .r-main.done,.atlas-sheet[data-bk="Judg"] .r-main.done,.atlas-sheet[data-bk="Ruth"] .r-main.done,.atlas-sheet[data-bk="1Sam"] .r-main.done{stroke-width:1.8;stroke-dasharray:6 4;opacity:.55}
-.atlas-sheet[data-bk="Josh"] .r-side.done,.atlas-sheet[data-bk="Josh"] .r-army.done,.atlas-sheet[data-bk="Judg"] .r-side.done,.atlas-sheet[data-bk="Ruth"] .r-side.done,.atlas-sheet[data-bk="1Sam"] .r-side.done,.atlas-sheet[data-bk="Judg"] .r-army.done,.atlas-sheet[data-bk="Ruth"] .r-army.done,.atlas-sheet[data-bk="1Sam"] .r-army.done{opacity:.5}
+.atlas-sheet[data-bk="Josh"] .r-main.done,.atlas-sheet[data-bk="Judg"] .r-main.done,.atlas-sheet[data-bk="Ruth"] .r-main.done,.atlas-sheet[data-bk="1Sam"] .r-main.done,.atlas-sheet[data-bk="2Sam"] .r-main.done{stroke-width:1.8;stroke-dasharray:6 4;opacity:.55}
+.atlas-sheet[data-bk="Josh"] .r-side.done,.atlas-sheet[data-bk="Josh"] .r-army.done,.atlas-sheet[data-bk="Judg"] .r-side.done,.atlas-sheet[data-bk="Ruth"] .r-side.done,.atlas-sheet[data-bk="1Sam"] .r-side.done,.atlas-sheet[data-bk="2Sam"] .r-side.done,.atlas-sheet[data-bk="Judg"] .r-army.done,.atlas-sheet[data-bk="Ruth"] .r-army.done,.atlas-sheet[data-bk="1Sam"] .r-army.done,.atlas-sheet[data-bk="2Sam"] .r-army.done{opacity:.5}
 .r-dry{stroke:color-mix(in srgb,#dcb86a 82%,var(--d30-text,#f3ebe0))}
 .r-dry.base{stroke-width:0;opacity:0}
 .r-dry.prog,.r-dry.done,.r-dry.also{stroke-width:7;opacity:.5}
@@ -224,13 +224,13 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .atlas-legend .lg.bord::before{border-top:2px dashed var(--a-route2)}
 .atlas-legend .lg.tk::before{width:7px;height:7px;border:2.5px solid var(--a-army);border-radius:50%;background:color-mix(in srgb,var(--d30-text,#f3ebe0) 78%,transparent)}
 .atlas-legend .lg.fire::before{width:9px;height:9px;border:0;border-radius:50%;background:#ef7a2c;box-shadow:0 0 5px #ff8a2a}
-/* a legenda muda com o livro: de Josué a 1 Samuel não há as rotas do Êxodo (e depois de Josué não há fronteiras) */
+/* a legenda muda com o livro: de Josué a 2 Samuel não há as rotas do Êxodo (e depois de Josué não há fronteiras) */
 .atlas-lh.lh-jos,.atlas-legend .lg.bord,.atlas-legend .lg.tk,.atlas-legend .lg.fire{display:none}
-.atlas-sheet[data-bk="Josh"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Judg"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Ruth"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="1Sam"] .atlas-lh.lh-jos{display:block}
+.atlas-sheet[data-bk="Josh"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Judg"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Ruth"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="1Sam"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="2Sam"] .atlas-lh.lh-jos{display:block}
 .atlas-sheet[data-bk="Josh"] .atlas-legend .lg.bord,.atlas-sheet[data-bk="Josh"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Josh"] .atlas-legend .lg.fire,
-.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.fire{display:inline-flex}
+.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.fire{display:inline-flex}
 .atlas-sheet[data-bk="Josh"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Josh"] .atlas-lrow,.atlas-sheet[data-bk="Josh"] .atlas-legend .lg.next,
-.atlas-sheet[data-bk="Judg"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Ruth"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="1Sam"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Judg"] .atlas-lrow,.atlas-sheet[data-bk="Ruth"] .atlas-lrow,.atlas-sheet[data-bk="1Sam"] .atlas-lrow,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.next,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.next,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.next{display:none}
+.atlas-sheet[data-bk="Judg"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Ruth"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="1Sam"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="2Sam"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Judg"] .atlas-lrow,.atlas-sheet[data-bk="Ruth"] .atlas-lrow,.atlas-sheet[data-bk="1Sam"] .atlas-lrow,.atlas-sheet[data-bk="2Sam"] .atlas-lrow,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.next,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.next,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.next,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.next{display:none}
 .atlas-lfoot{margin:8px 0 0;font:400 11px/1.4 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
 
 /* fora de Êxodo */
