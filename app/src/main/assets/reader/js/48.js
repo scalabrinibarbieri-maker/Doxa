@@ -5,11 +5,13 @@
      de até meia tela com o mapa: onde a passagem acontece e o trajeto. Nos trechos de viagem, o ponto
      anda junto com a leitura ou percorre o trecho sozinho ao chegar. Os lugares citados no versículo da
      linha de leitura acendem no mapa e aparecem em botões no alto do mapa.
-     Os dados (mapa, ~940 lugares, ~770 cenas) ficam em js/48d.js e só são carregados ao ligar o Atlas.
+     Os dados (mapa, ~1000 lugares, ~780 cenas) ficam em js/48d.js e só são carregados ao ligar o Atlas.
      Em Josué: o ponto chega a cada lugar no versículo que o cita (as voltas em Jericó, a emboscada de Ai,
      as campanhas do sul e do norte); as fronteiras das tribos são traçadas ponto a ponto, na ordem do texto;
      as listas de cidades aparecem conforme a leitura; cidades tomadas e queimadas ficam marcadas.
-     Em Juízes, Rute, 1 e 2 Samuel e 1 e 2 Reis, o mesmo, episódio a episódio: cada um começa sem rastro, e o que já foi andado nele fica desenhado.
+     Em Gênesis, Juízes, Rute, 1 e 2 Samuel e 1 e 2 Reis, o mesmo, episódio a episódio: cada um começa sem rastro, e o que já foi andado nele fica desenhado.
+     Em Gênesis 10, cada povo aparece quando a leitura chega a ele, como um ponto na cor do ramo de Noé (Jafé, Cam, Sem),
+     e continua no mapa até o fim do capítulo, que mostra todas as nações juntas.
 
      Rotas:
        • Pela Arábia (destaque): Paulo — “Agar é o monte Sinai, na Arábia” (Gl 4:25); Moisés chega ao
@@ -148,12 +150,13 @@
       +'<div class="atlas-chips" hidden></div>'
       +'<div class="atlas-ctrl"><button type="button" data-z="in" aria-label="Aproximar">+</button><button type="button" data-z="out" aria-label="Afastar">−</button><button type="button" data-z="fit" aria-label="Centralizar a cena">'+SVG_FIT+'</button></div>'
       +'<div class="atlas-scale" aria-hidden="true"><i></i><span></span></div>'
+      +'<div class="atlas-key" hidden><span class="k jafe">Jafé</span><span class="k cam">Cam</span><span class="k sem">Sem</span></div>'
       +'<div class="atlas-credit">Natural Earth · OpenBible · OSM</div>'
       +'<div class="atlas-pop" hidden></div>'
       +'<div class="atlas-layers" hidden><div class="atlas-lh lh-exo">Rotas do Êxodo</div><div class="atlas-lh lh-jos">Legenda</div>'
       +'<div class="atlas-lrow main"><i></i><span><b>Pela Arábia · em destaque</b><small>Monte Sinai em Midiã: “o monte Sinai, na Arábia” (Gl 4:25)</small></span></div>'
       +'<label class="atlas-lrow trad"><i></i><span><b>Tradicional</b><small>Jebel Musa, no sul da península do Sinai</small></span><input type="checkbox" class="atlas-trad" role="switch"><em aria-hidden="true"></em></label>'
-      +'<div class="atlas-legend"><span class="lg done">percorrido</span><span class="lg next">a seguir</span><span class="lg pat">patriarcas · Moisés</span><span class="lg side">outros caminhos</span><span class="lg army">exércitos inimigos</span><span class="lg bord">fronteiras das tribos</span><span class="lg tk">cidade tomada · rei vencido</span><span class="lg fire">cidade queimada</span><span class="lg hit">citado no versículo</span></div>'
+      +'<div class="atlas-legend"><span class="lg done">percorrido</span><span class="lg next">a seguir</span><span class="lg pat">patriarcas · Moisés</span><span class="lg side">outros caminhos</span><span class="lg army">exércitos inimigos</span><span class="lg jafe">filhos de Jafé</span><span class="lg cam">filhos de Cam</span><span class="lg sem">filhos de Sem</span><span class="lg bord">fronteiras das tribos</span><span class="lg tk">cidade tomada · rei vencido</span><span class="lg fire">cidade queimada</span><span class="lg hit">citado no versículo</span></div>'
       +'<p class="atlas-lfoot">Lugares sem identificação firme aparecem como aproximados ou incertos (anel vazio); os sem lugar conhecido ficam só nos botões do versículo. As fronteiras seguem os pontos que o texto cita. Mapa: Natural Earth. Lugares: OpenBible.info (CC BY 4.0); Jordão, ribeiros e vales © colaboradores do OpenStreetMap.</p></div>'
       +'</div>'
       +'<div class="atlas-away"><span></span><button type="button" class="atlas-go">Abrir Gênesis</button></div>';
@@ -355,6 +358,8 @@
     }
     // lugares
     const pins=new Set((S.pins||[]).map(id=>tgt(id)?.id)),show=new Set((S.show||[]).map(id=>tgt(id)?.id)),lbl=S.lbl||{};
+    // Gn 10: os povos na cor do ramo de Noé de que descendem (S.br: lugar -> jafe | cam | sem)
+    const br=S.br||{};const key=document.querySelector('#atlasSheet .atlas-key');if(key)key.hidden=!S.br;
     // listas de cidades: cada uma aparece quando a leitura chega ao versículo que a cita
     const fo=new Map();
     if(S.rev){const always=new Set([...pins,...show]);const b=B[S.bk];
@@ -363,13 +368,14 @@
       const p=PL[id];if(p.l==='t'&&!st.trad)continue;
       const em=pins.has(id),sh=show.has(id);
       let name=lbl[id]||p.n;if(TWIN_NAME.has(id))name+=' (trad.)';
-      if(AREA.has(p.k)){const L=labelItem(id,p,name,'area '+p.k+(em?' em':sh?' sh':'')+(p.l==='t'?' trad':'')+(p.k==='region'&&name!==name.toUpperCase()?' small':''),em?-1:sh?0.5:p.p,[p.x,p.y]);L.rv=fo.get(id)||0;if(S.lan&&S.lan[id])L.an=S.lan[id];items.labels.push(L);continue}
-      const g=mk('g',{class:'pin k-'+p.k+(em?' em':'')+(p.l==='t'?' trad':'')},R.pins);
+      const bc=br[id]?' br-'+br[id]:'';
+      if(AREA.has(p.k)&&!(bc&&p.k==='people')){const L=labelItem(id,p,name,'area '+p.k+(em?' em':sh?' sh':'')+(p.l==='t'?' trad':'')+(p.k==='region'&&name!==name.toUpperCase()?' small':'')+bc,em?-1:(sh||bc)?0.5:p.p,[p.x,p.y]);L.rv=fo.get(id)||0;if(S.lan&&S.lan[id])L.an=S.lan[id];items.labels.push(L);continue}
+      const g=mk('g',{class:'pin k-'+p.k+(em?' em':'')+(p.l==='t'?' trad':'')+bc},R.pins);
       if(em)mk('circle',{class:'halo',r:12,cx:0,cy:0},g);
       if(p.k==='mount')mk('path',{class:'glyph',d:em?'M0 -8.5L8 5.5H-8z':'M0 -6L5.6 4H-5.6z'},g);
       else mk('circle',{class:'glyph',r:em?5.6:(p.k==='site'?3.6:3.4),cx:0,cy:0},g);
       items.pins.push({id,p,g,em,rv:fo.get(id)||0});
-      const L=labelItem(id,p,name,'place'+(em?' em':'')+(p.l==='t'?' trad':''),em?-1:(sh?0.5:p.p),[p.x,p.y],true,em&&p.q);L.rv=fo.get(id)||0;items.labels.push(L);
+      const L=labelItem(id,p,name,'place'+(em?' em':'')+(p.l==='t'?' trad':'')+bc,em?-1:((sh||bc)?0.5:p.p),[p.x,p.y],true,em&&p.q);L.rv=fo.get(id)||0;items.labels.push(L);
     }
     for(const L of items.labels)R.labels.appendChild(L.el);
     ovDirty=true;applyHits(true);
@@ -440,6 +446,7 @@
     const chips=document.querySelector('#atlasSheet .atlas-chips');
     const placed=[[V.W-50,0,V.W,134],[0,V.H-22,112,V.H],[V.W-150,V.H-15,V.W,V.H]];
     if(chips&&!chips.hidden)placed.push([0,0,Math.min(V.W-56,chips.offsetWidth+8),chips.offsetHeight+8]);
+    const key=document.querySelector('#atlasSheet .atlas-key');if(key&&!key.hidden)placed.push([0,V.H-46,key.offsetWidth+14,V.H-20]);
     for(const P of items.pins){const X=sx(P.p.x),Y=sy(P.p.y);P.sx=X;P.sy=Y;
       const inV=!P.hid&&X>-30&&X<V.W+30&&Y>-30&&Y<V.H+30;P.g.style.display=inV?'':'none';
       if(inV){P.g.setAttribute('transform','translate('+X.toFixed(1)+' '+Y.toFixed(1)+')');const r=P.em?7:4;placed.push([X-r,Y-r,X+r,Y+r])}}
