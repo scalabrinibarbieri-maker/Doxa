@@ -8,7 +8,10 @@
   const FILES={'Gen.1':'js/49d.js','Gen.2':'js/49-gen-02.js','Gen.3':'js/49-gen-03.js',
     'Gen.4':'js/49-gen-04.js','Gen.5':'js/49-gen-05.js','Gen.6':'js/49-gen-06.js',
     'Gen.7':'js/49-gen-07.js','Gen.8':'js/49-gen-08.js','Gen.9':'js/49-gen-09.js',
-    'Gen.10':'js/49-gen-10.js','Gen.11':'js/49-gen-11.js'};
+    'Gen.10':'js/49-gen-10.js','Gen.11':'js/49-gen-11.js',
+    'Gen.12':'js/49-gen-12.js',
+    'Gen.13':'js/49-gen-13.js','Gen.14':'js/49-gen-14.js','Gen.15':'js/49-gen-15.js',
+    'Gen.16':'js/49-gen-16.js','Gen.17':'js/49-gen-17.js'};
   const NAMES={Gen:'Gênesis'},LAYERS_KEY='doxa-il2-layers';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const byId=id=>document.getElementById(id);
