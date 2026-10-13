@@ -1,0 +1,355 @@
+1.0|E foi|e;foi
+1.1|Avram
+1.2|filho de
+1.3|noventa
+1.4|ano
+1.5|e nove|e;nove
+1.6|anos
+1.7|e apareceu|e;apareceu
+1.8|YHWH
+1.9|para
+1.10|Avram
+1.11|e disse|e;disse
+1.12|para ele|para;ele
+1.13|eu
+1.14|El
+1.15|Shaddai
+1.16|caminha
+1.17|diante de faces minhas|diante;de faces;minhas
+1.18|e sê|e;sê
+1.19|íntegro
+2.0|E darei|e;darei
+2.1|aliança minha|aliança;minha
+2.2|entre mim|entre;mim
+2.3|e entre ti|e;entre;ti
+2.4|e multiplicarei|e;multiplicarei
+2.5|obj. ti|obj.;ti
+2.6|em muito|em;muito
+2.7|muito
+3.0|E caiu|e;caiu
+3.1|Avram
+3.2|sobre
+3.3|faces dele|faces;dele
+3.4|e falou|e;falou
+3.5|com ele|com;ele
+3.6|Deus
+3.7|para dizer|para;dizer
+4.0|Eu
+4.1|eis
+4.2|aliança minha|aliança;minha
+4.3|com ti|com;ti
+4.4|e serás|e;serás
+4.5|para pai de|para;pai de
+4.6|multidão de
+4.7|nações
+5.0|E não|e;não
+5.1|será chamado
+5.2|mais
+5.3|obj.
+5.4|nome teu|nome;teu
+5.5|Avram
+5.6|e será|e;será
+5.7|nome teu|nome;teu
+5.8|Avraham
+5.9|porque
+5.10|pai de
+5.11|multidão de
+5.12|nações
+5.13|dei-te|dei-;te
+6.0|E farei frutificar|e;farei frutificar
+6.1|obj. ti|obj.;ti
+6.2|em muito|em;muito
+6.3|muito
+6.4|e darei te|e;darei;te
+6.5|para nações|para;nações
+6.6|e reis|e;reis
+6.7|de ti|de;ti
+6.8|sairão
+7.0|E farei levantar|e;farei levantar
+7.1|obj.
+7.2|aliança minha|aliança;minha
+7.3|entre mim|entre;mim
+7.4|e entre ti|e;entre;ti
+7.5|e entre|e;entre
+7.6|semente tua|semente;tua
+7.7|depois de ti|depois de;ti
+7.8|para gerações deles|para;gerações;deles
+7.9|para aliança de|para;aliança de
+7.10|eternidade
+7.11|para ser|para;ser
+7.12|para ti|para;ti
+7.13|para Deus|para;Deus
+7.14|e para semente tua|e;para;semente;tua
+7.15|depois de ti|depois de;ti
+8.0|E darei|e;darei
+8.1|para ti|para;ti
+8.2|e para semente tua|e;para;semente;tua
+8.3|depois de ti|depois de;ti
+8.4|obj.
+8.5|terra de
+8.6|peregrinações tuas|peregrinações;tuas
+8.7|obj.
+8.8|toda
+8.9|terra de
+8.10|Kenaan
+8.11|para posse de|para;posse de
+8.12|eternidade
+8.13|e serei|e;serei
+8.14|para eles|para;eles
+8.15|para Deus|para;Deus
+9.0|E disse|e;disse
+9.1|Deus
+9.2|para
+9.3|Avraham
+9.4|e tu|e;tu
+9.5|obj.
+9.6|aliança minha|aliança;minha
+9.7|guardarás
+9.8|tu
+9.9|e semente tua|e;semente;tua
+9.10|depois de ti|depois de;ti
+9.11|para gerações deles|para;gerações;deles
+10.0|Esta
+10.1|aliança minha|aliança;minha
+10.2|que
+10.3|guardareis
+10.4|entre mim|entre;mim
+10.5|e entre vós|e;entre;vós
+10.6|e entre|e;entre
+10.7|semente tua|semente;tua
+10.8|depois de ti|depois de;ti
+10.9|ser circuncidado
+10.10|para vós|para;vós
+10.11|todo
+10.12|macho
+11.0|E sereis circuncidados|e;sereis circuncidados
+11.1|obj.
+11.2|carne de
+11.3|prepúcio vosso|prepúcio;vosso
+11.4|e será|e;será
+11.5|para sinal de|para;sinal de
+11.6|aliança de
+11.7|entre mim|entre;mim
+11.8|e entre vós|e;entre;vós
+12.0|E filho de|e;filho de
+12.1|oito de
+12.2|dias
+12.3|será circuncidado
+12.4|para vós|para;vós
+12.5|todo
+12.6|macho
+12.7|para gerações vossas|para;gerações;vossas
+12.8|nascido de
+12.9|casa
+12.10|e aquisição de|e;aquisição de
+12.11|prata
+12.12|de todo|de;todo
+12.13|filho de
+12.14|estrangeiro
+12.15|que
+12.16|não
+12.17|de semente tua|de;semente;tua
+12.18|ele
+13.0|Ser circuncidado
+13.1|será circuncidado
+13.2|nascido de
+13.3|casa tua|casa;tua
+13.4|e aquisição de|e;aquisição de
+13.5|prata tua|prata;tua
+13.6|e será|e;será
+13.7|aliança minha|aliança;minha
+13.8|na carne vossa|na;carne;vossa
+13.9|para aliança de|para;aliança de
+13.10|eternidade
+14.0|E incircunciso|e;incircunciso
+14.1|macho
+14.2|que
+14.3|não
+14.4|será circuncidado
+14.5|obj.
+14.6|carne de
+14.7|prepúcio dele|prepúcio;dele
+14.8|e será cortada|e;será cortada
+14.9|a alma|a;alma
+14.10|a aquela|a;aquela
+14.11|de povos dela|de;povos;dela
+14.12|obj.
+14.13|aliança minha|aliança;minha
+14.14|rompeu
+15.0|E disse|e;disse
+15.1|Deus
+15.2|para
+15.3|Avraham
+15.4|Sarai
+15.5|mulher tua|mulher;tua
+15.6|não
+15.7|chamarás
+15.8|obj.
+15.9|nome dela|nome;dela
+15.10|Sarai
+15.11|porque
+15.12|Sarah
+15.13|nome dela|nome;dela
+16.0|E abençoarei|e;abençoarei
+16.1|obj. ela|obj.;ela
+16.2|e também|e;também
+16.3|dei
+16.4|de ela|de;ela
+16.5|para ti|para;ti
+16.6|filho
+16.7|e abençoarei a ela|e;abençoarei;a ela
+16.8|e será|e;será
+16.9|para nações|para;nações
+16.10|reis de
+16.11|povos
+16.12|de ela|de;ela
+16.13|serão
+17.0|E caiu|e;caiu
+17.1|Avraham
+17.2|sobre
+17.3|faces dele|faces;dele
+17.4|e riu|e;riu
+17.5|e disse|e;disse
+17.6|em coração dele|em;coração;dele
+17.7|acaso para filho de|acaso;para;filho de
+17.8|cem
+17.9|ano
+17.10|será nascido
+17.11|e se|e;se
+17.12|Sarah
+17.13|acaso filha de|acaso;filha de
+17.14|noventa
+17.15|ano
+17.16|dará à luz
+18.0|E disse|e;disse
+18.1|Avraham
+18.2|para
+18.3|o Deus|o;Deus
+18.4|quem dera
+18.5|Yishmael
+18.6|viva
+18.7|diante de faces tuas|diante;de faces;tuas
+19.0|E disse|e;disse
+19.1|Deus
+19.2|mas
+19.3|Sarah
+19.4|mulher tua|mulher;tua
+19.5|dando à luz
+19.6|para ti|para;ti
+19.7|filho
+19.8|e chamarás|e;chamarás
+19.9|obj.
+19.10|nome dele|nome;dele
+19.11|Yitsḥaq
+19.12|e farei levantar|e;farei levantar
+19.13|obj.
+19.14|aliança minha|aliança;minha
+19.15|com ele|com;ele
+19.16|para aliança de|para;aliança de
+19.17|eternidade
+19.18|para semente dele|para;semente;dele
+19.19|depois dele|depois;dele
+20.0|E para Yishmael|e;para;Yishmael
+20.1|ouvi-te|ouvi-;te
+20.2|eis
+20.3|abençoei
+20.4|obj. ele|obj.;ele
+20.5|e farei frutificar|e;farei frutificar
+20.6|obj. ele|obj.;ele
+20.7|e multiplicarei|e;multiplicarei
+20.8|obj. ele|obj.;ele
+20.9|em muito|em;muito
+20.10|muito
+20.11|dois
+20.12|dez (12 total)
+20.13|príncipes
+20.14|gerará
+20.15|e darei ele|e;darei;ele
+20.16|para nação|para;nação
+20.17|grande
+21.0|E obj.|e;obj.
+21.1|aliança minha|aliança;minha
+21.2|farei levantar
+21.3|com
+21.4|Yitsḥaq
+21.5|que
+21.6|dará à luz
+21.7|para ti|para;ti
+21.8|Sarah
+21.9|para o tempo designado|para;o tempo designado
+21.10|o este|o;este
+21.11|no ano|no;ano
+21.12|o outro|o;outro
+22.0|E terminou|e;terminou
+22.1|de falar|de;falar
+22.2|com ele|com;ele
+22.3|e subiu|e;subiu
+22.4|Deus
+22.5|de sobre|de;sobre
+22.6|Avraham
+23.0|E tomou|e;tomou
+23.1|Avraham
+23.2|obj.
+23.3|Yishmael
+23.4|filho dele|filho;dele
+23.5|e obj.|e;obj.
+23.6|todos
+23.7|nascidos de
+23.8|casa dele|casa;dele
+23.9|e obj.|e;obj.
+23.10|todos
+23.11|aquisição de
+23.12|prata dele|prata;dele
+23.13|todo
+23.14|macho
+23.15|entre varões de|entre;varões de
+23.16|casa de
+23.17|Avraham
+23.18|e circuncidou|e;circuncidou
+23.19|obj.
+23.20|carne de
+23.21|prepúcio deles|prepúcio;deles
+23.22|em essência de|em;essência de
+23.23|o dia|o;dia
+23.24|o este|o;este
+23.25|conforme que|conforme;que
+23.26|falou
+23.27|com ele|com;ele
+23.28|Deus
+24.0|E Avraham|e;Avraham
+24.1|filho de
+24.2|noventa
+24.3|e nove|e;nove
+24.4|ano
+24.5|em ser circuncidado ele|em;ser circuncidado;ele
+24.6|carne de
+24.7|prepúcio dele|prepúcio;dele
+25.0|E Yishmael|e;Yishmael
+25.1|filho dele|filho;dele
+25.2|filho de
+25.3|três
+25.4|dez (13 total)
+25.5|ano
+25.6|em ser circuncidado ele|em;ser circuncidado;ele
+25.7|obj.
+25.8|carne de
+25.9|prepúcio dele|prepúcio;dele
+26.0|Em essência de|Em;essência de
+26.1|o dia|o;dia
+26.2|o este|o;este
+26.3|foi circuncidado
+26.4|Avraham
+26.5|e Yishmael|e;Yishmael
+26.6|filho dele|filho;dele
+27.0|E todos|e;todos
+27.1|varões de
+27.2|casa dele|casa;dele
+27.3|nascido de
+27.4|casa
+27.5|e aquisição de|e;aquisição de
+27.6|prata
+27.7|de com|de;com
+27.8|filho de
+27.9|estrangeiro
+27.10|foram circuncidados
+27.11|com ele|com;ele

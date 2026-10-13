@@ -1,0 +1,258 @@
+1.0|Depois de
+1.1|as palavras|as;palavras
+1.2|as estas|as;estas
+1.3|foi
+1.4|palavra de
+1.5|YHWH
+1.6|para
+1.7|Avram
+1.8|na visão|na;visão
+1.9|para dizer|para;dizer
+1.10|não
+1.11|temas
+1.12|Avram
+1.13|eu
+1.14|escudo
+1.15|para ti|para;ti
+1.16|recompensa tua|recompensa;tua
+1.17|aumentar (intens.)
+1.18|muito
+2.0|E disse|e;disse
+2.1|Avram
+2.2|Senhor meu|Senhor;meu
+2.3|YHWH
+2.4|o que
+2.5|darás
+2.6|para mim|para;mim
+2.7|e eu|e;eu
+2.8|andando
+2.9|sem filhos
+2.10|e filho de|e;filho de
+2.11|aquisição de
+2.12|casa minha|casa;minha
+2.13|ele
+2.14|Damesek
+2.15|Eliezer
+3.0|E disse|e;disse
+3.1|Avram
+3.2|eis
+3.3|para mim|para;mim
+3.4|não
+3.5|deste
+3.6|semente
+3.7|e eis|e;eis
+3.8|filho de
+3.9|casa minha|casa;minha
+3.10|herdando
+3.11|obj. mim|obj.;mim
+4.0|E eis|e;eis
+4.1|palavra de
+4.2|YHWH
+4.3|para ele|para;ele
+4.4|para dizer|para;dizer
+4.5|não
+4.6|herdará te|herdará;te
+4.7|este
+4.8|mas
+4.9|se
+4.10|aquele que
+4.11|sairá
+4.12|de entranhas tuas|de;entranhas;tuas
+4.13|ele
+4.14|herdará te|herdará;te
+5.0|E fez sair|e;fez sair
+5.1|obj. ele|obj.;ele
+5.2|para fora (direção)|para;fora;(direção)
+5.3|e disse|e;disse
+5.4|olha
+5.5|por favor
+5.6|os céus (direção)|os;céus;(direção)
+5.7|e conta|e;conta
+5.8|as estrelas|as;estrelas
+5.9|se
+5.10|poderás
+5.11|para contar|para;contar
+5.12|obj. elas|obj.;elas
+5.13|e disse|e;disse
+5.14|para ele|para;ele
+5.15|assim
+5.16|será
+5.17|semente tua|semente;tua
+6.0|E creu|e;creu
+6.1|em YHWH|em;YHWH
+6.2|e considerou a ela|e;considerou;a ela
+6.3|para ele|para;ele
+6.4|justiça
+7.0|E disse|e;disse
+7.1|para ele|para;ele
+7.2|eu
+7.3|YHWH
+7.4|que
+7.5|fiz sair-te|fiz sair-;te
+7.6|de Ur|de;Ur
+7.7|Kasdim
+7.8|para dar|para;dar
+7.9|para ti|para;ti
+7.10|obj.
+7.11|a terra|a;terra
+7.12|a esta|a;esta
+7.13|para possuir ela|para;possuir;ela
+8.0|E disse|e;disse
+8.1|Senhor meu|Senhor;meu
+8.2|YHWH
+8.3|em que|em;que
+8.4|saberei
+8.5|que
+8.6|possuirei ela|possuirei;ela
+9.0|E disse|e;disse
+9.1|para ele|para;ele
+9.2|toma (ênfase)|toma;(ênfase)
+9.3|para mim|para;mim
+9.4|novilha
+9.5|de três anos (fem.)
+9.6|e cabra|e;cabra
+9.7|de três anos (fem.)
+9.8|e carneiro|e;carneiro
+9.9|de três anos (masc.)
+9.10|e rola|e;rola
+9.11|e filhote de ave|e;filhote de ave
+10.0|E tomou|e;tomou
+10.1|para ele|para;ele
+10.2|obj.
+10.3|todos
+10.4|estes
+10.5|e dividiu|e;dividiu
+10.6|obj. eles|obj.;eles
+10.7|no meio|no;meio
+10.8|e colocou|e;colocou
+10.9|varão
+10.10|parte dele|parte;dele
+10.11|para encontro de|para;encontro de
+10.12|companheiro dele|companheiro;dele
+10.13|e obj.|e;obj.
+10.14|a ave|a;ave
+10.15|não
+10.16|dividiu
+11.0|E desceu|e;desceu
+11.1|o ave de rapina|o;ave de rapina
+11.2|sobre
+11.3|os cadáveres|os;cadáveres
+11.4|e fez afastar (soprar)|e;fez afastar (soprar)
+11.5|obj. eles|obj.;eles
+11.6|Avram
+12.0|E foi|e;foi
+12.1|o sol|o;sol
+12.2|para entrar|para;entrar
+12.3|e sono profundo|e;sono profundo
+12.4|caiu
+12.5|sobre
+12.6|Avram
+12.7|e eis|e;eis
+12.8|terror
+12.9|escuridão
+12.10|grande
+12.11|caindo
+12.12|sobre ele|sobre;ele
+13.0|E disse|e;disse
+13.1|para Avram|para;Avram
+13.2|conhecendo
+13.3|conhecerás
+13.4|que
+13.5|estrangeiro
+13.6|será
+13.7|semente tua|semente;tua
+13.8|em terra|em;terra
+13.9|não
+13.10|para eles|para;eles
+13.11|e servirão eles|e;servirão;eles
+13.12|e afligirão|e;afligirão
+13.13|obj. eles|obj.;eles
+13.14|quatro
+13.15|centenas
+13.16|ano
+14.0|E também|e;também
+14.1|obj.
+14.2|a nação|a;nação
+14.3|que
+14.4|servirão
+14.5|julgando
+14.6|eu
+14.7|e depois de|e;depois de
+14.8|assim
+14.9|sairão
+14.10|com patrimônio|com;patrimônio
+14.11|grande
+15.0|E tu|e;tu
+15.1|virás
+15.2|para
+15.3|pais teus|pais;teus
+15.4|em paz|em;paz
+15.5|serás sepultado
+15.6|em velhice|em;velhice
+15.7|boa
+16.0|E geração de|e;geração de
+16.1|quarta
+16.2|voltarão
+16.3|para cá
+16.4|porque
+16.5|não
+16.6|completa
+16.7|iniquidade de
+16.8|o emori|o;emori
+16.9|até
+16.10|aqui
+17.0|E foi|e;foi
+17.1|o sol|o;sol
+17.2|entrou
+17.3|e escuridão|e;escuridão
+17.4|foi
+17.5|e eis|e;eis
+17.6|forno de
+17.7|fumaça
+17.8|e tocha de|e;tocha de
+17.9|fogo
+17.10|que
+17.11|passou
+17.12|entre
+17.13|as partes|as;partes
+17.14|as estas|as;estas
+18.0|No dia|No;dia
+18.1|o aquele|o;aquele
+18.2|cortou
+18.3|YHWH
+18.4|com
+18.5|Avram
+18.6|aliança
+18.7|para dizer|para;dizer
+18.8|para semente tua|para;semente;tua
+18.9|dei
+18.10|obj.
+18.11|a terra|a;terra
+18.12|a esta|a;esta
+18.13|de rio de|de;rio de
+18.14|Mitsrayim
+18.15|até
+18.16|o rio|o;rio
+18.17|o grande|o;grande
+18.18|rio de
+18.19|Perat
+19.0|obj.
+19.1|o Qeini|o;Qeini
+19.2|e obj.|e;obj.
+19.3|o Qenizi|o;Qenizi
+19.4|e obj.|e;obj.
+19.5|o Qadmoni|o;Qadmoni
+20.0|E obj.|e;obj.
+20.1|o Hitti|o;Hitti
+20.2|e obj.|e;obj.
+20.3|o Perizi|o;Perizi
+20.4|e obj.|e;obj.
+20.5|os Refaim|os;Refaim
+21.0|E obj.|e;obj.
+21.1|o Emori|o;Emori
+21.2|e obj.|e;obj.
+21.3|o Kenaani|o;Kenaani
+21.4|e obj.|e;obj.
+21.5|o Girgashi|o;Girgashi
+21.6|e obj.|e;obj.
+21.7|o Yevusi|o;Yevusi

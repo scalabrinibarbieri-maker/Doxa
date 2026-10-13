@@ -1,0 +1,341 @@
+1.0|E foi|e;foi
+1.1|em dias de|em;dias de
+1.2|Amrafel
+1.3|rei de
+1.4|Shinar
+1.5|Ariokh
+1.6|rei de
+1.7|Ellasar
+1.8|Kedorlaomer
+1.9|rei de
+1.10|Elam
+1.11|e Tid'al|e;Tid'al
+1.12|rei de
+1.13|Goim
+2.0|Fizeram
+2.1|guerra
+2.2|com
+2.3|Bera
+2.4|rei de
+2.5|Sedom
+2.6|e com|e;com
+2.7|Birsha
+2.8|rei de
+2.9|Amorah
+2.10|Shinav
+2.11|rei de
+2.12|Admah
+2.13|e Shemever|e;Shemever
+2.14|rei de
+2.15|Tsevoyim
+2.16|e rei de|e;rei de
+2.17|Bela
+2.18|ela
+2.19|Tsoar
+3.0|Todos
+3.1|estes
+3.2|reuniram-se
+3.3|para
+3.4|vale de
+3.5|o Siddim|o;Siddim
+3.6|ele
+3.7|mar de
+3.8|o sal|o;sal
+4.0|Duas
+4.1|dez (12 total)
+4.2|ano
+4.3|serviram
+4.4|obj.
+4.5|Kedorlaomer
+4.6|e três|e;três
+4.7|dez (13 total)
+4.8|ano
+4.9|rebelaram-se
+5.0|E em quatro|e;em;quatro
+5.1|dez (14 total)
+5.2|ano
+5.3|veio
+5.4|Kedorlaomer
+5.5|e os reis|e;os;reis
+5.6|que
+5.7|com ele|com;ele
+5.8|e feriram|e;feriram
+5.9|obj.
+5.10|Refaim
+5.11|em Ashterot|em;Ashterot
+5.12|Karnayim
+5.13|e obj.|e;obj.
+5.14|os Zuzim|os;Zuzim
+5.15|em Ham|em;Ham
+5.16|e obj.|e;obj.
+5.17|os Emim|os;Emim
+5.18|em Shave|em;Shave
+5.19|Kiryatayim
+6.0|E obj.|e;obj.
+6.1|o Hori|o;Hori
+6.2|em monte deles|em;monte;deles
+6.3|Seir
+6.4|até
+6.5|Eil
+6.6|Paran
+6.7|que
+6.8|sobre
+6.9|o deserto|o;deserto
+7.0|E voltaram|e;voltaram
+7.1|e vieram|e;vieram
+7.2|para
+7.3|Ein
+7.4|Mishpat
+7.5|ela
+7.6|Qadesh
+7.7|e feriram|e;feriram
+7.8|obj.
+7.9|todo
+7.10|campo de
+7.11|o amalequita|o;amalequita
+7.12|e também|e;também
+7.13|obj.
+7.14|o emori|o;emori
+7.15|o habitante|o;habitante
+7.16|em Hatsatson|em;Hatsatson
+7.17|Tamar
+8.0|E saiu|e;saiu
+8.1|rei de
+8.2|Sedom
+8.3|e rei de|e;rei de
+8.4|Amorah
+8.5|e rei de|e;rei de
+8.6|Admah
+8.7|e rei de|e;rei de
+8.8|Tsevoyim
+8.9|e rei de|e;rei de
+8.10|Bela
+8.11|ela
+8.12|Tsoar
+8.13|e dispuseram|e;dispuseram
+8.14|com eles|com;eles
+8.15|guerra
+8.16|no vale de|no;vale de
+8.17|o Siddim|o;Siddim
+9.0|Com
+9.1|Kedorlaomer
+9.2|rei de
+9.3|Elam
+9.4|e Tid'al|e;Tid'al
+9.5|rei de
+9.6|Goim
+9.7|e Amrafel|e;Amrafel
+9.8|rei de
+9.9|Shinar
+9.10|e Ariokh|e;Ariokh
+9.11|rei de
+9.12|Ellasar
+9.13|quatro
+9.14|reis
+9.15|com
+9.16|os cinco|os;cinco
+10.0|E vale de|e;vale de
+10.1|o Siddim|o;Siddim
+10.2|poços de
+10.3|poços de
+10.4|betume
+10.5|e fugiram|e;fugiram
+10.6|rei de
+10.7|Sedom
+10.8|e Amorah|e;Amorah
+10.9|e caíram|e;caíram
+10.10|para ali|para;ali
+10.11|e os restantes|e;os;restantes
+10.12|montanha (direção)|montanha;(direção)
+10.13|fugiram
+11.0|E tomaram|e;tomaram
+11.1|obj.
+11.2|todo
+11.3|patrimônio de
+11.4|Sedom
+11.5|e Amorah|e;Amorah
+11.6|e obj.|e;obj.
+11.7|todo
+11.8|alimento deles|alimento;deles
+11.9|e foram|e;foram
+12.0|E tomaram|e;tomaram
+12.1|obj.
+12.2|Lot
+12.3|e obj.|e;obj.
+12.4|patrimônio dele|patrimônio;dele
+12.5|filho de
+12.6|irmão de
+12.7|Avram
+12.8|e foram|e;foram
+12.9|e ele|e;ele
+12.10|habitante
+12.11|em Sedom|em;Sedom
+13.0|E veio|e;veio
+13.1|o fugitivo|o;fugitivo
+13.2|e informou|e;informou
+13.3|para Avram|para;Avram
+13.4|o hebreu|o;hebreu
+13.5|e ele|e;ele
+13.6|habitando
+13.7|em carvalhos de|em;carvalhos de
+13.8|Mamre
+13.9|o emori|o;emori
+13.10|irmão de
+13.11|Eshkol
+13.12|e irmão de|e;irmão de
+13.13|Aner
+13.14|e eles|e;eles
+13.15|senhores de
+13.16|aliança de
+13.17|Avram
+14.0|E ouviu|e;ouviu
+14.1|Avram
+14.2|que
+14.3|foi levado cativo
+14.4|irmão dele|irmão;dele
+14.5|e fez sair|e;fez sair
+14.6|obj.
+14.7|treinados dele|treinados;dele
+14.8|nascidos de
+14.9|casa dele|casa;dele
+14.10|oito
+14.11|dez (18 total)
+14.12|e três|e;três
+14.13|centenas (318 total)
+14.14|e perseguiu|e;perseguiu
+14.15|até
+14.16|Dan
+15.0|E dividiu-se|e;dividiu-se
+15.1|sobre eles|sobre;eles
+15.2|noite
+15.3|ele
+15.4|e servos dele|e;servos;dele
+15.5|e feriu eles|e;feriu;eles
+15.6|e perseguiu eles|e;perseguiu;eles
+15.7|até
+15.8|Hovah
+15.9|que
+15.10|de esquerda|de;esquerda
+15.11|para Damesek|para;Damesek
+16.0|E fez retornar|e;fez retornar
+16.1|obj.
+16.2|todo
+16.3|o patrimônio|o;patrimônio
+16.4|e também|e;também
+16.5|obj.
+16.6|Lot
+16.7|irmão dele|irmão;dele
+16.8|e patrimônio dele|e;patrimônio;dele
+16.9|fez retornar
+16.10|e também|e;também
+16.11|obj.
+16.12|as mulheres|as;mulheres
+16.13|e obj.|e;obj.
+16.14|o povo|o;povo
+17.0|E saiu|e;saiu
+17.1|rei de
+17.2|Sedom
+17.3|para encontro dele|para;encontro;dele
+17.4|depois de
+17.5|voltar dele|voltar;dele
+17.6|de ferir|de;ferir
+17.7|obj.
+17.8|Kedorlaomer
+17.9|e obj.|e;obj.
+17.10|os reis|os;reis
+17.11|que
+17.12|com ele|com;ele
+17.13|para
+17.14|vale de
+17.15|Shave
+17.16|ele
+17.17|vale de
+17.18|o rei|o;rei
+18.0|E Malki-|e;Malki-
+18.1|Tsedeq
+18.2|rei de
+18.3|Shalem
+18.4|fez sair
+18.5|pão
+18.6|e vinho|e;vinho
+18.7|e ele|e;ele
+18.8|sacerdote
+18.9|para El|para;El
+18.10|Altíssimo
+19.0|E abençoou ele|e;abençoou;ele
+19.1|e disse|e;disse
+19.2|abençoado
+19.3|Avram
+19.4|por El|por;El
+19.5|Altíssimo
+19.6|adquiridor de
+19.7|céus
+19.8|e terra|e;terra
+20.0|E abençoado|e;abençoado
+20.1|El
+20.2|Altíssimo
+20.3|que
+20.4|entregou
+20.5|adversários teus|adversários;teus
+20.6|em mão tua|em;mão;tua
+20.7|e deu|e;deu
+20.8|para ele|para;ele
+20.9|dízimo de
+20.10|de tudo|de;tudo
+21.0|E disse|e;disse
+21.1|rei de
+21.2|Sedom
+21.3|para
+21.4|Avram
+21.5|dá
+21.6|para mim|para;mim
+21.7|a alma|a;alma
+21.8|e o patrimônio|e;o;patrimônio
+21.9|toma
+21.10|para ti|para;ti
+22.0|E disse|e;disse
+22.1|Avram
+22.2|para
+22.3|rei de
+22.4|Sedom
+22.5|levantei
+22.6|mão minha|mão;minha
+22.7|para
+22.8|YHWH
+22.9|El
+22.10|Altíssimo
+22.11|adquiridor de
+22.12|céus
+22.13|e terra|e;terra
+23.0|Se
+23.1|de fio|de;fio
+23.2|e até|e;até
+23.3|cordão de
+23.4|sandália
+23.5|e se|e;se
+23.6|tomarei
+23.7|de tudo|de;tudo
+23.8|que
+23.9|para ti|para;ti
+23.10|e não|e;não
+23.11|dirás
+23.12|eu
+23.13|enriqueci
+23.14|obj.
+23.15|Avram
+24.0|Exceto mim|Exceto;mim
+24.1|apenas
+24.2|que
+24.3|comeram
+24.4|os jovens|os;jovens
+24.5|e porção de|e;porção de
+24.6|os varões|os;varões
+24.7|que
+24.8|foram
+24.9|com mim|com;mim
+24.10|Aner
+24.11|Eshkol
+24.12|e Mamre|e;Mamre
+24.13|eles
+24.14|tomem
+24.15|porção deles|porção;deles

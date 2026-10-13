@@ -1,0 +1,268 @@
+1.0|E disse|e;disse
+1.1|YHWH|YHWH
+1.2|para|para
+1.3|Avram|Avram
+1.4|vai|vai
+1.5|para ti|para;ti
+1.6|de terra de ti|de;terra de;ti
+1.7|e de parentela de ti|e;de;parentela de;ti
+1.8|e de casa de|e;de;casa de
+1.9|pai de ti|pai de;ti
+1.10|para|para
+1.11|a terra|a;terra
+1.12|que|que
+1.13|farei ver te|farei ver;te
+2.0|E farei te|e;farei;te
+2.1|para nação|para;nação
+2.2|grande|grande
+2.3|e abençoarei te|e;abençoarei;te
+2.4|e engrandecerei|e;engrandecerei
+2.5|nome de ti|nome de;ti
+2.6|e sê|e;sê
+2.7|bênção|bênção
+3.0|E abençoarei|e;abençoarei
+3.1|abençoadores de ti|abençoadores de;ti
+3.2|e o que despreza ti|e;o que despreza;ti
+3.3|amaldiçoarei|amaldiçoarei
+3.4|e serão abençoadas|e;serão abençoadas
+3.5|em ti|em;ti
+3.6|toda de|toda de
+3.7|famílias de|famílias de
+3.8|a solo|a;solo
+4.0|E foi|e;foi
+4.1|Avram|Avram
+4.2|conforme que|conforme;que
+4.3|falou|falou
+4.4|para ele|para;ele
+4.5|YHWH|YHWH
+4.6|e foi|e;foi
+4.7|com ele|com;ele
+4.8|Lot|Lot
+4.9|e Avram|e;Avram
+4.10|filho de|filho de
+4.11|cinco|cinco
+4.12|anos|anos
+4.13|e setenta|e;setenta
+4.14|ano|ano
+4.15|em saída dele|em;saída;dele
+4.16|de Haran|de;Haran
+5.0|E tomou|e;tomou
+5.1|Avram|Avram
+5.2|obj|obj
+5.3|Sarai|Sarai
+5.4|mulher dele|mulher;dele
+5.5|e obj|e;obj
+5.6|Lot|Lot
+5.7|filho de|filho de
+5.8|irmão dele|irmão;dele
+5.9|e obj|e;obj
+5.10|toda|toda
+5.11|possessão deles|possessão;deles
+5.12|que|que
+5.13|adquiriram|adquiriram
+5.14|e obj|e;obj
+5.15|a alma|a;alma
+5.16|que|que
+5.17|fizeram|fizeram
+5.18|em Haran|em;Haran
+5.19|e saíram|e;saíram
+5.20|para ir|para;ir
+5.21|terra (direção)|terra;(direção)
+5.22|Kenaan|Kenaan
+5.23|e vieram|e;vieram
+5.24|terra (direção)|terra;(direção)
+5.25|Kenaan|Kenaan
+6.0|E atravessou|e;atravessou
+6.1|Avram|Avram
+6.2|na terra|na;terra
+6.3|até|até
+6.4|lugar de|lugar de
+6.5|Shekhem|Shekhem
+6.6|até|até
+6.7|carvalho de|carvalho de
+6.8|Moreh|Moreh
+6.9|e o kenaanita|e;o;kenaanita
+6.10|então|então
+6.11|na terra|na;terra
+7.0|E apareceu|e;apareceu
+7.1|YHWH|YHWH
+7.2|para|para
+7.3|Avram|Avram
+7.4|e disse|e;disse
+7.5|para semente de ti|para;semente de;ti
+7.6|darei|darei
+7.7|obj|obj
+7.8|a terra|a;terra
+7.9|a esta|a;esta
+7.10|e edificou|e;edificou
+7.11|ali|ali
+7.12|altar|altar
+7.13|para YHWH|para;YHWH
+7.14|o que aparece|o;que aparece
+7.15|para ele|para;ele
+8.0|E mudou-se|e;mudou-se
+8.1|de ali|de;ali
+8.2|a monte (direção)|a;monte;(direção)
+8.3|de oriente|de;oriente
+8.4|para Bet|para;Bet
+8.5|El|El
+8.6|e estendeu|e;estendeu
+8.7|tenda dele|tenda;dele
+8.8|Bet|Bet
+8.9|El|El
+8.10|de mar (oeste)|de;mar (oeste)
+8.11|e a Ay|e;a;Ay
+8.12|de oriente|de;oriente
+8.13|e edificou|e;edificou
+8.14|ali|ali
+8.15|altar|altar
+8.16|para YHWH|para;YHWH
+8.17|e chamou|e;chamou
+8.18|em nome de|em;nome de
+8.19|YHWH|YHWH
+9.0|E partiu|e;partiu
+9.1|Avram|Avram
+9.2|indo|indo
+9.3|e partindo|e;partindo
+9.4|o Neguebe (direção)|o;Neguebe;(direção)
+10.0|E foi|e;foi
+10.1|fome|fome
+10.2|na terra|na;terra
+10.3|e desceu|e;desceu
+10.4|Avram|Avram
+10.5|Mitsrayim (direção)|Mitsrayim;(direção)
+10.6|para habitar como estrangeiro|para;habitar como estrangeiro
+10.7|ali|ali
+10.8|porque|porque
+10.9|pesado|pesado
+10.10|a fome|a;fome
+10.11|na terra|na;terra
+11.0|E foi|e;foi
+11.1|conforme que|conforme;que
+11.2|aproximou|aproximou
+11.3|para vir|para;vir
+11.4|Mitsrayim (direção)|Mitsrayim;(direção)
+11.5|e disse|e;disse
+11.6|para|para
+11.7|Sarai|Sarai
+11.8|mulher dele|mulher;dele
+11.9|eis|eis
+11.10|por favor|por favor
+11.11|conheci|conheci
+11.12|que|que
+11.13|mulher|mulher
+11.14|bela de|bela de
+11.15|aparência|aparência
+11.16|tu (fem.)|tu (fem.)
+12.0|E será|e;será
+12.1|que|que
+12.2|verão|verão
+12.3|obj te (fem.)|obj;te (fem.)
+12.4|os egípcios|os;egípcios
+12.5|e dirão|e;dirão
+12.6|mulher dele|mulher;dele
+12.7|esta|esta
+12.8|e matarão|e;matarão
+12.9|obj mim|obj;mim
+12.10|e obj te (fem.)|e;obj;te (fem.)
+12.11|manterão viva|manterão viva
+13.0|Dize (fem.)|dize (fem.)
+13.1|por favor|por favor
+13.2|irmã minha|irmã;minha
+13.3|tu (fem.)|tu (fem.)
+13.4|para que|para que
+13.5|vá bem|vá bem
+13.6|para mim|para;mim
+13.7|por causa de ti|por;causa de;ti
+13.8|e viva|e;viva
+13.9|alma minha|alma;minha
+13.10|por causa de ti|por;causa de;ti
+14.0|E foi|e;foi
+14.1|ao vir|ao;vir
+14.2|Avram|Avram
+14.3|Mitsrayim (direção)|Mitsrayim;(direção)
+14.4|e viram|e;viram
+14.5|os egípcios|os;egípcios
+14.6|obj|obj
+14.7|a mulher|a;mulher
+14.8|que|que
+14.9|bela|bela
+14.10|ela|ela
+14.11|muito|muito
+15.0|E viram|e;viram
+15.1|obj ela|obj;ela
+15.2|príncipes de|príncipes de
+15.3|Faraó|Faraó
+15.4|e louvaram|e;louvaram
+15.5|obj ela|obj;ela
+15.6|para|para
+15.7|Faraó|Faraó
+15.8|e foi tomada|e;foi tomada
+15.9|a mulher|a;mulher
+15.10|casa de|casa de
+15.11|Faraó|Faraó
+16.0|E para Avram|e;para;Avram
+16.1|fez bem|fez bem
+16.2|por causa de ela|por;causa de;ela
+16.3|e houve|e;houve
+16.4|para ele|para;ele
+16.5|rebanho|rebanho
+16.6|e gado|e;gado
+16.7|e asnos|e;asnos
+16.8|e servos|e;servos
+16.9|e servas|e;servas
+16.10|e jumentas|e;jumentas
+16.11|e camelos|e;camelos
+17.0|E feriu|e;feriu
+17.1|YHWH|YHWH
+17.2|obj|obj
+17.3|Faraó|Faraó
+17.4|golpes|golpes
+17.5|grandes|grandes
+17.6|e obj|e;obj
+17.7|casa dele|casa;dele
+17.8|sobre|sobre
+17.9|assunto de|assunto de
+17.10|Sarai|Sarai
+17.11|mulher de|mulher de
+17.12|Avram|Avram
+18.0|E chamou|e;chamou
+18.1|Faraó|Faraó
+18.2|para Avram|para;Avram
+18.3|e disse|e;disse
+18.4|que|que
+18.5|esta|esta
+18.6|fizeste|fizeste
+18.7|para mim|para;mim
+18.8|por que|por;que
+18.9|não|não
+18.10|declaraste|declaraste
+18.11|para mim|para;mim
+18.12|que|que
+18.13|mulher de ti|mulher de;ti
+18.14|ela|ela
+19.0|Por que|por;que
+19.1|disseste|disseste
+19.2|irmã minha|irmã;minha
+19.3|ela|ela
+19.4|e tomei|e;tomei
+19.5|obj ela|obj;ela
+19.6|para mim|para;mim
+19.7|para mulher|para;mulher
+19.8|e agora|e;agora
+19.9|eis|eis
+19.10|mulher de ti|mulher de;ti
+19.11|toma|toma
+19.12|e vai|e;vai
+20.0|E ordenou|e;ordenou
+20.1|sobre ele|sobre;ele
+20.2|Faraó|Faraó
+20.3|homens|homens
+20.4|e enviaram|e;enviaram
+20.5|obj ele|obj;ele
+20.6|e obj|e;obj
+20.7|mulher dele|mulher;dele
+20.8|e obj|e;obj
+20.9|todo|todo
+20.10|que|que
+20.11|para ele|para;ele

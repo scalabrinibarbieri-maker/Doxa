@@ -1,0 +1,223 @@
+1.0|E Sarai|e;Sarai
+1.1|mulher de
+1.2|Avram
+1.3|não
+1.4|gerou
+1.5|para ele|para;ele
+1.6|e para ela|e;para;ela
+1.7|serva
+1.8|egípcia
+1.9|e nome dela|e;nome;dela
+1.10|Hagar
+2.0|E disse|e;disse
+2.1|Sarai
+2.2|para
+2.3|Avram
+2.4|eis
+2.5|por favor
+2.6|reteve-me|reteve-;me
+2.7|YHWH
+2.8|de gerar|de;gerar
+2.9|entra
+2.10|por favor
+2.11|para
+2.12|serva minha|serva;minha
+2.13|talvez
+2.14|serei edificada
+2.15|de ela|de;ela
+2.16|e ouviu|e;ouviu
+2.17|Avram
+2.18|para voz de|para;voz de
+2.19|Sarai
+3.0|E tomou|e;tomou
+3.1|Sarai
+3.2|mulher de
+3.3|Avram
+3.4|obj.
+3.5|Hagar
+3.6|a egípcia|a;egípcia
+3.7|serva dela|serva;dela
+3.8|de fim de|de;fim de
+3.9|dez
+3.10|anos
+3.11|de habitar|de;habitar
+3.12|Avram
+3.13|em terra de|em;terra de
+3.14|Kenaan
+3.15|e deu|e;deu
+3.16|obj. ela|obj.;ela
+3.17|para Avram|para;Avram
+3.18|varão dela|varão;dela
+3.19|para ele|para;ele
+3.20|para mulher|para;mulher
+4.0|E entrou|e;entrou
+4.1|para
+4.2|Hagar
+4.3|e concebeu|e;concebeu
+4.4|e viu|e;viu
+4.5|que
+4.6|concebeu
+4.7|e tornou-se leve|e;tornou-se leve
+4.8|senhora dela|senhora;dela
+4.9|em olhos dela|em;olhos;dela
+5.0|E disse|e;disse
+5.1|Sarai
+5.2|para
+5.3|Avram
+5.4|violência minha|violência;minha
+5.5|sobre ti|sobre;ti
+5.6|eu
+5.7|dei
+5.8|serva minha|serva;minha
+5.9|em seio teu|em;seio;teu
+5.10|e viu|e;viu
+5.11|que
+5.12|concebeu
+5.13|e tornei-me leve|e;tornei-me leve
+5.14|em olhos dela|em;olhos;dela
+5.15|julgue
+5.16|YHWH
+5.17|entre mim|entre;mim
+5.18|e entre ti|e;entre;ti
+6.0|E disse|e;disse
+6.1|Avram
+6.2|para
+6.3|Sarai
+6.4|eis
+6.5|serva tua|serva;tua
+6.6|em mão tua|em;mão;tua
+6.7|faze (fem.)
+6.8|para ela|para;ela
+6.9|o bom|o;bom
+6.10|em olhos teus|em;olhos;teus
+6.11|e afligiu a ela|e;afligiu;a ela
+6.12|Sarai
+6.13|e fugiu|e;fugiu
+6.14|de faces dela|de;faces;dela
+7.0|E encontrou a ela|e;encontrou;a ela
+7.1|mensageiro de
+7.2|YHWH
+7.3|sobre
+7.4|fonte de
+7.5|os águas|os;águas
+7.6|no deserto|no;deserto
+7.7|sobre
+7.8|a fonte|a;fonte
+7.9|em caminho de|em;caminho de
+7.10|Shur
+8.0|E disse|e;disse
+8.1|Hagar
+8.2|serva de
+8.3|Sarai
+8.4|onde
+8.5|de aqui|de;aqui
+8.6|vieste (fem.)
+8.7|e para onde|e;para onde
+8.8|irás (fem.)
+8.9|e disse|e;disse
+8.10|de faces de|de;faces de
+8.11|Sarai
+8.12|senhora minha|senhora;minha
+8.13|eu
+8.14|fugindo (fem.)
+9.0|E disse|e;disse
+9.1|para ela|para;ela
+9.2|mensageiro de
+9.3|YHWH
+9.4|volta (fem.)
+9.5|para
+9.6|senhora tua|senhora;tua
+9.7|e aflige-te (fem.)|e;aflige-te (fem.)
+9.8|debaixo de
+9.9|mãos dela|mãos;dela
+10.0|E disse|e;disse
+10.1|para ela|para;ela
+10.2|mensageiro de
+10.3|YHWH
+10.4|multiplicando
+10.5|multiplicarei
+10.6|obj.
+10.7|semente tua|semente;tua
+10.8|e não|e;não
+10.9|será contado
+10.10|de multidão|de;multidão
+11.0|E disse|e;disse
+11.1|para ela|para;ela
+11.2|mensageiro de
+11.3|YHWH
+11.4|eis tu (fem.)|eis tu;(fem.)
+11.5|grávida (fem.)
+11.6|e dando à luz (fem.)|e;dando à luz (fem.)
+11.7|filho
+11.8|e chamarás (fem.)|e;chamarás (fem.)
+11.9|nome dele|nome;dele
+11.10|Yishmael
+11.11|porque
+11.12|ouviu
+11.13|YHWH
+11.14|para
+11.15|aflição tua|aflição;tua
+12.0|E ele|e;ele
+12.1|será
+12.2|jumento selvagem de
+12.3|homem
+12.4|mão dele|mão;dele
+12.5|em todos|em;todos
+12.6|e mão de|e;mão de
+12.7|todos
+12.8|em ele|em;ele
+12.9|e sobre|e;sobre
+12.10|faces de
+12.11|todos
+12.12|irmãos dele|irmãos;dele
+12.13|habitará
+13.0|E chamou|e;chamou
+13.1|nome de
+13.2|YHWH
+13.3|o que fala|o;que fala
+13.4|para ela|para;ela
+13.5|tu
+13.6|Deus
+13.7|de visão
+13.8|porque
+13.9|disse
+13.10|acaso também|acaso;também
+13.11|aqui
+13.12|vi
+13.13|depois de
+13.14|aquele que vê a mim|aquele que vê a;mim
+14.0|Sobre
+14.1|assim
+14.2|chamou
+14.3|para o poço|para;o poço
+14.4|Be'er
+14.5|Lakhai
+14.6|Ro'i
+14.7|eis
+14.8|entre
+14.9|Qadesh
+14.10|e entre|e;entre
+14.11|Bared
+15.0|E deu à luz|e;deu à luz
+15.1|Hagar
+15.2|para Avram|para;Avram
+15.3|filho
+15.4|e chamou|e;chamou
+15.5|Avram
+15.6|nome de
+15.7|filho dele|filho;dele
+15.8|que
+15.9|deu à luz
+15.10|Hagar
+15.11|Yishmael
+16.0|E Avram|e;Avram
+16.1|filho de
+16.2|oitenta
+16.3|ano
+16.4|e seis|e;seis
+16.5|anos
+16.6|em dar à luz|em;dar à luz
+16.7|Hagar
+16.8|obj.
+16.9|Yishmael
+16.10|para Avram|para;Avram

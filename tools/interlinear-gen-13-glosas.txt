@@ -1,0 +1,241 @@
+1.0|E subiu|e;subiu
+1.1|Avram
+1.2|de Mitsrayim|de;Mitsrayim
+1.3|ele
+1.4|e mulher dele|e;mulher;dele
+1.5|e tudo|e;tudo
+1.6|que
+1.7|para ele|para;ele
+1.8|e Lot|e;Lot
+1.9|com ele|com;ele
+1.10|o Neguebe (direção)|o;Neguebe;(direção)
+2.0|E Avram|e;Avram
+2.1|pesado
+2.2|muito
+2.3|no gado|no;gado
+2.4|na prata|na;prata
+2.5|e no ouro|e;no;ouro
+3.0|E foi|e;foi
+3.1|para jornadas dele|para;jornadas;dele
+3.2|de Neguebe|de;Neguebe
+3.3|e até|e;até
+3.4|Bet
+3.5|El
+3.6|até
+3.7|o lugar|o;lugar
+3.8|que
+3.9|estava
+3.10|ali
+3.11|tenda dele|tenda;dele
+3.12|no princípio|no;princípio
+3.13|entre
+3.14|Bet
+3.15|El
+3.16|e entre|e;entre
+3.17|a Ay|a;Ay
+4.0|para
+4.1|lugar de
+4.2|o altar|o;altar
+4.3|que
+4.4|fez
+4.5|ali
+4.6|na primeira|na;primeira
+4.7|e chamou|e;chamou
+4.8|ali
+4.9|Avram
+4.10|em nome de|em;nome de
+4.11|YHWH
+5.0|E também|e;também
+5.1|para Lot|para;Lot
+5.2|o que anda|o;que anda
+5.3|com
+5.4|Avram
+5.5|havia
+5.6|rebanho
+5.7|e gado|e;gado
+5.8|e tendas|e;tendas
+6.0|E não|e;não
+6.1|suportou
+6.2|obj. eles|obj.;eles
+6.3|a terra|a;terra
+6.4|para habitar|para;habitar
+6.5|juntos
+6.6|porque
+6.7|era
+6.8|possessão deles|possessão;deles
+6.9|muita
+6.10|e não|e;não
+6.11|puderam
+6.12|para habitar|para;habitar
+6.13|juntos
+7.0|E foi|e;foi
+7.1|contenda
+7.2|entre
+7.3|pastores de
+7.4|gado de
+7.5|Avram
+7.6|e entre|e;entre
+7.7|pastores de
+7.8|gado de
+7.9|Lot
+7.10|e o kenaanita|e;o;kenaanita
+7.11|e o perizita|e;o;perizita
+7.12|então
+7.13|habitando
+7.14|na terra|na;terra
+8.0|E disse|e;disse
+8.1|Avram
+8.2|para
+8.3|Lot
+8.4|não
+8.5|por favor
+8.6|haja
+8.7|contenda
+8.8|entre mim|entre;mim
+8.9|e entre ti|e;entre;ti
+8.10|e entre|e;entre
+8.11|pastores meus|pastores;meus
+8.12|e entre|e;entre
+8.13|pastores teus|pastores;teus
+8.14|porque
+8.15|homens
+8.16|irmãos
+8.17|nós
+9.0|Acaso não|Acaso;não
+9.1|toda
+9.2|a terra|a;terra
+9.3|diante de ti|diante;de;ti
+9.4|separa-te
+9.5|por favor
+9.6|de sobre mim|de;sobre;mim
+9.7|se
+9.8|a esquerda|a;esquerda
+9.9|e direitarei|e;direitarei
+9.10|e se|e;se
+9.11|a direita|a;direita
+9.12|e esquerdarei|e;esquerdarei
+10.0|E levantou|e;levantou
+10.1|Lot
+10.2|obj.
+10.3|olhos dele|olhos;dele
+10.4|e viu|e;viu
+10.5|obj.
+10.6|toda
+10.7|planície de
+10.8|o Jordão|o;Jordão
+10.9|porque
+10.10|toda ela|toda;ela
+10.11|regadio
+10.12|antes de|antes;de
+10.13|destruir
+10.14|YHWH
+10.15|obj.
+10.16|Sedom
+10.17|e obj.|e;obj.
+10.18|Amorah
+10.19|como jardim de|como;jardim de
+10.20|YHWH
+10.21|como terra de|como;terra de
+10.22|Mitsrayim
+10.23|em vires tu|em;vires tu
+10.24|Tsoar
+11.0|E escolheu|e;escolheu
+11.1|para ele|para;ele
+11.2|Lot
+11.3|obj.
+11.4|toda
+11.5|planície de
+11.6|o Jordão|o;Jordão
+11.7|e partiu|e;partiu
+11.8|Lot
+11.9|de oriente|de;oriente
+11.10|e separaram-se|e;separaram-se
+11.11|varão
+11.12|de sobre|de;sobre
+11.13|irmão dele|irmão;dele
+12.0|Avram
+12.1|habitou
+12.2|em terra de|em;terra de
+12.3|Kenaan
+12.4|e Lot|e;Lot
+12.5|habitou
+12.6|em cidades de|em;cidades de
+12.7|a planície|a;planície
+12.8|e armou tenda|e;armou tenda
+12.9|até
+12.10|Sedom
+13.0|E varões de|e;varões de
+13.1|Sedom
+13.2|maus
+13.3|e pecadores|e;pecadores
+13.4|para YHWH|para;YHWH
+13.5|muito
+14.0|E YHWH|e;YHWH
+14.1|disse
+14.2|para
+14.3|Avram
+14.4|depois de
+14.5|separar-se
+14.6|Lot
+14.7|de com ele|de;com;ele
+14.8|levanta
+14.9|por favor
+14.10|olhos teus|olhos;teus
+14.11|e vê|e;vê
+14.12|de
+14.13|o lugar|o;lugar
+14.14|que
+14.15|tu
+14.16|ali
+14.17|norte (direção)|norte;(direção)
+14.18|e Neguebe (direção)|e;Neguebe;(direção)
+14.19|e oriente (direção)|e;oriente;(direção)
+14.20|e mar (direção)|e;mar;(direção)
+15.0|Porque
+15.1|obj.
+15.2|toda
+15.3|a terra|a;terra
+15.4|que
+15.5|tu
+15.6|vendo
+15.7|para ti|para;ti
+15.8|darei ela|darei;ela
+15.9|e para semente tua|e;para;semente;tua
+15.10|até
+15.11|eternidade
+16.0|E porei|e;porei
+16.1|obj.
+16.2|semente tua|semente;tua
+16.3|como pó de|como;pó de
+16.4|a terra|a;terra
+16.5|que
+16.6|se
+16.7|poderá
+16.8|varão
+16.9|para contar|para;contar
+16.10|obj.
+16.11|pó de
+16.12|a terra|a;terra
+16.13|também
+16.14|semente tua|semente;tua
+16.15|será contado
+17.0|Levanta
+17.1|anda
+17.2|na terra|na;terra
+17.3|para comprimento dela|para;comprimento;dela
+17.4|e para largura dela|e;para;largura;dela
+17.5|porque
+17.6|para ti|para;ti
+17.7|darei ela|darei;ela
+18.0|E armou tenda|e;armou tenda
+18.1|Avram
+18.2|e veio|e;veio
+18.3|e habitou|e;habitou
+18.4|em carvalhos de|em;carvalhos de
+18.5|Mamre
+18.6|que
+18.7|em Hevron|em;Hevron
+18.8|e edificou|e;edificou
+18.9|ali
+18.10|altar
+18.11|para YHWH|para;YHWH
