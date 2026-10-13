@@ -1,4 +1,4 @@
-/* Doxa 62 · Atlas (Gênesis a Josué) */
+/* Doxa 62 · Atlas (Gênesis a 2 Reis) */
 
 /* espaço no fim do capítulo para os últimos versos chegarem à linha de leitura */
 body.doxa-atlas-on #textBody::after{content:'';display:block;height:46vh}
@@ -18,6 +18,7 @@ body.doxa-atlas-on #textBody::after{content:'';display:block;height:46vh}
   --a-moses:#f0dcae;
   --a-aaron:#86cdb9;
   --a-jethro:#a6d38c;
+  --a-jafe:#8f9cf2;--a-cam:#ee8fb0;--a-sem:#b9d46a;
   --a-hit:color-mix(in srgb,#ffcf4a 70%,var(--d30-text,#f3ebe0) 30%);
   background:var(--d30-panel,#0d0a07);
   color:var(--d30-text,#f3ebe0);
@@ -33,6 +34,7 @@ body.doxa-atlas-on #textBody::after{content:'';display:block;height:46vh}
   --a-moses:color-mix(in srgb,var(--d30-gold,#bf8333) 55%,var(--d30-text,#2e2018) 45%);
   --a-aaron:#2c7c67;
   --a-jethro:#4c8733;
+  --a-jafe:#3d4bb0;--a-cam:#b0386a;--a-sem:#5e7d10;
   --a-hit:color-mix(in srgb,#c77d00 78%,var(--d30-text,#2e2018) 22%);
   box-shadow:0 -10px 34px rgba(0,0,0,.14),0 14px 34px rgba(0,0,0,.10)}
 .atlas-sheet.light .atlas-base.hl-nile .rv-nile,.atlas-sheet.light .atlas-base.hl-nile .rv-pel,.atlas-sheet.light .atlas-base.hl-eufr .rv-eufr,.atlas-sheet.light .atlas-base.hl-tigre .rv-tigre,.atlas-sheet.light .atlas-base.hl-jordao .rv-jordao{stroke:#2f8cc4}
@@ -144,6 +146,8 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .pin.trad.em .halo{fill:color-mix(in srgb,var(--a-trad) 24%,transparent)}
 .pin.hit .glyph{fill:var(--a-hit);stroke:var(--a-land);stroke-width:2}
 .pin.hit:not(.em) .glyph{transform:scale(1.45);transform-box:fill-box;transform-origin:center}
+.pin.br-jafe .glyph{fill:var(--a-jafe)}.pin.br-cam .glyph{fill:var(--a-cam)}.pin.br-sem .glyph{fill:var(--a-sem)}
+.pin.k-people .glyph{stroke-width:1.4}
 .pin.tk .glyph{stroke:var(--a-army);stroke-width:2.6}
 .pin.fire .glyph{fill:#ef7a2c;filter:drop-shadow(0 0 4px #ff8a2a)}
 .lab.fire{fill:#f29a52}
@@ -164,6 +168,9 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .lab.road{font-style:italic;font-weight:500;font-size:11px;fill:color-mix(in srgb,#c8a36a 75%,var(--d30-text,#f3ebe0))}
 .lab.people.sh,.lab.tribe.sh{fill:var(--d30-text,#f3ebe0)}
 .lab.hit{fill:var(--a-hit)!important;font-weight:700}
+/* Gn 10: cada povo na cor do ramo de Noé */
+.atlas-sheet .lab.br-jafe{fill:var(--a-jafe)}.atlas-sheet .lab.br-cam{fill:var(--a-cam)}.atlas-sheet .lab.br-sem{fill:var(--a-sem)}
+.atlas-sheet .lab.place.br-jafe,.atlas-sheet .lab.place.br-cam,.atlas-sheet .lab.place.br-sem{font-weight:650;font-size:11.5px}
 .lab.note{font-style:italic;font-weight:500;font-size:11.5px;fill:color-mix(in srgb,var(--a-army) 80%,var(--d30-text,#f3ebe0))}
 
 /* controles */
@@ -175,6 +182,12 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .atlas-scale{position:absolute;left:10px;bottom:9px;display:flex;align-items:center;gap:6px;pointer-events:none;font:600 10px/1 system-ui,sans-serif;color:var(--d30-text,#f3ebe0);
   text-shadow:0 0 3px var(--a-land),0 0 3px var(--a-land)}
 .atlas-scale i{display:block;height:5px;border:1.5px solid currentColor;border-top:0;opacity:.8}
+.atlas-key{position:absolute;left:8px;bottom:24px;display:flex;gap:9px;padding:4px 8px;border-radius:10px;pointer-events:none;
+  background:color-mix(in srgb,var(--a-land) 78%,transparent);font:650 10.5px/1 system-ui,-apple-system,sans-serif;color:var(--d30-text,#f3ebe0)}
+.atlas-key[hidden]{display:none}
+.atlas-key .k{display:inline-flex;align-items:center;gap:4px}
+.atlas-key .k::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--a-jafe)}
+.atlas-key .k.cam::before{background:var(--a-cam)}.atlas-key .k.sem::before{background:var(--a-sem)}
 .atlas-credit{position:absolute;right:8px;bottom:6px;font:500 8.5px/1 system-ui,sans-serif;color:color-mix(in srgb,var(--d30-text,#f3ebe0) 52%,transparent);pointer-events:none;text-shadow:0 0 3px var(--a-sea)}
 
 /* ficha do lugar */
@@ -220,17 +233,20 @@ body:not(.doxa-atlas-on) .atlas-sheet{display:none}
 .atlas-legend .lg.army::before{border-top-color:var(--a-army)}
 .atlas-legend .lg.pat::before{border-top:2.5px dotted var(--a-moses)}
 .atlas-legend .lg.side::before{border-top:2.5px dotted var(--a-aaron)}
+.atlas-legend .lg.jafe::before,.atlas-legend .lg.cam::before,.atlas-legend .lg.sem::before{width:8px;height:8px;border:0;border-radius:50%;background:var(--a-jafe)}.atlas-legend .lg.cam::before{background:var(--a-cam)}.atlas-legend .lg.sem::before{background:var(--a-sem)}
+.atlas-legend .lg.jafe,.atlas-legend .lg.cam,.atlas-legend .lg.sem{display:none}
+.atlas-sheet[data-bk="Gen"] .atlas-legend .lg.jafe,.atlas-sheet[data-bk="Gen"] .atlas-legend .lg.cam,.atlas-sheet[data-bk="Gen"] .atlas-legend .lg.sem{display:inline-flex}
 .atlas-legend .lg.hit::before{width:9px;height:9px;border:0;border-radius:50%;background:var(--a-hit)}
 .atlas-legend .lg.bord::before{border-top:2px dashed var(--a-route2)}
 .atlas-legend .lg.tk::before{width:7px;height:7px;border:2.5px solid var(--a-army);border-radius:50%;background:color-mix(in srgb,var(--d30-text,#f3ebe0) 78%,transparent)}
 .atlas-legend .lg.fire::before{width:9px;height:9px;border:0;border-radius:50%;background:#ef7a2c;box-shadow:0 0 5px #ff8a2a}
-/* a legenda muda com o livro: de Josué a 2 Reis não há as rotas do Êxodo (e depois de Josué não há fronteiras) */
+/* a legenda muda com o livro: em Gênesis e de Josué a 2 Reis não há as rotas do Êxodo (e depois de Josué não há fronteiras) */
 .atlas-lh.lh-jos,.atlas-legend .lg.bord,.atlas-legend .lg.tk,.atlas-legend .lg.fire{display:none}
-.atlas-sheet[data-bk="Josh"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Judg"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Ruth"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="1Sam"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="2Sam"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="1Kgs"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="2Kgs"] .atlas-lh.lh-jos{display:block}
+.atlas-sheet[data-bk="Gen"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Josh"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Judg"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="Ruth"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="1Sam"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="2Sam"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="1Kgs"] .atlas-lh.lh-jos,.atlas-sheet[data-bk="2Kgs"] .atlas-lh.lh-jos{display:block}
 .atlas-sheet[data-bk="Josh"] .atlas-legend .lg.bord,.atlas-sheet[data-bk="Josh"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Josh"] .atlas-legend .lg.fire,
-.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="1Kgs"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="2Kgs"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="1Kgs"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="2Kgs"] .atlas-legend .lg.fire{display:inline-flex}
+.atlas-sheet[data-bk="Gen"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Gen"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="1Kgs"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="2Kgs"] .atlas-legend .lg.tk,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="1Kgs"] .atlas-legend .lg.fire,.atlas-sheet[data-bk="2Kgs"] .atlas-legend .lg.fire{display:inline-flex}
 .atlas-sheet[data-bk="Josh"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Josh"] .atlas-lrow,.atlas-sheet[data-bk="Josh"] .atlas-legend .lg.next,
-.atlas-sheet[data-bk="Judg"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Ruth"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="1Sam"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="2Sam"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="1Kgs"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="2Kgs"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Judg"] .atlas-lrow,.atlas-sheet[data-bk="Ruth"] .atlas-lrow,.atlas-sheet[data-bk="1Sam"] .atlas-lrow,.atlas-sheet[data-bk="2Sam"] .atlas-lrow,.atlas-sheet[data-bk="1Kgs"] .atlas-lrow,.atlas-sheet[data-bk="2Kgs"] .atlas-lrow,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.next,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.next,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.next,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.next,.atlas-sheet[data-bk="1Kgs"] .atlas-legend .lg.next,.atlas-sheet[data-bk="2Kgs"] .atlas-legend .lg.next{display:none}
+.atlas-sheet[data-bk="Gen"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Gen"] .atlas-lrow,.atlas-sheet[data-bk="Gen"] .atlas-legend .lg.next,.atlas-sheet[data-bk="Judg"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Ruth"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="1Sam"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="2Sam"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="1Kgs"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="2Kgs"] .atlas-lh.lh-exo,.atlas-sheet[data-bk="Judg"] .atlas-lrow,.atlas-sheet[data-bk="Ruth"] .atlas-lrow,.atlas-sheet[data-bk="1Sam"] .atlas-lrow,.atlas-sheet[data-bk="2Sam"] .atlas-lrow,.atlas-sheet[data-bk="1Kgs"] .atlas-lrow,.atlas-sheet[data-bk="2Kgs"] .atlas-lrow,.atlas-sheet[data-bk="Judg"] .atlas-legend .lg.next,.atlas-sheet[data-bk="Ruth"] .atlas-legend .lg.next,.atlas-sheet[data-bk="1Sam"] .atlas-legend .lg.next,.atlas-sheet[data-bk="2Sam"] .atlas-legend .lg.next,.atlas-sheet[data-bk="1Kgs"] .atlas-legend .lg.next,.atlas-sheet[data-bk="2Kgs"] .atlas-legend .lg.next{display:none}
 .atlas-lfoot{margin:8px 0 0;font:400 11px/1.4 system-ui,-apple-system,sans-serif;color:var(--d30-muted,#b8ab98)}
 
 /* fora de Êxodo */
