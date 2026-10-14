@@ -1,15 +1,15 @@
 (()=>{
   'use strict';
-  /* Doxa 62 · ATLAS (Gênesis a 1 Crônicas)
+  /* Doxa 62 · ATLAS (Gênesis a 2 Crônicas)
      Modo de leitura (entra por Ferramentas › Explorar o texto). Enquanto se rola o texto, sobe um cartão
      de até meia tela com o mapa: onde a passagem acontece e o trajeto. Nos trechos de viagem, o ponto
      anda junto com a leitura ou percorre o trecho sozinho ao chegar. Os lugares citados no versículo da
      linha de leitura acendem no mapa e aparecem em botões no alto do mapa.
-     Os dados (mapa, ~1090 lugares, ~850 cenas) ficam em js/48d.js e só são carregados ao ligar o Atlas.
+     Os dados (mapa, ~1120 lugares, ~920 cenas) ficam em js/48d.js e só são carregados ao ligar o Atlas.
      Em Josué: o ponto chega a cada lugar no versículo que o cita (as voltas em Jericó, a emboscada de Ai,
      as campanhas do sul e do norte); as fronteiras das tribos são traçadas ponto a ponto, na ordem do texto;
      as listas de cidades aparecem conforme a leitura; cidades tomadas e queimadas ficam marcadas.
-     Em Gênesis, Juízes, Rute, 1 e 2 Samuel, 1 e 2 Reis e 1 Crônicas, o mesmo, episódio a episódio: cada um começa sem rastro, e o que já foi andado nele fica desenhado.
+     Em Gênesis, Juízes, Rute, 1 e 2 Samuel, 1 e 2 Reis e 1 e 2 Crônicas, o mesmo, episódio a episódio: cada um começa sem rastro, e o que já foi andado nele fica desenhado.
      Em Gênesis 10 (e em 1 Crônicas 1), cada povo aparece quando a leitura chega a ele, como um ponto na cor do ramo de Noé (Jafé, Cam, Sem),
      e continua no mapa até o fim do capítulo, que mostra todas as nações juntas.
 
@@ -34,7 +34,7 @@
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const NT=new Set(['Matt','Mark','Luke','John','Acts','Rom','1Cor','2Cor','Gal','Eph','Phil','Col','1Thess','2Thess','1Tim','2Tim','Titus','Phlm','Heb','Jas','1Pet','2Pet','1John','2John','3John','Jude','Rev']);
   const ABBR={Gen:'Gn',Exod:'Êx',Lev:'Lv',Num:'Nm',Deut:'Dt',Josh:'Js',Judg:'Jz',Ruth:'Rt','1Sam':'1Sm','2Sam':'2Sm','1Kgs':'1Rs','2Kgs':'2Rs','1Chr':'1Cr','2Chr':'2Cr',Acts:'At',Gal:'Gl',Heb:'Hb'};
-  const BOOKS=['Gen','Exod','Lev','Num','Deut','Josh','Judg','Ruth','1Sam','2Sam','1Kgs','2Kgs','1Chr'];
+  const BOOKS=['Gen','Exod','Lev','Num','Deut','Josh','Judg','Ruth','1Sam','2Sam','1Kgs','2Kgs','1Chr','2Chr'];
   const NS='http://www.w3.org/2000/svg';
   const SVG_ATLAS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.6 3.8 6.7v12.7L9 17.3l6 2.1 5.2-2.1V4.6L15 6.7z"/><path d="M9 4.6v12.7M15 6.7v12.7"/></svg>';
   const SVG_LAYERS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 8.5 4.6L12 13.2 3.5 8.6z"/><path d="m3.5 12.4 8.5 4.6 8.5-4.6"/><path d="m3.5 16.2 8.5 4.6 8.5-4.6"/></svg>';
@@ -585,7 +585,7 @@
     if(!ref){hideSheet(false);return}
     if(!D){setAway(['Carregando o mapa…','Um instante.'],false);loadData().then(()=>{st.S=null;queue()}).catch(()=>setAway(['Não foi possível abrir o mapa','Tente sair e entrar de novo no Atlas.'],false));return}
     const s=sheet();buildSvg(s.querySelector('.atlas-svg'));
-    if(!B[ref.book]){setAway(['Por enquanto, de Gênesis a 1 Crônicas','O Atlas acompanha de Gênesis a 1 Crônicas. Abra um desses livros e role a leitura.'],true);return}
+    if(!B[ref.book]){setAway(['Por enquanto, de Gênesis a 2 Crônicas','O Atlas acompanha de Gênesis a 2 Crônicas. Abra um desses livros e role a leitura.'],true);return}
     if(st.away){st.away=false;s.classList.remove('away')}
     const opened=openSheet();
     const b=B[ref.book],i=sceneIdx(ref.book,ref.c,ref.v),S=b.sc[i],o=b.ord(ref.c,ref.v);st.ref=ref;
@@ -630,7 +630,7 @@
     let b=$('toolsAtlasStart');
     if(!b){
       b=document.createElement('button');b.className='tool-card';b.id='toolsAtlasStart';b.type='button';
-      b.innerHTML='<span class="tool-card-icon">'+SVG_ATLAS+'</span><span class="tool-card-copy"><strong>Atlas</strong><small>O mapa e o trajeto do texto, de Gênesis a 1 Crônicas.</small></span><span class="tool-card-arrow" aria-hidden="true">›</span>';
+      b.innerHTML='<span class="tool-card-icon">'+SVG_ATLAS+'</span><span class="tool-card-copy"><strong>Atlas</strong><small>O mapa e o trajeto do texto, de Gênesis a 2 Crônicas.</small></span><span class="tool-card-arrow" aria-hidden="true">›</span>';
       b.addEventListener('click',()=>setMode(true));
     }
     const tl=$('toolsTimelineStart');
